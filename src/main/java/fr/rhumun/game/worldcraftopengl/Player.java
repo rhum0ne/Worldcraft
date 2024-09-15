@@ -30,9 +30,18 @@ public class Player {
         this.addX((double) this.speed /100.0 * 1);
     }
 
-    public void addX(double a){ this.location.addX(a); }
-    public void addZ(double a){ this.location.addZ(a); }
-    public void addY(double a){ this.location.addY(a); }
+    public void addX(double a){
+        this.location.addX(a);
+        game.graphicModule.getCamera().pos.add((float) a, 0, 0);
+    }
+    public void addZ(double a){
+        this.location.addZ(a);
+        game.graphicModule.getCamera().pos.add(0, 0, (float) a);
+    }
+    public void addY(double a){
+        this.location.addY(a);
+        game.graphicModule.getCamera().pos.add(0, (float) a, 0);
+    }
     public void addYaw(double a){
         this.location.addYaw(a);
         this.normal.setYaw(this.location.getYaw());

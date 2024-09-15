@@ -6,6 +6,7 @@ public class MoveForward  extends Control{
     @Override
     public void onKeyPressed(Player player) {
         System.out.println("z");
+        player.addX(0.1);
     }
 
     @Override

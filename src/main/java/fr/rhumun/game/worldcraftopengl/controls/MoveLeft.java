@@ -6,6 +6,7 @@ public class MoveLeft  extends Control {
     @Override
     public void onKeyPressed(Player player) {
         System.out.println("q");
+        player.addZ(-0.1);
     }
 
     @Override

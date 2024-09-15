@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.graphic;
 import fr.rhumun.game.worldcraftopengl.*;
 import fr.rhumun.game.worldcraftopengl.controls.Control;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
+import lombok.Getter;
 import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
@@ -28,7 +29,13 @@ import org.joml.Matrix4f;
 public class GraphicModule {
 
     private Game game;
+    @Getter
+    private Camera camera;
 
+
+
+    private float lastX = 600.0f, lastY = 400.0f;  // Centre de l'écran
+    private boolean firstMouse = true;
     private int shaders = 0;
     private int cobble;
 
@@ -45,6 +52,7 @@ public class GraphicModule {
 
     public GraphicModule(Game game){
         this.game = game;
+        camera = new Camera(game.getPlayer());
     }
 
 
@@ -77,7 +85,7 @@ public class GraphicModule {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(800, 800, "WorldCraft OpenGL", NULL, NULL);
+        window = glfwCreateWindow(1200, 800, "WorldCraft OpenGL", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -106,6 +114,27 @@ public class GraphicModule {
 
 
         });
+
+        // Configuration du callback pour le mouvement de la souris
+        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
+            if (firstMouse) {
+                lastX = (float) xpos;
+                lastY = (float) ypos;
+                firstMouse = false;
+            }
+
+            float xOffset = (float) xpos - lastX;
+            float yOffset = lastY - (float) ypos;  // Inverser l'offset vertical pour correspondre aux conventions OpenGL
+
+            lastX = (float) xpos;
+            lastY = (float) ypos;
+
+            // Appel à la méthode pour ajuster la caméra en fonction des mouvements de la souris
+            processMouseMovement(xOffset, yOffset);
+        });
+
+        // Pour cacher le curseur et activer le mode "FPS"
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Get the thread stack and push a new frame
         try ( MemoryStack stack = stackPush() ) {
@@ -175,12 +204,12 @@ public class GraphicModule {
 
         cobble = loadTexture(TEXTURES_PATH + "cobble.png");
 
-        Matrix4f projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), 800f / 800f, 0.1f, 100.0f);
+        Matrix4f projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), 1200f / 800f, 0.1f, 100.0f);
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
         Matrix4f viewMatrix = new Matrix4f().lookAt(
-                new Vector3f(0.0f, 0.0f, 3.0f), // Position de la caméra
-                new Vector3f(0.0f, 0.0f, 0.5f), // Point de regard
-                new Vector3f(0.0f, 1.0f, 0.0f)  // Vecteur "up" pour la caméra
+                camera.getPos(), // Position de la caméra
+                camera.getLookPoint(), // Point de regard
+                camera.getUp()  // Vecteur "up" pour la caméra
         );
 
         int projectionLoc = glGetUniformLocation(shaders, "projection");
@@ -294,22 +323,15 @@ public class GraphicModule {
     }
 
     private void update(){
-        /*this.vertices = game.getCobble().getModel().getVertices();
-        this.indices = game.getCobble().getModel().getIndices();
+        // Mise à jour de la matrice de vue à chaque frame
+        Matrix4f viewMatrix = new Matrix4f().lookAt(
+                camera.getPos(),       // Position de la caméra mise à jour
+                camera.getLookPoint(), // Point de regard mis à jour
+                camera.getUp()         // Vecteur "up" pour la caméra
+        );
 
-
-        verticesArray = new float[]{
-                // Positions          // Couleurs
-                0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,  // coin supérieur droit
-                0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,  // coin inférieur droit
-                -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f   // coin inférieur gauche
-        };
-
-        indicesArray = new int[]{
-                0, 1, 2  // Dessiner un triangle
-        };
-
-        if(true) return;*/
+        int viewLoc = glGetUniformLocation(shaders, "view");
+        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
 
 
         Block[][][] blocks = game.getBlocks();
@@ -355,18 +377,12 @@ public class GraphicModule {
             //if(normal.scalaire(player.getNormal()) > 0) continue;
 
             Double[][] triangle = block.getModel().getTriangles().get(id);
-
-            double xP= player.getLocation().getX();
-            double yP= player.getLocation().getY();
-            double zP= player.getLocation().getZ();
-
-            double[] distances = new double[3];
             float[][] points = new float[5][];
 
             for (int i = 0; i < 3; i++) {
-                double x = block.getLocation().getX() + triangle[i][0] - xP;
-                double y = block.getLocation().getY() + triangle[i][1] - yP;
-                double z = block.getLocation().getZ() + triangle[i][2] - zP;
+                double x = block.getLocation().getX() + triangle[i][0];
+                double y = block.getLocation().getY() + triangle[i][1];
+                double z = block.getLocation().getZ() + triangle[i][2];
                 double u = triangle[i][3];
                 double v = triangle[i][4];
 
@@ -399,5 +415,15 @@ public class GraphicModule {
 
     private double getDistance(double x, double y, double z){
         return Math.sqrt(x*x + y*y + z*z);
+    }
+
+    // Lorsqu'un mouvement de souris est détecté, ajustez les angles de la caméra
+    public void processMouseMovement(float xOffset, float yOffset) {
+        float sensitivity = 0.1f;  // Sensibilité de la souris
+        xOffset *= sensitivity;
+        yOffset *= sensitivity;
+
+        camera.setYaw(camera.getYaw() + xOffset);   // Modifier le "yaw" avec l'offset horizontal
+        camera.setPitch(camera.getPitch() + yOffset);  // Modifier le "pitch" avec l'offset vertical
     }
 }

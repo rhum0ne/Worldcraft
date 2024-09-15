@@ -6,6 +6,7 @@ public class MoveRight extends Control{
     @Override
     public void onKeyPressed(Player player) {
         System.out.println("d");
+        player.addZ(0.1);
     }
 
     @Override

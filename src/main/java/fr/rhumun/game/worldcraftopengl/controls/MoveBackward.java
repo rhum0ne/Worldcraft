@@ -6,6 +6,7 @@ public class MoveBackward  extends Control{
     @Override
     public void onKeyPressed(Player player) {
         System.out.println("s");
+        player.addX(-0.1);
     }
 
     @Override
