@@ -5,8 +5,7 @@ import fr.rhumun.game.worldcraftopengl.Player;
 public class MoveForward  extends Control{
     @Override
     public void onKeyPressed(Player player) {
-        System.out.println("z");
-        player.addX(0.1);
+        player.moveForward(0.2);
     }
 
     @Override

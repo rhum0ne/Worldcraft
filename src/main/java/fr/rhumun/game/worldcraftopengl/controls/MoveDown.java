@@ -2,10 +2,10 @@ package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.Player;
 
-public class MoveRight extends Control{
+public class MoveDown extends Control{
     @Override
     public void onKeyPressed(Player player) {
-        player.moveRight(0.2);
+        player.addY(-0.2);
     }
 
     @Override

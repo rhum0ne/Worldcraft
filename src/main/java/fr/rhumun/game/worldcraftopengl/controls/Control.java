@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public abstract class Control {
-    private boolean isRepeatable;
+    private final boolean isRepeatable;
 
     public Control(boolean isRepeatable){
         this.isRepeatable = isRepeatable;
     }
 
-    public Control(){ this(false); }
+    public Control(){ this(true); }
 
     public abstract void onKeyPressed(Player player);
     public abstract void onKeyReleased(Player player);

@@ -11,4 +11,8 @@ module fr.rhumun.game.worldcraftopengl {
     exports fr.rhumun.game.worldcraftopengl;
     exports fr.rhumun.game.worldcraftopengl.graphic;
     opens fr.rhumun.game.worldcraftopengl.graphic to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.props;
+    opens fr.rhumun.game.worldcraftopengl.props to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.worlds;
+    opens fr.rhumun.game.worldcraftopengl.worlds to javafx.fxml;
 }

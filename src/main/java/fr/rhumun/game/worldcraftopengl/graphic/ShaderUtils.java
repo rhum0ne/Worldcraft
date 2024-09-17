@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl;
+package fr.rhumun.game.worldcraftopengl.graphic;
 
 import java.io.IOException;
 import java.nio.file.Files;

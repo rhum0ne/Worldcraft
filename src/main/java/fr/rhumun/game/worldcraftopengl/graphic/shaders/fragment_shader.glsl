@@ -1,11 +1,20 @@
 #version 330 core
+
+in vec2 TexCoord;
+flat in float TextureID;  // L'identifiant de la texture provenant du vertex shader
+
+flat int textID;
+uniform sampler2D textures[7];  // Tableau de sampler pour 4 textures
+
 out vec4 FragColor;
 
-in vec2 TexCoord;  // Coordonnées de texture venant du vertex shader
+void main()
+{
+    vec4 sampledColor;
+    textID = int(TextureID);
 
-uniform sampler2D ourTexture;  // L'uniforme pour la texture
+    sampledColor = texture(textures[textID], TexCoord);
 
-void main() {
-    // Appliquer la texture sur le fragment
-    FragColor = texture(ourTexture, TexCoord);
+    //if(textID==textures.length) sampledColor = texture(textures[textures.length-1], TexCoord);
+    FragColor = sampledColor;
 }
