@@ -1,13 +1,15 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.graphic.Model;
-import fr.rhumun.game.worldcraftopengl.graphic.Models;
+import fr.rhumun.game.worldcraftopengl.props.Model;
 import fr.rhumun.game.worldcraftopengl.props.Material;
 import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 public class Chunk {
@@ -17,29 +19,39 @@ public class Chunk {
 
     private int X;
     private int Z;
-    public Chunk(int X, int Z){
+
+    private World world;
+    private boolean generated = false;
+
+    public Chunk(World world, int X, int Z){
         this.X = X;
         this.Z = Z;
+        this.world = world;
 
         for (int x = 0; x < blocks.length; x++)
             for (int y = 0; y<blocks[x].length; y++) {
                 for(int z = 0; z<blocks[x][y].length; z++){
-                    this.addBlock(x, z, new Block(Models.BLOCK, null, X*16 + x, y, Z*16 + z));
+                    this.addBlock(x, z, new Block(Model.BLOCK, null, X*16 + x, y, Z*16 + z));
                 }
             }
+    }
 
+    public void generate(){
+        if(generated) return;
         for(int x=0; x<16; x++){
             for(int z=0; z<16; z++){
-                for(int y=10; y<20; y++) {
-                    this.blocks[x][y][z].setMaterial(Material.COBBLE);
+                for(int y=1; y<10; y++) {
+                    if(y==9) this.setBlock(x, y, z, Material.GRASS);
+                    else if(y==8 || y==7) this.setBlock(x, y, z, Material.DIRT);
+                    else this.setBlock(x, y, z, Material.STONE);
                 }
-                if((x+z*Z)%5==0 && (X*x*z+x)%7==0){
-                    this.setBlock(x, 20, z, Material.LOG, Models.HEXAGON);
-                    this.setBlock(x, 21, z, Material.LOG, Models.HEXAGON);
-                    this.setBlock(x, 22, z, Material.LOG, Models.HEXAGON);
+                if((1+x+z+Z)%5==0 && (X+x+2*z)%7==0){
+                    //world.spawnStructure(Structure.TREE, 16*X + x, 20, 16*Z + z);
                 }
             }
         }
+
+        this.generated = true;
     }
 
     private void addBlock(int x, int z, Block block) {
@@ -58,7 +70,7 @@ public class Chunk {
         return blocks[x][y][z];
     }
 
-    public void setBlock(int x, int y, int z, Material mat, Models model){
+    public void setBlock(int x, int y, int z, Material mat, Model model){
         this.blocks[x][y][z].setMaterial(mat);
         this.blocks[x][y][z].setModel(model);
     }

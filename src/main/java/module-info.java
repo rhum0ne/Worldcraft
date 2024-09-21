@@ -6,11 +6,12 @@ module fr.rhumun.game.worldcraftopengl {
     requires static lombok;
     requires org.lwjgl.stb;
     requires org.joml;
+    requires org.lwjgl.openal;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;
-    exports fr.rhumun.game.worldcraftopengl.graphic;
-    opens fr.rhumun.game.worldcraftopengl.graphic to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.outputs.graphic;
+    opens fr.rhumun.game.worldcraftopengl.outputs.graphic to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.props;
     opens fr.rhumun.game.worldcraftopengl.props to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.worlds;

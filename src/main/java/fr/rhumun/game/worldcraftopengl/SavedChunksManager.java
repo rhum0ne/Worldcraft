@@ -7,6 +7,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
 
 @Getter
@@ -60,5 +61,7 @@ public class SavedChunksManager {
             this.loadedChunks.add(chunkToLoad);
             this.loadedBlocks.addAll(chunkToLoad.getBlockList());
         }
+
+        GAME.getGraphicModule().changeLoadedBlocks();
     }
 }

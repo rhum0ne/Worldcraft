@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.props.Material;
 import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
+import javafx.scene.paint.Color;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -9,6 +11,8 @@ import java.util.HashMap;
 public class World {
 
     private final HashMap<Point, Chunk> chunks = new HashMap<>();
+
+    private Color skyColor = Color.rgb(20, 20, 80);
 
     public World(){
         this.createChunk(0, 0);
@@ -26,12 +30,26 @@ public class World {
             return chunks.get(coos);
         }
         System.out.println("Creating a new chunk at " + x + " : " + z);
-        Chunk chunk = new Chunk(x, z);
+        Chunk chunk = new Chunk(this, x, z);
         this.chunks.put(coos, chunk);
+        chunk.generate();
         //System.out.println("");
         //System.out.println(chunks.toString().replace(" ", "\n"));
         // System.out.println("");
         return chunk;
+    }
+
+    public boolean isChunkLoadedAt(int x, int z){
+        return isChunkLoaded(x/16, z/16);
+    }
+
+    public boolean isChunkLoaded(int x, int z){
+        if(this.chunks.containsKey(new Point(x, z))){
+            System.out.println("Chunk " + x + " " + z + " is loaded");
+            return true;
+        }
+        System.out.println("Chunk " + x + " " + z + " not loaded");
+        return false;
     }
 
     public Chunk getChunk(int x, int z){
@@ -70,5 +88,9 @@ public class World {
 
     public Block getBlockAt(Vector3f position) {
         return getBlockAt(position.x, position.y, position.z);
+    }
+
+    public void spawnStructure(Structure structure, int x, int y, int z){
+        structure.getStructure().tryBuildAt(this, x, y ,z);
     }
 }

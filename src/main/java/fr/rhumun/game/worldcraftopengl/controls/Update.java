@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 
 public class Update  extends Control{
 
@@ -16,6 +17,8 @@ public class Update  extends Control{
         System.out.print(player.getLocation().getY() + " ");
         System.out.println(player.getLocation().getZ());
         System.out.println(player.getLocation().getChunk().toString());
+
+        player.getLocation().getWorld().spawnStructure(Structure.TREE, (int) player.getLocation().getX(), (int) player.getLocation().getY()-1, (int) player.getLocation().getZ());
     }
 
     @Override

@@ -4,7 +4,7 @@ in vec2 TexCoord;
 flat in float TextureID;  // L'identifiant de la texture provenant du vertex shader
 
 flat int textID;
-uniform sampler2D textures[7];  // Tableau de sampler pour 4 textures
+uniform sampler2D textures[9];  // Tableau de sampler pour 4 textures
 
 out vec4 FragColor;
 

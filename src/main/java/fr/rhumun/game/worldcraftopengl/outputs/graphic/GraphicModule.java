@@ -1,10 +1,10 @@
-package fr.rhumun.game.worldcraftopengl.graphic;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
-import fr.rhumun.game.worldcraftopengl.Vector;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.props.Material;
 import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.props.Model;
 import lombok.Getter;
 import org.joml.FrustumIntersection;
 import org.lwjgl.*;
@@ -20,8 +20,8 @@ import org.lwjgl.stb.STBImage;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.time.Instant;
 import java.util.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -34,7 +34,8 @@ public class GraphicModule {
     @Getter
     private final Camera camera;
 
-    private final ChunksLoader chunkLoader;
+    private boolean areBlocksLoaded = false;
+    private List<Block> loadedBlocks;
 
     private long lastTime;
     private int frames;
@@ -64,7 +65,6 @@ public class GraphicModule {
     public GraphicModule(Game game){
         this.game = game;
         camera = new Camera(game.getPlayer());
-        this.chunkLoader = new ChunksLoader(game.getPlayer());
     }
 
 
@@ -144,7 +144,6 @@ public class GraphicModule {
                     control.release(player);
                 }
             }
-
         });
 
         // Configuration du callback pour le mouvement de la souris
@@ -206,6 +205,21 @@ public class GraphicModule {
 
     }
 
+    private void updateViewMatrix() {
+        // Mise à jour de la matrice de vue à chaque frame
+        Matrix4f viewMatrix = new Matrix4f().lookAt(
+                camera.getPos(),       // Position de la caméra mise à jour
+                camera.getLookPoint(), // Point de regard mis à jour
+                camera.getUp()         // Vecteur "up" pour la caméra
+        );
+
+        Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
+        frustumIntersection = new FrustumIntersection(combinedMatrix);
+
+        int viewLoc = glGetUniformLocation(shaders, "view");
+        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
+    }
+
     private void loop() {
 
         // This line is critical for LWJGL's interoperation with GLFW's
@@ -236,17 +250,11 @@ public class GraphicModule {
 
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
         projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) 1200 / 800, 0.1f, 100.0f);
-        Matrix4f viewMatrix = new Matrix4f().lookAt(
-                camera.getPos(),       // Position de la caméra
-                camera.getLookPoint(), // Point de regard
-                camera.getUp()         // Vecteur "up" pour la caméra
-        );
-        Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
-        frustumIntersection = new FrustumIntersection(combinedMatrix);
 
         int projectionLoc = glGetUniformLocation(shaders, "projection");
         int modelLoc = glGetUniformLocation(shaders, "model");
-        int viewLoc = glGetUniformLocation(shaders, "view");
+
+
 
 // Assurez-vous que le programme de shaders est actif avant de passer les matrices
         glUseProgram(shaders);
@@ -257,9 +265,7 @@ public class GraphicModule {
 // Passer la matrice de modèle au shader
         glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
 
-// Passer la matrice de vue au shader
-        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
-
+        updateViewMatrix();
         initTextures();
 
         // Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
@@ -291,7 +297,6 @@ public class GraphicModule {
 
         lastTime = System.nanoTime(); // Initialiser lastTime avec le temps actuel
 
-
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
@@ -303,6 +308,8 @@ public class GraphicModule {
 
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesArray, GL_STATIC_DRAW);
+
+            glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -372,50 +379,36 @@ public class GraphicModule {
     private void update(){
 
         //System.out.println("updating");
-        game.getPlayer().getSavedChunksManager().tryLoadChunks();
+        updateViewMatrix();
 
-        // Mise à jour de la matrice de vue à chaque frame
-        Matrix4f viewMatrix = new Matrix4f().lookAt(
-                camera.getPos(),       // Position de la caméra mise à jour
-                camera.getLookPoint(), // Point de regard mis à jour
-                camera.getUp()         // Vecteur "up" pour la caméra
-        );
-
-        Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
-        frustumIntersection = new FrustumIntersection(combinedMatrix);
-
-        int viewLoc = glGetUniformLocation(shaders, "view");
-        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
-
-
-        List<Block> blocks = game.getPlayer().getSavedChunksManager().getLoadedBlocks();
         Player player = game.getPlayer();
+        if(!areBlocksLoaded) {
+            loadedBlocks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedBlocks());
+            this.areBlocksLoaded = true;
+        }
 
         this.vertices.clear();
         this.indices.clear();
 
-        //Iterator<Block> it = game.getPlayer().getSavedChunksManager().getLoadedBlocks().iterator();
-
         int blockShowDistance = 16*SHOW_DISTANCE;
-        for(Block block : blocks){
+        for(Block block : loadedBlocks){
             if(block == null || block.getMaterial() == null) continue;
             Location loc = block.getLocation();
             if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue;
-            if (frustumIntersection.testAab((float) loc.getX(), (float) (loc.getY()-1), (float) loc.getZ(),
-                    (float) (loc.getX()+1), (float) loc.getY(), (float) (loc.getZ()+1))) {
+
+            Model model = block.getModel();
+            if(model == null) continue;
+            MeshArrays mesh = model.get();
+            if (mesh == null || mesh.getNumVertices() == 0) continue;
+
+            if (frustumIntersection.testAab((float) loc.getX()+mesh.getMinX(), (float) (loc.getY()+mesh.getMinY()), (float) loc.getZ()+mesh.getMinZ(),
+                    (float) (loc.getX())+mesh.getMaxX(), (float) loc.getY()+mesh.getMaxY(), (float) (loc.getZ())+mesh.getMaxZ())) {
                 // Le bloc est dans le frustum, on peut le rasteriser
                 if(block.isSurrounded()) continue;
-                raster(block, player);
+                raster(block, mesh);
             }
 
         }
-
-        /*while(it.hasNext()){
-            Block block = it.next();
-            if(block == null || block.getMaterial() == null) continue;
-            if(block.getLocation().getDistanceFrom(player.getLocation()) > SHOW_DISTANCE*16) continue;
-            raster(block, player);
-        }*/
 
         toArrays();
     }
@@ -436,57 +429,53 @@ public class GraphicModule {
         }
     }
 
-    private void raster(Block block, Player player){
-        for(int id = 0; id< block.getModel().getTriangles().size(); id++){
-            //System.out.println("rasting a triangle");
-            Vector normal = block.getModel().getNormal(id);
+    private void raster(Block block, MeshArrays mesh) {
 
-            //Cette condition est trop sévère et retirera des triangles normalement visibles
-            //if(normal.scalaire(player.getNormal()) > 0) continue;
+        FloatBuffer verticesBuffer = mesh.getVertices();
+        FloatBuffer normalsBuffer = mesh.getNormals();
+        FloatBuffer texCoordsBuffer = mesh.getTexCoords();
 
-            Double[][] triangle = block.getModel().getTriangles().get(id);
-            float[][] points = new float[5][];
+        int numVertices = mesh.getNumVertices();
 
-            for (int i = 0; i < 3; i++) {
-                double x = block.getLocation().getX() + triangle[i][0];
-                double y = block.getLocation().getY() + triangle[i][1];
-                double z = block.getLocation().getZ() + triangle[i][2];
-                double u = triangle[i][3];
-                double v = triangle[i][4];
-                int textNum = block.getMaterial().getId();
+        double x = block.getLocation().getX();
+        double y = block.getLocation().getY();
+        double z = block.getLocation().getZ();
 
-                //System.out.println((float) textNum);
+        for (int i = 0; i < numVertices; i++) {
+            float vx = (float) (x + verticesBuffer.get(i * 3));
+            float vy = (float) (y + verticesBuffer.get(i * 3 + 1));
+            float vz = (float) (z + verticesBuffer.get(i * 3 + 2));
 
-                points[i] = new float[] {
-                        (float) x,
-                        (float) y,
-                        (float) z,
-                        (float) u,
-                        (float) v,
-                        (float) textNum
-                };
-            }
-            addTriangle(points);
+            float nx = normalsBuffer.get(i * 3);
+            float ny = normalsBuffer.get(i * 3 + 1);
+            float nz = normalsBuffer.get(i * 3 + 2);
+
+            float u = texCoordsBuffer.get(i * 2);
+            float v = texCoordsBuffer.get(i * 2 + 1);
+
+            addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
         }
     }
 
-    private void addTriangle(float[][] points) {
-        // Vérifie que le triangle a bien 3 sommets
-        //if (points.length != 3) return;
 
-        //System.out.println("new triangle");
-        // Ajoute les 3 sommets du triangle à la liste des triangles
-        vertices.add(points[0]); // Premier sommet
-        vertices.add(points[1]); // Deuxième sommet
-        vertices.add(points[2]); // Troisième sommet
+    private void addVertex(float[] vertexData) {
+        // On vérifie que les données du sommet sont bien au format attendu (6 éléments)
+        // - 3 éléments pour les coordonnées (x, y, z)
+        // - 2 éléments pour les coordonnées de texture (u, v)
+        // - 1 élément pour l'ID de la texture (id)
+        if (vertexData.length != 6) {
+            throw new IllegalArgumentException("Le sommet doit contenir exactement 6 éléments (x, y, z, u, v, textureID)");
+        }
 
-        indices.add(indices.size());
-        indices.add(indices.size());
-        indices.add(indices.size());
-    }
+        // Ajout des données du sommet dans la liste vertices
+        vertices.add(vertexData);
 
-    private double getDistance(double x, double y, double z){
-        return Math.sqrt(x*x + y*y + z*z);
+        // L'index du sommet est simplement l'index actuel dans la liste
+        // Par exemple, si c'est le 4e sommet qu'on ajoute, son index sera 3
+        int index = vertices.size() - 1;
+
+        // Ajouter cet index à la liste des indices
+        indices.add(index);
     }
 
     // Lorsqu'un mouvement de souris est détecté, ajustez les angles de la caméra
@@ -537,5 +526,9 @@ public class GraphicModule {
             // Afficher les FPS ou utiliser les FPS comme vous le souhaitez
             System.out.println("FPS: " + fps);
         }
+    }
+
+    public void changeLoadedBlocks() {
+        this.areBlocksLoaded = false;
     }
 }

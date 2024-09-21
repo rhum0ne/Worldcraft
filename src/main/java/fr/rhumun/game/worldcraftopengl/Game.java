@@ -1,8 +1,8 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.graphic.Models;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
@@ -17,11 +17,12 @@ public class Game {
 
     public static Game GAME;
 
-    public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\graphic\\shaders\\";
-    public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\resources\\";
+    public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
+    public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\resources\\assets\\";
     public static int SHOW_DISTANCE = 4;
 
     GraphicModule graphicModule;
+    AudioManager audioManager;
     GameLoop gameLoop;
 
     World world;
@@ -35,11 +36,14 @@ public class Game {
     public Game(){
         GAME = this;
         Controls.init();
-        Models.init();
+
+        audioManager = new AudioManager();
+        audioManager.init();
+        //Model.init();
 
         this.world = new World();
 
-        this.player = new Player(this, 8, 22, 8);
+        this.player = new Player(this, 8, 11, 8);
 
         Timer timer = new Timer();
         timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);

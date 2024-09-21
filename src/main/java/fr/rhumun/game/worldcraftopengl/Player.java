@@ -1,10 +1,13 @@
 package fr.rhumun.game.worldcraftopengl;
 
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.props.Material;
 import lombok.Getter;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
+import static fr.rhumun.game.worldcraftopengl.outputs.audio.Sound.GRASS;
 
 @Getter
 public class Player {
@@ -13,7 +16,6 @@ public class Player {
     private final SavedChunksManager savedChunksManager = new SavedChunksManager(this);
 
     private final Location location;
-    private final Vector normal;
 
     private final int maxDistance = 5;
     private final int speed = 5;
@@ -29,7 +31,7 @@ public class Player {
     public Player(Game game, double x, double y, double z, float yaw, float pitch){
         this.game = game;
         this.location = new Location(x, y, z, yaw, pitch);
-        this.normal = Vector.fromYawPitch(yaw, pitch);
+        //this.normal = Vector.fromYawPitch(yaw, pitch);
 
     }
     public Block getBlockToPlace() {
@@ -64,7 +66,7 @@ public class Player {
     }
 
 
-    public Block getSelectedBlock() {
+    private Block getSelectedBlock() {
         float stepSize = 0.2F;
 
         Vector3f direction = getRayDirection();
@@ -94,7 +96,7 @@ public class Player {
 
 
 
-    public Vector3f getRayDirection() {
+    private Vector3f getRayDirection() {
         return new Vector3f(
                 (float) Math.cos(Math.toRadians(location.getYaw())) * (float) Math.cos(Math.toRadians(location.getPitch())),
                 (float) Math.sin(Math.toRadians(location.getPitch())),
@@ -112,6 +114,7 @@ public class Player {
             this.addZ(move * Math.sin(Math.toRadians(this.location.getYaw())));
             i+=move;
         }
+        this.onMove();
     }
     public void moveBackward(double a){
         double move = 0.01;
@@ -121,6 +124,7 @@ public class Player {
             this.addZ(-move * Math.sin(Math.toRadians(this.location.getYaw())));
             i+=move;
         }
+        this.onMove();
     }
     public void moveRight(double a){
         double move = 0.01;
@@ -130,6 +134,7 @@ public class Player {
             this.addZ(move * Math.cos(Math.toRadians(this.location.getYaw())));
             i+=move;
         }
+        this.onMove();
     }
     public void moveLeft(double a){
         double move = 0.01;
@@ -139,6 +144,7 @@ public class Player {
             this.addZ(-move * Math.cos(Math.toRadians(this.location.getYaw())));
             i+=move;
         }
+        this.onMove();
     }
 
     public void addX(double a){
@@ -155,10 +161,39 @@ public class Player {
     }
     public void setYaw(float a){
         this.location.setYaw(a);
-        this.normal.setYaw(this.location.getYaw());
+        //this.normal.setYaw(this.location.getYaw());
     }
     public void setPitch(float a){
         this.location.setPitch(a);
-        this.normal.setPitch(this.location.getPitch());
+        //this.normal.setPitch(this.location.getPitch());
+    }
+
+    private void onMove(){
+
+    }
+
+    public void placeBlock(final Material material){
+        // Déterminer la face du bloc où le joueur a cliqué
+        Block block = this.getBlockToPlace();
+        if (block == null) {
+            System.out.println("Impossible de déterminer la face du bloc.");
+            return;
+        }
+
+
+        // Appeler la méthode pour placer le bloc dans le jeu
+        block.setMaterial(material);
+        this.playSound(material.getSound());
+    }
+
+    public void breakBlock(){
+        Block block = this.getSelectedBlock();
+        if(block == null || block.getMaterial() == null) return;
+        this.playSound(block.getMaterial().getSound());
+        block.setMaterial(null);
+    }
+
+    public void playSound(final Sound sound){
+        this.game.getAudioManager().playSound(sound);
     }
 }
