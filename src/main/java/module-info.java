@@ -7,6 +7,9 @@ module fr.rhumun.game.worldcraftopengl {
     requires org.lwjgl.stb;
     requires org.joml;
     requires org.lwjgl.openal;
+    requires org.lwjgl.nuklear;
+    requires java.datatransfer;
+    requires java.desktop;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;

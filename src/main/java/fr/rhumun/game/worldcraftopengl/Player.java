@@ -3,7 +3,9 @@ package fr.rhumun.game.worldcraftopengl;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.props.Block;
 import fr.rhumun.game.worldcraftopengl.props.Material;
+import fr.rhumun.game.worldcraftopengl.props.Model;
 import lombok.Getter;
+import lombok.Setter;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
@@ -19,6 +21,9 @@ public class Player {
 
     private final int maxDistance = 5;
     private final int speed = 5;
+
+    @Setter
+    private Material selectedMaterial = Material.DIRT;
 
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
@@ -182,7 +187,7 @@ public class Player {
 
 
         // Appeler la méthode pour placer le bloc dans le jeu
-        block.setMaterial(material);
+        block.setModel(Model.BLOCK).setMaterial(material);
         this.playSound(material.getSound());
     }
 

@@ -3,14 +3,12 @@ package fr.rhumun.game.worldcraftopengl;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.props.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 
 @Getter
 public class Game {
@@ -20,6 +18,7 @@ public class Game {
     public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\resources\\assets\\";
     public static int SHOW_DISTANCE = 4;
+    public static boolean SHOWING_FPS = true;
 
     GraphicModule graphicModule;
     AudioManager audioManager;
@@ -29,6 +28,8 @@ public class Game {
     Player player;
 
     List<Controls> pressedKeys = new ArrayList<>();
+
+    List<Material> materials;
     public static void main(String[] args) {
         new Game();
     }
@@ -47,6 +48,8 @@ public class Game {
 
         Timer timer = new Timer();
         timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
+
+        materials = new ArrayList<>(Arrays.asList(Material.values()));
 
         graphicModule = new GraphicModule(this);
         graphicModule.run();

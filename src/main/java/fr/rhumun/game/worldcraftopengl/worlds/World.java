@@ -29,7 +29,7 @@ public class World {
             System.out.println("ERROR : chunk " + x + " : " + z + " already exists.");
             return chunks.get(coos);
         }
-        System.out.println("Creating a new chunk at " + x + " : " + z);
+        //System.out.println("Creating a new chunk at " + x + " : " + z);
         Chunk chunk = new Chunk(this, x, z);
         this.chunks.put(coos, chunk);
         chunk.generate();
@@ -40,15 +40,17 @@ public class World {
     }
 
     public boolean isChunkLoadedAt(int x, int z){
+        if(x < 0 && x%16!=0) x-=16;
+        if(z < 0 && z%16!=0) z-=16;
         return isChunkLoaded(x/16, z/16);
     }
 
     public boolean isChunkLoaded(int x, int z){
         if(this.chunks.containsKey(new Point(x, z))){
-            System.out.println("Chunk " + x + " " + z + " is loaded");
+            //System.out.println("Chunk " + x + " " + z + " is loaded");
             return true;
         }
-        System.out.println("Chunk " + x + " " + z + " not loaded");
+        //System.out.println("Chunk " + x + " " + z + " not loaded");
         return false;
     }
 
@@ -62,14 +64,14 @@ public class World {
     }
 
     public Chunk getChunkAt(int x, int z){
-        if(x < 0) x-=16;
-        if(z < 0) z-=16;
+        if(x < 0 && x%16!=0) x-=16;
+        if(z < 0 && z%16!=0) z-=16;
         return getChunk(x/16, z/16);
     }
 
     public Chunk getChunkAt(double xD, double zD){
-        int x = (int) Math.floor(xD);
-        int z = (int) Math.floor(zD);
+        int x = (int) Math.round(xD);
+        int z = (int) Math.round(zD);
         return this.getChunkAt(x, z);
     }
 
@@ -80,9 +82,9 @@ public class World {
     }
 
     public Block getBlockAt(double xD, double yD, double zD){
-        int x = (int) Math.floor(xD);
-        int y = (int) Math.ceil(yD);
-        int z = (int) Math.floor(zD);
+        int x = (int) Math.round(xD);
+        int y = (int) Math.floor(yD);
+        int z = (int) Math.round(zD);
         return getBlockAt(x,y,z);
     }
 

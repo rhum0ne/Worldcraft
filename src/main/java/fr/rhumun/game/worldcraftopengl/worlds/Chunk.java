@@ -46,9 +46,11 @@ public class Chunk {
                     else this.setBlock(x, y, z, Material.STONE);
                 }
                 if((1+x+z+Z)%5==0 && (X+x+2*z)%7==0){
-                    //world.spawnStructure(Structure.TREE, 16*X + x, 20, 16*Z + z);
+                    world.spawnStructure(Structure.TREE, 16*X + x, 10, 16*Z + z);
                 }
             }
+
+            this.setBlock(8, 10, 8, Material.COBBLE);
         }
 
         this.generated = true;

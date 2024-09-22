@@ -4,8 +4,8 @@ import fr.rhumun.game.worldcraftopengl.worlds.World;
 
 public abstract class AbstractStructure {
 
-    private int length;
-    private int width;
+    private final int length;
+    private final int width;
 
     public AbstractStructure(int length, int width){
         this.width = width;
@@ -13,7 +13,7 @@ public abstract class AbstractStructure {
     }
 
     public void tryBuildAt(World world, int x, int y, int z){
-        System.out.println("trying to build at " + x + " " + z);
+        //System.out.println("trying to build at " + x + " " + z);
         if(world.isChunkLoadedAt(x+length, z+width) && world.isChunkLoadedAt(x-length, z+width) && world.isChunkLoadedAt(x+length, z-width) && world.isChunkLoadedAt(x-length, z-width)) buildAt(world, x, y ,z);
     }
 

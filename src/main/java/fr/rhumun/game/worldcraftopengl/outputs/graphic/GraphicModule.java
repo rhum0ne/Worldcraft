@@ -13,37 +13,38 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
 import static org.lwjgl.system.MemoryUtil.*;
 import org.lwjgl.stb.STBImage;
+import org.lwjgl.nuklear.*;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.time.Instant;
 import java.util.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryStack.*;
 import org.joml.Matrix4f;
 
-public class GraphicModule {
+public class GraphicModule{
 
     private final Game game;
     @Getter
     private final Camera camera;
+    private final Player player;
 
     private boolean areBlocksLoaded = false;
     private List<Block> loadedBlocks;
 
-    private long lastTime;
-    private int frames;
-    private int fps;
-
     private float lastX = 600.0f, lastY = 400.0f;  // Centre de l'écran
     private boolean firstMouse = true;
-    private int shaders = 0;
+    protected static int shaders = 0;
 
     // The window handle
     private long window;
@@ -52,19 +53,20 @@ public class GraphicModule {
     private FrustumIntersection frustumIntersection;
     private Matrix4f projectionMatrix;
 
-    private int pointVAO, pointVBO;
-    private int pointShader;
-
-    private List<float[]> vertices = new ArrayList<float[]>();
+    private final List<float[]> vertices = new ArrayList<>();
     private float[] verticesArray = new float[0];
 
-    List<Integer> indices = new ArrayList<>();
+    private final List<Integer> indices = new ArrayList<>();
     int[] indicesArray = new int[0];
 
 
+    private DebugUtils debugUtils = new DebugUtils();
+    private UpdateLoop updateLoop;
     public GraphicModule(Game game){
         this.game = game;
-        camera = new Camera(game.getPlayer());
+        player = game.getPlayer();
+        camera = new Camera(player);
+        updateLoop = new UpdateLoop(this);
     }
 
 
@@ -75,13 +77,10 @@ public class GraphicModule {
 
         // Free the window callbacks and destroy the window
         this.cleanup();
-
-        // Terminate GLFW and free the error callback
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
     }
 
     private void init() {
+
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
@@ -109,6 +108,15 @@ public class GraphicModule {
             }
             if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
                 Controls.LEFT_CLICK.release(game.getPlayer());
+            }
+        });
+
+
+        // Set scroll callback
+        glfwSetScrollCallback(window, new GLFWScrollCallback() {
+            @Override
+            public void invoke(long window, double xoffset, double yoffset) {
+                game.getPlayer().setSelectedMaterial(game.getMaterials().get((game.getMaterials().indexOf(game.getPlayer().getSelectedMaterial())+1)%game.getMaterials().size()));
             }
         });
 
@@ -195,6 +203,11 @@ public class GraphicModule {
         glfwShowWindow(window);
 
 
+        // This line is critical for LWJGL's interoperation with GLFW's
+        // OpenGL context, or any context that is managed externally.
+        // LWJGL detects the context that is current in the current thread,
+        // creates the GLCapabilities instance and makes the OpenGL
+        // bindings available for use.
         GL.createCapabilities();
 
         VAO = glGenVertexArrays();
@@ -205,7 +218,7 @@ public class GraphicModule {
 
     }
 
-    private void updateViewMatrix() {
+    void updateViewMatrix() {
         // Mise à jour de la matrice de vue à chaque frame
         Matrix4f viewMatrix = new Matrix4f().lookAt(
                 camera.getPos(),       // Position de la caméra mise à jour
@@ -221,14 +234,6 @@ public class GraphicModule {
     }
 
     private void loop() {
-
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
-
 //        glEnable(GL_CULL_FACE);
 //        glCullFace(GL_BACK);
 //        glFrontFace(GL_CCW);  // GL_CW pour le sens horaire si vos triangles sont définis différemment
@@ -284,48 +289,39 @@ public class GraphicModule {
         glVertexAttribPointer(2, 1, GL_FLOAT, false, 5 * Float.BYTES + Float.BYTES, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
 
-
-        glDeleteProgram(shaders);
-
         // Délier le VAO
         glBindVertexArray(0);
 
-        checkGLError();
-
-        Timer timer = new Timer();
-        //timer.schedule(this.chunkLoader, Date.from(Instant.now()), 100);
-
-        lastTime = System.nanoTime(); // Initialiser lastTime avec le temps actuel
+        debugUtils.checkGLError();
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while ( !glfwWindowShouldClose(window) ) {
-            update();
-
-
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, verticesArray, GL_STATIC_DRAW);
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesArray, GL_STATIC_DRAW);
-
             glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            update();
 
             render();
 
             // Calculer les FPS
-            calculateFPS();
+            if(SHOWING_FPS) debugUtils.calculateFPS();
 
             // Swap des buffers et gestion des événements
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-        checkGLError();
+        debugUtils.checkGLError();
     }
 
     public void render() {
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, verticesArray, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesArray, GL_STATIC_DRAW);
+
         // Dessiner les éléments existants
         glUseProgram(shaders);
         glBindVertexArray(VAO);
@@ -333,55 +329,11 @@ public class GraphicModule {
 
     }
 
-    private void initTextures(){
-        int[] textureUnits = new int[Material.values().length+1]; // Supposons que tu as 4 textures
-        int i = 1;
-        for (Material mat : Material.values()) {
-            int textureID = loadTexture(TEXTURES_PATH + mat.getTexturePath());
-            //glActiveTexture(GL_TEXTURE0 + i); // Active l'unité de texture correspondante
-            glBindTexture(GL_TEXTURE_2D, textureID);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            textureUnits[i] = i; // Stocke l'unité de texture
-            System.out.println(mat + " -> " + i);
-            i++;
-        }
-
-        // Associe chaque unité de texture au sampler2D correspondant dans le shader
-        int texturesLocation = glGetUniformLocation(shaders, "textures");
-        glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
-    }
-
-
-    public int loadTexture(String path) {
-        int textureID = glGenTextures();
-        glActiveTexture(GL_TEXTURE0 + textureID);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        System.out.println(path + " -> " + textureID );
-
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer comp = BufferUtils.createIntBuffer(1);
-        ByteBuffer image = STBImage.stbi_load(path, width, height, comp, 4);
-
-        if (image != null) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(), height.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            STBImage.stbi_image_free(image);
-        } else {
-            System.err.println("Erreur lors du chargement de la texture " + path);
-        }
-
-        return textureID;
-    }
-
     private void update(){
 
+        updateLoop.run();
+        //updateViewMatrix();
         //System.out.println("updating");
-        updateViewMatrix();
-
-        Player player = game.getPlayer();
         if(!areBlocksLoaded) {
             loadedBlocks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedBlocks());
             this.areBlocksLoaded = true;
@@ -394,13 +346,14 @@ public class GraphicModule {
         for(Block block : loadedBlocks){
             if(block == null || block.getMaterial() == null) continue;
             Location loc = block.getLocation();
-            if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue;
 
             Model model = block.getModel();
             if(model == null) continue;
             MeshArrays mesh = model.get();
             if (mesh == null || mesh.getNumVertices() == 0) continue;
 
+
+            if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue;
             if (frustumIntersection.testAab((float) loc.getX()+mesh.getMinX(), (float) (loc.getY()+mesh.getMinY()), (float) loc.getZ()+mesh.getMinZ(),
                     (float) (loc.getX())+mesh.getMaxX(), (float) loc.getY()+mesh.getMaxY(), (float) (loc.getZ())+mesh.getMaxZ())) {
                 // Le bloc est dans le frustum, on peut le rasteriser
@@ -416,9 +369,9 @@ public class GraphicModule {
     private void toArrays(){
         verticesArray= new float[vertices.size()*6];
         int index = 0;
-        for(int i=0; i<vertices.size(); i++){
-            for(int j=0; j<vertices.get(i).length; j++) {
-                verticesArray[index++] = vertices.get(i)[j];
+        for (float[] vertex : vertices) {
+            for (float v : vertex) {
+                verticesArray[index++] = v;
                 //if(j%5 == 0 && j!=0) System.out.println("Texture ID " + vertices.get(i)[j]);
             }
         }
@@ -494,41 +447,18 @@ public class GraphicModule {
         glDeleteBuffers(VBO);
         glDeleteProgram(shaders);
 
-        // Supprimer les buffers et VAOs pour le point
-        glDeleteVertexArrays(pointVAO);
-        glDeleteBuffers(pointVBO);
-        glDeleteProgram(pointShader);
-
         glfwFreeCallbacks(window);
         GLFW.glfwDestroyWindow(window);
         GLFW.glfwTerminate();
-    }
 
-    public void checkGLError() {
-        int error = GL11.glGetError();
-        while (error != GL11.GL_NO_ERROR) {
-            System.err.println("OpenGL error: " + error);
-            error = GL11.glGetError();
-        }
-    }
 
-    private void calculateFPS() {
-        long currentTime = System.nanoTime();
-        long deltaTime = currentTime - lastTime;
-
-        frames++;
-
-        if (deltaTime >= 1_000_000_000L) { // 1 seconde en nanosecondes
-            fps = frames;
-            frames = 0;
-            lastTime = currentTime;
-
-            // Afficher les FPS ou utiliser les FPS comme vous le souhaitez
-            System.out.println("FPS: " + fps);
-        }
+        // Terminate GLFW and free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void changeLoadedBlocks() {
         this.areBlocksLoaded = false;
     }
+
 }
