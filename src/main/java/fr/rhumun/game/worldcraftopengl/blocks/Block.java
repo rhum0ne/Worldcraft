@@ -1,7 +1,6 @@
-package fr.rhumun.game.worldcraftopengl.props;
+package fr.rhumun.game.worldcraftopengl.blocks;
 
 import fr.rhumun.game.worldcraftopengl.Location;
-import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 

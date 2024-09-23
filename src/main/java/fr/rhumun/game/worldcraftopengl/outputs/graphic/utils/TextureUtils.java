@@ -1,7 +1,9 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
-import fr.rhumun.game.worldcraftopengl.props.Material;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.stb.STBImage;
 
 import java.nio.ByteBuffer;
@@ -18,7 +20,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureUtils {
 
-    static void initTextures(){
+    public static void initTextures(){
         int[] textureUnits = new int[Material.values().length+1]; // Supposons que tu as 4 textures
         int i = 1;
         for (Material mat : Material.values()) {
@@ -33,7 +35,7 @@ public class TextureUtils {
         }
 
         // Associe chaque unité de texture au sampler2D correspondant dans le shader
-        int texturesLocation = glGetUniformLocation(GraphicModule.shaders, "textures");
+        int texturesLocation = GL20.glGetUniformLocation(GraphicModule.shaders, "textures");
         glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
     }
 

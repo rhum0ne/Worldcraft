@@ -1,11 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.worlds.structures;
 
-import fr.rhumun.game.worldcraftopengl.props.Block;
-import fr.rhumun.game.worldcraftopengl.props.Material;
-import fr.rhumun.game.worldcraftopengl.props.Model;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
-
-import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class TreeStructure extends AbstractStructure{
     public TreeStructure() {

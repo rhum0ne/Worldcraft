@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.props.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 

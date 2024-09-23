@@ -1,31 +1,30 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
-import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.props.Material;
-import fr.rhumun.game.worldcraftopengl.props.Block;
-import fr.rhumun.game.worldcraftopengl.props.Model;
+import fr.rhumun.game.worldcraftopengl.controls.*;
+import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
+import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
+import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.MeshArrays;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import lombok.Getter;
 import org.joml.FrustumIntersection;
-import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
-import static fr.rhumun.game.worldcraftopengl.outputs.graphic.TextureUtils.initTextures;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
 import static org.lwjgl.system.MemoryUtil.*;
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.nuklear.*;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.time.Instant;
 import java.util.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -41,17 +40,15 @@ public class GraphicModule{
 
     private boolean areBlocksLoaded = false;
     private List<Block> loadedBlocks;
-
-    private float lastX = 600.0f, lastY = 400.0f;  // Centre de l'écran
-    private boolean firstMouse = true;
-    protected static int shaders = 0;
+    public static int shaders = 0;
 
     // The window handle
+    @Getter
     private long window;
     private int VAO, VBO, EBO;
 
     private FrustumIntersection frustumIntersection;
-    private Matrix4f projectionMatrix;
+    Matrix4f projectionMatrix;
 
     private final List<float[]> vertices = new ArrayList<>();
     private float[] verticesArray = new float[0];
@@ -60,8 +57,8 @@ public class GraphicModule{
     int[] indicesArray = new int[0];
 
 
-    private DebugUtils debugUtils = new DebugUtils();
-    private UpdateLoop updateLoop;
+    private final DebugUtils debugUtils = new DebugUtils();
+    private final UpdateLoop updateLoop;
     public GraphicModule(Game game){
         this.game = game;
         player = game.getPlayer();
@@ -91,6 +88,11 @@ public class GraphicModule{
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //Pour macOS
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
@@ -99,78 +101,11 @@ public class GraphicModule{
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
-        GLFW.glfwSetMouseButtonCallback(window, (window, button, action, mods) -> {
-            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
-                Controls.LEFT_CLICK.press(game.getPlayer());
-            }
-            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && action == GLFW.GLFW_PRESS) {
-                Controls.RIGHT_CLICK.press(game.getPlayer());
-            }
-            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
-                Controls.LEFT_CLICK.release(game.getPlayer());
-            }
-        });
-
-
-        // Set scroll callback
-        glfwSetScrollCallback(window, new GLFWScrollCallback() {
-            @Override
-            public void invoke(long window, double xoffset, double yoffset) {
-                game.getPlayer().setSelectedMaterial(game.getMaterials().get((game.getMaterials().indexOf(game.getPlayer().getSelectedMaterial())+1)%game.getMaterials().size()));
-            }
-        });
-
-        glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
-            glViewport(0, 0, width, height);
-
-            // Recalculer la matrice de projection
-            projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) width / height, 0.1f, 100.0f);
-
-            // Mettre à jour la matrice de projection dans le shader
-            glUseProgram(shaders);
-            int projectionLoc = glGetUniformLocation(shaders, "projection");
-            glUniformMatrix4fv(projectionLoc, false, projectionMatrix.get(new float[16]));
-        });
-
-
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            Player player = game.getPlayer();
-            if (action == GLFW_PRESS) {
-                List<Controls> pressedKeys = game.getPressedKeys();
-                if(Controls.exists(key) && !pressedKeys.contains(Controls.get(key))){
-                    Controls control = Controls.get(key);
-                    pressedKeys.add(control);
-                }
-            }
-
-            if (action == GLFW_RELEASE) {
-                List<Controls> pressedKeys = game.getPressedKeys();
-                if(Controls.exists(key) && pressedKeys.contains(Controls.get(key))){
-                    Controls control = Controls.get(key);
-                    pressedKeys.remove(control);
-                    control.release(player);
-                }
-            }
-        });
-
-        // Configuration du callback pour le mouvement de la souris
-        glfwSetCursorPosCallback(window, (window, xpos, ypos) -> {
-            if (firstMouse) {
-                lastX = (float) xpos;
-                lastY = (float) ypos;
-                firstMouse = false;
-            }
-
-            float xOffset = (float) xpos - lastX;
-            float yOffset = lastY - (float) ypos;  // Inverser l'offset vertical pour correspondre aux conventions OpenGL
-
-            lastX = (float) xpos;
-            lastY = (float) ypos;
-
-            // Appel à la méthode pour ajuster la caméra en fonction des mouvements de la souris
-            processMouseMovement(xOffset, yOffset);
-        });
+        GLFW.glfwSetMouseButtonCallback(window, new MouseClickEvent(game));
+        GLFW.glfwSetScrollCallback(window, new Scroll());
+        GLFW.glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
+        GLFW.glfwSetKeyCallback(window, new KeyEvent(game,player));
+        GLFW.glfwSetCursorPosCallback(window, new CursorEvent(camera));
 
         // Pour cacher le curseur et activer le mode "FPS"
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -187,6 +122,7 @@ public class GraphicModule{
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             // Center the window
+            assert vidmode != null;
             glfwSetWindowPos(
                     window,
                     (vidmode.width() - pWidth.get(0)) / 2,
@@ -296,6 +232,7 @@ public class GraphicModule{
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
+
         while ( !glfwWindowShouldClose(window) ) {
             glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
 
@@ -330,10 +267,8 @@ public class GraphicModule{
     }
 
     private void update(){
-
         updateLoop.run();
-        //updateViewMatrix();
-        //System.out.println("updating");
+
         if(!areBlocksLoaded) {
             loadedBlocks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedBlocks());
             this.areBlocksLoaded = true;
@@ -385,7 +320,7 @@ public class GraphicModule{
     private void raster(Block block, MeshArrays mesh) {
 
         FloatBuffer verticesBuffer = mesh.getVertices();
-        FloatBuffer normalsBuffer = mesh.getNormals();
+        //FloatBuffer normalsBuffer = mesh.getNormals();
         FloatBuffer texCoordsBuffer = mesh.getTexCoords();
 
         int numVertices = mesh.getNumVertices();
@@ -399,9 +334,9 @@ public class GraphicModule{
             float vy = (float) (y + verticesBuffer.get(i * 3 + 1));
             float vz = (float) (z + verticesBuffer.get(i * 3 + 2));
 
-            float nx = normalsBuffer.get(i * 3);
+            /*float nx = normalsBuffer.get(i * 3);
             float ny = normalsBuffer.get(i * 3 + 1);
-            float nz = normalsBuffer.get(i * 3 + 2);
+            float nz = normalsBuffer.get(i * 3 + 2);*/
 
             float u = texCoordsBuffer.get(i * 2);
             float v = texCoordsBuffer.get(i * 2 + 1);
@@ -429,16 +364,6 @@ public class GraphicModule{
 
         // Ajouter cet index à la liste des indices
         indices.add(index);
-    }
-
-    // Lorsqu'un mouvement de souris est détecté, ajustez les angles de la caméra
-    public void processMouseMovement(float xOffset, float yOffset) {
-        float sensitivity = 0.1f;  // Sensibilité de la souris
-        xOffset *= sensitivity;
-        yOffset *= sensitivity;
-
-        camera.setYaw(camera.getYaw() + xOffset);   // Modifier le "yaw" avec l'offset horizontal
-        camera.setPitch(camera.getPitch() + yOffset);  // Modifier le "pitch" avec l'offset vertical
     }
 
     private void cleanup() {

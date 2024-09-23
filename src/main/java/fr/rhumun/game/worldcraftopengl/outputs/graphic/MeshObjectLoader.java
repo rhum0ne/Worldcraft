@@ -1,5 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
+import fr.rhumun.game.worldcraftopengl.blocks.MeshArrays;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

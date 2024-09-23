@@ -1,6 +1,5 @@
-package fr.rhumun.game.worldcraftopengl.props;
+package fr.rhumun.game.worldcraftopengl.blocks;
 
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.MeshArrays;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.MeshObjectLoader;
 import lombok.Getter;
 

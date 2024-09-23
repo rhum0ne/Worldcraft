@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import org.lwjgl.opengl.GL11;
 
@@ -18,7 +18,7 @@ public class DebugUtils {
         }
     }
 
-    void calculateFPS() {
+    public void calculateFPS() {
         long currentTime = System.nanoTime();
         long deltaTime = currentTime - lastTime;
 

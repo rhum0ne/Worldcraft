@@ -1,15 +1,12 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
-import fr.rhumun.game.worldcraftopengl.props.Block;
-import fr.rhumun.game.worldcraftopengl.props.Material;
-import fr.rhumun.game.worldcraftopengl.props.Model;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
-
-import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
-import static fr.rhumun.game.worldcraftopengl.outputs.audio.Sound.GRASS;
 
 @Getter
 public class Player {

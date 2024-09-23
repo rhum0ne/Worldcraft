@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic;
+package fr.rhumun.game.worldcraftopengl.blocks;
 
 import lombok.Getter;
 

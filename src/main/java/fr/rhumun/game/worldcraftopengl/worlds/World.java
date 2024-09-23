@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.props.Material;
-import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import javafx.scene.paint.Color;
 import org.joml.Vector3f;

@@ -1,15 +1,13 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.props.Model;
-import fr.rhumun.game.worldcraftopengl.props.Material;
-import fr.rhumun.game.worldcraftopengl.props.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 public class Chunk {

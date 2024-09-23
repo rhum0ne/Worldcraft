@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl.props;
+package fr.rhumun.game.worldcraftopengl.blocks;
 
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
