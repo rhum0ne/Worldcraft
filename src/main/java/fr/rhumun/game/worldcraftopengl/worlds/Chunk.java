@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class Chunk {
     private int Z;
 
     private World world;
+
+    @Setter
     private boolean generated = false;
 
     public Chunk(World world, int X, int Z){
@@ -32,26 +35,6 @@ public class Chunk {
                     this.addBlock(x, z, new Block(Model.BLOCK, null, X*16 + x, y, Z*16 + z));
                 }
             }
-    }
-
-    public void generate(){
-        if(generated) return;
-        for(int x=0; x<16; x++){
-            for(int z=0; z<16; z++){
-                for(int y=1; y<10; y++) {
-                    if(y==9) this.setBlock(x, y, z, Material.GRASS);
-                    else if(y==8 || y==7) this.setBlock(x, y, z, Material.DIRT);
-                    else this.setBlock(x, y, z, Material.STONE);
-                }
-                if((1+x+z+Z)%5==0 && (X+x+2*z)%7==0){
-                    world.spawnStructure(Structure.TREE, 16*X + x, 10, 16*Z + z);
-                }
-            }
-
-            this.setBlock(8, 10, 8, Material.COBBLE);
-        }
-
-        this.generated = true;
     }
 
     private void addBlock(int x, int z, Block block) {

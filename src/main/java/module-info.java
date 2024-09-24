@@ -21,4 +21,6 @@ module fr.rhumun.game.worldcraftopengl {
     opens fr.rhumun.game.worldcraftopengl.worlds to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
     opens fr.rhumun.game.worldcraftopengl.outputs.graphic.utils to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.worlds.generators;
+    opens fr.rhumun.game.worldcraftopengl.worlds.generators to javafx.fxml;
 }

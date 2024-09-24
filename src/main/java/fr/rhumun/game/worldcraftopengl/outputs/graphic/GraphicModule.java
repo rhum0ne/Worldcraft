@@ -53,7 +53,6 @@ public class GraphicModule{
     private final List<float[]> vertices = new ArrayList<>();
     private float[] verticesArray = new float[0];
 
-    private final List<Integer> indices = new ArrayList<>();
     int[] indicesArray = new int[0];
 
 
@@ -206,7 +205,6 @@ public class GraphicModule{
 // Passer la matrice de modèle au shader
         glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
 
-        updateViewMatrix();
         initTextures();
 
         // Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
@@ -267,15 +265,15 @@ public class GraphicModule{
     }
 
     private void update(){
-        updateLoop.run();
 
+        updateLoop.run();
+        
         if(!areBlocksLoaded) {
             loadedBlocks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedBlocks());
             this.areBlocksLoaded = true;
         }
 
         this.vertices.clear();
-        this.indices.clear();
 
         int blockShowDistance = 16*SHOW_DISTANCE;
         for(Block block : loadedBlocks){
@@ -287,8 +285,8 @@ public class GraphicModule{
             MeshArrays mesh = model.get();
             if (mesh == null || mesh.getNumVertices() == 0) continue;
 
-
-            if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue;
+            if(frustumIntersection == null) break;
+            //if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue; // Prend beaucoup de perfs
             if (frustumIntersection.testAab((float) loc.getX()+mesh.getMinX(), (float) (loc.getY()+mesh.getMinY()), (float) loc.getZ()+mesh.getMinZ(),
                     (float) (loc.getX())+mesh.getMaxX(), (float) loc.getY()+mesh.getMaxY(), (float) (loc.getZ())+mesh.getMaxZ())) {
                 // Le bloc est dans le frustum, on peut le rasteriser
@@ -299,22 +297,6 @@ public class GraphicModule{
         }
 
         toArrays();
-    }
-
-    private void toArrays(){
-        verticesArray= new float[vertices.size()*6];
-        int index = 0;
-        for (float[] vertex : vertices) {
-            for (float v : vertex) {
-                verticesArray[index++] = v;
-                //if(j%5 == 0 && j!=0) System.out.println("Texture ID " + vertices.get(i)[j]);
-            }
-        }
-
-        indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = indices.get(i);
-        }
     }
 
     private void raster(Block block, MeshArrays mesh) {
@@ -351,19 +333,27 @@ public class GraphicModule{
         // - 3 éléments pour les coordonnées (x, y, z)
         // - 2 éléments pour les coordonnées de texture (u, v)
         // - 1 élément pour l'ID de la texture (id)
-        if (vertexData.length != 6) {
+        /*if (vertexData.length != 6) {
             throw new IllegalArgumentException("Le sommet doit contenir exactement 6 éléments (x, y, z, u, v, textureID)");
-        }
+        }*/
 
         // Ajout des données du sommet dans la liste vertices
         vertices.add(vertexData);
+    }
 
-        // L'index du sommet est simplement l'index actuel dans la liste
-        // Par exemple, si c'est le 4e sommet qu'on ajoute, son index sera 3
-        int index = vertices.size() - 1;
+    private void toArrays(){
+        verticesArray= new float[vertices.size()*6];
+        int index = 0;
+        for (float[] vertex : vertices) {
+            for (float v : vertex) {
+                verticesArray[index++] = v;
+            }
+        }
 
-        // Ajouter cet index à la liste des indices
-        indices.add(index);
+        indicesArray = new int[vertices.size()];
+        for (int i = 0; i < indicesArray.length; i++) {
+            indicesArray[i] = i;
+        }
     }
 
     private void cleanup() {

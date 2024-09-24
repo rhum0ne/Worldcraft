@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.Flat;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import javafx.scene.paint.Color;
 import org.joml.Vector3f;
@@ -10,11 +12,15 @@ import java.util.HashMap;
 
 public class World {
 
+    private final WorldGenerator generator;
+
     private final HashMap<Point, Chunk> chunks = new HashMap<>();
 
     private Color skyColor = Color.rgb(20, 20, 80);
 
     public World(){
+        this.generator = new Flat(this);
+
         this.createChunk(0, 0);
 
         this.getBlockAt(-20, 11, -20).setMaterial(Material.BRICKS);
@@ -32,7 +38,7 @@ public class World {
         //System.out.println("Creating a new chunk at " + x + " : " + z);
         Chunk chunk = new Chunk(this, x, z);
         this.chunks.put(coos, chunk);
-        chunk.generate();
+        this.generator.tryGenerate(chunk);
         //System.out.println("");
         //System.out.println(chunks.toString().replace(" ", "\n"));
         // System.out.println("");
