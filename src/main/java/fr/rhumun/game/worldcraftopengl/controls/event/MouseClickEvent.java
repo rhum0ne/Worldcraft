@@ -15,14 +15,12 @@ public class MouseClickEvent implements GLFWMouseButtonCallbackI {
 
     @Override
     public void invoke(long window, int button, int action, int mods) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_PRESS) {
-            Controls.LEFT_CLICK.press(game.getPlayer());
+        //System.out.println("Mouse button: " + button);
+        if (action == GLFW.GLFW_PRESS) {
+            Controls.get(button).press(game.getPlayer());
         }
-        if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && action == GLFW.GLFW_PRESS) {
-            Controls.RIGHT_CLICK.press(game.getPlayer());
-        }
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && action == GLFW.GLFW_RELEASE) {
-            Controls.LEFT_CLICK.release(game.getPlayer());
+        else if (action == GLFW.GLFW_RELEASE) {
+            Controls.get(button).release(game.getPlayer());
         }
     }
 }

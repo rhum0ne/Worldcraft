@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.blocks.MeshArrays;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
 import org.joml.FrustumIntersection;
 import org.lwjgl.glfw.*;
@@ -38,8 +39,8 @@ public class GraphicModule{
     private final Camera camera;
     private final Player player;
 
-    private boolean areBlocksLoaded = false;
-    private List<Block> loadedBlocks;
+    private boolean areChunksUpdated = false;
+    private List<Chunk> loadedChunks;
     public static int shaders = 0;
 
     // The window handle
@@ -50,14 +51,15 @@ public class GraphicModule{
     private FrustumIntersection frustumIntersection;
     Matrix4f projectionMatrix;
 
-    private final List<float[]> vertices = new ArrayList<>();
-    private float[] verticesArray = new float[0];
 
-    int[] indicesArray = new int[0];
+    private final BlocksRenderingData blocksRenderingData = new BlocksRenderingData();
+    private final BlocksRenderingData transparentBlocksRenderingData = new BlocksRenderingData();
 
 
     private final DebugUtils debugUtils = new DebugUtils();
     private final UpdateLoop updateLoop;
+    private final GuiModule guiModule = new GuiModule();
+
     public GraphicModule(Game game){
         this.game = game;
         player = game.getPlayer();
@@ -150,6 +152,12 @@ public class GraphicModule{
         EBO = glGenBuffers();
 
         glBindVertexArray(VAO);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_BACK);
 
     }
 
@@ -205,23 +213,34 @@ public class GraphicModule{
 // Passer la matrice de modèle au shader
         glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
 
+        updateViewMatrix();
         initTextures();
 
-        // Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
+// Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, verticesArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, blocksRenderingData.getVerticesArray(), GL_STATIC_DRAW);
 
 // Attribut de position (3 floats)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 5 * Float.BYTES + Float.BYTES, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.BYTES, 0);
         glEnableVertexAttribArray(0);
 
 // Attribut de coordonnées de texture (2 floats)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * Float.BYTES + Float.BYTES, 3 * Float.BYTES);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
         glEnableVertexAttribArray(1);
 
 // Attribut de l'ID de texture (1 int)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 5 * Float.BYTES + Float.BYTES, 5 * Float.BYTES);
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, 6 * Float.BYTES, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
+//
+//
+//// Attribut de l'ID de texture (1 int)
+//        glVertexAttribPointer(3, 1, GL_FLOAT, false, 10 * Float.BYTES, 6 * Float.BYTES);
+//        glEnableVertexAttribArray(3);
+//
+//
+//// Attribut de l'ID de texture (1 int)
+//        glVertexAttribPointer(4, 3, GL_FLOAT, false, 10 * Float.BYTES, 7 * Float.BYTES);
+//        glEnableVertexAttribArray(4);
 
         // Délier le VAO
         glBindVertexArray(0);
@@ -232,7 +251,8 @@ public class GraphicModule{
         // the window or has pressed the ESCAPE key.
 
         while ( !glfwWindowShouldClose(window) ) {
-            glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
+            //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
+            glClearColor(0, 0, 0f, 1.0f);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             update();
@@ -252,31 +272,68 @@ public class GraphicModule{
     public void render() {
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, verticesArray, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, blocksRenderingData.getVerticesArray(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesArray, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, blocksRenderingData.getIndicesArray(), GL_STATIC_DRAW);
 
         // Dessiner les éléments existants
         glUseProgram(shaders);
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indicesArray.length, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, blocksRenderingData.getIndice(), GL_UNSIGNED_INT, 0);
+
+        if(transparentBlocksRenderingData.getIndice() != 0){
+            glEnable(GL_BLEND);
+            //glDepthMask(false);
+
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, transparentBlocksRenderingData.getVerticesArray(), GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, transparentBlocksRenderingData.getIndicesArray(), GL_STATIC_DRAW);
+
+            // Dessiner les éléments existants
+            glUseProgram(shaders);
+            glBindVertexArray(VAO);
+            glDrawElements(GL_TRIANGLES, transparentBlocksRenderingData.getIndice(), GL_UNSIGNED_INT, 0);
+
+            //glDepthMask(true);
+            glDisable(GL_BLEND);
+        }
 
     }
 
     private void update(){
-
         updateLoop.run();
-        
-        if(!areBlocksLoaded) {
-            loadedBlocks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedBlocks());
-            this.areBlocksLoaded = true;
+
+        if(!areChunksUpdated) {
+            loadedChunks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedChunks());
+            this.areChunksUpdated = true;
         }
 
-        this.vertices.clear();
+        this.blocksRenderingData.getVertices().clear();
+        this.blocksRenderingData.setIndice(0);
+        this.transparentBlocksRenderingData.getVertices().clear();
+        this.transparentBlocksRenderingData.setIndice(0);
 
-        int blockShowDistance = 16*SHOW_DISTANCE;
-        for(Block block : loadedBlocks){
+        if(loadedChunks.isEmpty()) return;
+
+        float h = loadedChunks.get(0).getWorld().getHeigth();
+
+        for(Chunk chunk : loadedChunks) {
+            float x = chunk.getX()*16;
+            float z = chunk.getZ()*16;
+            if (frustumIntersection.testAab(x, 0f, z, x+16, h , z+16)) {
+                loadChunk(chunk);
+            }
+        }
+        blocksRenderingData.toArrays();
+        transparentBlocksRenderingData.toArrays();
+    }
+
+    public void loadChunk(final Chunk chunk) {
+        //int blockShowDistance = 16*SHOW_DISTANCE;
+        for(Block block : chunk.getBlockList()){
             if(block == null || block.getMaterial() == null) continue;
             Location loc = block.getLocation();
 
@@ -285,8 +342,8 @@ public class GraphicModule{
             MeshArrays mesh = model.get();
             if (mesh == null || mesh.getNumVertices() == 0) continue;
 
-            if(frustumIntersection == null) break;
-            //if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue; // Prend beaucoup de perfs
+
+            //if(loc.getDistanceFrom(player.getLocation()) > blockShowDistance) continue;
             if (frustumIntersection.testAab((float) loc.getX()+mesh.getMinX(), (float) (loc.getY()+mesh.getMinY()), (float) loc.getZ()+mesh.getMinZ(),
                     (float) (loc.getX())+mesh.getMaxX(), (float) loc.getY()+mesh.getMaxY(), (float) (loc.getZ())+mesh.getMaxZ())) {
                 // Le bloc est dans le frustum, on peut le rasteriser
@@ -295,14 +352,12 @@ public class GraphicModule{
             }
 
         }
-
-        toArrays();
     }
 
     private void raster(Block block, MeshArrays mesh) {
 
         FloatBuffer verticesBuffer = mesh.getVertices();
-        //FloatBuffer normalsBuffer = mesh.getNormals();
+        FloatBuffer normalsBuffer = mesh.getNormals();
         FloatBuffer texCoordsBuffer = mesh.getTexCoords();
 
         int numVertices = mesh.getNumVertices();
@@ -316,45 +371,58 @@ public class GraphicModule{
             float vy = (float) (y + verticesBuffer.get(i * 3 + 1));
             float vz = (float) (z + verticesBuffer.get(i * 3 + 2));
 
-            /*float nx = normalsBuffer.get(i * 3);
+            float nx = normalsBuffer.get(i * 3);
             float ny = normalsBuffer.get(i * 3 + 1);
-            float nz = normalsBuffer.get(i * 3 + 2);*/
+            float nz = normalsBuffer.get(i * 3 + 2);
+
+            //float[] ligthRGB = getLigthFor(block, nx, ny, nz);
+
+            //System.out.println(Arrays.toString(ligthRGB));
 
             float u = texCoordsBuffer.get(i * 2);
             float v = texCoordsBuffer.get(i * 2 + 1);
 
-            addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
+//            if(block.isOpaque()) addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId(), 1f, ligthRGB[0], ligthRGB[1] , ligthRGB[2] });
+//            else addTransparentVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId(), 1f, ligthRGB[0], ligthRGB[1] , ligthRGB[2]});
+            if(block.isOpaque()) addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
+            else addTransparentVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
         }
     }
+
+    /*private float[] getLigthFor(Block block, float nx, float ny, float nz) {
+        int x = Math.round(nx)+1;
+        int y = Math.round(ny)+1;
+        int z = Math.round(nz)+1;
+        Block face = block.getNextBlocks()[x][y][z];
+        if(face == null) return new float[3];
+        return new float[]{
+                (float) (face.getRedIntensity() + face.getSkyRGB()[0]) /255,
+                (float) (face.getGreenIntensity()+face.getSkyRGB()[1]) /255,
+                (float) (face.getBlueIntensity()+face.getSkyRGB()[2]) /255
+        };
+    }*/
 
 
     private void addVertex(float[] vertexData) {
-        // On vérifie que les données du sommet sont bien au format attendu (6 éléments)
-        // - 3 éléments pour les coordonnées (x, y, z)
-        // - 2 éléments pour les coordonnées de texture (u, v)
-        // - 1 élément pour l'ID de la texture (id)
-        /*if (vertexData.length != 6) {
-            throw new IllegalArgumentException("Le sommet doit contenir exactement 6 éléments (x, y, z, u, v, textureID)");
-        }*/
+        blocksRenderingData.getVertices().add(vertexData);
 
-        // Ajout des données du sommet dans la liste vertices
-        vertices.add(vertexData);
+        // L'index du sommet est simplement l'index actuel dans la liste
+        // Par exemple, si c'est le 4e sommet qu'on ajoute, son index sera 3
+        blocksRenderingData.addIndice();
+
+        //indices.add(index);
     }
 
-    private void toArrays(){
-        verticesArray= new float[vertices.size()*6];
-        int index = 0;
-        for (float[] vertex : vertices) {
-            for (float v : vertex) {
-                verticesArray[index++] = v;
-            }
-        }
+    private void addTransparentVertex(float[] vertexData) {
+        transparentBlocksRenderingData.getVertices().add(vertexData);
 
-        indicesArray = new int[vertices.size()];
-        for (int i = 0; i < indicesArray.length; i++) {
-            indicesArray[i] = i;
-        }
+        // L'index du sommet est simplement l'index actuel dans la liste
+        // Par exemple, si c'est le 4e sommet qu'on ajoute, son index sera 3
+        transparentBlocksRenderingData.addIndice();
+
+        //indices.add(index);
     }
+
 
     private void cleanup() {
         // Supprimer les buffers et VAOs existants
@@ -373,7 +441,7 @@ public class GraphicModule{
     }
 
     public void changeLoadedBlocks() {
-        this.areBlocksLoaded = false;
+        this.areChunksUpdated = false;
     }
 
 }

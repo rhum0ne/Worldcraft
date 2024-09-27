@@ -1,0 +1,20 @@
+package fr.rhumun.game.worldcraftopengl.blocks.materials;
+
+import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+
+public class GrassMaterial extends AbstractMaterial {
+    public GrassMaterial() {
+        super("grass.png");
+    }
+
+    @Override
+    public Sound getSound() {
+        return Sound.GRASS;
+    }
+
+    @Override
+    public boolean isOpaque() {
+        return true;
+    }
+}

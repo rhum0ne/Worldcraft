@@ -16,6 +16,7 @@ public class GameLoop extends TimerTask {
     }
     @Override
     public void run() {
+        if(game.getGraphicModule() == null) return;
         player.getSavedChunksManager().tryLoadChunks();
         try {
             for (Controls control : game.getPressedKeys()) {

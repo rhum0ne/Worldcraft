@@ -10,6 +10,8 @@ module fr.rhumun.game.worldcraftopengl {
     requires org.lwjgl.nuklear;
     requires java.datatransfer;
     requires java.desktop;
+    requires org.lwjgl.bgfx;
+    requires org.lwjgl.opengles;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;
@@ -23,4 +25,6 @@ module fr.rhumun.game.worldcraftopengl {
     opens fr.rhumun.game.worldcraftopengl.outputs.graphic.utils to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.worlds.generators;
     opens fr.rhumun.game.worldcraftopengl.worlds.generators to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.blocks.materials;
+    opens fr.rhumun.game.worldcraftopengl.blocks.materials to javafx.fxml;
 }

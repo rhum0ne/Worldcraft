@@ -262,7 +262,7 @@ so, subject to the following conditions:
 
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimers in the
-      documentation and/or other materials provided with the distribution.
+      documentation and/or other material provided with the distribution.
 
     * Neither the names of the LLVM Team, University of Illinois at
       Urbana-Champaign, nor the names of its contributors may be used to

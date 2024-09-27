@@ -1,9 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.worlds.generators;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
-import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 
 @Getter
@@ -20,6 +19,16 @@ public abstract class WorldGenerator {
         if(chunk.isGenerated()) return;
         this.generate(chunk);
         this.populate(chunk);
+
+        /*for(Block block : chunk.getBlockList()){
+            block.getSideBlocks();
+        }
+
+        for(int x=0; x<16; x++)
+            for(int z=0; z<16; z++)
+                chunk.get(x, world.getHeigth()-1, z).updateLight();
+        */
+
         chunk.setGenerated(true);
     }
 

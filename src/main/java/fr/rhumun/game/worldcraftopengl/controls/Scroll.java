@@ -11,5 +11,6 @@ public class Scroll extends GLFWScrollCallback {
         Game game = GAME;
 
         game.getPlayer().setSelectedMaterial(game.getMaterials().get((game.getMaterials().indexOf(game.getPlayer().getSelectedMaterial())+1)%game.getMaterials().size()));
+
     }
 }

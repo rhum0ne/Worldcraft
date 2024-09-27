@@ -15,7 +15,7 @@ This license agreement, including exhibits attached
 Corporation ("NVIDIA") and governs your use of a NVIDIA
 software development kit (“SDK”).
 
-Each SDK has its own set of software and materials, but here
+Each SDK has its own set of software and material, but here
 is a description of the types of items that may be included in
 a SDK: source code, header files, APIs, data sets and assets
 (examples include images, textures, models, scenes, videos,
@@ -122,7 +122,7 @@ otherwise as pre-release, may not be fully functional, may
 contain errors or design flaws, and may have reduced or
 different security, privacy, accessibility, availability, and
 reliability standards relative to commercial versions of
-NVIDIA software and materials. Use of a pre-release SDK may
+NVIDIA software and material. Use of a pre-release SDK may
 result in unexpected results, loss of data, project delays or
 other unpredictable damage or loss.
 
@@ -232,7 +232,7 @@ SDK:
     interest in and to the SDK and its modifications and
     derivative works, including their respective intellectual
     property rights, subject to your rights under Section 3.2.
-    This SDK may include software and materials from
+    This SDK may include software and material from
     NVIDIA’s licensors, and these licensors are intended
     third party beneficiaries that may enforce this Agreement
     with respect to their intellectual property rights.
@@ -478,7 +478,7 @@ in this SLA, shall have the meanings set forth below:
     available for use with the Software, including (without
     limitation) user manuals, datasheets, operations
     instructions, installation guides, release notes and other
-    materials provided to you under the AGREEMENT.
+    material provided to you under the AGREEMENT.
 
   7.
 

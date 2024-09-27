@@ -24,17 +24,18 @@ public class Location {
     // Constantes pour éviter que la caméra ne se retourne
     private static final float PITCH_LIMIT = 89.0f;
 
-    public Location(double x, double y, double z){ this(x,y,z,-90, 0);}
-    public Location(double x, double y, double z, float yaw, float pitch){
+    public Location(World world, double x, double y, double z){ this(world,x,y,z,-90, 0);}
+    public Location(World world, double x, double y, double z, float yaw, float pitch){
         this.x = x;
         this.y = y;
         this.z = z;
         this. yaw = yaw;
         this.pitch = pitch;
+        this.world = world;
     }
 
     public Chunk getChunk(){
-        return world.getChunkAt(x, z);
+        return world.getChunkAt(x, z, false);
     }
 
     public void addX(double a){ this.x +=a; }
@@ -57,5 +58,9 @@ public class Location {
 
     public Vector3f getPositions(){
         return new Vector3f((float) x, (float) y, (float) z);
+    }
+
+    public boolean isMaxHeight() {
+        return this.y == this.getWorld().getHeigth()-1;
     }
 }

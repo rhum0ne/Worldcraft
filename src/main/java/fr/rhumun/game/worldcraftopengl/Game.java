@@ -1,9 +1,9 @@
 package fr.rhumun.game.worldcraftopengl;
 
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
@@ -15,10 +15,10 @@ public class Game {
 
     public static Game GAME;
 
-    public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
-    public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraftOpenGL\\src\\main\\resources\\assets\\";
+    public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
+    public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\resources\\assets\\";
     public static int SHOW_DISTANCE = 4;
-    public static boolean SHOWING_FPS = true;
+    public static boolean SHOWING_FPS = false;
 
     GraphicModule graphicModule;
     AudioManager audioManager;
@@ -51,8 +51,9 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
+        player.setSelectedMaterial(Material.LAMP);
+
         graphicModule = new GraphicModule(this);
         graphicModule.run();
-
     }
 }

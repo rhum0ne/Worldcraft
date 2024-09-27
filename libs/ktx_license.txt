@@ -23,7 +23,7 @@ in LICENSES/*.txt . Additionally, we have updated the repository to pass the
 REUSE compliance checker tool (see https://reuse.software/). REUSE verifies
 that every file in a git repository either incorporates a license, or that
 the license is present in auxiliary files such as .reuse/dep5 . To obtain a
-bill of materials for the repository identifying the license for each file,
+bill of material for the repository identifying the license for each file,
 install the REUSE tool and run
 
     reuse spdx

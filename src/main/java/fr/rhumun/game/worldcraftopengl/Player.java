@@ -1,8 +1,8 @@
 package fr.rhumun.game.worldcraftopengl;
 
+import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +32,7 @@ public class Player {
 
     public Player(Game game, double x, double y, double z, float yaw, float pitch){
         this.game = game;
-        this.location = new Location(x, y, z, yaw, pitch);
+        this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
         //this.normal = Vector.fromYawPitch(yaw, pitch);
 
     }
@@ -53,7 +53,7 @@ public class Player {
             hitPosition = new Vector3f(start).add(new Vector3f(direction).mul(distance));
             //System.out.println("Checking position: " + hitPosition);
 
-            Block block1 = game.getWorld().getBlockAt(hitPosition);
+            Block block1 = game.getWorld().getBlockAt(hitPosition, true);
             if(block1 == null) return null;
 
             if (block1.getMaterial() != null) {
@@ -61,14 +61,14 @@ public class Player {
                 break;
             }
             // Check for prop at the current position
-            block = game.getWorld().getBlockAt(hitPosition);
+            block = game.getWorld().getBlockAt(hitPosition, true);
         }
 
         return block;
     }
 
 
-    private Block getSelectedBlock() {
+    public Block getSelectedBlock() {
         float stepSize = 0.2F;
 
         Vector3f direction = getRayDirection();
@@ -84,7 +84,7 @@ public class Player {
             //System.out.println("Checking position: " + currentPosition);
 
             // Check for prop at the current position
-            Block block = game.getWorld().getBlockAt(currentPosition);
+            Block block = game.getWorld().getBlockAt(currentPosition, true);
 
             if (block != null && block.getMaterial() != null) {
                 //System.out.println("Player's pos : " + this.getLocation().getX() + " " + this.getLocation().getY() + " " + this.getLocation().getZ() + " ");

@@ -1,9 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +12,7 @@ import java.util.List;
 @Getter
 public class Chunk {
 
-    Block[][][] blocks = new Block[16][32][16];
+    Block[][][] blocks;
     private final List<Block> blockList = new ArrayList<>();
 
     private int X;
@@ -29,10 +28,12 @@ public class Chunk {
         this.Z = Z;
         this.world = world;
 
+        blocks = new Block[16][world.getHeigth()][16];
+
         for (int x = 0; x < blocks.length; x++)
             for (int y = 0; y<blocks[x].length; y++) {
                 for(int z = 0; z<blocks[x][y].length; z++){
-                    this.addBlock(x, z, new Block(Model.BLOCK, null, X*16 + x, y, Z*16 + z));
+                    this.addBlock(x, z, new Block(world, X*16 + x, y, Z*16 + z));
                 }
             }
     }

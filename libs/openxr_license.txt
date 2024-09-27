@@ -26,7 +26,7 @@ other open-source projects, license data is listed:
   machine-readable copyright data] file.
 
 The https://github.com/fsfe/reuse-tool["`reuse`" command line tool] can be
-used to create a software bill of materials in SPDX format from this data.
+used to create a software bill of material in SPDX format from this data.
 Note that this tool will typically exclude the generated files, so if the
 BOM is important to you, you may consider using the
 https://github.com/KhronosGroup/OpenXR-SDK[OpenXR-SDK] repository that

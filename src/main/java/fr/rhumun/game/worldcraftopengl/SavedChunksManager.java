@@ -15,7 +15,7 @@ public class SavedChunksManager {
 
     private final Player player;
 
-    private final List<Chunk> loadedChunks = new ArrayList<>();
+    private List<Chunk> loadedChunks = new ArrayList<>();
     private final List<Block> loadedBlocks = new ArrayList<>();
     private Chunk centralChunk;
 
@@ -38,14 +38,15 @@ public class SavedChunksManager {
 
         for(int x=X-SHOW_DISTANCE; x<X+SHOW_DISTANCE; x++){
             for(int z=Z-SHOW_DISTANCE; z<Z+SHOW_DISTANCE; z++){
-                 chunks.add(player.getLocation().getWorld().getChunk(x,z));
+                 chunks.add(player.getLocation().getWorld().getChunk(x,z, true));
             }
         }
 
         return chunks;
     }
 
-    public void loadChunks(Chunk chunk){
+    /*public void loadChunks(Chunk chunk){
+
         this.centralChunk = chunk;
 
         ArrayList<Chunk> chunksToLoad = this.getChunksToLoad();
@@ -62,6 +63,13 @@ public class SavedChunksManager {
             this.loadedBlocks.addAll(chunkToLoad.getBlockList());
         }
 
+        GAME.getGraphicModule().changeLoadedBlocks();
+    }*/
+
+    public void loadChunks(Chunk chunk){
+        this.centralChunk = chunk;
+
+        this.loadedChunks = this.getChunksToLoad();
         GAME.getGraphicModule().changeLoadedBlocks();
     }
 }

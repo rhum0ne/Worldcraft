@@ -16,6 +16,7 @@ public enum Controls {
     RIGHT(new MoveRight()),
     LEFT_CLICK(new LeftClick()),
     RIGHT_CLICK(new RightClick()),
+    MIDDLE_CLICK(new MiddleClick()),
     UPDATE(new Update());
 
     static final HashMap<Integer, Controls> KEYS = new HashMap<>();
@@ -36,8 +37,9 @@ public enum Controls {
         add(GLFW_KEY_A, LEFT);
         add(GLFW_KEY_SPACE, MOVE_UP);
         add(GLFW_KEY_LEFT_SHIFT, MOVE_DOWN);
-        add(GLFW_MOUSE_BUTTON_LEFT, LEFT_CLICK);
-        add(GLFW_MOUSE_BUTTON_RIGHT, RIGHT_CLICK);
+        add(GLFW_MOUSE_BUTTON_1, LEFT_CLICK);
+        add(GLFW_MOUSE_BUTTON_2, RIGHT_CLICK);
+        add(GLFW_MOUSE_BUTTON_3, MIDDLE_CLICK);
         add(GLFW_KEY_T, UPDATE);
     }
 
