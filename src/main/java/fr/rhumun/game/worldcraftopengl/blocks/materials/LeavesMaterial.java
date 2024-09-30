@@ -1,11 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
 import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 public class LeavesMaterial extends AbstractMaterial {
     public LeavesMaterial() {
-        super("leaves.png");
+        super(Texture.LEAVES);
     }
 
     @Override
@@ -15,6 +16,6 @@ public class LeavesMaterial extends AbstractMaterial {
 
     @Override
     public boolean isOpaque() {
-        return true;
+        return false;
     }
 }

@@ -1,11 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
 import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 public class OakLogMaterial extends AbstractMaterial {
     public OakLogMaterial() {
-        super("oak_log.png");
+        super(Texture.OAK_LOG);
     }
 
     @Override

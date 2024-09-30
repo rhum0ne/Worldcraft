@@ -1,5 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
+import org.joml.Vector3f;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,6 +10,8 @@ import static fr.rhumun.game.worldcraftopengl.Game.SHADERS_PATH;
 import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderUtils {
+
+    private static int shaders;
 
     public static int loadShader(String vertexPath, String fragmentPath) throws IOException {
         String vertexCode = new String(Files.readAllBytes(Paths.get(SHADERS_PATH + vertexPath)));
@@ -33,6 +37,8 @@ public class ShaderUtils {
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
+        shaders = shaderProgram;
+
         return shaderProgram;
     }
 
@@ -48,5 +54,29 @@ public class ShaderUtils {
         }
 
         return shader;
+    }
+
+    // Méthode pour envoyer un vecteur 3D (vec3) au shader
+    public static void setUniform(String uniformName, Vector3f vector) {
+        int location = glGetUniformLocation(shaders, uniformName);
+        if (location != -1) {
+            glUniform3f(location, vector.x, vector.y, vector.z);
+        }
+    }
+
+    // Méthode pour envoyer un float au shader
+    public static void setUniform(String uniformName, float value) {
+        int location = glGetUniformLocation(shaders, uniformName);
+        if (location != -1) {
+            glUniform1f(location, value);
+        }
+    }
+
+    // Méthode pour envoyer un float au shader
+    public static void setUniform(String uniformName, int value) {
+        int location = glGetUniformLocation(shaders, uniformName);
+        if (location != -1) {
+            glUniform1i(location, value);
+        }
     }
 }

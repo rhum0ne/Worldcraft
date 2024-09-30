@@ -13,8 +13,11 @@ public enum Material {
     GRASS(new GrassMaterial()),
     LEAVES(new LeavesMaterial()),
     LOG(new OakLogMaterial()),
-    BRICKS(new StoneBricksMaterial()),
-    LAMP(new LampMaterial());
+    STONE_BRICK(new StoneBricksMaterial()),
+    LAMP(new LampMaterial()),
+    PURPLE_LAMP(new PurpleLampMaterial()),
+    CYAN_LAMP(new CyanLampMaterial()),
+    WATER(new WaterMaterial());
 
     static int maxID = 0;
 
@@ -25,7 +28,7 @@ public enum Material {
 
     public Sound getSound(){ return this.material.getSound(); }
     public int getId(){ return this.material.getId(); }
-    public String getTexturePath(){ return this.material.getTexturePath(); }
+    public int getTextureID(){ return this.material.getTexture().getId(); }
     public boolean isOpaque(){ return this.material.isOpaque(); }
 
     public static int createID(){

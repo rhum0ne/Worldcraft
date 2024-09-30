@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.Flat;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import javafx.scene.paint.Color;
@@ -17,19 +18,20 @@ public class World {
     private final WorldGenerator generator;
 
     private final HashMap<Point, Chunk> chunks = new HashMap<>();
-    private final int heigth = 32;
+    private final int heigth = 64;
 
-    private short red = 230, green = 200, blue = 180;
+    private Color skyColor = Color.rgb(77, 150, 230);
+    private Color lightColor = Color.rgb(180, 170, 170);
 
     public World(){
         this.generator = new Flat(this);
 
         this.createChunk(0, 0);
 
-        this.getBlockAt(-20, 11, -20, true).setMaterial(Material.BRICKS);
-        this.getBlockAt(-20, 12, -20, true).setMaterial(Material.BRICKS);
-        this.getBlockAt(-20, 13, -20, true).setMaterial(Material.BRICKS);
-        this.getBlockAt(-20, 14, -20, true).setMaterial(Material.BRICKS);
+        this.getBlockAt(-20, 11, -20, true).setMaterial(Material.STONE_BRICK);
+        this.getBlockAt(-20, 12, -20, true).setMaterial(Material.STONE_BRICK);
+        this.getBlockAt(-20, 13, -20, true).setMaterial(Material.STONE_BRICK);
+        this.getBlockAt(-20, 14, -20, true).setMaterial(Material.PURPLE_LAMP);
     }
 
     public Chunk createChunk(int x, int z){

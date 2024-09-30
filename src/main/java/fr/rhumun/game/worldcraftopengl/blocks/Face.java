@@ -1,6 +1,5 @@
 package fr.rhumun.game.worldcraftopengl.blocks;
 
-import javafx.scene.control.skin.TextInputControlSkin;
 import lombok.Getter;
 import lombok.Setter;
 

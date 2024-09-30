@@ -101,6 +101,7 @@ public class AudioManager {
     }
 
     public void playSound(final Sound sound) {
+        if(sound == null) return;
         alSourcePlay(sound.getId());
     }
 }

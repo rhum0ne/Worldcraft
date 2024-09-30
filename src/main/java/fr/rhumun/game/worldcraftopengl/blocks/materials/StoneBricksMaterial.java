@@ -1,11 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
 import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 public class StoneBricksMaterial extends AbstractMaterial {
     public StoneBricksMaterial() {
-        super("stone_brick.png");
+        super(Texture.STONE_BRICKS);
     }
 
     @Override

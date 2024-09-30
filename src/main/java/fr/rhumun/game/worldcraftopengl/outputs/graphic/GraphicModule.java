@@ -1,18 +1,18 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
+import fr.rhumun.game.worldcraftopengl.blocks.*;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.MeshArrays;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import org.joml.FrustumIntersection;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
@@ -23,10 +23,12 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
+import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryStack.*;
@@ -50,6 +52,7 @@ public class GraphicModule{
 
     private FrustumIntersection frustumIntersection;
     Matrix4f projectionMatrix;
+    private List<Block> pointLights = new ArrayList<>();
 
 
     private final BlocksRenderingData blocksRenderingData = new BlocksRenderingData();
@@ -221,26 +224,21 @@ public class GraphicModule{
         glBufferData(GL_ARRAY_BUFFER, blocksRenderingData.getVerticesArray(), GL_STATIC_DRAW);
 
 // Attribut de position (3 floats)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.BYTES, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 9 * Float.BYTES, 0);
         glEnableVertexAttribArray(0);
 
 // Attribut de coordonnées de texture (2 floats)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 9 * Float.BYTES, 3 * Float.BYTES);
         glEnableVertexAttribArray(1);
 
 // Attribut de l'ID de texture (1 int)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 6 * Float.BYTES, 5 * Float.BYTES);
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, 9 * Float.BYTES, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
-//
-//
-//// Attribut de l'ID de texture (1 int)
-//        glVertexAttribPointer(3, 1, GL_FLOAT, false, 10 * Float.BYTES, 6 * Float.BYTES);
-//        glEnableVertexAttribArray(3);
-//
-//
-//// Attribut de l'ID de texture (1 int)
-//        glVertexAttribPointer(4, 3, GL_FLOAT, false, 10 * Float.BYTES, 7 * Float.BYTES);
-//        glEnableVertexAttribArray(4);
+
+
+// Attribut des normales
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, 9 * Float.BYTES, 6 * Float.BYTES);
+        glEnableVertexAttribArray(3);
 
         // Délier le VAO
         glBindVertexArray(0);
@@ -250,9 +248,15 @@ public class GraphicModule{
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
 
+        World world = player.getLocation().getWorld();
+        ShaderUtils.setUniform("dirLight.direction", new Vector3f(0, -1, 0));
+        ShaderUtils.setUniform("dirLight.ambient", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
+        ShaderUtils.setUniform("dirLight.diffuse", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
+        ShaderUtils.setUniform("dirLight.specular", new Vector3f(0, 0, 0));
+
         while ( !glfwWindowShouldClose(window) ) {
             //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
-            glClearColor(0, 0, 0f, 1.0f);
+            glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             update();
@@ -271,14 +275,35 @@ public class GraphicModule{
 
     public void render() {
 
+        // Dessiner les éléments existants
+        glUseProgram(shaders);
+
+        // Envoie la position de la caméra
+        ShaderUtils.setUniform("viewPos", camera.getPos());
+
+        // Envoie le nombre réel de lumières
+        ShaderUtils.setUniform("numPointLights", pointLights.size());
+        //System.out.println("There are " + pointLights.size() + " lights");
+
+        for (int i = 0; i < this.pointLights.size(); i++) {
+            PointLight pointLight = (PointLight) pointLights.get(i).getMaterial().getMaterial();
+
+            String uniformName = "pointLights[" + i + "]";
+            ShaderUtils.setUniform(uniformName + ".position", pointLights.get(i).getLocation().getPositions());
+            ShaderUtils.setUniform(uniformName + ".ambient", pointLight.ambient);
+            ShaderUtils.setUniform(uniformName + ".diffuse", pointLight.diffuse);
+            ShaderUtils.setUniform(uniformName + ".specular", pointLight.specular);
+            ShaderUtils.setUniform(uniformName + ".constant", pointLight.constant);
+            ShaderUtils.setUniform(uniformName + ".linear", pointLight.linear);
+            ShaderUtils.setUniform(uniformName + ".quadratic", pointLight.quadratic);
+        }
+
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, blocksRenderingData.getVerticesArray(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, blocksRenderingData.getIndicesArray(), GL_STATIC_DRAW);
 
-        // Dessiner les éléments existants
-        glUseProgram(shaders);
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, blocksRenderingData.getIndice(), GL_UNSIGNED_INT, 0);
 
@@ -317,6 +342,7 @@ public class GraphicModule{
         this.transparentBlocksRenderingData.setIndice(0);
 
         if(loadedChunks.isEmpty()) return;
+        this.pointLights.clear();
 
         float h = loadedChunks.get(0).getWorld().getHeigth();
 
@@ -356,6 +382,8 @@ public class GraphicModule{
 
     private void raster(Block block, MeshArrays mesh) {
 
+        if(block.getMaterial().getMaterial() instanceof PointLight) this.pointLights.add(block);
+
         FloatBuffer verticesBuffer = mesh.getVertices();
         FloatBuffer normalsBuffer = mesh.getNormals();
         FloatBuffer texCoordsBuffer = mesh.getTexCoords();
@@ -375,32 +403,24 @@ public class GraphicModule{
             float ny = normalsBuffer.get(i * 3 + 1);
             float nz = normalsBuffer.get(i * 3 + 2);
 
-            //float[] ligthRGB = getLigthFor(block, nx, ny, nz);
-
-            //System.out.println(Arrays.toString(ligthRGB));
+            if(hasBlockAtFace(block, nx, ny, nz)) continue;
 
             float u = texCoordsBuffer.get(i * 2);
             float v = texCoordsBuffer.get(i * 2 + 1);
 
-//            if(block.isOpaque()) addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId(), 1f, ligthRGB[0], ligthRGB[1] , ligthRGB[2] });
-//            else addTransparentVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId(), 1f, ligthRGB[0], ligthRGB[1] , ligthRGB[2]});
-            if(block.isOpaque()) addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
-            else addTransparentVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getId()});
+            if(block.isOpaque()) addVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getTextureID(), nx, ny, nz});
+            else addTransparentVertex(new float[]{vx, vy, vz, u, v, block.getMaterial().getTextureID(), nx, ny, nz});
         }
     }
 
-    /*private float[] getLigthFor(Block block, float nx, float ny, float nz) {
+    private boolean hasBlockAtFace(Block block, float nx, float ny, float nz) {
+        if(!block.isOpaque()) return false;
         int x = Math.round(nx)+1;
         int y = Math.round(ny)+1;
         int z = Math.round(nz)+1;
         Block face = block.getNextBlocks()[x][y][z];
-        if(face == null) return new float[3];
-        return new float[]{
-                (float) (face.getRedIntensity() + face.getSkyRGB()[0]) /255,
-                (float) (face.getGreenIntensity()+face.getSkyRGB()[1]) /255,
-                (float) (face.getBlueIntensity()+face.getSkyRGB()[2]) /255
-        };
-    }*/
+        return face != null && face.isOpaque();
+    }
 
 
     private void addVertex(float[] vertexData) {

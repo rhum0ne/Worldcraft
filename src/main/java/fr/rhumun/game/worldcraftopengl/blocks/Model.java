@@ -12,7 +12,7 @@ public enum Model {
 
     BLOCK(load("block.obj"), true),
     SLAB(load("slab.obj"), false),
-    CYLINDER(load("cylinder.obj"), true);
+    CYLINDER(load("cylinder.obj"), false);
 
     final MeshArrays model;
     @Getter

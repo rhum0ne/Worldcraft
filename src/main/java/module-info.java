@@ -12,6 +12,10 @@ module fr.rhumun.game.worldcraftopengl {
     requires java.desktop;
     requires org.lwjgl.bgfx;
     requires org.lwjgl.opengles;
+    requires JNOISE;
+    requires core;
+    requires generators;
+    requires modules;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;

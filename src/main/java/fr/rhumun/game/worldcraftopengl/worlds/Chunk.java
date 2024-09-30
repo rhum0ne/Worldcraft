@@ -46,7 +46,7 @@ public class Chunk {
     public Block get(int x, int y, int z){
         if(x<0) x+=16;
         if(z<0) z+=16;
-        if(x>=16 || y>=32 || z>=16 || x<0 || y<0 || z<0){
+        if(x>=16 || y>= world.getHeigth() || z>=16 || x<0 || y<0 || z<0){
             System.out.println("ERROR: searching prop at " + x + " , " + y + " , " + z + " in chunk.");
             return null;
         }
@@ -57,6 +57,14 @@ public class Chunk {
     public void setBlock(int x, int y, int z, Material mat, Model model){
         this.blocks[x][y][z].setMaterial(mat);
         this.blocks[x][y][z].setModel(model);
+    }
+
+    public Block getHighestBlock(int x, int z){
+        for(int y=world.getHeigth()-1; y>=0; y--){
+            Block block = blocks[x][y][z];
+            if(block.getMaterial() != null) return block;
+        }
+        return null;
     }
 
 

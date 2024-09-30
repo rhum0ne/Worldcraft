@@ -7,11 +7,11 @@ import lombok.Getter;
 public abstract class AbstractMaterial {
 
     final int id;
-    final String texturePath;
+    final Texture texture;
 
-    public AbstractMaterial(String texturePath) {
+    public AbstractMaterial(Texture texture) {
         this.id = Material.createID();
-        this.texturePath = texturePath;
+        this.texture = texture;
     }
 
     public abstract Sound getSound();

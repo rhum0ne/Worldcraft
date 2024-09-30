@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
+import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import org.lwjgl.BufferUtils;
@@ -21,16 +22,19 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class TextureUtils {
 
     public static void initTextures(){
-        int[] textureUnits = new int[Material.values().length+1]; // Supposons que tu as 4 textures
+        int[] textureUnits = new int[Texture.values().length+1]; // Supposons que tu as 4 textures
         int i = 1;
-        for (Material mat : Material.values()) {
-            int textureID = loadTexture(TEXTURES_PATH + mat.getTexturePath());
+        for (Texture texture : Texture.values()) {
+            int textureID = loadTexture(TEXTURES_PATH + texture.getPath());
             //glActiveTexture(GL_TEXTURE0 + i); // Active l'unité de texture correspondante
             glBindTexture(GL_TEXTURE_2D, textureID);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             textureUnits[i] = i; // Stocke l'unité de texture
-            System.out.println(mat + " -> " + i);
+            System.out.println(texture + " -> " + i);
             i++;
         }
 
