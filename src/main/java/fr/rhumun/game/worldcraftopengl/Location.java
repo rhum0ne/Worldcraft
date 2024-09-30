@@ -53,7 +53,15 @@ public class Location {
     }
 
     public double getDistanceFrom(Location loc){
-        return Math.sqrt(Math.pow(x-loc.x, 2) + Math.pow(y-loc.y, 2) + Math.pow(z-loc.z, 2));
+        return getDistanceFrom(loc.x, loc.y, loc.z);
+    }
+
+    public double getDistanceFrom(double x, double y, double z){
+        return Math.sqrt(Math.pow(x-this.x, 2) + Math.pow(y-this.y, 2) + Math.pow(z-this.z, 2));
+    }
+
+    public double getDistanceFrom(double x, double z){
+        return Math.sqrt(Math.pow(x-this.x, 2) + Math.pow(z-this.z, 2));
     }
 
     public Vector3f getPositions(){

@@ -1,15 +1,13 @@
 package fr.rhumun.game.worldcraftopengl.blocks;
 
 import fr.rhumun.game.worldcraftopengl.Location;
+import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 @Setter
@@ -18,6 +16,7 @@ public class Block {
     private Model model;
     private Material material;
     private final Location location;
+    private boolean isSurrounded;
 
     private Block[][][] nextBlocks = new Block[3][3][3];
 
@@ -36,21 +35,26 @@ public class Block {
 
     }
 
-    public boolean isSurrounded() {
+    public void updateIsSurrounded() {
         // Vérifie les 6 directions pour voir si un bloc est présent
         for(Block block : this.getSideBlocks()){
-            if(block == null) return false;
-            if(!block.isOpaque()) return false;
+            if(block == null || !block.isOpaque()) {
+                this.isSurrounded = false;
+                return;
+            }
         }
-        return true;
+        this.isSurrounded = true;
     }
 
     public boolean isOpaque(){ return this.material != null && ( this.model.isOpaque() && this.material.isOpaque()); }
 
     public Block setMaterial(Material material){
-
         this.material = material;
-        this.getSideBlocks();
+
+        if(material==null)
+            for(Block block : this.getSideBlocks())block.setSurrounded(false);
+        else for(Block block : this.getSideBlocks())block.updateIsSurrounded();
+
         return this;
     }
 
@@ -138,4 +142,6 @@ public class Block {
         }
         return blockAtWest;
     }
+
+    public Chunk getChunk(){ return this.location.getChunk(); }
 }

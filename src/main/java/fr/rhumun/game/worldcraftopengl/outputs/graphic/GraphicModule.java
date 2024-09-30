@@ -23,7 +23,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
 import static org.lwjgl.system.MemoryUtil.*;
 
-import java.awt.*;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -172,8 +171,10 @@ public class GraphicModule{
                 camera.getUp()         // Vecteur "up" pour la caméra
         );
 
-        Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
-        frustumIntersection = new FrustumIntersection(combinedMatrix);
+        if(UPDATE_FRUSTRUM) {
+            Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
+            frustumIntersection = new FrustumIntersection(combinedMatrix);
+        }
 
         int viewLoc = glGetUniformLocation(shaders, "view");
         glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
@@ -329,10 +330,12 @@ public class GraphicModule{
     }
 
     private void update(){
+
         updateLoop.run();
+        if(!UPDATE_FRUSTRUM) return;
 
         if(!areChunksUpdated) {
-            loadedChunks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getLoadedChunks());
+            loadedChunks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
             this.areChunksUpdated = true;
         }
 
@@ -403,7 +406,13 @@ public class GraphicModule{
             float ny = normalsBuffer.get(i * 3 + 1);
             float nz = normalsBuffer.get(i * 3 + 2);
 
-            if(hasBlockAtFace(block, nx, ny, nz)) continue;
+            Vector3f normal = new Vector3f(nx, ny, nz);
+
+            if(!isFaceVisible(normal, new Vector3f(vx, vy, vz)) || hasBlockAtFace(block, nx, ny, nz)) {
+                i++;
+                i++;
+                continue;
+            }
 
             float u = texCoordsBuffer.get(i * 2);
             float v = texCoordsBuffer.get(i * 2 + 1);
@@ -413,11 +422,18 @@ public class GraphicModule{
         }
     }
 
+    private boolean isFaceVisible(Vector3f normal, Vector3f positions) {
+        Vector3f cam = new Vector3f(camera.getPos());
+        positions.add(cam.negate());
+        return (positions.dot(normal)<0);
+    }
+
     private boolean hasBlockAtFace(Block block, float nx, float ny, float nz) {
         if(!block.isOpaque()) return false;
         int x = Math.round(nx)+1;
         int y = Math.round(ny)+1;
         int z = Math.round(nz)+1;
+
         Block face = block.getNextBlocks()[x][y][z];
         return face != null && face.isOpaque();
     }

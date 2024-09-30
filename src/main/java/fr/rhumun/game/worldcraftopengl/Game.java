@@ -19,6 +19,8 @@ public class Game {
     public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\resources\\assets\\";
     public static int SHOW_DISTANCE = 5;
     public static boolean SHOWING_FPS = true;
+    public static boolean GENERATION = true;
+    public static boolean UPDATE_FRUSTRUM = true;
 
     GraphicModule graphicModule;
     AudioManager audioManager;

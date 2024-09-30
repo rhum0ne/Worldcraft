@@ -7,15 +7,14 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.rhumun.game.worldcraftopengl.Game.GAME;
-import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
+import static fr.rhumun.game.worldcraftopengl.Game.*;
 
 @Getter
 public class SavedChunksManager {
 
     private final Player player;
 
-    private List<Chunk> loadedChunks = new ArrayList<>();
+    private List<Chunk> chunksToRender = new ArrayList<>();
     private final List<Block> loadedBlocks = new ArrayList<>();
     private Chunk centralChunk;
 
@@ -25,6 +24,10 @@ public class SavedChunksManager {
     }
 
     public void tryLoadChunks(){
+        if(!GENERATION) {
+            if(chunksToRender.isEmpty()) chunksToRender.add(player.getLocation().getChunk());
+            return;
+        }
         Chunk chunk = player.getLocation().getChunk();
         if(centralChunk == null) loadChunks(chunk);
         else if(!chunk.equals(centralChunk)) loadChunks(chunk);
@@ -45,31 +48,11 @@ public class SavedChunksManager {
         return chunks;
     }
 
-    /*public void loadChunks(Chunk chunk){
-
-        this.centralChunk = chunk;
-
-        ArrayList<Chunk> chunksToLoad = this.getChunksToLoad();
-
-        for(Chunk loadedChunk : loadedChunks){
-            if(chunksToLoad.contains(chunk)) continue;
-            this.loadedChunks.remove(loadedChunk);
-            this.loadedBlocks.removeAll(loadedChunk.getBlockList());
-        }
-
-        for(Chunk chunkToLoad : chunksToLoad){
-            if(this.loadedChunks.contains(chunkToLoad)) continue;
-            this.loadedChunks.add(chunkToLoad);
-            this.loadedBlocks.addAll(chunkToLoad.getBlockList());
-        }
-
-        GAME.getGraphicModule().changeLoadedBlocks();
-    }*/
-
     public void loadChunks(Chunk chunk){
         this.centralChunk = chunk;
 
-        this.loadedChunks = this.getChunksToLoad();
+        this.chunksToRender = this.getChunksToLoad();
+
         GAME.getGraphicModule().changeLoadedBlocks();
     }
 }
