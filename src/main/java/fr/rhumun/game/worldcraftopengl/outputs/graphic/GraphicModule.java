@@ -423,9 +423,8 @@ public class GraphicModule{
     }
 
     private boolean isFaceVisible(Vector3f normal, Vector3f positions) {
-        Vector3f cam = new Vector3f(camera.getPos());
-        positions.add(cam.negate());
-        return (positions.dot(normal)<0);
+        positions.negate().add(camera.getPos());
+        return (positions.dot(normal)>0);
     }
 
     private boolean hasBlockAtFace(Block block, float nx, float ny, float nz) {
