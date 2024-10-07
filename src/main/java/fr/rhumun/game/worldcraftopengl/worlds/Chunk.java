@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,12 +14,18 @@ import java.util.List;
 public class Chunk {
 
     Block[][][] blocks;
-    private final List<Block> blockList = new ArrayList<>();
+    //private final List<Block> blockList = new ArrayList<>();
+    private final List<Block> visibleBlock = new ArrayList<>();
+    private final List<Block> lightningBlocks = new ArrayList<>();
 
     private int X;
     private int Z;
 
     private World world;
+
+    @Setter
+    private boolean toUpdate = true;
+    private ChunkRenderer renderer;
 
     @Setter
     private boolean generated = false;
@@ -33,24 +40,35 @@ public class Chunk {
         for (int x = 0; x < blocks.length; x++)
             for (int y = 0; y<blocks[x].length; y++) {
                 for(int z = 0; z<blocks[x][y].length; z++){
-                    this.addBlock(x, z, new Block(world, X*16 + x, y, Z*16 + z));
+                    this.addBlock(x, z, new Block(world, this, X*16 + x, y, Z*16 + z));
                 }
             }
     }
 
     private void addBlock(int x, int z, Block block) {
         this.blocks[x][(int) block.getLocation().getY()][z] = block;
-        this.blockList.add(block);
+        //this.blockList.add(block);
     }
 
     public Block get(int x, int y, int z){
-        if(x<0) x+=16;
-        if(z<0) z+=16;
-        if(x>=16 || y>= world.getHeigth() || z>=16 || x<0 || y<0 || z<0){
-            System.out.println("ERROR: searching prop at " + x + " , " + y + " , " + z + " in chunk.");
+        if(y<0 || y>= world.getHeigth()){
+            //System.out.println("Y too high.");
             return null;
         }
-
+        if(x<0) x+=16;
+        if(z<0) z+=16;
+        //System.out.println("x: "+(x)+", z: "+(z));
+        if(x>=16 || z>=16 || x<0 || z<0){
+            Chunk chunk = world.getChunkAt(this.X*16+x, this.Z*16+z, false);
+            if(chunk == null) return null;
+            int xInput = x%16;
+            int zInput = z%16;
+//            if(xInput<0) xInput+=16;
+//            if(zInput<0) zInput+=16;
+            return chunk.get(xInput,y,zInput); // blocks est une structure de données représentant le monde
+        }
+        //System.out.println("x: "+(x)+", z: "+(z));
+        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
         return blocks[x][y][z];
     }
 
@@ -74,5 +92,13 @@ public class Chunk {
 
     public String toString(){
         return "Chunk : [ " + X + " : " + Z + " ]";
+    }
+
+    public void unload(){
+        this.getWorld().unload(this);
+    }
+
+    public ChunkRenderer getRenderer(){
+        return (this.renderer == null) ? this.renderer = new ChunkRenderer(this) : this.renderer;
     }
 }

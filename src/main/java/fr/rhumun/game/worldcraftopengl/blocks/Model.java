@@ -12,7 +12,8 @@ public enum Model {
 
     BLOCK(load("block.obj"), true),
     SLAB(load("slab.obj"), false),
-    CYLINDER(load("cylinder.obj"), false);
+    CYLINDER(load("cylinder.obj"), false),
+    CROSS(load("cross-model.obj"), false),;
 
     final MeshArrays model;
     @Getter

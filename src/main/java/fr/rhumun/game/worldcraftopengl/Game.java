@@ -17,7 +17,7 @@ public class Game {
 
     public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\resources\\assets\\";
-    public static int SHOW_DISTANCE = 5;
+    public static int SHOW_DISTANCE = 7;
     public static boolean SHOWING_FPS = true;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
@@ -53,7 +53,7 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
-        player.setSelectedMaterial(Material.PURPLE_LAMP);
+        player.setSelectedMaterial(Material.WATER);
 
         graphicModule = new GraphicModule(this);
         graphicModule.run();

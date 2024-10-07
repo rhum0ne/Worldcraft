@@ -5,7 +5,9 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
@@ -15,7 +17,6 @@ public class SavedChunksManager {
     private final Player player;
 
     private List<Chunk> chunksToRender = new ArrayList<>();
-    private final List<Block> loadedBlocks = new ArrayList<>();
     private Chunk centralChunk;
 
 
@@ -33,20 +34,50 @@ public class SavedChunksManager {
         else if(!chunk.equals(centralChunk)) loadChunks(chunk);
     }
 
-    private ArrayList<Chunk> getChunksToLoad(){
+    private ArrayList<Chunk> getChunksToLoad() {
         ArrayList<Chunk> chunks = new ArrayList<>();
-
-        int X = this.centralChunk.getX();
-        int Z = this.centralChunk.getZ();
-
-        for(int x=X-SHOW_DISTANCE; x<X+SHOW_DISTANCE; x++){
-            for(int z=Z-SHOW_DISTANCE; z<Z+SHOW_DISTANCE; z++){
-                 chunks.add(player.getLocation().getWorld().getChunk(x,z, true));
+        PriorityQueue<ChunkDistance> chunkQueue = new PriorityQueue<>(new Comparator<ChunkDistance>() {
+            @Override
+            public int compare(ChunkDistance c1, ChunkDistance c2) {
+                return Double.compare(c2.distance, c1.distance); // Trier du plus éloigné au plus proche
             }
+        });
+
+        int centerX = this.centralChunk.getX();
+        int centerZ = this.centralChunk.getZ();
+
+        // On parcourt les chunks dans un carré qui englobe le cercle
+        for (int x = centerX - SHOW_DISTANCE; x <= centerX + SHOW_DISTANCE; x++) {
+            for (int z = centerZ - SHOW_DISTANCE; z <= centerZ + SHOW_DISTANCE; z++) {
+                // Calculer la distance au centre du chunk du joueur
+                double distance = Math.sqrt(Math.pow(centerX - x, 2) + Math.pow(centerZ - z, 2));
+
+                // Si la distance est dans le rayon de chargement, on l'ajoute
+                if (distance <= SHOW_DISTANCE) {
+                    Chunk chunk = player.getLocation().getWorld().getChunk(x, z, true);
+                    chunkQueue.add(new ChunkDistance(chunk, distance));
+                }
+            }
+        }
+
+        // Extraire les chunks dans l'ordre croissant de distance
+        while (!chunkQueue.isEmpty()) {
+            chunks.add(chunkQueue.poll().chunk);
         }
 
         return chunks;
     }
+
+    private class ChunkDistance {
+        Chunk chunk;
+        double distance;
+
+        public ChunkDistance(Chunk chunk, double distance) {
+            this.chunk = chunk;
+            this.distance = distance;
+        }
+    }
+
 
     public void loadChunks(Chunk chunk){
         this.centralChunk = chunk;

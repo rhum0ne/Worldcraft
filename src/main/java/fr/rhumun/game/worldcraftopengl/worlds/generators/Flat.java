@@ -16,7 +16,7 @@ public class Flat extends WorldGenerator {
         for(int x=0; x<16; x++){
             for(int z=0; z<16; z++){
                 for(int y=1; y<10; y++) {
-                    if(y==9) chunk.setBlock(x, y, z, Material.GRASS);
+                    if(y==9) chunk.setBlock(x, y, z, Material.GRASS_BLOCK);
                     else if(y==8 || y==7) chunk.setBlock(x, y, z, Material.DIRT);
                     else chunk.setBlock(x, y, z, Material.STONE);
                 }

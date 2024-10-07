@@ -18,13 +18,13 @@ public class World {
     private final WorldGenerator generator;
 
     private final HashMap<Point, Chunk> chunks = new HashMap<>();
-    private final int heigth = 64;
+    private final int heigth = 128;
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
 
     public World(){
-        this.generator = new Flat(this);
+        this.generator = new NormalWorldGenerator(this);
 
         this.createChunk(0, 0);
 
@@ -90,7 +90,11 @@ public class World {
         Chunk chunk = this.getChunkAt(x, z, generateIfNull);
         //System.out.println("Looking for chunk at : " + chunk.getX() + " : " + chunk.getZ());
         if(chunk == null) return null;
-        return chunk.get(x%16,y,z%16); // blocks est une structure de données représentant le monde
+        int xInput = x%16;
+        int zInput = z%16;
+        if(xInput<0) xInput+=16;
+        if(zInput<0) zInput+=16;
+        return chunk.get(xInput,y,zInput); // blocks est une structure de données représentant le monde
     }
 
     public Block getBlockAt(double xD, double yD, double zD, boolean generateIfNull){
@@ -106,5 +110,9 @@ public class World {
 
     public void spawnStructure(Structure structure, int x, int y, int z){
         structure.getStructure().tryBuildAt(this, x, y ,z);
+    }
+
+    public void unload(Chunk chunk) {
+        this.chunks.remove(new Point(chunk.getX(), chunk.getZ()));
     }
 }

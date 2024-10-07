@@ -10,14 +10,15 @@ public enum Material {
     PLANKS(new PlanksMaterial()),
     DIRT(new DirtMaterial()),
     STONE(new StoneMaterial()),
-    GRASS(new GrassMaterial()),
+    GRASS_BLOCK(new GrassBlockMaterial()),
     LEAVES(new LeavesMaterial()),
     LOG(new OakLogMaterial()),
     STONE_BRICK(new StoneBricksMaterial()),
     LAMP(new LampMaterial()),
     PURPLE_LAMP(new PurpleLampMaterial()),
     CYAN_LAMP(new CyanLampMaterial()),
-    WATER(new WaterMaterial());
+    WATER(new WaterMaterial()),
+    GRASS(new GrassMaterial()),;
 
     static int maxID = 0;
 

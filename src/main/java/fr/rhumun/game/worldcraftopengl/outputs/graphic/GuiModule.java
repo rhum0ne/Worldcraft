@@ -10,15 +10,27 @@ import static org.lwjgl.bgfx.BGFXInit.ALLOCATOR;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class GuiModule {
 
     private GraphicModule graphicModule;
-    private long window;
+
+    private int VAO,VBO,EBO;
+
+    public GuiModule(GraphicModule graphicModule) {
+        this.graphicModule = graphicModule;
+
+        this.VAO = glGenVertexArrays();
+        this.VBO = glGenBuffers();
+        this.EBO = glGenBuffers();
+    }
 
     public void renderGui(){
+        glBindVertexArray(this.VAO);
         setup2D(800, 600);
 
         glDepthMask(false);
@@ -28,9 +40,10 @@ public class GuiModule {
         glVertex2f(0f, 0f);
         glEnd();
         glDepthMask(true);
+        glBindVertexArray(0);
     }
 
-    public void setup2D(int width, int height) {
+    private void setup2D(int width, int height) {
         // Activer la projection 2D
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();

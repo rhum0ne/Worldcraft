@@ -1,20 +1,37 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 @Getter
 @Setter
-public class BlocksRenderingData {
+public abstract class Renderer {
+    GraphicModule graphicModule;
+    private int VBO, EBO, VAO;
+
     private final List<float[]> vertices = new ArrayList<>();
     private float[] verticesArray = new float[0];
 
     //private final List<Integer> indices = new ArrayList<>();
     private int indice;
     int[] indicesArray = new int[0];
+
+    public Renderer(GraphicModule graphicModule) {
+        this.graphicModule = graphicModule;
+        //glBindVertexArray(this.graphicModule.VAO);
+        VAO = glGenVertexArrays();
+        VBO = glGenBuffers();
+        EBO = glGenBuffers();
+    }
 
     public void addIndice(){ indice++; }
 
@@ -33,4 +50,7 @@ public class BlocksRenderingData {
             indicesArray[i] = i;
         }
     }
+
+    public abstract void init();
+    public abstract void render();
 }

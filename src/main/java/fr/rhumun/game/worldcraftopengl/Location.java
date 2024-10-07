@@ -42,6 +42,10 @@ public class Location {
     public void addZ(double a){ this.z +=a; }
     public void addY(double a){ this.y +=a; }
 
+    public int getXInt(){ return (int) Math.round(this.x); }
+    public int getYInt(){ return (int) Math.round(this.y); }
+    public int getZInt(){ return (int) Math.round(this.z); }
+
     public void setPitch(float pitch){
         if (pitch > PITCH_LIMIT) {
             this.pitch = PITCH_LIMIT;

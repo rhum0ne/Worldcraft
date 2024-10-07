@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.stb.STBImage;
@@ -10,6 +11,7 @@ import org.lwjgl.stb.STBImage;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.TEXTURES_PATH;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -39,8 +41,10 @@ public class TextureUtils {
         }
 
         // Associe chaque unité de texture au sampler2D correspondant dans le shader
-        int texturesLocation = GL20.glGetUniformLocation(GraphicModule.shaders, "textures");
-        glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
+        for(Shader shader : GAME.getGraphicModule().getShaders()){
+            int texturesLocation = GL20.glGetUniformLocation(shader.id, "textures");
+            glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
+        }
     }
 
 

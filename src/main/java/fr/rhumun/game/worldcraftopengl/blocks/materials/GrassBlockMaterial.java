@@ -4,9 +4,9 @@ import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
-public class GrassMaterial extends AbstractMaterial {
-    public GrassMaterial() {
-        super(Texture.GRASS);
+public class GrassBlockMaterial extends AbstractMaterial {
+    public GrassBlockMaterial() {
+        super(Texture.GRASS_BLOCK);
     }
 
     @Override
@@ -16,6 +16,6 @@ public class GrassMaterial extends AbstractMaterial {
 
     @Override
     public boolean isOpaque() {
-        return false;
+        return true;
     }
 }
