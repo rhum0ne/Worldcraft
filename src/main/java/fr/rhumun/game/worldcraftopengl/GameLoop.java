@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
+import fr.rhumun.game.worldcraftopengl.physics.Movements;
 
 import java.util.ConcurrentModificationException;
 import java.util.TimerTask;
@@ -17,7 +18,7 @@ public class GameLoop extends TimerTask {
     @Override
     public void run() {
         if(game.getGraphicModule() == null) return;
-        player.getSavedChunksManager().tryLoadChunks();
+
         try {
             for (Controls control : game.getPressedKeys()) {
                 control.press(player);
@@ -26,5 +27,6 @@ public class GameLoop extends TimerTask {
         } catch(ConcurrentModificationException e){
 
         }
+        Movements.applyMovements(player);
     }
 }

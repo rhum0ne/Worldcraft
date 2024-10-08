@@ -10,14 +10,16 @@ public enum Controls {
 
     FORWARD(new MoveForward()),
     BACKWARD(new MoveBackward()),
-    MOVE_UP(new MoveUp()),
-    MOVE_DOWN(new MoveDown()),
+    MOVE_UP(new Jump()),
+    MOVE_DOWN(new Sneak()),
     LEFT(new MoveLeft()),
     RIGHT(new MoveRight()),
     LEFT_CLICK(new LeftClick()),
     RIGHT_CLICK(new RightClick()),
     MIDDLE_CLICK(new MiddleClick()),
-    UPDATE(new Update());
+    UPDATE(new Update()),
+    FLY(new Fly()),
+    SPRINT(new Sprint()),;
 
     static final HashMap<Integer, Controls> KEYS = new HashMap<>();
 
@@ -41,6 +43,8 @@ public enum Controls {
         add(GLFW_MOUSE_BUTTON_2, RIGHT_CLICK);
         add(GLFW_MOUSE_BUTTON_3, MIDDLE_CLICK);
         add(GLFW_KEY_T, UPDATE);
+        add(GLFW_KEY_F, FLY);
+        add(GLFW_KEY_LEFT_CONTROL, SPRINT);
     }
 
     private static void add(int code, Controls control){ KEYS.put(code, control); }

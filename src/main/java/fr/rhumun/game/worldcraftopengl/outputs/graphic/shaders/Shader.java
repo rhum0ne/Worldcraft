@@ -13,8 +13,6 @@ public abstract class Shader {
         this.id = id;
     }
 
-
-
     // Méthode pour envoyer un vecteur 3D (vec3) au shader
     public void setUniform(String uniformName, Vector3f vector) {
         int location = glGetUniformLocation(id, uniformName);

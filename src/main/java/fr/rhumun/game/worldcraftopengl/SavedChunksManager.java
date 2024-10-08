@@ -82,7 +82,19 @@ public class SavedChunksManager {
     public void loadChunks(Chunk chunk){
         this.centralChunk = chunk;
 
-        this.chunksToRender = this.getChunksToLoad();
+        List<Chunk> toLoad = getChunksToLoad();
+
+        for(Chunk loadedChunk : toLoad){
+            if(this.chunksToRender.contains(loadedChunk)) continue;
+            GAME.getGraphicModule().addChunkToLoad(loadedChunk);
+        }
+
+        for(Chunk loadedChunk : this.chunksToRender){
+            if(toLoad.contains(loadedChunk)) continue;
+            loadedChunk.unload();
+        }
+
+        this.chunksToRender = toLoad;
 
         GAME.getGraphicModule().changeLoadedBlocks();
     }

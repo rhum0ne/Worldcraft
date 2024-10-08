@@ -11,8 +11,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengles.GLES20.glDeleteBuffers;
 
 @Getter
 @Setter
@@ -28,8 +28,6 @@ public class GlobalRenderer extends Renderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
 
 // Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
@@ -68,5 +66,11 @@ public class GlobalRenderer extends Renderer {
         //glBindBuffer(GL_ARRAY_BUFFER, 0);
         //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+    }
+
+    @Override
+    public void cleanup() {
+        //glDeleteBuffers(this.getVBO());
+        glDeleteVertexArrays(this.getVAO());
     }
 }

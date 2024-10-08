@@ -1,8 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.blocks.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
@@ -24,9 +22,9 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class TextureUtils {
 
     public static void initTextures(){
-        int[] textureUnits = new int[Texture.values().length+1]; // Supposons que tu as 4 textures
+        int[] textureUnits = new int[Texture.textures.size()+1]; // Supposons que tu as 4 textures
         int i = 1;
-        for (Texture texture : Texture.values()) {
+        for (Texture texture : Texture.textures) {
             int textureID = loadTexture(TEXTURES_PATH + texture.getPath());
             //glActiveTexture(GL_TEXTURE0 + i); // Active l'unité de texture correspondante
             glBindTexture(GL_TEXTURE_2D, textureID);
@@ -41,7 +39,7 @@ public class TextureUtils {
         }
 
         // Associe chaque unité de texture au sampler2D correspondant dans le shader
-        for(Shader shader : GAME.getGraphicModule().getShaders()){
+        for(Shader shader : GAME.getGraphicModule().getRenderingShaders()){
             int texturesLocation = GL20.glGetUniformLocation(shader.id, "textures");
             glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
         }

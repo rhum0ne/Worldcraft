@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.joml.Vector3f;
 
 @Getter
+@Setter
 public class Player {
     Game game;
 
@@ -16,10 +17,23 @@ public class Player {
 
     private final Location location;
 
-    private final int maxDistance = 5;
-    private final int speed = 5;
+    private final int reach = 5;
 
-    @Setter
+    private boolean isFlying = false;
+    private boolean isSneaking = false;
+    private boolean isSprinting = false;
+
+    private final int jumpForce = 2;
+
+    private final int walkSpeed = 5;
+    private final int sneakSpeed = 3;
+    private final int sprintSpeed = 8;
+    private float accelerationByTick = 0.2f;
+
+    private final int[] movements = new int[3];
+    private final Vector3f velocity = new Vector3f(0, 0, 0);
+
+
     private Material selectedMaterial = Material.DIRT;
 
     public Player(Game game){
@@ -48,7 +62,7 @@ public class Player {
         //System.out.println("Direction: " + direction);
 
         // Start the iteration from zero
-        for (float distance = 0; distance < maxDistance; distance += stepSize) {
+        for (float distance = 0; distance < reach; distance += stepSize) {
             // Calculate the current position based on start point and direction
             hitPosition = new Vector3f(start).add(new Vector3f(direction).mul(distance));
             //System.out.println("Checking position: " + hitPosition);
@@ -78,7 +92,7 @@ public class Player {
         //System.out.println("Direction: " + direction);
 
         // Start the iteration from zero
-        for (float distance = 0; distance < maxDistance; distance += stepSize) {
+        for (float distance = 0; distance < reach; distance += stepSize) {
             // Calculate the current position based on start point and direction
             Vector3f currentPosition = new Vector3f(start).add(new Vector3f(direction).mul(distance));
             //System.out.println("Checking position: " + currentPosition);
@@ -106,49 +120,6 @@ public class Player {
         ).normalize();
     }
 
-
-
-    public void moveForward(double a){
-        double move = 0.01;
-        double i =0;
-        while(i<a) {
-            this.addX(move * Math.cos(Math.toRadians(this.location.getYaw())));
-            this.addZ(move * Math.sin(Math.toRadians(this.location.getYaw())));
-            i+=move;
-        }
-        this.onMove();
-    }
-    public void moveBackward(double a){
-        double move = 0.01;
-        double i =0;
-        while(i<a) {
-            this.addX(-move * Math.cos(Math.toRadians(this.location.getYaw())));
-            this.addZ(-move * Math.sin(Math.toRadians(this.location.getYaw())));
-            i+=move;
-        }
-        this.onMove();
-    }
-    public void moveRight(double a){
-        double move = 0.01;
-        double i =0;
-        while(i<a) {
-            this.addX(-move * Math.sin(Math.toRadians(this.location.getYaw())));
-            this.addZ(move * Math.cos(Math.toRadians(this.location.getYaw())));
-            i+=move;
-        }
-        this.onMove();
-    }
-    public void moveLeft(double a){
-        double move = 0.01;
-        double i =0;
-        while(i<a) {
-            this.addX(move * Math.sin(Math.toRadians(this.location.getYaw())));
-            this.addZ(-move * Math.cos(Math.toRadians(this.location.getYaw())));
-            i+=move;
-        }
-        this.onMove();
-    }
-
     public void addX(double a){
         this.location.addX(a);
         game.graphicModule.getCamera().pos.add((float) a, 0, 0);
@@ -163,11 +134,9 @@ public class Player {
     }
     public void setYaw(float a){
         this.location.setYaw(a);
-        //this.normal.setYaw(this.location.getYaw());
     }
     public void setPitch(float a){
         this.location.setPitch(a);
-        //this.normal.setPitch(this.location.getPitch());
     }
 
     private void onMove(){
@@ -197,5 +166,25 @@ public class Player {
 
     public void playSound(final Sound sound){
         this.game.getAudioManager().playSound(sound);
+    }
+
+    public Block getBlockDown(){
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);
+    }
+
+    public boolean hasBlockDown(){
+        Block block = this.getBlockDown();
+        return block != null && block.getMaterial() != null;
+    }
+
+    public int getSpeed(){
+        if(isSneaking) return sneakSpeed;
+        if(isSprinting) return sprintSpeed;
+        return walkSpeed;
+    }
+
+    public void jump() {
+        if(this.velocity.get(1) == 0)
+            this.getVelocity().add(0, (float)jumpForce/5, 0);
     }
 }

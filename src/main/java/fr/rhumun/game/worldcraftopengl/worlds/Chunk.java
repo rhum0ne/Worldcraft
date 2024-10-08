@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,8 +16,8 @@ public class Chunk {
 
     Block[][][] blocks;
     //private final List<Block> blockList = new ArrayList<>();
-    private final List<Block> visibleBlock = new ArrayList<>();
-    private final List<Block> lightningBlocks = new ArrayList<>();
+    private List<Block> visibleBlock = new ArrayList<>();
+    private List<Block> lightningBlocks = new ArrayList<>();
 
     private int X;
     private int Z;
@@ -96,6 +97,17 @@ public class Chunk {
 
     public void unload(){
         this.getWorld().unload(this);
+        if(this.isRendererInitialized()){
+            for(Renderer renderer : this.renderer.getRenderers()) renderer.cleanup();
+            this.renderer = null;
+        }
+        this.blocks = null;
+        this.visibleBlock = null;
+        this.lightningBlocks = null;
+    }
+
+    public boolean isRendererInitialized() {
+        return this.renderer != null;
     }
 
     public ChunkRenderer getRenderer(){

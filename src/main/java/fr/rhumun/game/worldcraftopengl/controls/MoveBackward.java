@@ -5,11 +5,11 @@ import fr.rhumun.game.worldcraftopengl.Player;
 public class MoveBackward  extends Control{
     @Override
     public void onKeyPressed(Player player) {
-        player.moveBackward(0.2);
+        player.getMovements()[0] -= 1;
     }
 
     @Override
     public void onKeyReleased(Player player) {
-
+        player.getMovements()[0] += 1;
     }
 }

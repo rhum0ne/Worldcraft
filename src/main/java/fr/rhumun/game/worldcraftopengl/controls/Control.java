@@ -11,7 +11,7 @@ public abstract class Control {
         this.isRepeatable = isRepeatable;
     }
 
-    public Control(){ this(true); }
+    public Control(){ this(false); }
 
     public abstract void onKeyPressed(Player player);
     public abstract void onKeyReleased(Player player);
