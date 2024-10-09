@@ -1,11 +1,16 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
-import fr.rhumun.game.worldcraftopengl.blocks.PointLight;
-import fr.rhumun.game.worldcraftopengl.blocks.Texture;
+import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.InteractableMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import org.joml.Vector3f;
 
-public class PurpleLampMaterial extends PointLight {
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
+public class PurpleLampMaterial extends PointLight implements InteractableMaterial {
     public PurpleLampMaterial() {
         super(Texture.LAMP);
         this.ambient = new Vector3f(0.3f, 0.0f, 0.5f); // Violet pâle pour l'ambient
@@ -25,5 +30,17 @@ public class PurpleLampMaterial extends PointLight {
     @Override
     public boolean isOpaque() {
         return true;
+    }
+
+
+    @Override
+    public void interact(Player player, Block block) {
+        if(block.getTick() == 0){
+            block.setTick(1);
+        }
+        else {
+            block.setTick(0);
+        }
+        GAME.getGraphicModule().updateLights();
     }
 }

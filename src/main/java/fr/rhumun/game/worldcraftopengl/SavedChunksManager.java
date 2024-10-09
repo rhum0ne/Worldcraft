@@ -30,6 +30,10 @@ public class SavedChunksManager {
             return;
         }
         Chunk chunk = player.getLocation().getChunk();
+        if(chunk == null) {
+            System.out.println("ERROR: Player's chunk seems to be null");
+            return;
+        }
         if(centralChunk == null) loadChunks(chunk);
         else if(!chunk.equals(centralChunk)) loadChunks(chunk);
     }
@@ -68,7 +72,7 @@ public class SavedChunksManager {
         return chunks;
     }
 
-    private class ChunkDistance {
+    private static class ChunkDistance {
         Chunk chunk;
         double distance;
 
@@ -86,6 +90,9 @@ public class SavedChunksManager {
 
         for(Chunk loadedChunk : toLoad){
             if(this.chunksToRender.contains(loadedChunk)) continue;
+            System.out.println("Starting first loading of " + loadedChunk);
+            chunk.getRenderer().updateData();
+            chunk.setLoaded(true);
             GAME.getGraphicModule().addChunkToLoad(loadedChunk);
         }
 

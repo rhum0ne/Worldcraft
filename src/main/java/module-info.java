@@ -35,4 +35,8 @@ module fr.rhumun.game.worldcraftopengl {
     opens fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
     opens fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.blocks.materials.types;
+    opens fr.rhumun.game.worldcraftopengl.blocks.materials.types to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.blocks.textures;
+    opens fr.rhumun.game.worldcraftopengl.blocks.textures to javafx.fxml;
 }

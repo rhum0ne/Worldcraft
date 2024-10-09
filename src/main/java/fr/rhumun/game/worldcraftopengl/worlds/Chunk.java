@@ -1,10 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,11 +24,13 @@ public class Chunk {
     private World world;
 
     @Setter
-    private boolean toUpdate = true;
+    private boolean toUpdate = false;
     private ChunkRenderer renderer;
 
     @Setter
     private boolean generated = false;
+    @Setter
+    private boolean loaded = false; //For the first chunk render
 
     public Chunk(World world, int X, int Z){
         this.X = X;
@@ -98,12 +99,13 @@ public class Chunk {
     public void unload(){
         this.getWorld().unload(this);
         if(this.isRendererInitialized()){
-            for(Renderer renderer : this.renderer.getRenderers()) renderer.cleanup();
+            //for(Renderer renderer : this.renderer.getRenderers()) renderer.cleanup();
             this.renderer = null;
         }
-        this.blocks = null;
-        this.visibleBlock = null;
-        this.lightningBlocks = null;
+        this.loaded = false;
+//        this.blocks = null;
+//        this.visibleBlock = null;
+//        this.lightningBlocks = null;
     }
 
     public boolean isRendererInitialized() {

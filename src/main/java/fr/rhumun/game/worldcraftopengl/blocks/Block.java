@@ -1,12 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.blocks;
 
 import fr.rhumun.game.worldcraftopengl.Location;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,8 @@ public class Block {
     private final Location location;
     private final Chunk chunk;
     private boolean isSurrounded;
+
+    private int tick = 0;
 
     //private Block[][][] nextBlocks = new Block[3][3][3];
 
@@ -70,8 +74,11 @@ public class Block {
 
             for(Block block : this.getSideBlocks())block.updateIsSurrounded();
             this.getLocation().getChunk().getVisibleBlock().add(this);
-        }
 
+            if(material.getMaterial() instanceof ForcedModelMaterial fMat){
+                this.setModel(fMat.getModel());
+            }
+        }
         return this;
     }
 

@@ -1,5 +1,6 @@
-package fr.rhumun.game.worldcraftopengl.blocks;
+package fr.rhumun.game.worldcraftopengl.blocks.materials.types;
 
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
 

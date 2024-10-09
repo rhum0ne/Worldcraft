@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl.blocks;
+package fr.rhumun.game.worldcraftopengl.blocks.materials.types;
 
 import fr.rhumun.game.worldcraftopengl.blocks.materials.*;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
@@ -18,7 +18,11 @@ public enum Material {
     PURPLE_LAMP(new PurpleLampMaterial()),
     CYAN_LAMP(new CyanLampMaterial()),
     WATER(new WaterMaterial()),
-    GRASS(new GrassMaterial()),;
+    GRASS(new GrassMaterial()),
+    RED_FLOWER(new RedFlowerMaterial()),
+    BLUE_FLOWER(new BlueFlowerMaterial()),
+    SAND(new SandMaterial()),
+    SAPLING(new SaplingMaterial());
 
     static int maxID = 0;
 

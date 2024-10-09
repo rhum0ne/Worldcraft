@@ -26,7 +26,7 @@ public abstract class Renderer {
     int[] indicesArray = new int[0];
 
     public Renderer(GraphicModule graphicModule) {
-        System.out.println("Creating Renderer");
+        //System.out.println("Creating Renderer");
         this.graphicModule = graphicModule;
         //glBindVertexArray(this.graphicModule.VAO);
         VAO = glGenVertexArrays();

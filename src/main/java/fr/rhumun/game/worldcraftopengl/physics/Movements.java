@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class Movements {
     private static final float DEFAULT_GRAVITY = 9.81f;
     private static final float AIR_FRICTION = 0.98f; // Constante de frottement dans l'air
+    private static final float AIR_FRICTION_FLYING = 0.5f; // Constante de frottement dans l'air
     private static final float GROUND_FRICTION = 0.6f; // Frottement au sol
 
     public static void applyMovements(Player player) {
@@ -24,6 +25,7 @@ public class Movements {
 
         // Appliquer le frottement de l'air
         player.getVelocity().mul(AIR_FRICTION);
+        if(player.isFlying()) player.getVelocity().mul(AIR_FRICTION_FLYING);
 
         Block block = player.getBlockDown();
         if (block != null && block.getMaterial() != null) {

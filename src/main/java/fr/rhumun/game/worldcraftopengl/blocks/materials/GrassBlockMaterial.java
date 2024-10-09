@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
-import fr.rhumun.game.worldcraftopengl.blocks.AbstractMaterial;
-import fr.rhumun.game.worldcraftopengl.blocks.Texture;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 public class GrassBlockMaterial extends AbstractMaterial {

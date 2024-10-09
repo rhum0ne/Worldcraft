@@ -34,20 +34,18 @@ public class ChunkRenderer {
     private final GlobalRenderer globalRenderer = new GlobalRenderer(GAME.getGraphicModule());
     private final GlobalRenderer transparentBlocksRenderer = new GlobalRenderer(GAME.getGraphicModule());
 
+    private boolean areRenderersInitialized = false;
+
     public ChunkRenderer(Chunk chunk) {
         this.chunk = chunk;
         this.renderers.add(globalRenderer);
         this.renderers.add(transparentBlocksRenderer);
-
-        for(Renderer renderer : renderers) {
-            renderer.init();
-        }
     }
 
     public void render() {
         if(chunk.isToUpdate()) update();
 
-        //System.out.println("Rendering chunk");
+        //System.out.println("Rendering chunk " + chunk);
 
         globalRenderer.render();
         if(transparentBlocksRenderer.getIndice() != 0){
@@ -62,15 +60,43 @@ public class ChunkRenderer {
     }
 
     private void update(){
+        //if(!chunk.isLoaded()) return;
+        updateData();
+        updateVAO();
+        chunk.setToUpdate(false);
+    }
+
+    public void updateVAO() {
+        if(!areRenderersInitialized){
+            for(Renderer renderer : renderers) {
+                renderer.init();
+            }
+            areRenderersInitialized = true;
+        }
+
         getGlobalRenderer().getGraphicModule().updateLights();
 
+
+        for(Renderer renderer : this.renderers) {
+            glBindVertexArray(renderer.getVAO());
+
+            glBindBuffer(GL_ARRAY_BUFFER, renderer.getVBO());
+            glBufferData(GL_ARRAY_BUFFER, renderer.getVerticesArray(), GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer.getEBO());
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, renderer.getIndicesArray(), GL_STATIC_DRAW);
+
+            glBindVertexArray(0);
+        }
+
+    }
+
+    public void updateData(){
         for(Renderer renderer : this.renderers){
             renderer.getVertices().clear();
             renderer.setIndice(0);
         }
 
-        System.out.println("Updating chunk " + chunk);
-//int blockShowDistance = 16*SHOW_DISTANCE;
         List<Block> blocks = new ArrayList<>(chunk.getVisibleBlock());
         for (Block block : blocks) {
             if (block == null || block.getMaterial() == null) continue;
@@ -85,21 +111,8 @@ public class ChunkRenderer {
             raster(block, mesh);
         }
 
-        for(Renderer renderer : this.renderers) {
+        for(Renderer renderer : this.renderers)
             renderer.toArrays();
-
-            glBindVertexArray(renderer.getVAO());
-
-            glBindBuffer(GL_ARRAY_BUFFER, renderer.getVBO());
-            glBufferData(GL_ARRAY_BUFFER, renderer.getVerticesArray(), GL_STATIC_DRAW);
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer.getEBO());
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, renderer.getIndicesArray(), GL_STATIC_DRAW);
-
-            glBindVertexArray(0);
-        }
-
-        chunk.setToUpdate(false);
     }
 
     private void raster(Block block, MeshArrays mesh) {

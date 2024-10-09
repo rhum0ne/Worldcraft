@@ -37,5 +37,15 @@ public abstract class Shader {
         }
     }
 
+    // Méthode pour envoyer un int[] au shader
+    public void setUniform(String uniformName, int[] value) {
+        glUseProgram(id);
+        int location = glGetUniformLocation(id, uniformName);
+        if (location != -1) {
+            glUniform1iv(location, value);
+        }
+        else System.err.println("Warning: uniform " + uniformName + " not found");
+    }
+
     public abstract void init();
 }

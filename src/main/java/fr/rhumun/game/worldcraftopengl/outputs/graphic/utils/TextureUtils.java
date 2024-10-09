@@ -1,7 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Texture;
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.stb.STBImage;
@@ -15,8 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform1iv;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureUtils {
@@ -39,10 +39,10 @@ public class TextureUtils {
         }
 
         // Associe chaque unité de texture au sampler2D correspondant dans le shader
-        for(Shader shader : GAME.getGraphicModule().getRenderingShaders()){
-            int texturesLocation = GL20.glGetUniformLocation(shader.id, "textures");
-            glUniform1iv(texturesLocation, textureUnits); // Passe le tableau d'unités de texture au shader
+        for(Shader shader : GAME.getGraphicModule().getShaders()){
+            shader.setUniform("textures", textureUnits);
         }
+        System.out.println("Done!");
     }
 
 

@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 
@@ -19,9 +20,12 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
     @Override
     public void invoke(long window, int width, int height) {
         glViewport(0, 0, width, height);
+        float ratio = (float) width / height;
+
+        ShaderUtils.PLAN_SHADERS.setUniform("aspectRatio", ratio);
 
         // Recalculer la matrice de projection
-        graphicModule.projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) width / height, 0.1f, Game.SHOW_DISTANCE *16f);
+        graphicModule.projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SHOW_DISTANCE *16f);
 
         // Mettre à jour la matrice de projection dans le shader
 

@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
 import fr.rhumun.game.worldcraftopengl.blocks.*;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
@@ -48,8 +49,7 @@ public class GraphicModule{
     // The window handle
     @Getter
     private long window;
-    @Getter
-    public int VAO;
+    private final int startWidth = 1200, startHeight = 800;
 
     private FrustumIntersection frustumIntersection;
     Matrix4f projectionMatrix;
@@ -65,7 +65,7 @@ public class GraphicModule{
     private final DebugUtils debugUtils = new DebugUtils();
     private final UpdateLoop updateLoop;
     private final Stack<Chunk> chunkToLoad = new Stack<>();
-    //private final ChunkLoader chunkLoader;
+    private final ChunkLoader chunkLoader;
 
     @Getter
     private boolean isInitialized = false;
@@ -76,7 +76,7 @@ public class GraphicModule{
         player = game.getPlayer();
         camera = new Camera(player);
         updateLoop = new UpdateLoop(this, game, player);
-        //chunkLoader = new ChunkLoader(this, player);
+        chunkLoader = new ChunkLoader(this, player);
         //this.guiModule = new GuiModule(this);
     }
 
@@ -103,9 +103,9 @@ public class GraphicModule{
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if ( !glfwInit() )
             throw new IllegalStateException("Unable to initialize GLFW");
-//
-//        Timer timer = new Timer();
-//        timer.schedule(chunkLoader, Date.from(Instant.now()), 100);
+
+        Timer timer = new Timer();
+        timer.schedule(chunkLoader, Date.from(Instant.now()), 100);
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -118,7 +118,7 @@ public class GraphicModule{
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
         // Create the window
-        window = glfwCreateWindow(1200, 800, "WorldCraft OpenGL", NULL, NULL);
+        window = glfwCreateWindow(startWidth, startHeight, "WorldCraft OpenGL", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -168,7 +168,7 @@ public class GraphicModule{
         // bindings available for use.
         GL.createCapabilities();
 
-        VAO = glGenVertexArrays();
+        //VAO = glGenVertexArrays();
         //VBO = glGenBuffers();
         //EBO = glGenBuffers();
 //        glEnable(GL_CULL_FACE);
@@ -212,8 +212,8 @@ public class GraphicModule{
         ShaderUtils.initShaders();
 
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
-        this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
+        this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.hudRenderer = new HUDRenderer(this);
         this.hudRenderer.init();
         this.static_renderers.add(this.hudRenderer);
@@ -223,7 +223,10 @@ public class GraphicModule{
 //        }
 
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
-        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) 1200 / 800, 0.1f, Game.SHOW_DISTANCE *16f);
+        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *16f);
+
+        float ratio = (float) startWidth / startHeight;
+        ShaderUtils.PLAN_SHADERS.setUniform("aspectRatio", ratio);
 
         for(Shader shader : this.renderingShaders) {
             int projectionLoc = glGetUniformLocation(shader.id, "projection");
@@ -244,9 +247,6 @@ public class GraphicModule{
 
         debugUtils.checkGLError();
 
-        // Run the rendering loop until the user has attempted to close
-        // the window or has pressed the ESCAPE key.
-
         World world = player.getLocation().getWorld();
 
         for(Shader shader : renderingShaders){
@@ -261,10 +261,13 @@ public class GraphicModule{
             //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
 
+            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
 
             glUseProgram(ShaderUtils.PLAN_SHADERS.id);
             this.hudRenderer.render();
+
+            glUseProgram(0);
 
             // Calculer les FPS
             if(SHOWING_FPS) debugUtils.calculateFPS();
@@ -276,17 +279,14 @@ public class GraphicModule{
         debugUtils.checkGLError();
     }
 
-    public void render(Chunk chunk) {
-        glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-        chunk.getRenderer().render();
-        //System.out.println("Rendering chunk " + chunk);
-    }
-
     public void updateLights(){
         pointLights.clear();
         for(Chunk chunk : loadedChunks) {
             if(chunk.getLightningBlocks().isEmpty()) continue;
-            pointLights.addAll(chunk.getLightningBlocks());
+            for(Block block : chunk.getLightningBlocks()) {
+                if(block.getTick()==0) continue;
+                pointLights.add(block);
+            }
         }
         sendLight();
     }
@@ -303,11 +303,14 @@ public class GraphicModule{
             shader.setUniform("numPointLights", pointLights.size());
             //System.out.println("There are " + pointLights.size() + " lights");
 
+
             for (int i = 0; i < this.pointLights.size(); i++) {
-                PointLight pointLight = (PointLight) pointLights.get(i).getMaterial().getMaterial();
+
+                Block block = this.pointLights.get(i);
+                PointLight pointLight = (PointLight) block.getMaterial().getMaterial();
 
                 String uniformName = "pointLights[" + i + "]";
-                shader.setUniform(uniformName + ".position", pointLights.get(i).getLocation().getPositions());
+                shader.setUniform(uniformName + ".position", block.getLocation().getPositions());
                 shader.setUniform(uniformName + ".ambient", pointLight.ambient);
                 shader.setUniform(uniformName + ".diffuse", pointLight.diffuse);
                 shader.setUniform(uniformName + ".specular", pointLight.specular);
@@ -338,24 +341,22 @@ public class GraphicModule{
 
         float h = loadedChunks.get(0).getWorld().getHeigth();
 
-        glBindVertexArray(VAO);
-
         for(Chunk chunk : loadedChunks) {
             float x = chunk.getX()*16;
             float z = chunk.getZ()*16;
             if (frustumIntersection.testAab(x, 0f, z, x+16, h , z+16)) {
-                render(chunk);
+
+                chunk.getRenderer().render();
             }
         }
-
-        glBindVertexArray(0);
     }
 
     private void loadOneChunk() {
         if(chunkToLoad.isEmpty()) return;
         Chunk chunk = chunkToLoad.pop();
         if(!loadedChunks.contains(chunk)) loadOneChunk();
-        chunk.getRenderer(); //To load it.
+        chunk.getRenderer().updateVAO(); //To load it.
+        System.out.println("Loaded chunk " + chunk);
     }
 
 

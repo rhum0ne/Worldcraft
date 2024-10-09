@@ -23,7 +23,6 @@ public class KeyEvent implements GLFWKeyCallbackI {
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
-            System.out.println("PRESS " + scancode);
             List<Controls> pressedKeys = game.getPressedKeys();
             if(Controls.exists(key) && !pressedKeys.contains(Controls.get(key))){
                 Controls control = Controls.get(key);
@@ -33,9 +32,7 @@ public class KeyEvent implements GLFWKeyCallbackI {
 
         if (action == GLFW_RELEASE) {
             List<Controls> pressedKeys = game.getPressedKeys();
-            System.out.println("RELEASE 1 " + scancode);
             if(Controls.exists(key)/* && pressedKeys.contains(Controls.get(key))*/){
-                System.out.println("RELEASE 2 " + scancode);
                 Controls control = Controls.get(key);
                 pressedKeys.remove(control);
                 control.release(player);

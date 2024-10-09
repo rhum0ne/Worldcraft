@@ -5,16 +5,17 @@ import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFuncti
 import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
 import de.articdive.jnoise.pipeline.JNoise;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
+import lombok.Getter;
 
+@Getter
 public class NormalWorldGenerator extends WorldGenerator {
 
-    private JNoise continentalness;
-    private long seed;
+    private final JNoise continentalness;
+    private final long seed;
     private int waterHigh = 29;
 
 
@@ -107,7 +108,11 @@ public class NormalWorldGenerator extends WorldGenerator {
 
         if(block.getMaterial() == Material.GRASS_BLOCK)
             if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)
-                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.GRASS).setModel(Model.CROSS);
+                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.GRASS);
+            else if((1+x+z+chunk.getZ())%4==0 && (chunk.getX()+x+2*z)%7==0)
+                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.BLUE_FLOWER);
+            else if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%9==0)
+                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.RED_FLOWER);
             else if((1+z+chunk.getX())%5==0 && (chunk.getZ()+x)%7==0)
                 chunk.getWorld().spawnStructure(Structure.TREE, 16 * chunk.getX() + x, (int) (block.getLocation().getY() + 1), 16 * chunk.getZ() + z);
     }

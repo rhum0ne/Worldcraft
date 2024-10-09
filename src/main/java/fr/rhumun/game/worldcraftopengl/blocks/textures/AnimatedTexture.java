@@ -1,9 +1,9 @@
-package fr.rhumun.game.worldcraftopengl.blocks;
+package fr.rhumun.game.worldcraftopengl.blocks.textures;
 
 import lombok.Getter;
 
 @Getter
-public abstract class AnimatedTexture extends Texture{
+public abstract class AnimatedTexture extends Texture {
 
     private final int frames;
     private final int slowness;

@@ -1,6 +1,5 @@
-package fr.rhumun.game.worldcraftopengl.blocks;
+package fr.rhumun.game.worldcraftopengl.blocks.textures;
 
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -19,6 +18,13 @@ public class Texture {
     public static Texture LAMP;
     public static Texture WATER;
     public static Texture GRASS;
+    public static Texture SAND;
+    public static Texture RED_FLOWER;
+    public static Texture BLUE_FLOWER;
+    public static Texture SAPLING;
+
+    public static Texture CROSSHAIR;
+    public static Texture HOTBAR;
 
     public static void init(){
         COBBLE = new Texture(1, "cobble.png");
@@ -32,6 +38,12 @@ public class Texture {
         LAMP = new Texture(9, "lamp.png");
         WATER = new Texture(10, "water.png");
         GRASS = new Texture(11, "grass-plant.png");
+        RED_FLOWER = new Texture(12, "red-flower.png");
+        BLUE_FLOWER = new Texture(13, "blue-flower.png");
+        SAND = new Texture(14, "sand.png");
+        SAPLING = new Texture(15, "sapling.png");
+        CROSSHAIR = new Texture(16, "hud\\crosshair.png");
+        HOTBAR = new Texture(17, "hud\\hotbar.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();

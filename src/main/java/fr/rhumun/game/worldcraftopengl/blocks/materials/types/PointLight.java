@@ -1,10 +1,13 @@
-package fr.rhumun.game.worldcraftopengl.blocks;
+package fr.rhumun.game.worldcraftopengl.blocks.materials.types;
 
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
 
 @Setter
-public abstract class PointLight extends AbstractMaterial{
+@Getter
+public abstract class PointLight extends AbstractMaterial {
 
     public Vector3f ambient;
     public Vector3f diffuse;

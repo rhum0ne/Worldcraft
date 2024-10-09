@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
@@ -71,14 +71,12 @@ public class Player {
             if(block1 == null) return null;
 
             if (block1.getMaterial() != null) {
-                //System.out.println("Found prop at position: " + hitPosition);
-                break;
+                return block;
             }
             // Check for prop at the current position
-            block = game.getWorld().getBlockAt(hitPosition, true);
+            block = block1;
         }
-
-        return block;
+        return null;
     }
 
 

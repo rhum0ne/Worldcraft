@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.worlds.structures;
 
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 
