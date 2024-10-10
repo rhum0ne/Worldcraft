@@ -7,7 +7,7 @@ import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HUDRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CrosshairRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
@@ -59,8 +59,8 @@ public class GraphicModule{
     private final List<Shader> renderingShaders = new ArrayList<>();
     @Getter
     private final List<Shader> shaders = new ArrayList<>();
-    private final List<Renderer> static_renderers = new ArrayList<>();
-    private HUDRenderer hudRenderer;
+    @Getter
+    private GuiModule guiModule;
 
     private final DebugUtils debugUtils = new DebugUtils();
     private final UpdateLoop updateLoop;
@@ -69,7 +69,6 @@ public class GraphicModule{
 
     @Getter
     private boolean isInitialized = false;
-    //private final GuiModule guiModule;
 
     public GraphicModule(Game game){
         this.game = game;
@@ -77,7 +76,6 @@ public class GraphicModule{
         camera = new Camera(player);
         updateLoop = new UpdateLoop(this, game, player);
         chunkLoader = new ChunkLoader(this, player);
-        //this.guiModule = new GuiModule(this);
     }
 
 
@@ -214,9 +212,8 @@ public class GraphicModule{
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
-        this.hudRenderer = new HUDRenderer(this);
-        this.hudRenderer.init();
-        this.static_renderers.add(this.hudRenderer);
+        this.guiModule = new GuiModule(this);
+        this.guiModule.init();
 
 //        for(Renderer renderer : this.renderers) {
 //            renderer.init();
@@ -256,6 +253,8 @@ public class GraphicModule{
             shader.setUniform("dirLight.specular", new Vector3f(0, 0, 0));
         }
 
+        this.guiModule.updateInventory(player);
+
         this.isInitialized = true;
         while ( !glfwWindowShouldClose(window) ) {
             //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
@@ -265,7 +264,7 @@ public class GraphicModule{
             update();
 
             glUseProgram(ShaderUtils.PLAN_SHADERS.id);
-            this.hudRenderer.render();
+            this.guiModule.render();
 
             glUseProgram(0);
 
@@ -362,7 +361,7 @@ public class GraphicModule{
 
     private void cleanup() {
 
-        for(Renderer renderer : this.static_renderers) renderer.cleanup();
+        this.guiModule.cleanup();
 
         for(Shader shader : this.renderingShaders)
             glDeleteProgram(shader.id);

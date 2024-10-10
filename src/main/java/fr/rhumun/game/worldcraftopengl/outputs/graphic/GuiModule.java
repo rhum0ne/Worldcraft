@@ -1,10 +1,15 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
+import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CrosshairRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Hotbar;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ItemsRenderer;
 import org.lwjgl.nuklear.*;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
+import java.util.Collections;
 
 import static org.lwjgl.bgfx.BGFXInit.ALLOCATOR;
 import static org.lwjgl.glfw.GLFW.*;
@@ -19,42 +24,36 @@ public class GuiModule {
 
     private GraphicModule graphicModule;
 
-    private int VAO,VBO,EBO;
+    private CrosshairRenderer crosshair;
+    private Hotbar hotbar;
+    private ItemsRenderer itemsRenderer;
 
     public GuiModule(GraphicModule graphicModule) {
         this.graphicModule = graphicModule;
 
-        this.VAO = glGenVertexArrays();
-        this.VBO = glGenBuffers();
-        this.EBO = glGenBuffers();
+        this.crosshair = new CrosshairRenderer(graphicModule);
+        this.hotbar = new Hotbar(graphicModule);
+        this.itemsRenderer = new ItemsRenderer(graphicModule);
     }
 
-    public void renderGui(){
-        glBindVertexArray(this.VAO);
-        setup2D(800, 600);
-
-        glDepthMask(false);
-        glColor4f(1f, 0, 0, 1f);
-        glBegin(GL_POINT);
-
-        glVertex2f(0f, 0f);
-        glEnd();
-        glDepthMask(true);
-        glBindVertexArray(0);
+    public void init(){
+        this.crosshair.init();
+        this.hotbar.init();
+        this.itemsRenderer.init();
     }
 
-    private void setup2D(int width, int height) {
-        // Activer la projection 2D
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        // Définir la projection orthographique (coordonnées 0,0 en haut à gauche)
-        glOrtho(0, width, height, 0, -1, 1);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        // Désactiver le test de profondeur (UI doit être au-dessus du rendu 3D)
-        //glDisable(GL_DEPTH_TEST);
+    public void render(){
+        this.crosshair.render();
+        this.hotbar.render();
+        this.itemsRenderer.render();
     }
 
+    public void cleanup(){
+        this.crosshair.cleanup();
+    }
+
+    public void updateInventory(Player player){
+        this.itemsRenderer.setItems(player.getInventory());
+    }
 
 }

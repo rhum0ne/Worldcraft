@@ -34,7 +34,8 @@ public class Player {
     private final Vector3f velocity = new Vector3f(0, 0, 0);
 
 
-    private Material selectedMaterial = Material.DIRT;
+    private int selectedSlot;
+    private Inventory inventory;
 
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
@@ -47,6 +48,7 @@ public class Player {
     public Player(Game game, double x, double y, double z, float yaw, float pitch){
         this.game = game;
         this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
+        this.inventory = new Inventory(this);
         //this.normal = Vector.fromYawPitch(yaw, pitch);
 
     }
@@ -184,5 +186,16 @@ public class Player {
     public void jump() {
         if(this.velocity.get(1) == 0)
             this.getVelocity().add(0, (float)jumpForce/5, 0);
+    }
+
+    public Item getSelectedItem(){
+        return this.inventory.getItem(this.selectedSlot);
+    }
+
+    public void addItem(Item item){
+        this.getInventory().setFreeSlot(item);
+
+        if(this.game.graphicModule != null)
+            this.game.graphicModule.getGuiModule().updateInventory(this);
     }
 }

@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
+import fr.rhumun.game.worldcraftopengl.Item;
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
@@ -17,7 +18,8 @@ public class RightClick extends Control {
             }
         }
 
-        player.placeBlock(player.getSelectedMaterial());
+        Item item = player.getSelectedItem();
+        if(item != null) player.placeBlock(item.getMaterial());
     }
 
     @Override

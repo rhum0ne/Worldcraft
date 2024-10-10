@@ -19,10 +19,10 @@ public class Game {
     public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\resources\\assets\\";
     public static int SHOW_DISTANCE = 7;
-    public static boolean SHOWING_FPS = true;
+    public static boolean SHOWING_FPS = false;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
-    public static boolean ENABLE_VSYNC = false;
+    public static boolean ENABLE_VSYNC = true;
 
     GraphicModule graphicModule;
     AudioManager audioManager;
@@ -54,7 +54,10 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
-        player.setSelectedMaterial(Material.WATER);
+        player.addItem(new Item(Material.PLANKS));
+        player.addItem(new Item(Material.WATER));
+        player.addItem(new Item(Material.GRASS));
+        player.addItem(new Item(Material.COBBLE));
 
         graphicModule = new GraphicModule(this);
 

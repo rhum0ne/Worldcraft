@@ -9,7 +9,7 @@ uniform float aspectRatio;
 
 void main() {
     vec3 scaledPos = aPos;
-    //scaledPos.y *= aspectRatio;  // Ajuste la position en X par le ratio
+    //scaledPos.x *= aspectRatio;  // Ajuste la position en X par le ratio
     gl_Position = vec4(scaledPos, 1.0);  // Transforme les coordonnées ajustées
     TextureID = aTexId;
     TexCoord = aTexCoord;           // Transmission des coordonnées de texture au fragment shader

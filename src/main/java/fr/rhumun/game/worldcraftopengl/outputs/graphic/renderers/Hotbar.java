@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
+import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
@@ -10,15 +11,15 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 
-public class HUDRenderer extends Renderer {
+public class Hotbar extends Renderer {
 
     // Coordonnées des vertices d'un quad avec leurs coordonnées de texture (UV)
-    private final float[] crosshairVertices = {
+    private final float[] hotbarVertices = {
             // Positions        // Coordonnées de texture
-            -0.07f,  0.07f, 0.0f,   0.0f, 1.0f, Texture.CROSSHAIR.getId(),   // Haut gauche
-            0.07f,  0.07f, 0.0f,   1.0f, 1.0f, Texture.CROSSHAIR.getId(),    // Haut droit
-            0.07f, -0.07f, 0.0f,   1.0f, 0.0f, Texture.CROSSHAIR.getId(),    // Bas droit
-            -0.07f, -0.07f, 0.0f,   0.0f, 0.0f, Texture.CROSSHAIR.getId(),     // Bas gauche
+            -0.5f,  -0.8f, 0.0f,   0.0f, 1.0f, Texture.HOTBAR.getId(),   // Haut gauche
+            0.5f,  -0.8f, 0.0f,   1.0f, 1.0f, Texture.HOTBAR.getId(),    // Haut droit
+            0.5f, -1f, 0.0f,   1.0f, 0.0f, Texture.HOTBAR.getId(),    // Bas droit
+            -0.5f, -1f, 0.0f,   0.0f, 0.0f, Texture.HOTBAR.getId(),     // Bas gauche
     };
 
     // Indices pour dessiner un quad avec deux triangles
@@ -28,7 +29,7 @@ public class HUDRenderer extends Renderer {
     };
 
 
-    public HUDRenderer(GraphicModule graphicModule) {
+    public Hotbar(GraphicModule graphicModule) {
         super(graphicModule);
     }
 
@@ -43,7 +44,7 @@ public class HUDRenderer extends Renderer {
 
 // Envoi des vertices au VBO
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, crosshairVertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, hotbarVertices, GL_STATIC_DRAW);
 // Envoi des indices au IBO
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, quadIndices, GL_STATIC_DRAW);
@@ -62,6 +63,10 @@ public class HUDRenderer extends Renderer {
 
 // Désactiver VAO
         glBindVertexArray(0);
+
+    }
+
+    public void update(Player player) {
 
     }
 
