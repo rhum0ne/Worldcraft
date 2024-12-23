@@ -29,9 +29,6 @@ public abstract class Renderer {
         //System.out.println("Creating Renderer");
         this.graphicModule = graphicModule;
         //glBindVertexArray(this.graphicModule.VAO);
-        VAO = glGenVertexArrays();
-        VBO = glGenBuffers();
-        EBO = glGenBuffers();
     }
 
     public void addIndice(){ indice++; }
@@ -52,7 +49,12 @@ public abstract class Renderer {
         }
     }
 
-    public abstract void init();
+    public void init(){
+        VAO = glGenVertexArrays();
+        VBO = glGenBuffers();
+        EBO = glGenBuffers();
+    }
+
     public abstract void render();
     public abstract void cleanup();
 }

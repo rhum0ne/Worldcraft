@@ -28,6 +28,8 @@ public class ItemsRenderer extends Renderer {
 
     @Override
     public void init() {
+        super.init();
+
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
@@ -95,6 +97,7 @@ public class ItemsRenderer extends Renderer {
 
     public void setItems(Inventory inventory){
         this.getVertices().clear();
+        this.setIndice(0);
 
         int i = 0;
         for(Item item : inventory.getItems()){
@@ -120,8 +123,8 @@ public class ItemsRenderer extends Renderer {
 //        double z = block.getLocation().getZ();
 
         for (int i = 0; i < numVertices; i++) {
-            float vx = (float) (verticesBuffer.get(i * 3) / 12 - 0.42 + 0.02*s);
-            float vy = (float) (verticesBuffer.get(i * 3 + 1) / 10 - 0.84);
+            float vx = (float) (verticesBuffer.get(i * 3) / 12 - 0.44 + 0.11*s);
+            float vy = (float) (verticesBuffer.get(i * 3 + 1) / 10 - 0.95);
             float vz = (float) (verticesBuffer.get(i * 3 + 2) / 12);
 
 //            float dx = vx;

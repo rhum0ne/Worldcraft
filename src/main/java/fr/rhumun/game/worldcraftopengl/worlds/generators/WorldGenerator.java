@@ -29,6 +29,7 @@ public abstract class WorldGenerator {
                 chunk.get(x, world.getHeigth()-1, z).updateLight();
         */
 
+        //chunk.setToUpdate(false);
         chunk.setGenerated(true);
     }
 

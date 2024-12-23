@@ -43,6 +43,7 @@ public class ChunkRenderer {
     }
 
     public void render() {
+
         if(chunk.isToUpdate()) update();
 
         //System.out.println("Rendering chunk " + chunk);
@@ -60,18 +61,18 @@ public class ChunkRenderer {
     }
 
     private void update(){
-        //if(!chunk.isLoaded()) return;
+        //if(!chunk.isGenerated()) return;
         updateData();
         updateVAO();
-        chunk.setToUpdate(false);
     }
 
     public void updateVAO() {
-        if(!areRenderersInitialized){
-            for(Renderer renderer : renderers) {
-                renderer.init();
-            }
-            areRenderersInitialized = true;
+        if(!areRenderersInitialized) {
+
+            globalRenderer.init();
+            transparentBlocksRenderer.init();
+
+            this.areRenderersInitialized = true;
         }
 
         getGlobalRenderer().getGraphicModule().updateLights();
@@ -113,6 +114,9 @@ public class ChunkRenderer {
 
         for(Renderer renderer : this.renderers)
             renderer.toArrays();
+
+
+        chunk.setToUpdate(false);
     }
 
     private void raster(Block block, MeshArrays mesh) {
@@ -158,14 +162,14 @@ public class ChunkRenderer {
     }*/
 
     private boolean hasBlockAtFace(Block block, float nx, float ny, float nz) {
-        if(!block.isOpaque()) return false;
+        //if(!block.isOpaque()) return false;
         Location loc = block.getLocation();
         int x = loc.getXInt() + Math.round(nx);
         int y = loc.getYInt() + Math.round(ny);
         int z = loc.getZInt() + Math.round(nz);
 
         Block face = loc.getWorld().getBlockAt(x,y,z, false);
-        return face != null && face.isOpaque();
+        return face != null && face.isOpaque() ;
     }
 
 

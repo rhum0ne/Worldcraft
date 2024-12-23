@@ -24,6 +24,7 @@ public class GlobalRenderer extends Renderer {
 
     @Override
     public void init() {
+        super.init();
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);

@@ -23,7 +23,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         super(world);
 
         this.seed = 123456789;
-        this.continentalness=JNoise.newBuilder().perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).octavate(8,0.5,2.0, FractalFunction.FBM,false).build();
+        this.continentalness=JNoise.newBuilder().perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY).octavate(3,0.5,2.0, FractalFunction.FBM,false).build();
     }
 
     @Override
@@ -88,10 +88,19 @@ public class NormalWorldGenerator extends WorldGenerator {
 
     private int calculateHeight(double xH, double zH) {
         float continentalnessValue = (float) continentalness.evaluateNoise(xH, zH);
+        int h = getWorld().getHeigth();
 
-        if(continentalnessValue < 0.3) return (int) (25*continentalnessValue+32);
-        if(continentalnessValue < 0.5) return (int) (35*continentalnessValue+32);
-        return (int) (15*continentalnessValue+32);
+        float x = continentalnessValue;
+
+        if(continentalnessValue < 0.1) return (int) (40*x+20);
+        x-=0.1;
+        if(continentalnessValue < 0.5) return (int) (20*x+29);
+        x-=0.4;
+        if(continentalnessValue < 0.7) return (int) (25*x+34);
+        x-=0.2;
+        if(continentalnessValue < 0.8) return (int) (45*x+39);
+        x-=0.1;
+        return (int) (15*continentalnessValue+73);
     }
 
     @Override

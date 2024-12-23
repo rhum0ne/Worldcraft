@@ -45,6 +45,7 @@ public class Chunk {
                     this.addBlock(x, z, new Block(world, this, X*16 + x, y, Z*16 + z));
                 }
             }
+
     }
 
     private void addBlock(int x, int z, Block block) {

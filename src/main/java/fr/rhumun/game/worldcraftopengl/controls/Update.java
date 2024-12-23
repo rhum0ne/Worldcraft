@@ -22,6 +22,8 @@ public class Update  extends Control{
         System.out.println(player.getLocation().getChunk().toString());
 
         Game.UPDATE_FRUSTRUM = !Game.UPDATE_FRUSTRUM;
+
+        player.updateInventory();
     }
 
     @Override

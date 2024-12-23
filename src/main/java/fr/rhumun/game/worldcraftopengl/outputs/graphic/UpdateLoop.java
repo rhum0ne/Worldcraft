@@ -31,7 +31,7 @@ public class UpdateLoop extends Thread {
     public void run(){
         if(game.getGraphicModule() == null) return;
 
-        player.getSavedChunksManager().tryLoadChunks();
+        //player.getSavedChunksManager().tryLoadChunks();
         game.getGraphicModule().updateViewMatrix();
     }
 }

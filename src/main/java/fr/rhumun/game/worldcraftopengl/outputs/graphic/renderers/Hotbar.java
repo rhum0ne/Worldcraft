@@ -35,6 +35,8 @@ public class Hotbar extends Renderer {
 
     @Override
     public void init() {
+        super.init();
+
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);

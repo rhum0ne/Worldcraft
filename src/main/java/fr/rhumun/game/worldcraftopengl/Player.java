@@ -194,7 +194,10 @@ public class Player {
 
     public void addItem(Item item){
         this.getInventory().setFreeSlot(item);
+        updateInventory();
+    }
 
+    public void updateInventory(){
         if(this.game.graphicModule != null)
             this.game.graphicModule.getGuiModule().updateInventory(this);
     }

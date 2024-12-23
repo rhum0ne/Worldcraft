@@ -168,9 +168,9 @@ public class GraphicModule{
 
         //VAO = glGenVertexArrays();
         //VBO = glGenBuffers();
-        //EBO = glGenBuffers();
+//        EBO = glGenBuffers();
 //        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_BACK);
+//        glCullFace(GL_CW);
 
     }
 
