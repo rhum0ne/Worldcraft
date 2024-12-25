@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.blocks;
 
 import fr.rhumun.game.worldcraftopengl.Location;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
@@ -53,7 +54,18 @@ public class Block {
         this.isSurrounded = true;
     }
 
-    public boolean isOpaque(){ return this.material != null && ( this.model.isOpaque() && this.material.isOpaque()); }
+    public boolean isOpaque(){ return this.material != null && ( this.model.isOpaque() && this.material.getOpacity() == OpacityType.OPAQUE); }
+
+    public boolean hasBlockAtFace(float nx, float ny, float nz) {
+        //if(!block.isOpaque()) return false;
+        Location loc = this.getLocation();
+        int x = loc.getXInt() + Math.round(nx);
+        int y = loc.getYInt() + Math.round(ny);
+        int z = loc.getZInt() + Math.round(nz);
+
+        Block face = loc.getWorld().getBlockAt(x,y,z, false);
+        return face != null && !this.material.getOpacity().isVisibleWith(face) ;
+    }
 
     public Block setMaterial(Material material){
         if(this.material != null && this.material.getMaterial() instanceof PointLight){

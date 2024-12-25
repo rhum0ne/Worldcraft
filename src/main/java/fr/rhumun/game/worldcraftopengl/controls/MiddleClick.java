@@ -10,6 +10,7 @@ public class MiddleClick extends Control {
         Block block = player.getSelectedBlock();
 
         if(block != null) player.getInventory().getItems()[player.getSelectedSlot()] = new Item(block.getMaterial());
+        player.updateInventory();
     }
 
     @Override

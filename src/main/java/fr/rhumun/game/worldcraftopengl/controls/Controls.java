@@ -19,7 +19,10 @@ public enum Controls {
     MIDDLE_CLICK(new MiddleClick()),
     UPDATE(new Update()),
     FLY(new Fly()),
-    SPRINT(new Sprint()),;
+    SPRINT(new Sprint()),
+    ESCAPE(new Escape()),
+    HIDE_GUIS(new HideGUIS()),
+    SHOW_FPS(new ShowFPS());
 
     static final HashMap<Integer, Controls> KEYS = new HashMap<>();
 
@@ -45,6 +48,9 @@ public enum Controls {
         add(GLFW_KEY_T, UPDATE);
         add(GLFW_KEY_F, FLY);
         add(GLFW_KEY_LEFT_CONTROL, SPRINT);
+        add(GLFW_KEY_ESCAPE, ESCAPE);
+        add(GLFW_KEY_F1, HIDE_GUIS);
+        add(GLFW_KEY_F3, SHOW_FPS);
     }
 
     private static void add(int code, Controls control){ KEYS.put(code, control); }

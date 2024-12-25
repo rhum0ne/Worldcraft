@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
+import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
@@ -17,8 +18,8 @@ public class BlueFlowerMaterial extends AbstractMaterial implements ForcedModelM
     }
 
     @Override
-    public boolean isOpaque() {
-        return false;
+    public OpacityType getOpacity() {
+        return OpacityType.TRANSPARENT;
     }
 
     @Override

@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl;
 import lombok.Getter;
 
 @Getter
-public class Inventory {
+public class Inventory implements ItemContainer {
 
     Item[] items = new Item[9];
     Player player;

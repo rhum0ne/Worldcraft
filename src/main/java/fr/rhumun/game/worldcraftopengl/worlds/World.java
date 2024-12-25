@@ -11,6 +11,8 @@ import org.joml.Vector3f;
 
 import java.util.HashMap;
 
+import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
+
 @Getter
 public class World {
 
@@ -50,9 +52,9 @@ public class World {
     }
 
     public boolean isChunkLoadedAt(int x, int z){
-        if(x < 0 && x%16!=0) x-=16;
-        if(z < 0 && z%16!=0) z-=16;
-        return isChunkLoaded(x/16, z/16);
+        if(x < 0 && x%CHUNK_SIZE!=0) x-=CHUNK_SIZE;
+        if(z < 0 && z%CHUNK_SIZE!=0) z-=CHUNK_SIZE;
+        return isChunkLoaded(x/CHUNK_SIZE, z/CHUNK_SIZE);
     }
 
     public boolean isChunkLoaded(int x, int z){
@@ -74,9 +76,9 @@ public class World {
     }
 
     public Chunk getChunkAt(int x, int z, boolean generateIfNull){
-        if(x < 0 && x%16!=0) x-=16;
-        if(z < 0 && z%16!=0) z-=16;
-        return getChunk(x/16, z/16, generateIfNull);
+        if(x < 0 && x%CHUNK_SIZE!=0) x-=CHUNK_SIZE;
+        if(z < 0 && z%CHUNK_SIZE!=0) z-=CHUNK_SIZE;
+        return getChunk(x/CHUNK_SIZE, z/CHUNK_SIZE, generateIfNull);
     }
 
     public Chunk getChunkAt(double xD, double zD, boolean generateIfNull){
@@ -89,10 +91,10 @@ public class World {
         Chunk chunk = this.getChunkAt(x, z, generateIfNull);
         //System.out.println("Looking for chunk at : " + chunk.getX() + " : " + chunk.getZ());
         if(chunk == null) return null;
-        int xInput = x%16;
-        int zInput = z%16;
-        if(xInput<0) xInput+=16;
-        if(zInput<0) zInput+=16;
+        int xInput = x%CHUNK_SIZE;
+        int zInput = z%CHUNK_SIZE;
+        if(xInput<0) xInput+=CHUNK_SIZE;
+        if(zInput<0) zInput+=CHUNK_SIZE;
         return chunk.get(xInput,y,zInput); // blocks est une structure de données représentant le monde
     }
 

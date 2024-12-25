@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials.types;
 
+import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.*;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public enum Material {
     public Sound getSound(){ return this.material.getSound(); }
     public int getId(){ return this.material.getId(); }
     public int getTextureID(){ return this.material.getTexture().getId(); }
-    public boolean isOpaque(){ return this.material.isOpaque(); }
+    public OpacityType getOpacity(){ return this.material.getOpacity(); }
 
     public static int createID(){
         return ++maxID;

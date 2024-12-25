@@ -16,18 +16,24 @@ public class Game {
 
     public static Game GAME;
 
-    public static String SHADERS_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
-    public static String TEXTURES_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\src\\main\\resources\\assets\\";
-    public static int SHOW_DISTANCE = 7;
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static int SHOW_DISTANCE = 8;
+    public static int CHUNK_SIZE = 16;
+    public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
+    public static boolean SHOWING_RENDERER_DATA = true;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
-    public static boolean ENABLE_VSYNC = true;
+    public static boolean ENABLE_VSYNC = false;
+
+    public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
+    public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
 
     GraphicModule graphicModule;
     AudioManager audioManager;
     GameLoop gameLoop;
 
+    boolean isPaused = false;
     World world;
     Player player;
 
@@ -54,14 +60,31 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
-        player.addItem(new Item(Material.PLANKS));
         player.addItem(new Item(Material.WATER));
-        player.addItem(new Item(Material.GRASS));
         player.addItem(new Item(Material.COBBLE));
+        player.addItem(new Item(Material.GRASS));
+        player.addItem(new Item(Material.PLANKS));
+        player.addItem(new Item(Material.PURPLE_LAMP));
+
+        player.updateInventory();
 
         graphicModule = new GraphicModule(this);
 
         timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
         graphicModule.run();
+    }
+
+    public void setPaused(boolean b) {
+        this.graphicModule.setPaused(b);
+
+        this.isPaused = b;
+    }
+
+    public void errorLog(String log){
+        System.err.println(log);
+    }
+
+    public void log(String log){
+        System.out.println(log);
     }
 }

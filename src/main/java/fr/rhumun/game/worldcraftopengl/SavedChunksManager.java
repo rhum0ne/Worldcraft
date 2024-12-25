@@ -4,10 +4,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
@@ -15,13 +12,15 @@ import static fr.rhumun.game.worldcraftopengl.Game.*;
 public class SavedChunksManager {
 
     private final Player player;
+    private final Game game;
 
-    private List<Chunk> chunksToRender = new ArrayList<>();
+    private Set<Chunk> chunksToRender = new LinkedHashSet<>();
     private Chunk centralChunk;
 
 
     public SavedChunksManager(Player player) {
         this.player = player;
+        this.game = GAME;
     }
 
     public void tryLoadChunks(){
@@ -31,15 +30,15 @@ public class SavedChunksManager {
         }
         Chunk chunk = player.getLocation().getChunk();
         if(chunk == null) {
-            System.out.println("ERROR: Player's chunk seems to be null");
+            game.log("ERROR: Player's chunk seems to be null");
             return;
         }
         if(centralChunk == null) loadChunks(chunk);
         else if(!chunk.equals(centralChunk)) loadChunks(chunk);
     }
 
-    private ArrayList<Chunk> getChunksToLoad() {
-        ArrayList<Chunk> chunks = new ArrayList<>();
+    private LinkedHashSet<Chunk> getChunksToLoad() {
+        LinkedHashSet<Chunk> chunks = new LinkedHashSet<>();
         PriorityQueue<ChunkDistance> chunkQueue = new PriorityQueue<>(new Comparator<ChunkDistance>() {
             @Override
             public int compare(ChunkDistance c1, ChunkDistance c2) {
@@ -86,12 +85,11 @@ public class SavedChunksManager {
     public void loadChunks(Chunk chunk){
         this.centralChunk = chunk;
 
-        List<Chunk> toLoad = getChunksToLoad();
+        Set<Chunk> toLoad = getChunksToLoad();
 
         for(Chunk loadedChunk : toLoad){
             if(this.chunksToRender.contains(loadedChunk)) continue;
-            System.out.println("Starting first loading of " + loadedChunk);
-            chunk.getRenderer().updateData();
+            game.log("Starting first loading of " + loadedChunk);
             chunk.setLoaded(true);
             GAME.getGraphicModule().addChunkToLoad(loadedChunk);
         }

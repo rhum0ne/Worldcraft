@@ -1,59 +1,67 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CrosshairRenderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Hotbar;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ItemsRenderer;
-import org.lwjgl.nuklear.*;
-import org.lwjgl.system.MemoryStack;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Gui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.lwjgl.bgfx.BGFXInit.ALLOCATOR;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.nuklear.Nuklear.*;
+import static fr.rhumun.game.worldcraftopengl.Game.SHOWING_GUIS;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.*;
 
 public class GuiModule {
 
-    private GraphicModule graphicModule;
+    private final GraphicModule graphicModule;
 
-    private CrosshairRenderer crosshair;
-    private Hotbar hotbar;
-    private ItemsRenderer itemsRenderer;
+    private final List<Gui> hud = new ArrayList<Gui>();
+    private final List<Gui> guis = new ArrayList<Gui>();
 
     public GuiModule(GraphicModule graphicModule) {
         this.graphicModule = graphicModule;
 
-        this.crosshair = new CrosshairRenderer(graphicModule);
-        this.hotbar = new Hotbar(graphicModule);
-        this.itemsRenderer = new ItemsRenderer(graphicModule);
+        this.hud.add(new Crossair());
+        this.hud.add(new HotBarGui());
+
+        init();
     }
 
     public void init(){
-        this.crosshair.init();
-        this.hotbar.init();
-        this.itemsRenderer.init();
+        for(Gui gui : hud)
+            gui.getRenderer().init();
+
+
+        for(Gui gui : guis)
+            gui.getRenderer().init();
     }
 
     public void render(){
-        this.crosshair.render();
-        this.hotbar.render();
-        this.itemsRenderer.render();
+        if(!SHOWING_GUIS) return;
+
+        glEnable(GL_BLEND);
+
+        for(Gui gui : hud)
+            gui.render();
+
+
+        for(Gui gui : guis)
+            gui.render();
+
+        glDisable(GL_BLEND);
     }
 
     public void cleanup(){
-        this.crosshair.cleanup();
+        for(Gui gui : hud)
+            gui.getRenderer().cleanup();
+
+
+        for(Gui gui : guis)
+            gui.getRenderer().cleanup();
     }
 
     public void updateInventory(Player player){
-        this.itemsRenderer.setItems(player.getInventory());
+
     }
 
 }

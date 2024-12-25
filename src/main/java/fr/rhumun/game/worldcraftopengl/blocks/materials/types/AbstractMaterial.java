@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials.types;
 
+import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
@@ -20,5 +21,5 @@ public abstract class AbstractMaterial {
     }
 
     public abstract Sound getSound();
-    public abstract boolean isOpaque();
+    public abstract OpacityType getOpacity();
 }

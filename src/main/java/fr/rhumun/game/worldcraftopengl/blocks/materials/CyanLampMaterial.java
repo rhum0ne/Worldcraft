@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.InteractableMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
@@ -28,8 +29,8 @@ public class CyanLampMaterial extends PointLight implements InteractableMaterial
     }
 
     @Override
-    public boolean isOpaque() {
-        return true;
+    public OpacityType getOpacity() {
+        return OpacityType.OPAQUE;
     }
 
 

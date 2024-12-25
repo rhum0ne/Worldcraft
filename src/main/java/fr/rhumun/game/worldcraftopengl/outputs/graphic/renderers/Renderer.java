@@ -34,7 +34,7 @@ public abstract class Renderer {
     public void addIndice(){ indice++; }
 
     public void toArrays(){
-        verticesArray = new float[vertices.size()*10];
+        verticesArray = new float[vertices.size()*9];
         int index = 0;
         for (float[] vertex : vertices) {
             for (float v : vertex) {

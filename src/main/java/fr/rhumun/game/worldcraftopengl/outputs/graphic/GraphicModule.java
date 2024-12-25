@@ -7,8 +7,6 @@ import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CrosshairRenderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
@@ -22,9 +20,12 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils.*;
 import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
+import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
+import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.IntBuffer;
@@ -44,7 +45,7 @@ public class GraphicModule{
     private final Player player;
 
     private boolean areChunksUpdated = false;
-    private List<Chunk> loadedChunks;
+    private Set<Chunk> loadedChunks;
 
     // The window handle
     @Getter
@@ -67,6 +68,8 @@ public class GraphicModule{
     private final Stack<Chunk> chunkToLoad = new Stack<>();
     private final ChunkLoader chunkLoader;
 
+    private final CursorEvent cursorEvent;
+
     @Getter
     private boolean isInitialized = false;
 
@@ -76,6 +79,7 @@ public class GraphicModule{
         camera = new Camera(player);
         updateLoop = new UpdateLoop(this, game, player);
         chunkLoader = new ChunkLoader(this, player);
+        cursorEvent = new CursorEvent(camera);
     }
 
 
@@ -124,7 +128,7 @@ public class GraphicModule{
         GLFW.glfwSetScrollCallback(window, new Scroll());
         GLFW.glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
         GLFW.glfwSetKeyCallback(window, new KeyEvent(game,player));
-        GLFW.glfwSetCursorPosCallback(window, new CursorEvent(camera));
+        GLFW.glfwSetCursorPosCallback(window, cursorEvent);
 
         // Pour cacher le curseur et activer le mode "FPS"
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -158,20 +162,18 @@ public class GraphicModule{
         // Make the window visible
         glfwShowWindow(window);
 
-
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
         GL.createCapabilities();
+    }
 
-        //VAO = glGenVertexArrays();
-        //VBO = glGenBuffers();
-//        EBO = glGenBuffers();
-//        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_CW);
-
+    public void setDebug(boolean state){
+        if(state) {
+            glEnable(GL_DEBUG_OUTPUT);
+            glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+                System.err.println("GL CALLBACK: " + GLDebugSeverityToString(severity) + " - " + GLDebugMessageTypeToString(type) + ": " + GLDebugSourceToString(source) + " - " + GLMessageToString(message, length));
+            }, NULL);
+        }else{
+            glDisable(GL_DEBUG_OUTPUT);
+        }
     }
 
     public void updateViewMatrix() {
@@ -195,10 +197,8 @@ public class GraphicModule{
     }
 
     private void loop() {
-//        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_BACK);
-//        glFrontFace(GL_CCW);  // GL_CW pour le sens horaire si vos triangles sont définis différemment
-
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -215,12 +215,8 @@ public class GraphicModule{
         this.guiModule = new GuiModule(this);
         this.guiModule.init();
 
-//        for(Renderer renderer : this.renderers) {
-//            renderer.init();
-//        }
-
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
-        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *16f);
+        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *CHUNK_SIZE);
 
         float ratio = (float) startWidth / startHeight;
         ShaderUtils.PLAN_SHADERS.setUniform("aspectRatio", ratio);
@@ -326,24 +322,24 @@ public class GraphicModule{
         //if(!UPDATE_FRUSTRUM) return;
 
         if(!areChunksUpdated) {
-            loadedChunks = new ArrayList<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
+            loadedChunks = new LinkedHashSet<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
             this.areChunksUpdated = true;
             updateLights();
         }
 
-        loadOneChunk();
+        //loadOneChunk(); TOUT CHARGE MEME SANS CETTE METHODE, A VOIR POURQUOI
 
         if(loadedChunks.isEmpty()) return;
         this.pointLights.clear();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float h = loadedChunks.get(0).getWorld().getHeigth();
+        float h = game.getWorld().getHeigth();
 
         for(Chunk chunk : loadedChunks) {
-            float x = chunk.getX()*16;
-            float z = chunk.getZ()*16;
-            if (frustumIntersection.testAab(x, 0f, z, x+16, h , z+16)) {
+            float x = chunk.getX()*CHUNK_SIZE;
+            float z = chunk.getZ()*CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x+CHUNK_SIZE, h , z+CHUNK_SIZE)) {
 
                 chunk.getRenderer().render();
             }
@@ -353,8 +349,8 @@ public class GraphicModule{
     private void loadOneChunk() {
         if(chunkToLoad.isEmpty()) return;
         Chunk chunk = chunkToLoad.pop();
-        if(!loadedChunks.contains(chunk)) loadOneChunk();
-        chunk.getRenderer().updateVAO(); //To load it.
+        //chunk.setToUpdate(true); //To load it.
+        //if(!loadedChunks.contains(chunk)) loadOneChunk();
         System.out.println("Loaded chunk " + chunk);
     }
 
@@ -381,5 +377,15 @@ public class GraphicModule{
     }
 
     public void addChunkToLoad(final Chunk chunk){ this.chunkToLoad.add(chunk); }
+
+    public void setPaused(boolean state){
+        if(state) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPosCallback(window, null);
+        }else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPosCallback(window, cursorEvent);
+        }
+    }
 
 }

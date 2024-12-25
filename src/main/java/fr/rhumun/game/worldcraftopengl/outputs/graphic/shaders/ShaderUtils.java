@@ -1,9 +1,13 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.SHADERS_PATH;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -56,9 +60,9 @@ public class ShaderUtils {
         glCompileShader(shader);
 
         if (glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
-            System.err.println("Erreur de compilation du shader.");
-            System.err.println(glGetShaderInfoLog(shader));
-            System.exit(-1);
+            String errorMessage = GL20.glGetShaderInfoLog(shader, 1024);
+            GAME.errorLog("Shader Compilation Failed: " + errorMessage);
+            throw new RuntimeException("Shader compilation failed.");
         }
 
         return shader;

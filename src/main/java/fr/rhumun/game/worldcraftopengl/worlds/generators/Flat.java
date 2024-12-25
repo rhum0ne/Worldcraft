@@ -5,6 +5,8 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 
+import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
+
 public class Flat extends WorldGenerator {
 
     public Flat(World world) {
@@ -13,8 +15,8 @@ public class Flat extends WorldGenerator {
 
     @Override
     public void generate(Chunk chunk){
-        for(int x=0; x<16; x++){
-            for(int z=0; z<16; z++){
+        for(int x=0; x<CHUNK_SIZE; x++){
+            for(int z=0; z<CHUNK_SIZE; z++){
                 for(int y=1; y<10; y++) {
                     if(y==9) chunk.setBlock(x, y, z, Material.GRASS_BLOCK);
                     else if(y==8 || y==7) chunk.setBlock(x, y, z, Material.DIRT);
@@ -26,10 +28,10 @@ public class Flat extends WorldGenerator {
 
     @Override
     public void populate(Chunk chunk) {
-        for(int x=0; x<16; x++){
-            for(int z=0; z<16; z++){
+        for(int x=0; x<CHUNK_SIZE; x++){
+            for(int z=0; z<CHUNK_SIZE; z++){
                 if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)
-                    this.getWorld().spawnStructure(Structure.TREE, 16*chunk.getX() + x, 10, 16*chunk.getZ() + z);
+                    this.getWorld().spawnStructure(Structure.TREE, CHUNK_SIZE*chunk.getX() + x, 10, CHUNK_SIZE*chunk.getZ() + z);
 
             }
         }

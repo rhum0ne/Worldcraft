@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls.event;
 
 import fr.rhumun.game.worldcraftopengl.Camera;
+import fr.rhumun.game.worldcraftopengl.Game;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 
 public class CursorEvent implements GLFWCursorPosCallbackI {
@@ -9,13 +10,17 @@ public class CursorEvent implements GLFWCursorPosCallbackI {
     private boolean firstMouse = true;
 
     private final Camera camera;
+    private final Game game;
 
     public CursorEvent(Camera cam){
         this.camera = cam;
+        this.game = camera.getPlayer().getGame();
     }
 
     @Override
     public void invoke(long window, double xpos, double ypos) {
+        if(game.isPaused()) return;
+
         if (firstMouse) {
             lastX = (float) xpos;
             lastY = (float) ypos;

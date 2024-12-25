@@ -16,6 +16,7 @@ module fr.rhumun.game.worldcraftopengl {
     requires core;
     requires generators;
     requires modules;
+    requires obj;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;
@@ -39,4 +40,6 @@ module fr.rhumun.game.worldcraftopengl {
     opens fr.rhumun.game.worldcraftopengl.blocks.materials.types to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.blocks.textures;
     opens fr.rhumun.game.worldcraftopengl.blocks.textures to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.blocks.materials.opacity;
+    opens fr.rhumun.game.worldcraftopengl.blocks.materials.opacity to javafx.fxml;
 }
