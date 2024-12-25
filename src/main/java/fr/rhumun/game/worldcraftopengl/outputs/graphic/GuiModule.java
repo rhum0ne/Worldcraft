@@ -23,8 +23,6 @@ public class GuiModule {
 
         this.hud.add(new Crossair());
         this.hud.add(new HotBarGui());
-
-        init();
     }
 
     public void init(){

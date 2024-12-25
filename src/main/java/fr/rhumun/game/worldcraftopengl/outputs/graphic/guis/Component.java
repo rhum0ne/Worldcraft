@@ -6,6 +6,8 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -64,9 +66,6 @@ public abstract class Component{
 
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 // Envoi des vertices au VBO
@@ -100,7 +99,9 @@ public abstract class Component{
         if(!hasTexture() || vertices == null) return;
         glBindVertexArray(this.getVAO());
 
-        glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
+        System.out.println(Arrays.toString(this.vertices));
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //CRASH
         glBindVertexArray(0);
     }
@@ -118,6 +119,7 @@ public abstract class Component{
             System.out.println("Mise a jour EBO");
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
         }
+        System.out.println("Done!");
     }
     public void cleanup() {
         glDeleteBuffers(this.getVBO());

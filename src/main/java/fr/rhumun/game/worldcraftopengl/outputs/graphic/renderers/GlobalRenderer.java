@@ -62,7 +62,7 @@ public class GlobalRenderer extends Renderer {
         glBindVertexArray(this.getVAO());
         /*glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());*/
-        glDrawElements(GL_TRIANGLES, this.getIndice(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 
         //glBindBuffer(GL_ARRAY_BUFFER, 0);
         //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -71,7 +71,7 @@ public class GlobalRenderer extends Renderer {
 
     @Override
     public void cleanup() {
-        //glDeleteBuffers(this.getVBO());
+        glDeleteBuffers(this.getVBO());
         glDeleteVertexArrays(this.getVAO());
     }
 }

@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 public class Chunk {
@@ -100,15 +102,13 @@ public class Chunk {
     }
 
     public void unload(){
+        GAME.log("Unloading chunk " + this.toString());
         this.getWorld().unload(this);
-        if(this.isRendererInitialized()){
-            //for(Renderer renderer : this.renderer.getRenderers()) renderer.cleanup();
-            this.renderer = null;
-        }
+//        if(this.isRendererInitialized()){
+//            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();
+//            this.renderer = null;
+//        }
         this.loaded = false;
-//        this.blocks = null;
-//        this.visibleBlock = null;
-//        this.lightningBlocks = null;
     }
 
     public boolean isRendererInitialized() {

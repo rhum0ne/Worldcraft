@@ -21,7 +21,7 @@ public class Game {
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
-    public static boolean SHOWING_RENDERER_DATA = true;
+    public static boolean SHOWING_RENDERER_DATA = false;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;

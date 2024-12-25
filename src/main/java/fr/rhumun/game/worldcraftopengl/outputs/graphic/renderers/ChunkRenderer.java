@@ -10,6 +10,7 @@ import lombok.Getter;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
@@ -184,72 +185,6 @@ public class ChunkRenderer {
             this.addVertex(this.renderers.get(block.getMaterial().getOpacity().getPriority()), vertexData);
         }
     }
-
-
-//    public void updateData(){
-//        for(Renderer renderer : this.renderers){
-//            renderer.getVertices().clear();
-//            renderer.setIndice(0);
-//        }
-//
-//        List<Block> blocks = new ArrayList<>(chunk.getVisibleBlock());
-//        for (Block block : blocks) {
-//            if (block == null || block.getMaterial() == null) continue;
-//            //Location loc = block.getLocation();
-//
-//            Model model = block.getModel();
-//            if (model == null) continue;
-//            MeshArrays mesh = model.get();
-//            //if (mesh == null || mesh.getNumVertices() == 0) continue;
-//
-//            if (block.isSurrounded()) continue;
-//            raster(block, mesh);
-//        }
-//
-//        for(Renderer renderer : this.renderers)
-//            renderer.toArrays();
-//    }
-
-//    private void raster(Block block, MeshArrays mesh) {
-//        FloatBuffer verticesBuffer = mesh.getVertices();
-//        FloatBuffer normalsBuffer = mesh.getNormals();
-//        FloatBuffer texCoordsBuffer = mesh.getTexCoords();
-//
-//        int numVertices = mesh.getNumVertices();
-//        double x = block.getLocation().getX();
-//        double y = block.getLocation().getY();
-//        double z = block.getLocation().getZ();
-//
-//        for (int i = 0; i < numVertices; i++) {
-//            // Calcule la position du sommet
-//            float vx = (float) (x + verticesBuffer.get(i * 3));
-//            float vy = (float) (y + verticesBuffer.get(i * 3 + 1));
-//            float vz = (float) (z + verticesBuffer.get(i * 3 + 2));
-//
-//            // Calcule les normales
-//            float nx = normalsBuffer.get(i * 3);
-//            float ny = normalsBuffer.get(i * 3 + 1);
-//            float nz = normalsBuffer.get(i * 3 + 2);
-//
-//            // Ignore les faces cachées
-//            if (block.hasBlockAtFace(nx, ny, nz)) continue;
-//
-//            // Coordonnées de texture
-//            float u = texCoordsBuffer.get(i * 2);
-//            float v = texCoordsBuffer.get(i * 2 + 1);
-//
-//            // Ajoute le sommet dans la bonne liste (opaque ou transparent)
-//            float[] vertexData = new float[]{vx, vy, vz, u, v, block.getMaterial().getTextureID(), nx, ny, nz};
-////            if (block.isOpaque()) {
-////                addVertex(vertexData);
-////            } else {
-////                addTransparentVertex(vertexData);
-////            }
-//            this.addVertex(this.renderers.get(block.getMaterial().getOpacity().getPriority()), vertexData);
-//
-//        }
-//    }
-
 
     private void addVertex(Renderer renderer, float[] vertexData) {
         renderer.getVertices().add(vertexData);

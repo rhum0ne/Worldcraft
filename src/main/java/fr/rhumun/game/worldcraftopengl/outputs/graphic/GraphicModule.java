@@ -260,6 +260,7 @@ public class GraphicModule{
             update();
 
             glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+            System.out.println("RENDERING");
             this.guiModule.render();
 
             glUseProgram(0);

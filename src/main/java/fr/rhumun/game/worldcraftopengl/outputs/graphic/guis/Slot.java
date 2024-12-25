@@ -1,8 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
 import fr.rhumun.game.worldcraftopengl.Item;
+import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import lombok.Getter;
 
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,47 +45,37 @@ public class Slot extends Component {
         this.showedItem = item;
     }
 
-    private void updateVertices(Item item){
-//        if(item.getMaterial() == null) return;
-//        Material mat = item.getMaterial();
-//        System.out.println("Adding item " + mat + " in " + id);
-//        MeshArrays mesh = Model.BLOCK.get();
-//        if(mat.getMaterial() instanceof ForcedModelMaterial forcedModelMaterial) mesh = forcedModelMaterial.getModel().get();
-//        int numVertices = mesh.getNumVertices();
-//
-//        FloatBuffer verticesBuffer = mesh.getVertices();
-//        FloatBuffer texCoordsBuffer = mesh.getTexCoords();
-//
-////        double x = block.getLocation().getX();
-////        double y = block.getLocation().getY();
-////        double z = block.getLocation().getZ();
-//
-//        for (int i = 0; i < numVertices; i++) {
-//            float vx = (float) (verticesBuffer.get(i * 3) / 12 - 0.44 + 0.11*id);
-//            float vy = (float) (verticesBuffer.get(i * 3 + 1) / 10 - 0.95);
-//            float vz = (float) (verticesBuffer.get(i * 3 + 2) / 12);
-//
-//            vx = verticesBuffer.get(i * 3)/10 + this.getX();
-//            vy = verticesBuffer.get(i * 3 + 1)/10+this.getY();
-//            vz = verticesBuffer.get(i * 3 + 2)/10;
-//
-////            float dx = vx;
-////            float dz = vz;
-////            vx += vz/2;
-////            vz+= dx/2;
-////
-////            vy+=dx/4+dz/4;
-//
-//            float u = texCoordsBuffer.get(i * 2);
-//            float v = texCoordsBuffer.get(i * 2 + 1);
-//
-//            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTextureID()});
-//        }
-//        toArrays();
-//        updateVAO();
-//
-//        this.verticesList.clear();
-//        System.out.println("DONE");
+    private void updateVertices(Item item) {
+        this.getVerticesList().clear();
+        this.indice = 0;
+
+        if (item.getMaterial() == null) return;
+        Material mat = item.getMaterial();
+        System.out.println("Adding item " + mat + " in " + id);
+        Mesh mesh = Model.BLOCK.get();
+        if (mat.getMaterial() instanceof ForcedModelMaterial forcedModelMaterial)
+            mesh = forcedModelMaterial.getModel().get();
+
+        FloatBuffer verticesBuffer = mesh.getVerticesBuffer().duplicate();
+        FloatBuffer texCoordsBuffer = mesh.getTexCoordsBuffer().duplicate();
+        IntBuffer indicesBuffer = mesh.getIndicesBuffer().duplicate();
+
+        while (indicesBuffer.hasRemaining()) {
+            int vertexIndex = indicesBuffer.get();
+
+            // Position du sommet
+            float vx = verticesBuffer.get(vertexIndex * 3)/10 + this.getX();
+            float vy = verticesBuffer.get(vertexIndex * 3 + 1)/10+this.getY();
+            float vz = verticesBuffer.get(vertexIndex * 3 + 2)/10;
+
+            // Coordonnées de texture
+            float u = texCoordsBuffer.get(vertexIndex * 2);
+            float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
+
+            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTextureID()});
+        }
+        toArrays();
+        updateVAO();
     }
 
     private void addVertex(float[] vertexData) {
@@ -88,7 +84,7 @@ public class Slot extends Component {
     }
 
     public void toArrays(){
-        this.setVertices(new float[verticesList.size()*10]);
+        this.setVertices(new float[verticesList.size()*6]);
         int index = 0;
         for (float[] vertex : verticesList) {
             for (float v : vertex) {

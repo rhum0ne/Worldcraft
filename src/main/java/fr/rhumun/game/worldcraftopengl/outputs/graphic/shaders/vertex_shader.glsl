@@ -29,6 +29,8 @@ void main()
 
     FragNormal = normal;
     TexCoord = texCoord;                    // Passer les coordonnées de texture au fragment shader
+    TexCoord.y = 1 - TexCoord.y;
+
     TextureID = texID;                      // Passer l'ID de texture au fragment shader
     //FragPosLightSpace = view * projection * vec4(FragPos, 1.0);
 }
