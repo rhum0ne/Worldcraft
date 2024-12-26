@@ -26,7 +26,7 @@ public class Slot extends Component {
     private Item showedItem;
 
     public Slot(float x, float y, int id, Gui gui) {
-        super(x, y, x+SIZE, y+SIZE, null);
+        super(x, y, x+SIZE, y-SIZE, null);
         this.id = id;
         this.gui = gui;
     }
@@ -51,7 +51,6 @@ public class Slot extends Component {
 
         if (item.getMaterial() == null) return;
         Material mat = item.getMaterial();
-        System.out.println("Adding item " + mat + " in " + id);
         Mesh mesh = Model.BLOCK.get();
         if (mat.getMaterial() instanceof ForcedModelMaterial forcedModelMaterial)
             mesh = forcedModelMaterial.getModel().get();

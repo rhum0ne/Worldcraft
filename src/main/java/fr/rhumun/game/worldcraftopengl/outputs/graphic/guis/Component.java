@@ -30,10 +30,7 @@ public abstract class Component{
     private float[] vertices;
 
     // Indices pour dessiner un quad avec deux triangles
-    private int[] indices = {
-            0, 2, 1,   // Premier triangle
-            2, 3, 1    // Deuxième triangle
-    };
+    private int[] indices;
 
     public Component(float x, float y, float x2, float y2, Texture texture){
 
@@ -43,12 +40,13 @@ public abstract class Component{
         this.y2 = y2;
         this.texture = texture;
 
-        if(hasTexture()) setTexture(texture);
-
         init();
+
+        if(hasTexture()) set2DTexture(texture);
+
     }
 
-    public void setTexture(Texture texture) {
+    public void set2DTexture(Texture texture) {
         this.texture = texture;
         vertices = new float[]{
                 // Positions        // Coordonnées de texture
@@ -57,6 +55,12 @@ public abstract class Component{
                 x, y2, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
                 x2, y2, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
         };
+        indices =  new int[]{
+                0, 2, 1,   // Premier triangle
+                2, 3, 1    // Deuxième triangle
+        };
+
+        updateVAO();
     }
 
     public void init() {
@@ -66,16 +70,9 @@ public abstract class Component{
 
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
+        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
 
-
-// Envoi des vertices au VBO
-        if(hasTexture()) {
-            glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-            glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
-// Envoi des indices au IBO
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-        }
 
 // Position (aPos)
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.BYTES, 0);
@@ -88,7 +85,6 @@ public abstract class Component{
         glVertexAttribPointer(2, 1, GL_FLOAT, false, 6 * Float.BYTES, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
 
-
 // Désactiver VAO
         glBindVertexArray(0);
 
@@ -96,12 +92,13 @@ public abstract class Component{
 
     public void render() {
         update();
-        if(!hasTexture() || vertices == null) return;
+        if(indices == null || vertices == null) return;
         glBindVertexArray(this.getVAO());
+        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
+        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
 
-        System.out.println(Arrays.toString(this.vertices));
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
         //CRASH
         glBindVertexArray(0);
     }
@@ -109,17 +106,21 @@ public abstract class Component{
     public abstract void update();
 
     public void updateVAO(){
-        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        if(vertices != null) { // Vérifiez si le tableau vertices n'est pas nul
-            System.out.println("Mise a jour VBO : " + vertices.length);
-            glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
+        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+        glBindVertexArray(this.getVAO());
+
+        if(vertices != null && indices != null) { // Vérifiez si le tableau vertices n'est pas nul
+            glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+            glBufferData(GL_ARRAY_BUFFER, vertices.clone(), GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.clone(), GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        if(indices != null) { // Vérifiez si le tableau indices n'est pas nul
-            System.out.println("Mise a jour EBO");
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-        }
-        System.out.println("Done!");
+
+        glBindVertexArray(0);
     }
     public void cleanup() {
         glDeleteBuffers(this.getVBO());

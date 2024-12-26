@@ -13,4 +13,5 @@ void main() {
     gl_Position = vec4(scaledPos, 1.0);  // Transforme les coordonnées ajustées
     TextureID = aTexId;
     TexCoord = aTexCoord;           // Transmission des coordonnées de texture au fragment shader
+    TexCoord.y = 1-TexCoord.y;
 }
