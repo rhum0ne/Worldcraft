@@ -22,6 +22,7 @@ public class Texture {
     public static Texture RED_FLOWER;
     public static Texture BLUE_FLOWER;
     public static Texture SAPLING;
+    public static Texture LANTERN;
 
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
@@ -42,8 +43,9 @@ public class Texture {
         BLUE_FLOWER = new Texture(13, "blue-flower.png");
         SAND = new Texture(14, "sand.png");
         SAPLING = new Texture(15, "sapling.png");
-        CROSSHAIR = new Texture(16, "hud\\crosshair.png");
-        HOTBAR = new Texture(17, "hud\\hotbar.png");
+        LANTERN = new Texture(16, "lantern.png");
+        CROSSHAIR = new Texture(17, "hud\\crosshair.png");
+        HOTBAR = new Texture(18, "hud\\hotbar.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();

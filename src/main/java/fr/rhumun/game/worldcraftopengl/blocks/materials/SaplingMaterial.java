@@ -1,11 +1,13 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
-public class SaplingMaterial extends AbstractMaterial {
+public class SaplingMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public SaplingMaterial() {
         super(Texture.SAPLING);
     }
@@ -18,5 +20,10 @@ public class SaplingMaterial extends AbstractMaterial {
     @Override
     public OpacityType getOpacity() {
         return OpacityType.TRANSPARENT;
+    }
+
+    @Override
+    public Model getModel() {
+        return Model.CROSS;
     }
 }

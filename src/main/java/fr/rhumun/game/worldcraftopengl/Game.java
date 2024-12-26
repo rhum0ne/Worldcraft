@@ -16,7 +16,7 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\WorldCraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SHOW_DISTANCE = 8;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
@@ -60,11 +60,15 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
-        player.addItem(new Item(Material.WATER));
+        player.addItem(new Item(Material.SAND));
         player.addItem(new Item(Material.COBBLE));
-        player.addItem(new Item(Material.GRASS));
+        player.addItem(new Item(Material.SAPLING));
         player.addItem(new Item(Material.PLANKS));
         player.addItem(new Item(Material.PURPLE_LAMP));
+        player.addItem(new Item(Material.CYAN_LAMP));
+        player.addItem(new Item(Material.LAMP));
+        player.addItem(new Item(Material.LANTERN));
+        player.addItem(new Item(Material.STONE_BRICK));
 
         player.updateInventory();
 

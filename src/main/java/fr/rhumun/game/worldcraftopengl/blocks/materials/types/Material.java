@@ -23,7 +23,8 @@ public enum Material {
     RED_FLOWER(new RedFlowerMaterial()),
     BLUE_FLOWER(new BlueFlowerMaterial()),
     SAND(new SandMaterial()),
-    SAPLING(new SaplingMaterial());
+    SAPLING(new SaplingMaterial()),
+    LANTERN(new LanternMaterial());
 
     static int maxID = 0;
 
