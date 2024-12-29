@@ -22,7 +22,7 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
         glViewport(0, 0, width, height);
         float ratio = (float) width / height;
 
-        ShaderUtils.PLAN_SHADERS.setUniform("aspectRatio", ratio);
+        graphicModule.getGuiModule().resize(width, height);
 
         // Recalculer la matrice de projection
         graphicModule.projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SHOW_DISTANCE *16f);

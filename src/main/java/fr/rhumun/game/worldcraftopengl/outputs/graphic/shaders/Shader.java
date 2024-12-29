@@ -15,6 +15,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un vecteur 3D (vec3) au shader
     public void setUniform(String uniformName, Vector3f vector) {
+        glUseProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform3f(location, vector.x, vector.y, vector.z);
@@ -23,6 +24,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un float au shader
     public void setUniform(String uniformName, float value) {
+        glUseProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1f(location, value);
@@ -31,6 +33,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un float au shader
     public void setUniform(String uniformName, int value) {
+        glUseProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1i(location, value);

@@ -9,7 +9,7 @@ public class MiddleClick extends Control {
     public void onKeyPressed(Player player) {
         Block block = player.getSelectedBlock();
 
-        if(block != null) player.getInventory().getItems()[player.getSelectedSlot()] = new Item(block.getMaterial());
+        if(block != null) player.getInventory().getItems()[player.getSelectedSlot()] = new Item(block.getMaterial(), block.getModel());
         player.updateInventory();
     }
 

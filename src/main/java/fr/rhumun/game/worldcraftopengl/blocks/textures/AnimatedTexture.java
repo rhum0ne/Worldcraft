@@ -8,8 +8,8 @@ public abstract class AnimatedTexture extends Texture {
     private final int frames;
     private final int slowness;
 
-    public AnimatedTexture(int id, String path, int frames, int slowness) {
-        super(id, path);
+    public AnimatedTexture(String path, int frames, int slowness) {
+        super(path);
         this.frames = frames;
         this.slowness = slowness;
     }

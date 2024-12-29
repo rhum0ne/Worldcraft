@@ -26,37 +26,45 @@ public class Texture {
 
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
+    public static Texture SELECTED_SLOT;
+    public static Texture CREATIVE_INVENTORY;
+    public static Texture INVENTORY;
 
     public static void init(){
-        COBBLE = new Texture(1, "cobble.png");
-        DIRT = new Texture(2, "dirt.png");
-        GRASS_BLOCK = new Texture(3, "grass.png");
-        OAK_LOG = new Texture(4, "oak_log.png");
-        LEAVES = new Texture(5, "leaves.png");
-        STONE_BRICKS = new Texture(6, "stone_brick.png");
-        STONE = new Texture(7, "stone.png");
-        PLANKS = new Texture(8, "planks.png");
-        LAMP = new Texture(9, "lamp.png");
-        WATER = new Texture(10, "water.png");
-        GRASS = new Texture(11, "grass-plant.png");
-        RED_FLOWER = new Texture(12, "red-flower.png");
-        BLUE_FLOWER = new Texture(13, "blue-flower.png");
-        SAND = new Texture(14, "sand.png");
-        SAPLING = new Texture(15, "sapling.png");
-        LANTERN = new Texture(16, "lantern.png");
-        CROSSHAIR = new Texture(17, "hud\\crosshair.png");
-        HOTBAR = new Texture(18, "hud\\hotbar.png");
+        COBBLE = new Texture("cobble.png");
+        DIRT = new Texture("dirt.png");
+        GRASS_BLOCK = new Texture("grass.png");
+        OAK_LOG = new Texture("oak_log.png");
+        LEAVES = new Texture("leaves.png");
+        STONE_BRICKS = new Texture("stone_brick.png");
+        STONE = new Texture("stone.png");
+        PLANKS = new Texture("planks.png");
+        LAMP = new Texture("lamp.png");
+        WATER = new Texture("water.png");
+        GRASS = new Texture("grass-plant.png");
+        RED_FLOWER = new Texture("red-flower.png");
+        BLUE_FLOWER = new Texture("blue-flower.png");
+        SAND = new Texture("sand.png");
+        SAPLING = new Texture("sapling.png");
+        LANTERN = new Texture("lantern.png");
+
+
+        CROSSHAIR = new Texture("hud\\crosshair.png");
+        HOTBAR = new Texture("hud\\hotbar.png");
+        SELECTED_SLOT = new Texture("hud\\hotbar_selection.png");
+        CREATIVE_INVENTORY = new Texture("hud\\creative-inventory.png");
+        INVENTORY = new Texture("hud\\inventory.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();
 
-    private String path;
-    private int id;
+    private final String path;
+    private final int id;
 
-    public Texture(int id, String path){
-        this.id = id;
-        this.path = path;
+    public Texture(String path){
         textures.add(this);
+        this.path = path;
+        this.id = textures.size();
     }
 
     public boolean isAnimated(){return this instanceof AnimatedTexture;}

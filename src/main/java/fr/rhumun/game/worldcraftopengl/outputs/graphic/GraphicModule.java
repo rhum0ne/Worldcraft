@@ -39,6 +39,7 @@ import org.joml.Matrix4f;
 
 public class GraphicModule{
 
+    @Getter
     private final Game game;
     @Getter
     private final Camera camera;
@@ -72,6 +73,7 @@ public class GraphicModule{
 
     @Getter
     private boolean isInitialized = false;
+    private boolean isPaused = false;
 
     public GraphicModule(Game game){
         this.game = game;
@@ -123,6 +125,7 @@ public class GraphicModule{
         window = glfwCreateWindow(startWidth, startHeight, "WorldCraft OpenGL", NULL, NULL);
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
+
 
         GLFW.glfwSetMouseButtonCallback(window, new MouseClickEvent(game));
         GLFW.glfwSetScrollCallback(window, new Scroll());
@@ -218,8 +221,8 @@ public class GraphicModule{
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
         projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *CHUNK_SIZE);
 
-        float ratio = (float) startWidth / startHeight;
-        ShaderUtils.PLAN_SHADERS.setUniform("aspectRatio", ratio);
+        this.guiModule.resize(startWidth, startHeight);
+
 
         for(Shader shader : this.renderingShaders) {
             int projectionLoc = glGetUniformLocation(shader.id, "projection");
@@ -255,6 +258,8 @@ public class GraphicModule{
         while ( !glfwWindowShouldClose(window) ) {
             //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+
+            if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
 
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
@@ -378,14 +383,16 @@ public class GraphicModule{
 
     public void addChunkToLoad(final Chunk chunk){ this.chunkToLoad.add(chunk); }
 
-    public void setPaused(boolean state){
-        if(state) {
+    private void setPaused(boolean state) {
+        if (state) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            glfwSetCursorPosCallback(window, null);
-        }else {
+        } else {
+//            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+//            glfwSetCursorPos(window, vidmode.width() / 2.0, vidmode.height() / 2.0); // Place le curseur au centre de la fenêtre
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            glfwSetCursorPosCallback(window, cursorEvent);
         }
+        this.isPaused = state;
     }
+
 
 }

@@ -12,10 +12,12 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
+
 @Getter
 public class Slot extends Component {
 
-    private static final float SIZE = 0.1f;
+    public static final int DEFAULT_SIZE = 30;
 
     private final List<float[]> verticesList = new ArrayList<>();
     private int indice;
@@ -25,10 +27,14 @@ public class Slot extends Component {
 
     private Item showedItem;
 
-    public Slot(float x, float y, int id, Gui gui) {
-        super(x, y, x+SIZE, y-SIZE, null);
+    public Slot(int x, int y, int size, int id, Gui gui) {
+        super(x, y, size, size, null);
         this.id = id;
         this.gui = gui;
+    }
+
+    public Slot(int x, int y, int id, Gui gui){
+        this(x, y, DEFAULT_SIZE, id, gui);
     }
 
     public Item getItem(){
@@ -63,9 +69,9 @@ public class Slot extends Component {
             int vertexIndex = indicesBuffer.get();
 
             // Position du sommet
-            float vx = verticesBuffer.get(vertexIndex * 3)/10 + this.getX();
-            float vy = verticesBuffer.get(vertexIndex * 3 + 1)/10+this.getY();
-            float vz = verticesBuffer.get(vertexIndex * 3 + 2)/10;
+            float vx = verticesBuffer.get(vertexIndex * 3)*GUI_ZOOM*this.getWidth() + this.getX();
+            float vy = verticesBuffer.get(vertexIndex * 3 + 1)*GUI_ZOOM*this.getHeigth()+this.getY();
+            float vz = verticesBuffer.get(vertexIndex * 3 + 2);
 
             // Coordonnées de texture
             float u = texCoordsBuffer.get(vertexIndex * 2);

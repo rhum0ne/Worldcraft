@@ -22,6 +22,7 @@ public class Game {
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
     public static boolean SHOWING_RENDERER_DATA = false;
+    public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
@@ -79,8 +80,6 @@ public class Game {
     }
 
     public void setPaused(boolean b) {
-        this.graphicModule.setPaused(b);
-
         this.isPaused = b;
     }
 

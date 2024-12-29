@@ -11,6 +11,8 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengles.GLES20.glDeleteBuffers;
 
 public class GuiRenderer extends Renderer {
 
@@ -22,15 +24,17 @@ public class GuiRenderer extends Renderer {
             2, 3, 1    // Deuxième triangle
     };
 
+    private boolean isInitialized = false;
+
     public GuiRenderer(float x1, float y1, float x2, float y2, Texture texture) {
         super(GAME.getGraphicModule());
 
         vertices = new float[]{
                 // Positions        // Coordonnées de texture
-                x1,  y1, 0.0f,   0.0f, 1.0f, texture.getId(),   // Haut gauche
-                x2,  y1, 0.0f,   1.0f, 1.0f, texture.getId(),    // Haut droit
-                x1, y2, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
-                x2, y2, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
+                x1,  y1, 0.0f,   0.0f, 0.0f, texture.getId(),   // Haut gauche
+                x2,  y1, 0.0f,   1.0f, 0.0f, texture.getId(),    // Haut droit
+                x1, y2, 0.0f,   0.0f, 1.0f, texture.getId(),     // Bas gauche
+                x2, y2, 0.0f,   1.0f, 1.0f, texture.getId(),    // Bas droit
         };
     }
 
@@ -68,10 +72,13 @@ public class GuiRenderer extends Renderer {
 // Désactiver VAO
         glBindVertexArray(0);
 
+        this.isInitialized = true;
     }
 
     @Override
     public void render() {
+        if(!this.isInitialized) this.init();
+
         glBindVertexArray(this.getVAO());
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
@@ -79,6 +86,7 @@ public class GuiRenderer extends Renderer {
 
     @Override
     public void cleanup() {
-
+//        glDeleteBuffers(this.getVBO());
+//        glDeleteVertexArrays(this.getVAO());
     }
 }

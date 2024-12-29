@@ -9,8 +9,8 @@ import static org.lwjgl.opengl.GL20.*;
 public class Button extends Component{
     private boolean hovered = false;
     private boolean clicked = false;
-    public Button(float x, float y, float x2, float y2, Texture texture) {
-        super(x, y, x2, y2, texture);
+    public Button(int x, int y, int width, int heigth, Texture texture) {
+        super(x, y, width, heigth, texture);
     }
     @Override
     public void render() {

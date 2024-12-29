@@ -21,39 +21,39 @@ public abstract class Component{
     private int VBO, EBO, VAO;
 
 
-    private final float x;
-    private final float y;
-    private final float x2;
-    private final float y2;
+    private final int x;
+    private final int y;
+    private final int width;
+    private final int heigth;
     private Texture texture;
 
     private float[] vertices;
+    private boolean isInitialized = false;
 
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
 
-    public Component(float x, float y, float x2, float y2, Texture texture){
+    public Component(int x, int y, int width, int heigth, Texture texture){
 
         this.x = x;
         this.y = y;
-        this.x2 = x2;
-        this.y2 = y2;
+        this.width = width;
+        this.heigth = heigth;
         this.texture = texture;
-
-        init();
-
-        if(hasTexture()) set2DTexture(texture);
-
     }
 
     public void set2DTexture(Texture texture) {
         this.texture = texture;
+        set2DCoordinates(this.x, this.y);
+    }
+
+    public void set2DCoordinates(int x, int y) {
         vertices = new float[]{
                 // Positions        // Coordonnées de texture
                 x,  y, 0.0f,   0.0f, 1.0f, texture.getId(),   // Haut gauche
-                x2,  y, 0.0f,   1.0f, 1.0f, texture.getId(),    // Haut droit
-                x, y2, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
-                x2, y2, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
+                x + width,  y, 0.0f,   1.0f, 1.0f, texture.getId(),    // Haut droit
+                x, y + heigth, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
+                x + width, y + heigth, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
         };
         indices =  new int[]{
                 0, 2, 1,   // Premier triangle
@@ -88,9 +88,14 @@ public abstract class Component{
 // Désactiver VAO
         glBindVertexArray(0);
 
+        if(hasTexture()) set2DTexture(texture);
+
+        this.isInitialized = true;
     }
 
     public void render() {
+        if(!isInitialized) this.init();
+
         update();
         if(indices == null || vertices == null) return;
         glBindVertexArray(this.getVAO());
@@ -99,7 +104,6 @@ public abstract class Component{
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
-        //CRASH
         glBindVertexArray(0);
     }
 

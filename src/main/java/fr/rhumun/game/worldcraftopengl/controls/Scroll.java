@@ -10,6 +10,11 @@ public class Scroll extends GLFWScrollCallback {
     public void invoke(long window, double xoffset, double yoffset) {
         Game game = GAME;
 
-        game.getPlayer().setSelectedSlot((game.getPlayer().getSelectedSlot()+1)%9);
+        if (yoffset > 0) {
+            game.getPlayer().setSelectedSlot((game.getPlayer().getSelectedSlot() +8) % 9);
+        } else if (yoffset < 0) {
+            game.getPlayer().setSelectedSlot((game.getPlayer().getSelectedSlot() + 1) % 9);
+        }
     }
+
 }

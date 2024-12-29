@@ -19,7 +19,7 @@ public class RightClick extends Control {
         }
 
         Item item = player.getSelectedItem();
-        if(item != null) player.placeBlock(item.getMaterial());
+        if(item != null) player.placeBlock(item);
     }
 
     @Override

@@ -3,6 +3,9 @@ package fr.rhumun.game.worldcraftopengl.controls.event;
 import fr.rhumun.game.worldcraftopengl.Camera;
 import fr.rhumun.game.worldcraftopengl.Game;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWVidMode;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class CursorEvent implements GLFWCursorPosCallbackI {
 
@@ -19,7 +22,9 @@ public class CursorEvent implements GLFWCursorPosCallbackI {
 
     @Override
     public void invoke(long window, double xpos, double ypos) {
-        if(game.isPaused()) return;
+        if(game.isPaused()){
+            return;
+        }
 
         if (firstMouse) {
             lastX = (float) xpos;

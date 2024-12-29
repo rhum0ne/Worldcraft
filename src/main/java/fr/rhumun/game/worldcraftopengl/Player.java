@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.CreativeInventoryGui;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
@@ -143,17 +143,17 @@ public class Player {
 
     }
 
-    public void placeBlock(final Material material){
+    public void placeBlock(final Item item){
         // Déterminer la face du bloc où le joueur a cliqué
         Block block = this.getBlockToPlace();
         if (block == null) {
             System.out.println("Impossible de déterminer la face du bloc.");
             return;
         }
-
+        Material material = item.getMaterial();
 
         // Appeler la méthode pour placer le bloc dans le jeu
-        block.setModel(Model.BLOCK).setMaterial(material);
+        block.setModel(item.getModel()).setMaterial(material);
         this.playSound(material.getSound());
     }
 
@@ -188,6 +188,11 @@ public class Player {
             this.getVelocity().add(0, (float)jumpForce/5, 0);
     }
 
+    public void setSelectedSlot(int slot){
+        this.selectedSlot=slot;
+        this.game.getGraphicModule().getGuiModule().setSelectedSlot(slot);
+    }
+
     public Item getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }
@@ -200,5 +205,18 @@ public class Player {
     public void updateInventory(){
         if(this.game.graphicModule != null)
             this.game.graphicModule.getGuiModule().updateInventory(this);
+    }
+
+    public void openInventory(){
+        game.setPaused(true);
+        game.graphicModule.getGuiModule().openGUI(new CreativeInventoryGui());
+    }
+
+    public boolean hasOpenedInventory(){
+        return game.graphicModule.getGuiModule().hasGUIOpened();
+    }
+
+    public void closeInventory() {
+        game.getGraphicModule().getGuiModule().closeGUI();
     }
 }
