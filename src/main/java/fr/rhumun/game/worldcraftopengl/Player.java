@@ -54,7 +54,7 @@ public class Player {
     }
     public Block getBlockToPlace() {
 
-        float stepSize = 0.2F;
+        float stepSize = 0.1F;
 
         Vector3f direction = getRayDirection();
         Vector3f start = new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ());
@@ -83,7 +83,7 @@ public class Player {
 
 
     public Block getSelectedBlock() {
-        float stepSize = 0.2F;
+        float stepSize = 0.1F;
 
         Vector3f direction = getRayDirection();
         Vector3f start = new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ());

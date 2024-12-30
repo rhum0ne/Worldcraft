@@ -1,67 +1,21 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
+import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
+import lombok.Getter;
+import lombok.Setter;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
-public class Button extends Component{
+@Getter @Setter
+public abstract class Button extends Component{
     private boolean hovered = false;
     private boolean clicked = false;
-    public Button(int x, int y, int width, int heigth, Texture texture) {
-        super(x, y, width, heigth, texture);
-    }
-    @Override
-    public void render() {
-        // Définissez la couleur en fonction de l'état
-//        if (hovered) {
-//            glColor4f(1.0f, 1.0f, 0.8f, 1.0f); // Couleur plus claire si survolée
-//        } else if (clicked) {
-//            glColor4f(0.8f, 0.8f, 0.8f, 1.0f); // Couleur sombre si cliquée
-//        } else {
-//            glColor4f(1.0f, 1.0f, 1.0f, 1.0f); // Couleur normale
-//        }
-
-        super.render();
+    public Button(int x, int y, int width, int heigth, Texture texture, Gui container) {
+        super(x, y, width, heigth, texture, container);
     }
 
-    @Override
-    public void cleanup() {
-
-    }
-
-    public void update() {
-        // Mise à jour de l'état du bouton
-        if (isMouseOver()) {
-            hovered = true;
-            if (isMouseClicked()) {
-                clicked = true;
-                onClick();
-            }
-        } else {
-            hovered = false;
-            clicked = false;
-        }
-    }
-
-    public void onClick() {
-        System.out.println("Bouton cliqué !");
-    }
-
-    private boolean isMouseOver() {
-//        // Implémentez la détection de survol de la souris
-//        double mouseX = getMouseX();
-//        double mouseY = getMouseY();
-//        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-
-        return false;
-    }
-
-    private boolean isMouseClicked() {
-        // Implémentez la détection de clic (par exemple avec GLFW)
-//        return glfwGetMouseButton(GAME.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
-
-        return false;
-    }
+    public abstract void onClick(Player player) ;
 }

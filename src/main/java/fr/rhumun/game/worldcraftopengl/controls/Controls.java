@@ -58,8 +58,8 @@ public enum Controls {
     private static void add(int code, Controls control){ KEYS.put(code, control); }
 
     public static Controls get(int key){ return KEYS.get(key); }
-    public void press(Player player){ this.function.onKeyPressed(player);}
-    public void release(Player player){ this.function.onKeyReleased(player);}
+    public void press(Player player){ this.function.testOnKeyPressed(player);}
+    public void release(Player player){ this.function.testOnKeyReleased(player);}
 
     public boolean isRepeatable(){ return this.function.isRepeatable(); }
 

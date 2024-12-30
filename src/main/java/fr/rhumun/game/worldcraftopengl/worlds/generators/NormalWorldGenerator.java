@@ -71,6 +71,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                 block.setMaterial(Material.GRASS_BLOCK);
                 for(int i=0; i<3; i++){
                     block = block.getBlockAtDown();
+                    if(block == null) break;
                     block.setMaterial(Material.DIRT);
                 }
             }

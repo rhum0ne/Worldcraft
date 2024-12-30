@@ -19,8 +19,8 @@ public class Chunk {
 
     Block[][][] blocks;
     //private final List<Block> blockList = new ArrayList<>();
-    private final List<Block> visibleBlock = new ArrayList<>();
-    private final List<Block> lightningBlocks = new ArrayList<>();
+    private List<Block> visibleBlock = new ArrayList<>();
+    private List<Block> lightningBlocks = new ArrayList<>();
 
     private final int X;
     private final int Z;
@@ -79,6 +79,42 @@ public class Chunk {
         return blocks[x][y][z];
     }
 
+    public Block getAt(int x, int y, int z){
+        if(y<0 || y>= world.getHeigth()){
+            //System.out.println("Y too high.");
+            return null;
+        }
+        x-=X*CHUNK_SIZE;
+        z-=Z*CHUNK_SIZE;
+        if(x<0) x+=CHUNK_SIZE;
+        if(z<0) z+=CHUNK_SIZE;
+
+        if(x>=CHUNK_SIZE){
+            Chunk chunk = world.getChunk(this.X + 1, this.Z, false);
+            if(chunk == null) return null;
+            return chunk.get(x-16, y, z);
+        } else if (x<0) {
+            Chunk chunk = world.getChunk(this.X - 1, this.Z, false);
+            if(chunk == null) return null;
+            return chunk.get(x+16, y, z);
+        }
+
+        if(z>=CHUNK_SIZE){
+            Chunk chunk = world.getChunk(this.X, this.Z + 1, false);
+            if(chunk == null) return null;
+            return chunk.get(x, y, z-16);
+        } else if (z<0) {
+            Chunk chunk = world.getChunk(this.X, this.Z - 1, false);
+            if(chunk == null) return null;
+            return chunk.get(x, y, z+16);
+        }
+
+
+        //System.out.println("x: "+(x)+", z: "+(z));
+        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
+        return blocks[x][y][z];
+    }
+
     public void setBlock(int x, int y, int z, Material mat, Model model){
         this.blocks[x][y][z].setMaterial(mat);
         this.blocks[x][y][z].setModel(model);
@@ -103,12 +139,16 @@ public class Chunk {
 
     public void unload(){
         GAME.log("Unloading chunk " + this.toString());
+        this.loaded = false;
         this.getWorld().unload(this);
+        this.blocks = null;
+        this.visibleBlock = null;
+        this.lightningBlocks = null;
+
 //        if(this.isRendererInitialized()){
 //            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();
 //            this.renderer = null;
 //        }
-        this.loaded = false;
     }
 
     public boolean isRendererInitialized() {

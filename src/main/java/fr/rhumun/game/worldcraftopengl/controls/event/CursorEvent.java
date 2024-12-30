@@ -23,6 +23,7 @@ public class CursorEvent implements GLFWCursorPosCallbackI {
     @Override
     public void invoke(long window, double xpos, double ypos) {
         if(game.isPaused()){
+            game.getGraphicModule().getGuiModule().cursorMove(xpos, ypos);
             return;
         }
 

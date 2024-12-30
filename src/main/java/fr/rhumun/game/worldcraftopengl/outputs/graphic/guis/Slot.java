@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
 import fr.rhumun.game.worldcraftopengl.Item;
+import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
@@ -15,7 +16,7 @@ import java.util.List;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 
 @Getter
-public class Slot extends Component {
+public class Slot extends Button {
 
     public static final int DEFAULT_SIZE = 30;
 
@@ -23,14 +24,12 @@ public class Slot extends Component {
     private int indice;
 
     private final int id;
-    private final Gui gui;
 
     private Item showedItem;
 
     public Slot(int x, int y, int size, int id, Gui gui) {
-        super(x, y, size, size, null);
+        super(x, y, size, size, null, gui);
         this.id = id;
-        this.gui = gui;
     }
 
     public Slot(int x, int y, int id, Gui gui){
@@ -38,7 +37,11 @@ public class Slot extends Component {
     }
 
     public Item getItem(){
-        return gui.getItemContainer().getItems()[id];
+        return this.getContainer().getItemContainer().getItems()[id];
+    }
+
+    public void setItem(Item item){
+        this.getContainer().getItemContainer().setItem(id, item);
     }
 
     @Override
@@ -46,8 +49,13 @@ public class Slot extends Component {
         Item item = getItem();
         if(showedItem==item) return;
 
-        this.setTexture(item.getMaterial().getMaterial().getTexture());
+        if(item==null){
+            this.setTexture(null);
+        }else{
+            this.setTexture(item.getMaterial().getMaterial().getTexture());
+        }
         this.updateVertices(item);
+
         this.showedItem = item;
     }
 
@@ -55,7 +63,11 @@ public class Slot extends Component {
         this.getVerticesList().clear();
         this.indice = 0;
 
-        if (item.getMaterial() == null) return;
+        if(item == null || item.getMaterial() == null){
+            toArrays();
+            updateVAO();
+            return;
+        }
         Material mat = item.getMaterial();
         Mesh mesh = Model.BLOCK.get();
         if (mat.getMaterial() instanceof ForcedModelMaterial forcedModelMaterial)
@@ -69,13 +81,13 @@ public class Slot extends Component {
             int vertexIndex = indicesBuffer.get();
 
             // Position du sommet
-            float vx = verticesBuffer.get(vertexIndex * 3)*GUI_ZOOM*this.getWidth() + this.getX();
-            float vy = verticesBuffer.get(vertexIndex * 3 + 1)*GUI_ZOOM*this.getHeigth()+this.getY();
-            float vz = verticesBuffer.get(vertexIndex * 3 + 2);
+            float vx = (verticesBuffer.get(vertexIndex * 3)+0.5f)*this.getWidth() + this.getX();
+            float vy = (verticesBuffer.get(vertexIndex * 3 + 1))*this.getHeigth()+this.getY();
+            float vz = (verticesBuffer.get(vertexIndex * 3 + 2));
 
             // Coordonnées de texture
             float u = texCoordsBuffer.get(vertexIndex * 2);
-            float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
+            float v = 1-texCoordsBuffer.get(vertexIndex * 2 + 1);
 
             addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTextureID()});
         }
@@ -103,4 +115,7 @@ public class Slot extends Component {
             this.getIndices()[i] = i;
         }
     }
+
+    @Override
+    public void onClick(Player player) {}
 }

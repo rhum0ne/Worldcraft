@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import java.util.Arrays;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -21,11 +23,13 @@ public abstract class Component{
     private int VBO, EBO, VAO;
 
 
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
     private final int width;
     private final int heigth;
     private Texture texture;
+    private Gui container;
+    private GuiModule guiModule;
 
     private float[] vertices;
     private boolean isInitialized = false;
@@ -33,21 +37,49 @@ public abstract class Component{
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
 
-    public Component(int x, int y, int width, int heigth, Texture texture){
+    public Component(int x, int y, int width, int heigth, Texture texture, Gui container){
 
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.heigth = heigth;
+        this.width = GUI_ZOOM*width;
+        this.heigth = GUI_ZOOM*heigth;
         this.texture = texture;
+        this.container = container;
+        this.guiModule = GAME.getGraphicModule().getGuiModule();
+
+        updateVertices();
+    }
+
+
+    public boolean hasContainer(){ return this.container != null; }
+
+    public int getX(){ return this.x*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getX() : 0); }
+
+    public int getY(){ return this.y*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getY() : 0); }
+
+    public boolean isCursorIn(){
+        int x = getGuiModule().getCursorX();
+        int y = getGuiModule().getCursorY();
+        return x >= this.getX() && x < this.getX() + width && y >= this.getY() && y < this.getY() + heigth;
     }
 
     public void set2DTexture(Texture texture) {
         this.texture = texture;
-        set2DCoordinates(this.x, this.y);
+        updateVertices();
     }
 
     public void set2DCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
+        updateVertices();
+    }
+
+    public void updateVertices(){
+        if(texture == null) return;
+
+        int x = this.getX();
+        int y = this.getY();
+
         vertices = new float[]{
                 // Positions        // Coordonnées de texture
                 x,  y, 0.0f,   0.0f, 1.0f, texture.getId(),   // Haut gauche
@@ -60,7 +92,7 @@ public abstract class Component{
                 2, 3, 1    // Deuxième triangle
         };
 
-        updateVAO();
+        if(isInitialized) updateVAO();
     }
 
     public void init() {
@@ -90,6 +122,7 @@ public abstract class Component{
 
         if(hasTexture()) set2DTexture(texture);
 
+        updateVAO();
         this.isInitialized = true;
     }
 

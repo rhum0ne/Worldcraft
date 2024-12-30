@@ -86,7 +86,7 @@ public class Movements {
     }
 
     private static void moveOnAxis(Player player, int axis) {
-        double moveStep = 0.01;
+        double moveStep = 0.0001;
         double i = 0;
         float velocity = player.getVelocity().get(axis);
         int sign = (velocity < 0) ? -1 : 1;

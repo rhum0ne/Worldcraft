@@ -25,15 +25,6 @@ public class Block {
 
     private int tick = 0;
 
-    //private Block[][][] nextBlocks = new Block[3][3][3];
-
-//    private Block blockAtUp;
-//    private Block blockAtNorth;
-//    private Block blockAtSouth;
-//    private Block blockAtDown;
-//    private Block blockAtEast;
-//    private Block blockAtWest;
-
     private List<Block> sideBlocks = new ArrayList<>();
 
     public Block(World world, Chunk chunk, int x, int y, int z) {
@@ -63,7 +54,7 @@ public class Block {
         int y = loc.getYInt() + Math.round(ny);
         int z = loc.getZInt() + Math.round(nz);
 
-        Block face = loc.getWorld().getBlockAt(x,y,z, false);
+        Block face = chunk.getAt(x,y,z);
         return face != null && !this.material.getOpacity().isVisibleWith(face) ;
     }
 
@@ -77,7 +68,7 @@ public class Block {
 
         if(material==null) {
             for (Block block : this.getSideBlocks()) block.setSurrounded(false);
-            this.getLocation().getChunk().getVisibleBlock().remove(this);
+            chunk.getVisibleBlock().remove(this);
         }
         else {
             if(material.getMaterial() instanceof PointLight){
@@ -85,7 +76,7 @@ public class Block {
             }
 
             for(Block block : this.getSideBlocks())block.updateIsSurrounded();
-            this.getLocation().getChunk().getVisibleBlock().add(this);
+            chunk.getVisibleBlock().add(this);
 
             if(material.getMaterial() instanceof ForcedModelMaterial fMat){
                 this.setModel(fMat.getModel());
@@ -119,22 +110,22 @@ public class Block {
 
     public Block getBlockAtUp(boolean generateIfNull) {
         if(location.getYInt() == location.getWorld().getHeigth()-1) return null;
-        return this.getLocation().getWorld().getBlockAt(location.getX(), location.getY() + 1, location.getZ(), generateIfNull);
+        return chunk.getAt((int) location.getX(), (int) (location.getY() + 1), (int) location.getZ());
     }
     public Block getBlockAtDown(boolean generateIfNull) {
         if(location.getY() == 0) return null;
-        return this.getLocation().getWorld().getBlockAt(location.getX(), location.getY() - 1, location.getZ(), generateIfNull);
+        return chunk.getAt((int) location.getX(), (int) (location.getY() - 1), (int) location.getZ());
     }
     public Block getBlockAtNorth(boolean generateIfNull) {
-        return this.getLocation().getWorld().getBlockAt(location.getX()+1, location.getY(), location.getZ(), generateIfNull);
+        return chunk.getAt((int) location.getX()+1, (int) location.getY(), (int) location.getZ());
     }
     public Block getBlockAtSouth(boolean generateIfNull) {
-        return this.getLocation().getWorld().getBlockAt(location.getX() - 1, location.getY(), location.getZ(), generateIfNull);
+        return chunk.getAt((int) location.getX() - 1, (int) location.getY(), (int) location.getZ());
     }
     public Block getBlockAtEast(boolean generateIfNull) {
-        return this.getLocation().getWorld().getBlockAt(location.getX(), location.getY(), location.getZ() - 1, generateIfNull);
+        return chunk.getAt((int) location.getX(), (int) location.getY(), (int) (location.getZ() - 1));
     }
     public Block getBlockAtWest(boolean generateIfNull) {
-        return this.getLocation().getWorld().getBlockAt(location.getX(), location.getY(), location.getZ() + 1, generateIfNull);
+        return chunk.getAt((int) location.getX(), (int) location.getY(), (int) (location.getZ() + 1));
     }
 }

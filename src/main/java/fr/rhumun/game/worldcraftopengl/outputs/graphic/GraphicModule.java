@@ -13,6 +13,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
+import lombok.Setter;
 import org.joml.FrustumIntersection;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
@@ -75,6 +76,11 @@ public class GraphicModule{
     private boolean isInitialized = false;
     private boolean isPaused = false;
 
+    @Getter @Setter
+    private int width = startWidth;
+    @Getter @Setter
+    private int height = startHeight;
+
     public GraphicModule(Game game){
         this.game = game;
         player = game.getPlayer();
@@ -128,7 +134,7 @@ public class GraphicModule{
 
 
         GLFW.glfwSetMouseButtonCallback(window, new MouseClickEvent(game));
-        GLFW.glfwSetScrollCallback(window, new Scroll());
+        GLFW.glfwSetScrollCallback(window, new Scroll(game));
         GLFW.glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
         GLFW.glfwSetKeyCallback(window, new KeyEvent(game,player));
         GLFW.glfwSetCursorPosCallback(window, cursorEvent);
@@ -180,6 +186,8 @@ public class GraphicModule{
     }
 
     public void updateViewMatrix() {
+        if(projectionMatrix == null) return;
+
         // Mise à jour de la matrice de vue à chaque frame
         Matrix4f viewMatrix = new Matrix4f().lookAt(
                 camera.getPos(),       // Position de la caméra mise à jour
@@ -261,6 +269,7 @@ public class GraphicModule{
 
             if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
 
+            game.getGraphicModule().updateViewMatrix();
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
 
@@ -282,6 +291,7 @@ public class GraphicModule{
     public void updateLights(){
         pointLights.clear();
         for(Chunk chunk : loadedChunks) {
+            if(!chunk.isLoaded()) continue;
             if(chunk.getLightningBlocks().isEmpty()) continue;
             for(Block block : chunk.getLightningBlocks()) {
                 if(block.getTick()==0) continue;
@@ -393,6 +403,4 @@ public class GraphicModule{
         }
         this.isPaused = state;
     }
-
-
 }

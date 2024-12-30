@@ -32,7 +32,7 @@ flat in vec3 FragNormal;
 in vec3 FragPos;  // Position interpolée du fragment en espace monde
 out vec4 FragPosLightSpace;
 
-uniform sampler2D textures[22];  // Tableau de textures
+uniform sampler2D textures[50];  // Tableau de textures
 uniform sampler2D shadowMap;  // Pour les ombres directionnelles
 uniform samplerCube depthMap; // Pour les ombres des lumières ponctuelles
 uniform float far_plane;      // Distance maximum de la lumière ponctuelle

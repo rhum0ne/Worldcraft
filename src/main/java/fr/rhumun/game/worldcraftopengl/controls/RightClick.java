@@ -7,8 +7,18 @@ import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.InteractableMaterial;
 
 public class RightClick extends Control {
+
+    public RightClick(){
+        super(false, true);
+    }
     @Override
     public void onKeyPressed(Player player) {
+        if(getGame().isPaused()){
+            getGame().getGraphicModule().getGuiModule().rightClick(player);
+            return;
+        }
+
+
         Block block = player.getSelectedBlock();
         if(block != null) {
             Material material = block.getMaterial();

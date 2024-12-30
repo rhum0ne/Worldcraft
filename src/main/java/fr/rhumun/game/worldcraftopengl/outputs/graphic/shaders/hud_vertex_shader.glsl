@@ -14,5 +14,5 @@ void main() {
     //scaledPos.x /= aspectRatio;  // Ajuste la position en X par le ratio
     gl_Position = projection * vec4(aPos, 1.0);  // Transforme les coordonnées ajustées
     TextureID = aTexId;
-    TexCoord = aTexCoord;           // Transmission des coordonnées de texture au fragment shader
+    TexCoord = vec2(aTexCoord.x, 1-aTexCoord.y);           // Transmission des coordonnées de texture au fragment shader
 }
