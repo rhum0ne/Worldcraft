@@ -134,10 +134,15 @@ public abstract class Component{
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+        glUseProgram(this.getShader());
+        if(this instanceof TextComponent) glBindTexture(GL_TEXTURE_2D, guiModule.getFontLoader().getAtlasNum());
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+    }
+
+    public int getShader() {
+        return ShaderUtils.PLAN_SHADERS.id;
     }
 
     public abstract void update();

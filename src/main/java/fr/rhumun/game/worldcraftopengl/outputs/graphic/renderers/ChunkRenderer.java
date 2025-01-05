@@ -4,6 +4,8 @@ import fr.rhumun.game.worldcraftopengl.blocks.Block;
 import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
 
@@ -12,6 +14,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -40,6 +43,7 @@ public class ChunkRenderer {
     private boolean isDataUpdating = false;
     private boolean isDataReady = false;
 
+    private int verticesNumber;
 
 
     public ChunkRenderer(Chunk chunk) {
@@ -56,7 +60,7 @@ public class ChunkRenderer {
         //System.out.println("Rendering chunk " + chunk);
 
         this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
-        if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndice() != 0){
+        if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
@@ -65,7 +69,7 @@ public class ChunkRenderer {
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
-        if(this.renderers.get(OpacityType.TRANSPARENT.getPriority()).getIndice() != 0){
+        if(this.renderers.get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
@@ -124,10 +128,13 @@ public class ChunkRenderer {
     public void updateData() {
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
+            renderer.getIndices().clear();
             renderer.setIndice(0);
         }
 
-        List<Block> blocks = new ArrayList<>(chunk.getVisibleBlock());
+        ArrayList<Block> blocks = new ArrayList<>(chunk.getVisibleBlock());
+//        Stack<Block> blocks = new Stack<>();
+//        blocks.addAll(chunk.getVisibleBlock());
         for (Block block : blocks) {
             if (block == null || block.getMaterial() == null) continue;
 
@@ -142,10 +149,29 @@ public class ChunkRenderer {
             raster(block, obj);
         }
 
+//        for (Block block = blocks.pop() ; !blocks.isEmpty(); block = blocks.pop() ) {
+//            if (block == null || block.getMaterial() == null) continue;
+//
+//            Model model = block.getModel();
+//            if (model == null) continue;
+//
+//            Mesh obj = model.get();
+//            if (obj == null) continue;
+//
+//            if (block.isSurrounded()) continue;
+//
+//            raster(block, obj);
+//        }
+
+        this.verticesNumber = 0;
+
         for (Renderer renderer : this.renderers) {
             renderer.toArrays();
-            if(SHOWING_RENDERER_DATA)
-                GAME.log("DATA LOADED: " + renderer.getVerticesArray().length + " floats");
+            if(SHOWING_RENDERER_DATA) {
+                int length = renderer.getVertices().size();
+                //GAME.log("DATA LOADED: " + length + " floats");
+                this.verticesNumber += length;
+            }
         }
     }
 
@@ -159,6 +185,8 @@ public class ChunkRenderer {
         double x = block.getLocation().getX();
         double y = block.getLocation().getY();
         double z = block.getLocation().getZ();
+
+        //if(isBlock(block, x, y ,z)) return;
 
         while (indicesBuffer.hasRemaining()) {
             int vertexIndex = indicesBuffer.get();
@@ -181,9 +209,44 @@ public class ChunkRenderer {
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
 
             // Ajoute le sommet dans le renderer approprié
+
             float[] vertexData = new float[]{vx, vy, vz, u, v, block.getMaterial().getTextureID(), nx, ny, nz};
             this.addVertex(this.renderers.get(block.getMaterial().getOpacity().getPriority()), vertexData);
         }
+    }
+
+    private boolean isBlock(Block block, double x, double y, double z) {
+        if(block.getModel() != Model.BLOCK) return false;
+        Renderer renderer = this.renderers.get(block.getMaterial().getOpacity().getPriority());
+
+        for(int face=0; face<6; face++){
+            for(int v=0; v<4; v++){
+                float[] vertex = new float[9];
+                int start = face*8*4+v*8;
+
+                float nx = BlockUtil.verticesWithAttributes[start+3];
+                float ny = BlockUtil.verticesWithAttributes[start+4];
+                float nz = BlockUtil.verticesWithAttributes[start+5];
+
+                //if (block.hasBlockAtFace(nx, ny, nz)) continue;
+
+                vertex[0] = (float) (x + BlockUtil.verticesWithAttributes[start]);
+                vertex[1] = (float) (y + BlockUtil.verticesWithAttributes[start+1]);
+                vertex[2] = (float) (z + BlockUtil.verticesWithAttributes[start+2]);
+                vertex[3] = (BlockUtil.verticesWithAttributes[start+6]);
+                vertex[4] = (BlockUtil.verticesWithAttributes[start+7]);
+                vertex[5] = (block.getMaterial().getTextureID());
+                vertex[6] = nx;
+                vertex[7] = ny;
+                vertex[8] = nz;
+
+                renderer.getVertices().add(vertex);
+            }
+        }
+
+        renderer.addRawIndices(BlockUtil.indices);
+
+        return true;
     }
 
     private void addVertex(Renderer renderer, float[] vertexData) {

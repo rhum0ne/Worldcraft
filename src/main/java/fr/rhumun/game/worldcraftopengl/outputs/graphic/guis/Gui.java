@@ -62,6 +62,13 @@ public class Gui extends Component{
         return image;
     }
 
+    public TextComponent addText(int x, int y, String text) {
+        TextComponent textC = new TextComponent(x, y, text, this);
+
+        this.components.add(textC);
+        return textC;
+    }
+
     public Slot createSlot(int x, int y, int size){
         Slot slot = new Slot(x, y, size, slots.size(), this);
 

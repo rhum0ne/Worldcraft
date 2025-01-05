@@ -125,7 +125,7 @@ public class Chunk {
             Block block = blocks[x][y][z];
             if(block.getMaterial() != null) return block;
         }
-        return null;
+        return blocks[x][0][z];
     }
 
 

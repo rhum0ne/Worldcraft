@@ -28,7 +28,7 @@ public enum Model {
     private static Mesh load(final String name){
         try {
             //return MeshObjectLoader.loadModelMeshFromStream(new FileInputStream(TEXTURES_PATH + name));
-            return new Mesh(ObjUtils.convertToRenderable(ObjReader.read(new FileInputStream(TEXTURES_PATH + name))));
+            return new Mesh(ObjUtils.convertToRenderable(ObjReader.read(new FileInputStream(TEXTURES_PATH + "models\\" + name))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

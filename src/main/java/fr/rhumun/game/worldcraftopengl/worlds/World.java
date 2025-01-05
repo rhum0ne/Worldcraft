@@ -28,11 +28,6 @@ public class World {
         this.generator = new NormalWorldGenerator(this);
 
         this.createChunk(0, 0);
-
-        this.getBlockAt(-20, 11, -20, true).setMaterial(Material.STONE_BRICK);
-        this.getBlockAt(-20, 12, -20, true).setMaterial(Material.STONE_BRICK);
-        this.getBlockAt(-20, 13, -20, true).setMaterial(Material.STONE_BRICK);
-        this.getBlockAt(-20, 14, -20, true).setMaterial(Material.PURPLE_LAMP);
     }
 
     public Chunk createChunk(int x, int z){

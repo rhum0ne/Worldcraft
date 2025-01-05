@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.Item;
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
@@ -15,8 +16,7 @@ import org.joml.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
-import static fr.rhumun.game.worldcraftopengl.Game.SHOWING_GUIS;
+import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL20.*;
 
 @Getter
@@ -24,6 +24,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class GuiModule {
 
     private final GraphicModule graphicModule;
+    private final FontLoader fontLoader;
 
     private final List<Gui> hud = new ArrayList<Gui>();
     private final HotBarGui hotbar;
@@ -40,12 +41,20 @@ public class GuiModule {
 
     public GuiModule(GraphicModule graphicModule) {
         this.graphicModule = graphicModule;
+        try {
+            GAME.log("Loading font...");
+            this.fontLoader = new FontLoader(TEXTURES_PATH + "hud\\font.ttf");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         this.hud.add(new Crossair());
         this.hud.add(this.hotbar = new HotBarGui());
     }
 
     public void init(){
+        this.fontLoader.loadFont();
+
         for(Gui gui : hud)
             gui.init();
 
@@ -69,6 +78,10 @@ public class GuiModule {
 
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         int projection = glGetUniformLocation(ShaderUtils.PLAN_SHADERS.id, "projection");
+        glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
+
+        glUseProgram(ShaderUtils.TEXT_SHADER.id);
+        projection = glGetUniformLocation(ShaderUtils.TEXT_SHADER.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
 
         graphicModule.setWidth((int) width);
@@ -166,11 +179,8 @@ public class GuiModule {
     public void leftClick(Player player) {
         if(!hasGUIOpened()) return;
 
-        System.out.println("LEFT CLICK AT " + cursorX + " : " + cursorY);
-
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {
-                System.out.println(component.getX() + " - " + component.getY());
                 if(component.isCursorIn()){
                     button.onClick(player);
                     break;

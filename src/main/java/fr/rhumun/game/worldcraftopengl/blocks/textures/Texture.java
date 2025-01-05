@@ -1,9 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.blocks.textures;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class Texture {
@@ -58,6 +60,8 @@ public class Texture {
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+
+    public static Map<Character, Integer> chars = new HashMap<>();
 
     public static void init(){
         COBBLE = new Texture("cobble.png");
@@ -116,7 +120,8 @@ public class Texture {
     public static HashMap<String, Texture> textureByName = new HashMap<>();
 
     private final String path;
-    private final int id;
+    @Setter
+    private int id;
 
     public Texture(String path){
         textures.add(this);

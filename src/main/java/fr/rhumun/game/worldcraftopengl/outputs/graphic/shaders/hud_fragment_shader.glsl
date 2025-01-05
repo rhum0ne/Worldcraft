@@ -4,7 +4,7 @@ out vec4 FragColor;
 in vec2 TexCoord;
 flat in float TextureID;  // Permet d'identifier quelle texture utiliser
 
-uniform sampler2D textures[50];  // Tableau de textures
+uniform sampler2D textures[150];  // Tableau de textures
 
 void main() {
     // Sélectionne la texture à utiliser avec l'identifiant TextureID

@@ -81,6 +81,8 @@ public class GraphicModule{
     @Getter @Setter
     private int height = startHeight;
 
+    private int verticesNumber;
+
     public GraphicModule(Game game){
         this.game = game;
         player = game.getPlayer();
@@ -172,6 +174,7 @@ public class GraphicModule{
         glfwShowWindow(window);
 
         GL.createCapabilities();
+        //this.setDebug(true);
     }
 
     public void setDebug(boolean state){
@@ -223,7 +226,9 @@ public class GraphicModule{
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
+
         this.guiModule = new GuiModule(this);
+        initTextures();
         this.guiModule.init();
 
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
@@ -247,7 +252,6 @@ public class GraphicModule{
         }
 
         updateViewMatrix();
-        initTextures();
 
         debugUtils.checkGLError();
 
@@ -340,6 +344,13 @@ public class GraphicModule{
             loadedChunks = new LinkedHashSet<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
             this.areChunksUpdated = true;
             updateLights();
+            if(SHOWING_RENDERER_DATA){
+                this.verticesNumber = 0;
+                for(Chunk chunk : loadedChunks){
+                    this.verticesNumber += chunk.getRenderer().getVerticesNumber();
+                }
+                game.log("Total vertices: " + this.verticesNumber);
+            }
         }
 
         //loadOneChunk(); TOUT CHARGE MEME SANS CETTE METHODE, A VOIR POURQUOI

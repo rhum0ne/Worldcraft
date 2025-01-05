@@ -21,14 +21,14 @@ public class Game {
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
-    public static boolean SHOWING_RENDERER_DATA = false;
+    public static boolean SHOWING_RENDERER_DATA = true;
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
-    public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
+    public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\old\\";
 
     GraphicModule graphicModule;
     AudioManager audioManager;
@@ -55,7 +55,7 @@ public class Game {
 
         this.world = new World();
 
-        this.player = new Player(this, 8, world.getChunk(0, 0, true).getHighestBlock(8, 8).getLocation().getY()+10, 8);
+        this.player = new Player(this, 0, world.getChunk(0, 0, true).getHighestBlock(0, 0).getLocation().getY()+10, 0);
 
         Timer timer = new Timer();
 

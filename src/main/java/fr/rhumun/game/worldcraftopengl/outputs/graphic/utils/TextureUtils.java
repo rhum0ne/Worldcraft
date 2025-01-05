@@ -2,9 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.stb.STBImage;
 
 import java.nio.ByteBuffer;
@@ -16,25 +14,25 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureUtils {
 
     public static void initTextures(){
-        int[] textureUnits = new int[Texture.textures.size()+1]; // Supposons que tu as 4 textures
+        int[] textureUnits = new int[150]; // Supposons que tu as 4 textures
         int i = 1;
+
         for (Texture texture : Texture.textures) {
             int textureID = loadTexture(TEXTURES_PATH + texture.getPath());
-            //glActiveTexture(GL_TEXTURE0 + i); // Active l'unité de texture correspondante
+            glActiveTexture(textureID); // Active l'unité de texture correspondante
             glBindTexture(GL_TEXTURE_2D, textureID);
             glGenerateMipmap(GL_TEXTURE_2D);
             //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            textureUnits[i] = i; // Stocke l'unité de texture
-            System.out.println(texture + " -> " + i);
+            textureUnits[i] = textureID; // Stocke l'unité de texture
+            texture.setId(i);
             i++;
         }
 

@@ -17,6 +17,7 @@ module fr.rhumun.game.worldcraftopengl {
     requires generators;
     requires modules;
     requires obj;
+    requires org.lwjgl.freetype;
 
     opens fr.rhumun.game.worldcraftopengl to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl;
