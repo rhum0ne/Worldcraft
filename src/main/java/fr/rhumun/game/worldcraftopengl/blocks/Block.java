@@ -23,14 +23,19 @@ public class Block {
     private final Chunk chunk;
     private boolean isSurrounded;
 
+    private short chunkX;
+    private short chunkZ;
+
     private int tick = 0;
 
     private List<Block> sideBlocks = new ArrayList<>();
 
-    public Block(World world, Chunk chunk, int x, int y, int z) {
+    public Block(World world, Chunk chunk, int x, int y, int z, short chunkX, short chunkZ) {
         this.chunk = chunk;
         this.location = new Location(world, x, y, z, 0, 0);
         this.model = Model.BLOCK;
+        this.chunkX = chunkX;
+        this.chunkZ = chunkZ;
 
     }
 

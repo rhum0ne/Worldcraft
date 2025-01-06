@@ -23,6 +23,7 @@ public enum Controls {
     ESCAPE(new Escape()),
     HIDE_GUIS(new HideGUIS()),
     SHOW_FPS(new ShowFPS()),
+    SHOW_TRIANGLES(new ShowTrianlges()),
     INVENTORY(new OpenInventory());
 
     static final HashMap<Integer, Controls> KEYS = new HashMap<>();
@@ -52,6 +53,7 @@ public enum Controls {
         add(GLFW_KEY_ESCAPE, ESCAPE);
         add(GLFW_KEY_F1, HIDE_GUIS);
         add(GLFW_KEY_F3, SHOW_FPS);
+        add(GLFW_KEY_F4, SHOW_TRIANGLES);
         add(GLFW_KEY_E, INVENTORY);
     }
 

@@ -31,7 +31,11 @@ public abstract class Renderer {
         //glBindVertexArray(this.graphicModule.VAO);
     }
 
-    public void addIndice(){ indices.add(indices.size()); }
+    public void addIndice(){ indices.add((indices.isEmpty()) ? 0 : (indices.getLast()+1)); }
+
+    public void addAllIndices(int[] indices){
+        for(int i : indices) this.indices.add(i);
+    }
 
     public void addRawIndices(int[] rawIndices){
         int start = (indices.isEmpty()) ? 0 : (indices.getLast()+1);
@@ -68,4 +72,8 @@ public abstract class Renderer {
 
     public abstract void render();
     public abstract void cleanup();
+
+    public void addAllVertices(float[][] vertices) {
+        this.vertices.addAll(Arrays.asList(vertices));
+    }
 }

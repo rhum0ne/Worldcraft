@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.physics;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
 
@@ -99,7 +100,7 @@ public class Movements {
                     player.addZ(sign * moveStep * Math.sin(Math.toRadians(player.getLocation().getYaw())));
                     break;
                 case 1: // Axe Y
-                    if (player.hasBlockDown() && velocity < 0) {
+                    if ((player.hasBlockDown() && !Game.NO_CLIP) && velocity < 0) {
                         player.getVelocity().setComponent(1, 0);
                         return;
                     }

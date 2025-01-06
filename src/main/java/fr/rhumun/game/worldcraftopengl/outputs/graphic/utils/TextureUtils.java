@@ -19,7 +19,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class TextureUtils {
 
     public static void initTextures(){
-        int[] textureUnits = new int[150]; // Supposons que tu as 4 textures
+        int[] textureUnits = new int[Texture.textures.size()+1]; // Supposons que tu as 4 textures
         int i = 1;
 
         for (Texture texture : Texture.textures) {
@@ -29,6 +29,9 @@ public class TextureUtils {
             glGenerateMipmap(GL_TEXTURE_2D);
             //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);  // Répétition sur l'axe S (horizontal)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);  // Répétition sur l'axe T (vertical)
+
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             textureUnits[i] = textureID; // Stocke l'unité de texture

@@ -25,6 +25,7 @@ import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils.*
 import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
+import static org.lwjgl.opengl.GL32C.GL_PROGRAM_POINT_SIZE;
 import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
 import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -75,6 +76,7 @@ public class GraphicModule{
     @Getter
     private boolean isInitialized = false;
     private boolean isPaused = false;
+    public boolean isShowingTriangles = false;
 
     @Getter @Setter
     private int width = startWidth;
@@ -223,6 +225,9 @@ public class GraphicModule{
         glEnable(GL_DEPTH_TEST);
         ShaderUtils.initShaders();
 
+        //glEnable(GL_PROGRAM_POINT_SIZE);
+
+
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
@@ -267,11 +272,13 @@ public class GraphicModule{
         this.guiModule.updateInventory(player);
 
         this.isInitialized = true;
+
         while ( !glfwWindowShouldClose(window) ) {
             //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
 
             if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
+            if(game.isShowingTriangles() != this.isShowingTriangles) this.setShowingTriangles(game.isShowingTriangles());
 
             game.getGraphicModule().updateViewMatrix();
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
@@ -413,5 +420,14 @@ public class GraphicModule{
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
         this.isPaused = state;
+    }
+
+    public void setShowingTriangles(boolean b) {
+        if(b){
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }else{
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        this.isShowingTriangles = b;
     }
 }

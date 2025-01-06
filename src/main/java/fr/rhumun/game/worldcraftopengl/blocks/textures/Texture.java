@@ -21,6 +21,7 @@ public class Texture {
     public static Texture LAMP;
     public static Texture WATER;
     public static Texture GRASS;
+    public static Texture GRASS_TOP;
     public static Texture SAND;
     public static Texture RED_FLOWER;
     public static Texture BLUE_FLOWER;
@@ -75,6 +76,7 @@ public class Texture {
         LAMP = new Texture("lamp.png");
         WATER = new Texture("water.png");
         GRASS = new Texture("grass-plant.png");
+        GRASS_TOP = new Texture("grass_top.png");
         RED_FLOWER = new Texture("red-flower.png");
         BLUE_FLOWER = new Texture("blue-flower.png");
         DANDELION = new Texture("dandelion.png");
