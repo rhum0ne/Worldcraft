@@ -8,6 +8,8 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 public class GrassBlockMaterial extends AbstractMaterial {
     public GrassBlockMaterial() {
         super(Texture.GRASS_BLOCK);
+        this.setTopTexture(Texture.GRASS_TOP);
+        this.setBottomTexture(Texture.DIRT);
     }
 
     @Override

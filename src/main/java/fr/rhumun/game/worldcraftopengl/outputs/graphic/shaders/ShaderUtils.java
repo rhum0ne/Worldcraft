@@ -15,12 +15,14 @@ public class ShaderUtils {
 
     public static Shader GLOBAL_SHADERS;
     public static Shader PLAN_SHADERS;
+    public static Shader LIQUID_SHADER;
     public static Shader TEXT_SHADER;
 
     public static void initShaders(){
         GLOBAL_SHADERS = new GlobalShader();
         PLAN_SHADERS = new HUDShader();
         TEXT_SHADER = new TextShader();
+        LIQUID_SHADER = new LiquidShader();
     }
 
     public static int loadShader(String vertexPath, String fragmentPath){

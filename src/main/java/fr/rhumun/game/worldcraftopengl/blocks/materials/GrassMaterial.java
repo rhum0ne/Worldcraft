@@ -10,8 +10,6 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 public class GrassMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public GrassMaterial() {
         super(Texture.GRASS);
-        this.setTopTexture(Texture.GRASS_TOP);
-        this.setBottomTexture(Texture.DIRT);
     }
 
     @Override

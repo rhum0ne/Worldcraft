@@ -33,6 +33,7 @@ public class Texture {
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
     public static Texture BOOKSHELF;
+    public static Texture BOOKSHELF_TOP;
     public static Texture BRICKS;
     public static Texture BROWN_WOOL;
     public static Texture CALCITE;
@@ -88,6 +89,7 @@ public class Texture {
         BLACK_WOOL = new Texture("black_wool.png");
         BLUE_WOOL = new Texture("blue_wool.png");
         BOOKSHELF = new Texture("bookshelf.png");
+        BOOKSHELF_TOP = new Texture("bookshelf_top.png");
         BRICKS = new Texture("bricks.png");
         BROWN_WOOL = new Texture("brown_wool.png");
         CALCITE = new Texture("calcite.png");

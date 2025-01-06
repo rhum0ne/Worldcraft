@@ -74,7 +74,7 @@ public abstract class AbstractMaterial {
         } else if (x == 0.0f && y == 0.0f && z == -1.0f) {
             return textures[5]; // Face gauche (négative Z)
         }
-        return null; // Si la normale ne correspond à aucune face
+        return this.getTexture(); // Si la normale ne correspond à aucune face
     }
 
     public Texture getTexture() {return textures[0];}

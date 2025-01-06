@@ -84,6 +84,7 @@ public class GraphicModule{
     private int height = startHeight;
 
     private int verticesNumber;
+    private float liquidTime = 0;
 
     public GraphicModule(Game game){
         this.game = game;
@@ -229,8 +230,10 @@ public class GraphicModule{
 
 
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
+        this.renderingShaders.add(ShaderUtils.LIQUID_SHADER);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
+        this.shaders.add(ShaderUtils.LIQUID_SHADER);
 
         this.guiModule = new GuiModule(this);
         initTextures();
@@ -280,6 +283,8 @@ public class GraphicModule{
             if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
             if(game.isShowingTriangles() != this.isShowingTriangles) this.setShowingTriangles(game.isShowingTriangles());
 
+            updateWaterTime();
+
             game.getGraphicModule().updateViewMatrix();
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
@@ -297,6 +302,13 @@ public class GraphicModule{
             glfwPollEvents();
         }
         debugUtils.checkGLError();
+    }
+
+    private void updateWaterTime() {
+        this.liquidTime += 0.005f;
+        if(liquidTime>2*Math.PI) this.liquidTime=0;
+
+        ShaderUtils.LIQUID_SHADER.setUniform("time", this.liquidTime);
     }
 
     public void updateLights(){

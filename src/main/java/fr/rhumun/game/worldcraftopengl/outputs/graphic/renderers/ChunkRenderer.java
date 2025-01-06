@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
@@ -19,6 +20,7 @@ import java.util.Stack;
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL20C.glUseProgram;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
@@ -59,11 +61,14 @@ public class ChunkRenderer {
 
         //System.out.println("Rendering chunk " + chunk);
 
+        glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
         this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
+
         if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
+            glUseProgram(ShaderUtils.LIQUID_SHADER.id);
             this.renderers.get(OpacityType.LIQUID.getPriority()).render();
 
             //glDepthMask(true);
@@ -73,6 +78,7 @@ public class ChunkRenderer {
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
+            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
