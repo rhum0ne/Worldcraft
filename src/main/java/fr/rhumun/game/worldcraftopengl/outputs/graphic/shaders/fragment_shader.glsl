@@ -32,7 +32,8 @@ flat in vec3 FragNormal;
 in vec3 FragPos;  // Position interpolée du fragment en espace monde
 out vec4 FragPosLightSpace;
 
-uniform sampler2D textures[32];  // Tableau de textures
+//uniform sampler2D textures[32];  // Tableau de textures
+uniform sampler2D text;
 uniform sampler2D shadowMap;  // Pour les ombres directionnelles
 uniform samplerCube depthMap; // Pour les ombres des lumières ponctuelles
 uniform float far_plane;      // Distance maximum de la lumière ponctuelle
@@ -82,9 +83,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
     // combine results
-    vec3 ambient  = light.ambient  * vec3(texture(textures[int(TextureID)], TexCoord));
-    vec3 diffuse  = light.diffuse  * diff * vec3(texture(textures[int(TextureID)], TexCoord));
-    vec3 specular = light.specular * spec * vec3(texture(textures[int(TextureID)], TexCoord));
+    vec3 ambient  = light.ambient  * vec3(texture(text, TexCoord));
+    vec3 diffuse  = light.diffuse  * diff * vec3(texture(text, TexCoord));
+    vec3 specular = light.specular * spec * vec3(texture(text, TexCoord));
 
     //float shadow = ShadowCalculation(FragPosLightSpace);
 
@@ -108,8 +109,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
     // Composantes ambiante, diffuse, spéculaire
-    vec3 ambient = light.ambient * vec3(texture(textures[int(TextureID)], TexCoord));
-    vec3 diffuse = light.diffuse * diff * vec3(texture(textures[int(TextureID)], TexCoord));
+    vec3 ambient = light.ambient * vec3(texture(text, TexCoord));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(text, TexCoord));
     vec3 specular = light.specular * spec * vec3(1.0);  // Si tu as une map spéculaire, tu pourrais la remplacer ici
 
     ambient *= attenuation;
@@ -125,7 +126,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main()
 {
-    vec4 textureColor = texture(textures[int(TextureID)], TexCoord);
+    vec4 textureColor = texture(text, TexCoord);
     vec3 norm = normalize(FragNormal);  // Normalisation des normales
     vec3 viewDir = normalize(viewPos - FragPos);  // Direction de la caméra en espace monde
 
