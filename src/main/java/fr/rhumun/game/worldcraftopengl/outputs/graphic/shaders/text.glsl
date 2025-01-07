@@ -13,3 +13,5 @@ void main() {
     TextureID = aTexId;
     TexCoord = aTexCoord;  // Ici, aTexCoord est déjà calculé pour la position dans l'atlas
 }
+
+

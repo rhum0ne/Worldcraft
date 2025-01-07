@@ -53,7 +53,7 @@ public class GuiModule {
     }
 
     public void init(){
-        this.fontLoader.loadFont();
+        //this.fontLoader.loadFont();
 
         for(Gui gui : hud)
             gui.init();

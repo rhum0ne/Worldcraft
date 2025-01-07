@@ -289,7 +289,6 @@ public class GraphicModule{
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
 
-            glUseProgram(ShaderUtils.PLAN_SHADERS.id);
             this.guiModule.render();
 
             glUseProgram(0);

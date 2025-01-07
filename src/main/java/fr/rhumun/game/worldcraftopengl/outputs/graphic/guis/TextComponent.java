@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11C.*;
+
 @Getter
 @Setter
 public class TextComponent extends Component {
@@ -25,6 +27,14 @@ public class TextComponent extends Component {
     public void update() {
         if(!text.equals(showedText))
             updateVertices();
+    }
+
+    @Override
+    public void render(){
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        super.render();
+        glDisable(GL_BLEND);
     }
 
     @Override
@@ -50,17 +60,17 @@ public class TextComponent extends Component {
             GuiCharacter glyph = GuiCharacter.get(c);
             if (glyph == null) continue;
 
-            int glyphWidth = glyph.getWidth();
-            int glyphHeight = glyph.getHeight();
-            float xOffset = glyph.getXOffset();
-            float yOffset = glyph.getYOffset();
+            int glyphWidth = 100;//glyph.getWidth();
+            int glyphHeight = 100;//glyph.getHeight();
+            float xOffset = 0;//glyph.getXOffset();
+            float yOffset = -100;//glyph.getYOffset();
             float advance = glyph.getAdvance();
 
             // Coordonnées de texture dans l'atlas
-            float xStart = glyph.getXStart();
-            float yStart = glyph.getYStart();
-            float xEnd = glyph.getXEnd();
-            float yEnd = glyph.getYEnd();
+            float xStart = 0;//glyph.getXStart();
+            float yStart = 0;//glyph.getYStart();
+            float xEnd = 1;//glyph.getXEnd();
+            float yEnd = 1;//glyph.getYEnd();
 
             System.out.println("adding " + c + " with atlas ID " + atlasTextureID);
 

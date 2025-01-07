@@ -32,7 +32,7 @@ flat in vec3 FragNormal;
 in vec3 FragPos;  // Position interpolée du fragment en espace monde
 out vec4 FragPosLightSpace;
 
-uniform sampler2D textures[150];  // Tableau de textures
+uniform sampler2D textures[32];  // Tableau de textures
 uniform sampler2D shadowMap;  // Pour les ombres directionnelles
 uniform samplerCube depthMap; // Pour les ombres des lumières ponctuelles
 uniform float far_plane;      // Distance maximum de la lumière ponctuelle
@@ -118,9 +118,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
     return (ambient + diffuse + specular);
 
-    float shadow = PointShadowCalculation(light, fragPos);
+    //float shadow = PointShadowCalculation(light, fragPos);
 
-    return (ambient + (1.0 - shadow) * (diffuse + specular));
+    //return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
 void main()

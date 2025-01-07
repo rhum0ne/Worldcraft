@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import lombok.Getter;
 import org.lwjgl.stb.STBTTFontinfo;
@@ -13,7 +14,9 @@ import java.nio.file.Paths;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.stb.STBTruetype.*;
 
@@ -32,7 +35,10 @@ public class FontLoader {
         fontBuffer.put(fontBytes).flip();
 
         font = new STBTTFontinfo(fontBuffer);
-        STBTruetype.stbtt_InitFont(font, fontBuffer);
+        if (!stbtt_InitFont(font, fontBuffer)) {
+            throw new RuntimeException("Failed to initialize font.");
+        }
+
     }
 
     public void loadFont() {
@@ -43,8 +49,15 @@ public class FontLoader {
 
             int atlasTextureID = glGenTextures();
             this.atlasNum = atlasTextureID;
-            glBindTexture(GL_TEXTURE_2D, atlasTextureID);
+            glUseProgram(ShaderUtils.TEXT_SHADER.id);
+            glBindTexture(GL_TEXTURE_2D, atlasTextureID); // BUG BARRE D'INVENTAIRE
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, atlasWidth, atlasHeight, 0, GL_RED, GL_UNSIGNED_BYTE, (ByteBuffer) null);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 
 // Maintenant, insérez les glyphes dans l'atlas
             for (char c = 32; c < 128; c++) {
@@ -54,8 +67,8 @@ public class FontLoader {
                 IntBuffer height = stack.mallocInt(1);
                 IntBuffer xoff = stack.mallocInt(1);
                 IntBuffer yoff = stack.mallocInt(1);
-                IntBuffer advance = stack.mallocInt(1);
                 IntBuffer leftSideBearing = stack.mallocInt(1);  // Buffer alloué ici
+                IntBuffer advance = stack.mallocInt(1);
 
                 stbtt_GetCodepointHMetrics(font, c, advance, leftSideBearing);
                 float scale = stbtt_ScaleForPixelHeight(font, fontSize);
@@ -75,11 +88,13 @@ public class FontLoader {
                 float yEnd = (float) (y + height.get(0)) / atlasHeight;
 
                 // Ajouter le glyphe à votre liste
-                new GuiCharacter(c, atlasTextureID, xStart, yStart, xEnd, yEnd, width.get(0), height.get(0), xoff.get(0), yoff.get(0), advance.get(0));
+                new GuiCharacter(c, atlasTextureID, x, y, xEnd, yEnd, width.get(0), height.get(0), xoff.get(0), yoff.get(0), advance.get(0));
 
                 // Libérer la mémoire du bitmap
                 stbtt_FreeBitmap(bitmap);
             }
+
+            glActiveTexture(atlasTextureID);
 
         }
     }

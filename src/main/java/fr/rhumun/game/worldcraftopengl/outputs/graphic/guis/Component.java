@@ -100,7 +100,7 @@ public abstract class Component{
         VBO = glGenBuffers();
         EBO = glGenBuffers();
 
-        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+        glUseProgram(this.getShader());
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
@@ -135,7 +135,9 @@ public abstract class Component{
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
         glUseProgram(this.getShader());
-        if(this instanceof TextComponent) glBindTexture(GL_TEXTURE_2D, guiModule.getFontLoader().getAtlasNum());
+        if(this instanceof TextComponent) {
+            glBindTexture(GL_TEXTURE_2D, guiModule.getFontLoader().getAtlasNum());
+        }
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
@@ -148,7 +150,7 @@ public abstract class Component{
     public abstract void update();
 
     public void updateVAO(){
-        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+        glUseProgram(this.getShader());
         glBindVertexArray(this.getVAO());
 
         if(vertices != null && indices != null) { // Vérifiez si le tableau vertices n'est pas nul

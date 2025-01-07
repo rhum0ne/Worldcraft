@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
 import lombok.Getter;
 import org.joml.Vector3f;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL20.*;
 
 @Getter
@@ -37,7 +38,7 @@ public abstract class Shader {
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1i(location, value);
-        }
+        }else GAME.errorLog("Can't find uniform " + uniformName);
     }
 
     // Méthode pour envoyer un int[] au shader

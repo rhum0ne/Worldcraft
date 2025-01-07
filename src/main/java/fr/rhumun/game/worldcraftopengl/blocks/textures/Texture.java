@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
+@Setter
 public class Texture {
 
     public static Texture COBBLE;
@@ -113,22 +114,27 @@ public class Texture {
         DARK_COBBLE = new Texture("dark_cobble.png");
         DARK_STONE_BRICK = new Texture("dark_stone_brick.png");
 
-        CROSSHAIR = new Texture("hud\\crosshair.png");
-        HOTBAR = new Texture("hud\\hotbar.png");
-        SELECTED_SLOT = new Texture("hud\\hotbar_selection.png");
-        CREATIVE_INVENTORY = new Texture("hud\\creative-inventory.png");
-        INVENTORY = new Texture("hud\\inventory.png");
+        CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
+        HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
+        SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
+        CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
+        INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();
     public static HashMap<String, Texture> textureByName = new HashMap<>();
 
     private final String path;
-    @Setter
     private int id;
+    private float u1, v1;        // Coordonnées UV (coin supérieur gauche)
+    private float u2, v2;        // Coordonnées UV (coin inférieur droit)
+    private boolean uvDefined;   // Flag pour indiquer si les UV sont définis
 
-    public Texture(String path){
+    public Texture(String path){ this(TextureTypes.BLOCKS, path); }
+    public Texture(TextureTypes type, String path){
+        type.add(this);
         textures.add(this);
+        this.uvDefined = false;
 
         String name=path;
         while(name.indexOf('\\') != -1){
@@ -146,5 +152,19 @@ public class Texture {
     }
 
     public boolean isAnimated(){return this instanceof AnimatedTexture;}
+
+    // Définit les coordonnées UV après création de l'atlas
+    public void setUV(float u1, float v1, float u2, float v2) {
+        this.u1 = u1;
+        this.v1 = v1;
+        this.u2 = u2;
+        this.v2 = v2;
+        this.uvDefined = true;
+    }
+
+    // Vérifie si les UV ont été définis
+    public boolean areUVDefined() {
+        return uvDefined;
+    }
 
 }
