@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -146,6 +147,7 @@ public abstract class Component{
     public int getShader() {
         return ShaderUtils.PLAN_SHADERS.id;
     }
+    public int getTextureArray() { return TextureUtils.GUIS_TEXTURES; }
 
     public abstract void update();
 

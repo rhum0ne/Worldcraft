@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.blocks.textures;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -123,48 +124,34 @@ public class Texture {
 
     public static ArrayList<Texture> textures = new ArrayList<>();
     public static HashMap<String, Texture> textureByName = new HashMap<>();
+    public static Texture getByName(String s) {
+        return textureByName.get(s);
+    }
+
 
     private final String path;
-    private int id;
-    private float u1, v1;        // Coordonnées UV (coin supérieur gauche)
-    private float u2, v2;        // Coordonnées UV (coin inférieur droit)
-    private boolean uvDefined;   // Flag pour indiquer si les UV sont définis
+    private final String name;
+    private final int id;
 
     public Texture(String path){ this(TextureTypes.BLOCKS, path); }
     public Texture(TextureTypes type, String path){
+        this.path = path;
+        this.id = textures.size();
+
         type.add(this);
         textures.add(this);
-        this.uvDefined = false;
 
         String name=path;
         while(name.indexOf('\\') != -1){
             name = name.substring(1);
         }
-        name = name.substring(0, name.length()-4);
-        textureByName.put(name, this);
+        this.name = name.substring(0, name.length()-4);
+        textureByName.put(this.name, this);
 
-        this.path = path;
-        this.id = textures.size();
     }
 
-    public static Texture getByName(String s) {
-        return textureByName.get(s);
-    }
+    public String getPath(){ return Game.TEXTURES_PATH + this.path; }
 
     public boolean isAnimated(){return this instanceof AnimatedTexture;}
-
-    // Définit les coordonnées UV après création de l'atlas
-    public void setUV(float u1, float v1, float u2, float v2) {
-        this.u1 = u1;
-        this.v1 = v1;
-        this.u2 = u2;
-        this.v2 = v2;
-        this.uvDefined = true;
-    }
-
-    // Vérifie si les UV ont été définis
-    public boolean areUVDefined() {
-        return uvDefined;
-    }
 
 }

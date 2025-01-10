@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
 import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
@@ -63,7 +64,7 @@ public class ChunkRenderer {
         //System.out.println("Rendering chunk " + chunk);
 
         glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-        glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
+        //glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
         this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
 
         if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
@@ -285,82 +286,45 @@ public class ChunkRenderer {
         float texIDLeft = corner1.getMaterial().getMaterial().getLeftTexture().getId();
         float texIDRight = corner2.getMaterial().getMaterial().getRightTexture().getId();
 
-// Récupération des coordonnées UV de l'atlas pour chaque face
-// Face avant
-        float u1Front = corner1.getMaterial().getMaterial().getFrontTexture().getU1();
-        float v1Front = corner1.getMaterial().getMaterial().getFrontTexture().getV1();
-        float u2Front = corner1.getMaterial().getMaterial().getFrontTexture().getU2();
-        float v2Front = corner1.getMaterial().getMaterial().getFrontTexture().getV2();
 
-// Face arrière
-        float u1Back = corner2.getMaterial().getMaterial().getBackTexture().getU1();
-        float v1Back = corner2.getMaterial().getMaterial().getBackTexture().getV1();
-        float u2Back = corner2.getMaterial().getMaterial().getBackTexture().getU2();
-        float v2Back = corner2.getMaterial().getMaterial().getBackTexture().getV2();
-
-// Face gauche
-        float u1Left = corner1.getMaterial().getMaterial().getLeftTexture().getU1();
-        float v1Left = corner1.getMaterial().getMaterial().getLeftTexture().getV1();
-        float u2Left = corner1.getMaterial().getMaterial().getLeftTexture().getU2();
-        float v2Left = corner1.getMaterial().getMaterial().getLeftTexture().getV2();
-
-// Face droite
-        float u1Right = corner2.getMaterial().getMaterial().getRightTexture().getU1();
-        float v1Right = corner2.getMaterial().getMaterial().getRightTexture().getV1();
-        float u2Right = corner2.getMaterial().getMaterial().getRightTexture().getU2();
-        float v2Right = corner2.getMaterial().getMaterial().getRightTexture().getV2();
-
-// Face supérieure
-        float u1Top = corner1.getMaterial().getMaterial().getTopTexture().getU1();
-        float v1Top = corner1.getMaterial().getMaterial().getTopTexture().getV1();
-        float u2Top = corner1.getMaterial().getMaterial().getTopTexture().getU2();
-        float v2Top = corner1.getMaterial().getMaterial().getTopTexture().getV2();
-
-// Face inférieure
-        float u1Bottom = corner2.getMaterial().getMaterial().getBottomTexture().getU1();
-        float v1Bottom = corner2.getMaterial().getMaterial().getBottomTexture().getV1();
-        float u2Bottom = corner2.getMaterial().getMaterial().getBottomTexture().getU2();
-        float v2Bottom = corner2.getMaterial().getMaterial().getBottomTexture().getV2();
-
-// Définition des vertices pour chaque face
+        // Sommets du rectangle englobant (2 triangles par face)
         float[][] vertices = {
                 // Face avant (2 triangles)
-                {x1, y2, z1, u1Front, v2Front, texIDFront, 0.0f, 0.0f, 1.0f},  // Bas gauche
-                {x2, y2, z1, u2Front, v2Front, texIDFront, 0.0f, 0.0f, 1.0f},  // Bas droite
-                {x2, y1, z1, u2Front, v1Front, texIDFront, 0.0f, 0.0f, 1.0f},  // Haut droite
-                {x1, y1, z1, u1Front, v1Front, texIDFront, 0.0f, 0.0f, 1.0f},  // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas droite
+                {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut gauche
 
                 // Face arrière (2 triangles)
-                {x1, y2, z2, u1Back, v2Back, texIDBack, 0.0f, 0.0f, -1.0f},    // Bas gauche
-                {x2, y2, z2, u2Back, v2Back, texIDBack, 0.0f, 0.0f, -1.0f},    // Bas droite
-                {x2, y1, z2, u2Back, v1Back, texIDBack, 0.0f, 0.0f, -1.0f},    // Haut droite
-                {x1, y1, z2, u1Back, v1Back, texIDBack, 0.0f, 0.0f, -1.0f},    // Haut gauche
+                {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas gauche
+                {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas droite
+                {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut droite
+                {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut gauche
 
                 // Face gauche (2 triangles)
-                {x1, y2, z1, u1Left, v2Left, texIDLeft, -1.0f, 0.0f, 0.0f},    // Bas gauche
-                {x1, y2, z2, u2Left, v2Left, texIDLeft, -1.0f, 0.0f, 0.0f},    // Bas droite
-                {x1, y1, z2, u2Left, v1Left, texIDLeft, -1.0f, 0.0f, 0.0f},    // Haut droite
-                {x1, y1, z1, u1Left, v1Left, texIDLeft, -1.0f, 0.0f, 0.0f},    // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face droite (2 triangles)
-                {x2, y2, z1, u1Right, v2Right, texIDRight, 1.0f, 0.0f, 0.0f},  // Bas gauche
-                {x2, y2, z2, u2Right, v2Right, texIDRight, 1.0f, 0.0f, 0.0f},  // Bas droite
-                {x2, y1, z2, u2Right, v1Right, texIDRight, 1.0f, 0.0f, 0.0f},  // Haut droite
-                {x2, y1, z1, u1Right, v1Right, texIDRight, 1.0f, 0.0f, 0.0f},  // Haut gauche
+                {x2, y2, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x2, y2, z2, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas droite
+                {x2, y1, z1, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face supérieure (2 triangles)
-                {x1, y1, z1, u1Top, v2Top, texIDTop, 0.0f, 1.0f, 0.0f},        // Bas gauche
-                {x2, y1, z1, u2Top, v2Top, texIDTop, 0.0f, 1.0f, 0.0f},        // Bas droite
-                {x2, y1, z2, u2Top, v1Top, texIDTop, 0.0f, 1.0f, 0.0f},        // Haut droite
-                {x1, y1, z2, u1Top, v1Top, texIDTop, 0.0f, 1.0f, 0.0f},        // Haut gauche
+                {x1, y1, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas gauche
+                {x2, y1, z1, texScaleX, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas droite
+                {x1, y1, z2, 0.0f, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut droite
 
                 // Face inférieure (2 triangles)
-                {x1, y2, z1, u1Bottom, v2Bottom, texIDBottom, 0.0f, -1.0f, 0.0f},  // Bas gauche
-                {x2, y2, z1, u2Bottom, v2Bottom, texIDBottom, 0.0f, -1.0f, 0.0f},  // Bas droite
-                {x2, y2, z2, u2Bottom, v1Bottom, texIDBottom, 0.0f, -1.0f, 0.0f},  // Haut droite
-                {x1, y2, z2, u1Bottom, v1Bottom, texIDBottom, 0.0f, -1.0f, 0.0f},  // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas droite
+                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut gauche
+                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut droite
         };
-
 
         // Indices pour dessiner le rectangle
         Renderer renderer = this.renderers.get(corner1.getMaterial().getOpacity().getPriority());
@@ -426,13 +390,14 @@ public class ChunkRenderer {
             float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
             float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
 
+            Texture texture = block.getMaterial().getMaterial().getTextureFromFaceWithNormal(vx, vy, vz);
             // Coordonnées de texture
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
 
             // Ajoute le sommet dans le renderer approprié
 
-            float[] vertexData = new float[]{vx, vy, vz, u, v, block.getMaterial().getTextureID(), nx, ny, nz};
+            float[] vertexData = new float[]{vx, vy, vz, u, v, texture.getId(), nx, ny, nz};
             this.addVertex(this.renderers.get(block.getMaterial().getOpacity().getPriority()), vertexData);
         }
     }
