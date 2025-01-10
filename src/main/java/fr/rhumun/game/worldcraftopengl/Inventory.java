@@ -1,6 +1,5 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Slot;
 import lombok.Getter;
 
 @Getter

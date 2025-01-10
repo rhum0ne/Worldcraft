@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
 
-import java.io.IOException;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 
 public class GlobalShader extends Shader {
 

@@ -8,9 +8,8 @@ import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
@@ -26,7 +25,6 @@ import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils.*
 import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
-import static org.lwjgl.opengl.GL32C.GL_PROGRAM_POINT_SIZE;
 import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
 import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -288,7 +286,6 @@ public class GraphicModule{
 
             game.getGraphicModule().updateViewMatrix();
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-            glBindTexture(GL_TEXTURE_2D, TextureUtils.GUIS_TEXTURES);
             update();
 
             this.guiModule.render();

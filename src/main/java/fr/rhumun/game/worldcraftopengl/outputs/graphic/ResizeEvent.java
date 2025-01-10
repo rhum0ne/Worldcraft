@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 

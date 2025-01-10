@@ -2,13 +2,11 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
@@ -132,13 +130,13 @@ public abstract class Component{
 
         update();
         if(indices == null || vertices == null) return;
+        glUseProgram(this.getShader());
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glUseProgram(this.getShader());
-        if(this instanceof TextComponent) {
-            glBindTexture(GL_TEXTURE_2D, guiModule.getFontLoader().getAtlasNum());
-        }
+//        if(this instanceof TextComponent) {
+//            glBindTexture(GL_TEXTURE_2D, this.getTextureArray());
+//        }
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

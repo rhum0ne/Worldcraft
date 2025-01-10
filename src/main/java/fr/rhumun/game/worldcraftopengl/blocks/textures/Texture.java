@@ -64,6 +64,7 @@ public class Texture {
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+    public static Texture BUTTON;
 
     public static Map<Character, Integer> chars = new HashMap<>();
 
@@ -120,6 +121,7 @@ public class Texture {
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
+        BUTTON = new Texture(TextureTypes.GUIS,"hud\\button.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();

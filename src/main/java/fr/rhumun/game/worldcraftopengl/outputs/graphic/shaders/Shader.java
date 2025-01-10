@@ -52,4 +52,13 @@ public abstract class Shader {
     }
 
     public abstract void init();
+
+    public void setUniform(String uniformName, float[] value) {
+        glUseProgram(id);
+        int location = glGetUniformLocation(id, uniformName);
+        if (location != -1) {
+            glUniform4fv(location, value);
+        }
+        else System.err.println("Warning: uniform " + uniformName + " not found");
+    }
 }

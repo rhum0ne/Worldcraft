@@ -2,13 +2,13 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Item;
 import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Button;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.FontLoader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Gui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+import static org.lwjgl.opengl.GL11C.GL_BLEND;
+import static org.lwjgl.opengl.GL11C.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11C.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11C.glBlendFunc;
+import static org.lwjgl.opengl.GL11C.glEnable;
 import static org.lwjgl.opengl.GL20.*;
 
 @Getter
@@ -43,7 +48,7 @@ public class GuiModule {
         this.graphicModule = graphicModule;
         try {
             GAME.log("Loading font...");
-            this.fontLoader = new FontLoader(TEXTURES_PATH + "hud\\font.ttf");
+            this.fontLoader = new FontLoader(TEXTURES_PATH + "hud\\vcr_osd.ttf");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +58,7 @@ public class GuiModule {
     }
 
     public void init(){
-        //this.fontLoader.loadFont();
+        this.fontLoader.loadFont();
 
         for(Gui gui : hud)
             gui.init();
@@ -93,6 +98,7 @@ public class GuiModule {
         if(!SHOWING_GUIS) return;
 
         glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
 
 

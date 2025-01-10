@@ -1,5 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+
 public class HUDShader extends Shader {
 
     public HUDShader() {

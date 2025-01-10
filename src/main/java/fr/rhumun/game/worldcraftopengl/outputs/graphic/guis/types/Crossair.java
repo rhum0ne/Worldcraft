@@ -2,9 +2,6 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Gui;
-
-import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 
 public class Crossair extends CenteredGUI {
     private static int WIDTH = 30;
