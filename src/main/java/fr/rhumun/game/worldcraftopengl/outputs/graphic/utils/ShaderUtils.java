@@ -1,7 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.*;
-import org.lwjgl.opengl.GL11;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.GlobalShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.LiquidShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.HUDShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.SelectedBlockShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.TextShader;
 import org.lwjgl.opengl.GL20;
 
 import java.io.IOException;
@@ -14,6 +18,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class ShaderUtils {
 
+    public static Shader SELECTED_BLOCK_SHADER;
     public static Shader GLOBAL_SHADERS;
     public static Shader PLAN_SHADERS;
     public static Shader LIQUID_SHADER;
@@ -24,6 +29,7 @@ public class ShaderUtils {
         PLAN_SHADERS = new HUDShader();
         TEXT_SHADER = new TextShader();
         LIQUID_SHADER = new LiquidShader();
+        SELECTED_BLOCK_SHADER = new SelectedBlockShader();
     }
 
     public static int loadShader(String vertexPath, String fragmentPath){

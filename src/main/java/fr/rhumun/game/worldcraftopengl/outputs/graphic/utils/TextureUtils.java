@@ -107,7 +107,7 @@ public class TextureUtils {
             if (image != null) {
                 GAME.log("Loading " + texture.getName());
                 // Copier l'image dans la couche appropriée de la texture array
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, image);
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, widthBuf.get(0), heightBuf.get(0), 1, GL_RGBA, GL_UNSIGNED_BYTE, image);
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY); // Générer les mipmaps
                 STBImage.stbi_image_free(image);
             } else {

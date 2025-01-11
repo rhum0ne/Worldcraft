@@ -70,6 +70,8 @@ public class GraphicModule{
     private final Stack<Chunk> chunkToLoad = new Stack<>();
     private final ChunkLoader chunkLoader;
 
+    private BlockSelector blockSelector;
+
     private final CursorEvent cursorEvent;
 
     @Getter
@@ -210,6 +212,11 @@ public class GraphicModule{
             int viewLoc = glGetUniformLocation(shader.id, "view");
             glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
         }
+
+        Shader shader = ShaderUtils.SELECTED_BLOCK_SHADER;
+        glUseProgram(shader.id);
+        int viewLoc = glGetUniformLocation(shader.id, "view");
+        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
     }
 
     private void loop() {
@@ -227,9 +234,12 @@ public class GraphicModule{
 
         //glEnable(GL_PROGRAM_POINT_SIZE);
 
+        this.blockSelector = new BlockSelector(this, player);
+        blockSelector.init();
 
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.renderingShaders.add(ShaderUtils.LIQUID_SHADER);
+        this.shaders.add(ShaderUtils.SELECTED_BLOCK_SHADER);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.LIQUID_SHADER);
@@ -245,18 +255,9 @@ public class GraphicModule{
 
 
         for(Shader shader : this.renderingShaders) {
-            int projectionLoc = glGetUniformLocation(shader.id, "projection");
-            int modelLoc = glGetUniformLocation(shader.id, "model");
-
-// Assurez-vous que le programme de shaders est actif avant de passer les matrices
-            glUseProgram(shader.id);
-
-// Passer la matrice de projection au shader
-            glUniformMatrix4fv(projectionLoc, false, projectionMatrix.get(new float[16]));
-
-// Passer la matrice de modèle au shader
-            glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
+            updateModelAndProjectionFor(modelMatrix, shader);
         }
+        updateModelAndProjectionFor(modelMatrix, ShaderUtils.SELECTED_BLOCK_SHADER);
 
         updateViewMatrix();
 
@@ -290,6 +291,9 @@ public class GraphicModule{
 
             this.guiModule.render();
 
+            glUseProgram(ShaderUtils.SELECTED_BLOCK_SHADER.id);
+            this.blockSelector.render();
+
             glUseProgram(0);
 
             // Calculer les FPS
@@ -300,6 +304,20 @@ public class GraphicModule{
             glfwPollEvents();
         }
         debugUtils.checkGLError();
+    }
+
+    private void updateModelAndProjectionFor(Matrix4f modelMatrix, Shader shader) {
+        int projectionLoc = glGetUniformLocation(shader.id, "projection");
+        int modelLoc = glGetUniformLocation(shader.id, "model");
+
+// Assurez-vous que le programme de shaders est actif avant de passer les matrices
+        glUseProgram(shader.id);
+
+// Passer la matrice de projection au shader
+        glUniformMatrix4fv(projectionLoc, false, projectionMatrix.get(new float[16]));
+
+// Passer la matrice de modèle au shader
+        glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
     }
 
     private void updateWaterTime() {

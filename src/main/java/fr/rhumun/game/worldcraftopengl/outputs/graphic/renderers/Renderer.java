@@ -46,7 +46,13 @@ public abstract class Renderer {
     }
 
     public void toArrays(){
-        verticesArray = new float[vertices.size()*9];
+        if(vertices.isEmpty()){
+            indicesArray = new int[0];
+            verticesArray = new float[0];
+            return;
+        }
+
+        verticesArray = new float[vertices.size()*vertices.getFirst().length];
         int index = 0;
         for (float[] vertex : vertices) {
             for (float v : vertex) {

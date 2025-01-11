@@ -36,6 +36,7 @@ public class Player {
 
     private int selectedSlot;
     private Inventory inventory;
+    private float radius = 0.25f;
 
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
@@ -122,15 +123,12 @@ public class Player {
 
     public void addX(double a){
         this.location.addX(a);
-        game.graphicModule.getCamera().pos.add((float) a, 0, 0);
     }
     public void addZ(double a){
         this.location.addZ(a);
-        game.graphicModule.getCamera().pos.add(0, 0, (float) a);
     }
     public void addY(double a){
         this.location.addY(a);
-        game.graphicModule.getCamera().pos.add(0, (float) a, 0);
     }
     public void setYaw(float a){
         this.location.setYaw(a);
@@ -167,6 +165,25 @@ public class Player {
     public void playSound(final Sound sound){
         this.game.getAudioManager().playSound(sound);
     }
+
+    public Block getBlockInDirection(Vector3f direction) {
+        // Normaliser le vecteur pour garantir qu'il a une norme de 1
+        Vector3f normalizedDirection = direction.normalize();
+
+        // Calculer les coordonnées en fonction du rayon du joueur
+        double targetX = this.getLocation().getX() + normalizedDirection.get(0) * this.radius;
+        double targetY = this.getLocation().getY() + normalizedDirection.get(1);
+        double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
+
+        // Retourner le bloc à cette position
+        return this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
+    }
+
+    public boolean hasBlockInDirection(Vector3f direction) {
+        Block block = this.getBlockInDirection(direction);
+        return block != null && block.getMaterial() != null;
+    }
+
 
     public Block getBlockDown(){
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);

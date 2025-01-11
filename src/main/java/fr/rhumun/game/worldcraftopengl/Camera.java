@@ -5,8 +5,6 @@ import org.joml.Vector3f;
 
 @Getter
 public class Camera {
-    @Getter
-    Vector3f pos; // Position de la caméra
     private Vector3f front; // Direction vers laquelle la caméra pointe
     @Getter
     private Vector3f up;
@@ -17,8 +15,11 @@ public class Camera {
 
     public Camera(Player player){
         this.player = player;
-        pos = new Vector3f((float) player.getLocation().getX(), (float) player.getLocation().getY(), (float) player.getLocation().getZ());
         updateCameraVectors();
+    }
+
+    public Vector3f getPos() {
+        return new Vector3f((float) player.getLocation().getX(), (float) player.getLocation().getY(), (float) player.getLocation().getZ());
     }
 
     public void setYaw(float yaw) {
@@ -34,7 +35,7 @@ public class Camera {
 
     public Vector3f getLookPoint() {
         // Retourne la position à laquelle la caméra regarde, calculée à partir de `front`
-        return new Vector3f(pos).add(front);
+        return this.getPos().add(front);
     }
 
     public float getYaw(){ return this.player.getLocation().getYaw(); }
