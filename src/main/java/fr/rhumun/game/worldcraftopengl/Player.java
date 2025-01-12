@@ -37,6 +37,7 @@ public class Player {
     private int selectedSlot;
     private Inventory inventory;
     private float radius = 0.25f;
+    private float height = 1.8f;
 
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
@@ -55,7 +56,7 @@ public class Player {
     }
     public Block getBlockToPlace() {
 
-        float stepSize = 0.1F;
+        float stepSize = 0.02F;
 
         Vector3f direction = getRayDirection();
         Vector3f start = new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ());
@@ -84,7 +85,7 @@ public class Player {
 
 
     public Block getSelectedBlock() {
-        float stepSize = 0.1F;
+        float stepSize = 0.02F;
 
         Vector3f direction = getRayDirection();
         Vector3f start = new Vector3f((float) location.getX(), (float) location.getY(), (float) location.getZ());
@@ -101,7 +102,7 @@ public class Player {
             // Check for prop at the current position
             Block block = game.getWorld().getBlockAt(currentPosition, true);
 
-            if (block != null && block.getMaterial() != null) {
+            if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
                 //System.out.println("Player's pos : " + this.getLocation().getX() + " " + this.getLocation().getY() + " " + this.getLocation().getZ() + " ");
                 //System.out.println("Found prop at position: " + currentPosition);
                 return block;
@@ -122,9 +123,15 @@ public class Player {
     }
 
     public void addX(double a){
+        if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !Game.NO_CLIP)) {
+            return;
+        }
         this.location.addX(a);
     }
     public void addZ(double a){
+        if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !Game.NO_CLIP)) {
+            return;
+        }
         this.location.addZ(a);
     }
     public void addY(double a){
@@ -166,13 +173,17 @@ public class Player {
         this.game.getAudioManager().playSound(sound);
     }
 
-    public Block getBlockInDirection(Vector3f direction) {
+    public Block getBlockInDirection(Vector3f direction, int yLevel) {
+        if(yLevel > this.height){
+            this.game.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
+            return null;
+        }
         // Normaliser le vecteur pour garantir qu'il a une norme de 1
         Vector3f normalizedDirection = direction.normalize();
 
         // Calculer les coordonnées en fonction du rayon du joueur
         double targetX = this.getLocation().getX() + normalizedDirection.get(0) * this.radius;
-        double targetY = this.getLocation().getY() + normalizedDirection.get(1);
+        double targetY = this.getLocation().getY() - yLevel;
         double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
 
         // Retourner le bloc à cette position
@@ -180,8 +191,11 @@ public class Player {
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
-        Block block = this.getBlockInDirection(direction);
-        return block != null && block.getMaterial() != null;
+        for(int y=0; y<this.height; y++) {
+            Block block = this.getBlockInDirection(direction, y);
+            if( block != null && block.getMaterial() != null) return true;
+        }
+        return false;
     }
 
 
@@ -191,6 +205,15 @@ public class Player {
 
     public boolean hasBlockDown(){
         Block block = this.getBlockDown();
+        return block != null && block.getMaterial() != null;
+    }
+
+    public Block getBlockTop(){
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.height, this.getLocation().getZ(), false);
+    }
+
+    public boolean hasBlockTop(){
+        Block block = this.getBlockTop();
         return block != null && block.getMaterial() != null;
     }
 

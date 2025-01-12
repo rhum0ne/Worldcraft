@@ -3,9 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 import fr.rhumun.game.worldcraftopengl.ItemContainer;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.InventoryGUI;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.SlabButton;
 import lombok.Getter;
 import lombok.Setter;
 

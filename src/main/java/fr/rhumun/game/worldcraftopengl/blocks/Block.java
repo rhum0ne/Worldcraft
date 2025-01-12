@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.blocks;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.Location;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
@@ -19,25 +20,31 @@ public class Block {
 
     private Model model;
     private Material material;
-    private final Location location;
     private final Chunk chunk;
     private boolean isSurrounded;
 
-    private short chunkX;
-    private short chunkZ;
+    private byte chunkX;
+    private short chunkY;
+    private byte chunkZ;
 
     private int tick = 0;
 
-    private List<Block> sideBlocks = new ArrayList<>();
-
-    public Block(World world, Chunk chunk, int x, int y, int z, short chunkX, short chunkZ) {
+    public Block(Chunk chunk, byte chunkX, short chunkY, byte chunkZ) {
         this.chunk = chunk;
-        this.location = new Location(world, x, y, z, 0, 0);
         this.model = Model.BLOCK;
+        this.chunkY = chunkY;
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
 
     }
+
+    public World getWorld(){ return this.chunk.getWorld(); }
+
+    public int getX(){ return Game.CHUNK_SIZE*chunk.getX() +  this.chunkX; }
+    public int getY(){ return this.chunkY; }
+    public int getZ(){ return Game.CHUNK_SIZE*chunk.getZ() +  this.chunkZ; }
+
+    public Location getLocation(){ return new Location(chunk.getWorld(), this.getX(), this.getY(), this.getZ()); }
 
     public void updateIsSurrounded() {
         // Vérifie les 6 directions pour voir si un bloc est présent
@@ -54,10 +61,10 @@ public class Block {
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
         //if(!block.isOpaque()) return false;
-        Location loc = this.getLocation();
-        int x = loc.getXInt() + Math.round(nx);
-        int y = loc.getYInt() + Math.round(ny);
-        int z = loc.getZInt() + Math.round(nz);
+        //Location loc = this.getLocation();
+        int x = this.getX() + Math.round(nx);
+        int y = this.getY() + Math.round(ny);
+        int z = this.getZ() + Math.round(nz);
 
         Block face = chunk.getAt(x,y,z);
         return face != null && !this.material.getOpacity().isVisibleWith(face) ;
@@ -67,12 +74,13 @@ public class Block {
         if(this.material != null && this.material.getMaterial() instanceof PointLight){
             this.chunk.getLightningBlocks().remove(this);
         }
-
         this.material = material;
-        this.chunk.setToUpdate(true);
 
         if(material==null) {
-            for (Block block : this.getSideBlocks()) block.setSurrounded(false);
+            for (Block block : this.getSideBlocks()){
+                if(block==null) continue;
+                block.setSurrounded(false);
+            }
             chunk.getVisibleBlock().remove(this);
         }
         else {
@@ -80,23 +88,37 @@ public class Block {
                 this.chunk.getLightningBlocks().add(this);
             }
 
-            for(Block block : this.getSideBlocks())block.updateIsSurrounded();
+            if(material.getMaterial().getOpacity() != OpacityType.OPAQUE)
+                for (Block block : this.getSideBlocks()) {
+                    if(block==null) continue;
+                    block.setSurrounded(false);
+                }
+            else
+                for(Block block : this.getSideBlocks()){
+                    if(block==null) continue;
+                    block.updateIsSurrounded();
+                }
             chunk.getVisibleBlock().add(this);
 
             if(material.getMaterial() instanceof ForcedModelMaterial fMat){
                 this.setModel(fMat.getModel());
             }
         }
+
+        this.chunk.setToUpdate(true);
+
         return this;
     }
 
-    public List<Block> getSideBlocks() {
-        this.getBlockAtDown(false);
-        this.getBlockAtUp(false);
-        this.getBlockAtNorth(false);
-        this.getBlockAtSouth(false);
-        this.getBlockAtWest(false);
-        this.getBlockAtEast(false);
+    public Block[] getSideBlocks() {
+        Block[] sideBlocks = new Block[6];
+
+        sideBlocks[0] = this.getBlockAtDown(false);
+        sideBlocks[1] = this.getBlockAtUp(false);
+        sideBlocks[2] = this.getBlockAtNorth(false);
+        sideBlocks[3] = this.getBlockAtSouth(false);
+        sideBlocks[4] = this.getBlockAtWest(false);
+        sideBlocks[5] = this.getBlockAtEast(false);
         return sideBlocks;
     }
 
@@ -114,23 +136,30 @@ public class Block {
     public Block getBlockAtEast(){ return getBlockAtEast(true); }
 
     public Block getBlockAtUp(boolean generateIfNull) {
-        if(location.getYInt() == location.getWorld().getHeigth()-1) return null;
-        return chunk.getAt((int) location.getX(), (int) (location.getY() + 1), (int) location.getZ());
+        if(this.getY() == this.chunk.getWorld().getHeigth()-1) return null;
+        return chunk.getAt(this.getX(), this.getY() + 1, this.getZ());
     }
     public Block getBlockAtDown(boolean generateIfNull) {
-        if(location.getY() == 0) return null;
-        return chunk.getAt((int) location.getX(), (int) (location.getY() - 1), (int) location.getZ());
+        if(this.getY() == 0) return null;
+        return chunk.getAt(this.getX(), this.getY() - 1,this.getZ());
     }
     public Block getBlockAtNorth(boolean generateIfNull) {
-        return chunk.getAt((int) location.getX()+1, (int) location.getY(), (int) location.getZ());
+        return chunk.getAt(this.getX()+1, this.getY(), this.getZ());
     }
     public Block getBlockAtSouth(boolean generateIfNull) {
-        return chunk.getAt((int) location.getX() - 1, (int) location.getY(), (int) location.getZ());
+        return chunk.getAt(this.getX() - 1, this.getY(), this.getZ());
     }
     public Block getBlockAtEast(boolean generateIfNull) {
-        return chunk.getAt((int) location.getX(), (int) location.getY(), (int) (location.getZ() - 1));
+        return chunk.getAt(this.getX(), this.getY(),this.getZ() - 1);
     }
     public Block getBlockAtWest(boolean generateIfNull) {
-        return chunk.getAt((int) location.getX(), (int) location.getY(), (int) (location.getZ() + 1));
+        return chunk.getAt(this.getX(), this.getY(), this.getZ() + 1);
+    }
+
+    public boolean isOnTheFloor(){
+        if(this.getModel() == Model.SLAB){
+            return this.getTick() == 0;
+        }
+        return false;
     }
 }

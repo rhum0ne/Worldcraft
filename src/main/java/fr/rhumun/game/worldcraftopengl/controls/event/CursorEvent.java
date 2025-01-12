@@ -2,11 +2,15 @@ package fr.rhumun.game.worldcraftopengl.controls.event;
 
 import fr.rhumun.game.worldcraftopengl.Camera;
 import fr.rhumun.game.worldcraftopengl.Game;
+import lombok.Getter;
+import lombok.Setter;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@Setter
+@Getter
 public class CursorEvent implements GLFWCursorPosCallbackI {
 
     private float lastX = 600.0f, lastY = 400.0f;  // Centre de l'écran

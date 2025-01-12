@@ -1,8 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 
 public class Image extends Component {
     public Image(int x, int y, int width, int heigth, Texture texture, Gui container) {

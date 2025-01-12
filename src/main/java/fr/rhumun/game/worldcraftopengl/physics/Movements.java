@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.physics;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import org.joml.Vector3f;
 
 import java.util.Arrays;
 
@@ -92,23 +93,34 @@ public class Movements {
         float velocity = player.getVelocity().get(axis);
         int sign = (velocity < 0) ? -1 : 1;
 
+        float yawCos = (float) Math.cos(Math.toRadians(player.getLocation().getYaw()));
+        float yawSin = (float) Math.sin(Math.toRadians(player.getLocation().getYaw()));
+
         // Répéter les mouvements selon la vélocité sur l'axe
         while (i < Math.abs(velocity)) {
             switch (axis) {
                 case 0: // Axe X
-                    player.addX(sign * moveStep * Math.cos(Math.toRadians(player.getLocation().getYaw())));
-                    player.addZ(sign * moveStep * Math.sin(Math.toRadians(player.getLocation().getYaw())));
+//                    if ((player.hasBlockInDirection(new Vector3f(yawCos, 0, sign * yawSin)) && !Game.NO_CLIP)) {
+//                        player.getVelocity().setComponent(0, 0);
+//                        return;
+//                    }
+                    player.addX(sign * moveStep * yawCos);
+                    player.addZ(sign * moveStep * yawSin);
                     break;
                 case 1: // Axe Y
-                    if ((player.hasBlockDown() && !Game.NO_CLIP) && velocity < 0) {
+                    if (!Game.NO_CLIP && ((player.hasBlockDown() && velocity < 0) || (player.hasBlockTop()) && velocity>0) ) {
                         player.getVelocity().setComponent(1, 0);
                         return;
                     }
                     player.addY(sign * moveStep);
                     break;
                 case 2: // Axe Z
-                    player.addX(-sign * moveStep * Math.sin(Math.toRadians(player.getLocation().getYaw())));
-                    player.addZ(sign * moveStep * Math.cos(Math.toRadians(player.getLocation().getYaw())));
+//                    if ((player.hasBlockInDirection(new Vector3f(-sign * yawSin, 0, sign * yawCos)) && !Game.NO_CLIP)) {
+//                        player.getVelocity().setComponent(2, 0);
+//                        return;
+//                    }
+                    player.addX(-sign * moveStep * yawSin);
+                    player.addZ(sign * moveStep * yawCos);
                     break;
             }
             i += moveStep;

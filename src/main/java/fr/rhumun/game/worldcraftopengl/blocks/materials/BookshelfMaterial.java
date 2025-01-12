@@ -1,13 +1,15 @@
 package fr.rhumun.game.worldcraftopengl.blocks.materials;
 
+import fr.rhumun.game.worldcraftopengl.blocks.Model;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.blocks.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 import static fr.rhumun.game.worldcraftopengl.blocks.textures.Texture.BOOKSHELF_TOP;
 
-public class BookshelfMaterial extends AbstractMaterial {
+public class BookshelfMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public BookshelfMaterial() {
         super(Texture.BOOKSHELF);
         this.setTopTexture(BOOKSHELF_TOP);
@@ -22,5 +24,10 @@ public class BookshelfMaterial extends AbstractMaterial {
     @Override
     public OpacityType getOpacity() {
         return OpacityType.OPAQUE;
+    }
+
+    @Override
+    public Model getModel() {
+        return Model.BLOCK;
     }
 }

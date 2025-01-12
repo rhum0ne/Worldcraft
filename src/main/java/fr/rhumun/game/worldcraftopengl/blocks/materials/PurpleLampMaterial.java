@@ -42,6 +42,6 @@ public class PurpleLampMaterial extends PointLight implements InteractableMateri
         else {
             block.setTick(0);
         }
-        GAME.getGraphicModule().updateLights();
+        GAME.getGraphicModule().getLightningsUtils().updateLights();
     }
 }

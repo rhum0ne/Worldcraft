@@ -17,8 +17,8 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static int SHOW_DISTANCE = 10;
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static int SHOW_DISTANCE = 11;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = true;
@@ -27,7 +27,7 @@ public class Game {
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
-    public static boolean NO_CLIP = false;
+    public static boolean NO_CLIP = true;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";

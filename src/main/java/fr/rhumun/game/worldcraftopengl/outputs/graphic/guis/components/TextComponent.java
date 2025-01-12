@@ -1,7 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.GuiCharacter;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
@@ -10,8 +9,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.lwjgl.opengl.GL11C.*;
 
 @Getter
 @Setter

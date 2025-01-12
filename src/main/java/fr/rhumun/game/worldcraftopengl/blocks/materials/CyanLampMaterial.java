@@ -42,6 +42,6 @@ public class CyanLampMaterial extends PointLight implements InteractableMaterial
         else {
             block.setTick(0);
         }
-        GAME.getGraphicModule().updateLights();
+        GAME.getGraphicModule().getLightningsUtils().updateLights();
     }
 }

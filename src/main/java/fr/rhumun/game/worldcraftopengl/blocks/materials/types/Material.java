@@ -69,4 +69,8 @@ public enum Material {
     public static int createID(){
         return ++maxID;
     }
+
+    public boolean isLiquid() {
+        return this.material.getOpacity()==OpacityType.LIQUID;
+    }
 }

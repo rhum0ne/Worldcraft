@@ -29,6 +29,7 @@ public class CreativeItems implements ItemContainer {
             this.items[id] = new Item(material, model);
             id++;
         }
+        setEmpty(id);
         showedModel = model;
     }
 
@@ -38,6 +39,7 @@ public class CreativeItems implements ItemContainer {
             this.items[id] = new Item(material);
             id++;
         }
+        setEmpty(id);
         showedModel = null;
     }
 
@@ -49,5 +51,12 @@ public class CreativeItems implements ItemContainer {
     @Override
     public void setItem(int Slot, Item item) {
         items[Slot] = item;
+    }
+
+    public void setEmpty(){ setEmpty(0); }
+    public void setEmpty(int start){
+        for(; start< items.length; start++){
+            items[start] = null;
+        }
     }
 }

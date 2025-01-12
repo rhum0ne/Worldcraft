@@ -49,6 +49,6 @@ public class LanternMaterial extends PointLight implements ForcedModelMaterial, 
         else {
             block.setTick(0);
         }
-        GAME.getGraphicModule().updateLights();
+        GAME.getGraphicModule().getLightningsUtils().updateLights();
     }
 }

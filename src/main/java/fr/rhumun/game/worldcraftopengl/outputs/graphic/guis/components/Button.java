@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -9,10 +9,12 @@ public class Escape extends Control {
     }
     @Override
     public void onKeyPressed(Player player) {
-        if(getGame().getGraphicModule().getGuiModule().hasGUIOpened())
+        if(getGame().getGraphicModule().getGuiModule().hasGUIOpened()){
             getGame().getGraphicModule().getGuiModule().closeGUI();
-        //else open PauseGui
-        player.getGame().setPaused(!player.getGame().isPaused());
+        }else {
+            //else open PauseGui
+            player.getGame().setPaused(!player.getGame().isPaused());
+        }
     }
 
     @Override

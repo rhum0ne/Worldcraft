@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
@@ -38,58 +39,51 @@ import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryStack.*;
 import org.joml.Matrix4f;
 
+@Getter
+@Setter
 public class GraphicModule{
 
-    @Getter
     private final Game game;
-    @Getter
     private final Camera camera;
     private final Player player;
 
     private boolean areChunksUpdated = false;
     private Set<Chunk> loadedChunks;
-
-    // The window handle
-    @Getter
-    private long window;
-    private final int startWidth = 1200, startHeight = 800;
-
-    private FrustumIntersection frustumIntersection;
-    Matrix4f projectionMatrix;
-    private List<Block> pointLights = new ArrayList<>();
-
-    @Getter
-    private final List<Shader> renderingShaders = new ArrayList<>();
-    @Getter
-    private final List<Shader> shaders = new ArrayList<>();
-    @Getter
-    private GuiModule guiModule;
-
-    private final DebugUtils debugUtils = new DebugUtils();
     private final UpdateLoop updateLoop;
     private final Stack<Chunk> chunkToLoad = new Stack<>();
     private final ChunkLoader chunkLoader;
 
-    private BlockSelector blockSelector;
-
+    private long window;
+    private final int startWidth = 1200, startHeight = 800;
+    private int width = startWidth;
+    private int height = startHeight;
     private final CursorEvent cursorEvent;
 
-    @Getter
+    private FrustumIntersection frustumIntersection;
+    private Matrix4f projectionMatrix;
+
+    private final List<Shader> renderingShaders = new ArrayList<>();
+    private final List<Shader> shaders = new ArrayList<>();
+
+    private final DebugUtils debugUtils = new DebugUtils();
+    private final LightningsUtils lightningsUtils;
+    private GuiModule guiModule;
+    private BlockSelector blockSelector;
+
     private boolean isInitialized = false;
     private boolean isPaused = false;
     public boolean isShowingTriangles = false;
 
-    @Getter @Setter
-    private int width = startWidth;
-    @Getter @Setter
-    private int height = startHeight;
 
     private int verticesNumber;
     private float liquidTime = 0;
+    private double[] xCursorPos = new double[1];
+    private double[] yCursorPos = new double[1];
 
     public GraphicModule(Game game){
         this.game = game;
         player = game.getPlayer();
+        this.lightningsUtils = new LightningsUtils(this);
         camera = new Camera(player);
         updateLoop = new UpdateLoop(this, game, player);
         chunkLoader = new ChunkLoader(this, player);
@@ -327,49 +321,6 @@ public class GraphicModule{
         ShaderUtils.LIQUID_SHADER.setUniform("time", this.liquidTime);
     }
 
-    public void updateLights(){
-        pointLights.clear();
-        for(Chunk chunk : loadedChunks) {
-            if(!chunk.isLoaded()) continue;
-            if(chunk.getLightningBlocks().isEmpty()) continue;
-            for(Block block : chunk.getLightningBlocks()) {
-                if(block.getTick()==0) continue;
-                pointLights.add(block);
-            }
-        }
-        sendLight();
-    }
-
-    private void sendLight(){
-        // Dessiner les éléments existants
-        for(Shader shader : renderingShaders){
-            glUseProgram(shader.id);
-
-            // Envoie la position de la caméra
-            shader.setUniform("viewPos", camera.getPos());
-
-            // Envoie le nombre réel de lumières
-            shader.setUniform("numPointLights", pointLights.size());
-            //System.out.println("There are " + pointLights.size() + " lights");
-
-
-            for (int i = 0; i < this.pointLights.size(); i++) {
-
-                Block block = this.pointLights.get(i);
-                PointLight pointLight = (PointLight) block.getMaterial().getMaterial();
-
-                String uniformName = "pointLights[" + i + "]";
-                shader.setUniform(uniformName + ".position", block.getLocation().getPositions());
-                shader.setUniform(uniformName + ".ambient", pointLight.ambient);
-                shader.setUniform(uniformName + ".diffuse", pointLight.diffuse);
-                shader.setUniform(uniformName + ".specular", pointLight.specular);
-                shader.setUniform(uniformName + ".constant", pointLight.constant);
-                shader.setUniform(uniformName + ".linear", pointLight.linear);
-                shader.setUniform(uniformName + ".quadratic", pointLight.quadratic);
-            }
-        }
-    }
-
     private void update(){
 
         updateLoop.run();
@@ -378,7 +329,7 @@ public class GraphicModule{
         if(!areChunksUpdated) {
             loadedChunks = new LinkedHashSet<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
             this.areChunksUpdated = true;
-            updateLights();
+            this.lightningsUtils.updateLights();
             if(SHOWING_RENDERER_DATA){
                 this.verticesNumber = 0;
                 for(Chunk chunk : loadedChunks){
@@ -391,7 +342,7 @@ public class GraphicModule{
         //loadOneChunk(); TOUT CHARGE MEME SANS CETTE METHODE, A VOIR POURQUOI
 
         if(loadedChunks.isEmpty()) return;
-        this.pointLights.clear();
+        this.lightningsUtils.getPointLights().clear();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -442,10 +393,12 @@ public class GraphicModule{
     private void setPaused(boolean state) {
         if (state) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPos(window, width / 2.0, height / 2.0); // Place le curseur au centre de la fenêtre
         } else {
-//            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-//            glfwSetCursorPos(window, vidmode.width() / 2.0, vidmode.height() / 2.0); // Place le curseur au centre de la fenêtre
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwGetCursorPos(window, this.xCursorPos, this.yCursorPos);
+            this.cursorEvent.setLastX((float) this.xCursorPos[0]);
+            this.cursorEvent.setLastY((float) this.yCursorPos[0]);
         }
         this.isPaused = state;
     }

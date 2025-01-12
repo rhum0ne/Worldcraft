@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;

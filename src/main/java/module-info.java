@@ -43,4 +43,6 @@ module fr.rhumun.game.worldcraftopengl {
     opens fr.rhumun.game.worldcraftopengl.blocks.textures to javafx.fxml;
     exports fr.rhumun.game.worldcraftopengl.blocks.materials.opacity;
     opens fr.rhumun.game.worldcraftopengl.blocks.materials.opacity to javafx.fxml;
+    exports fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
+    opens fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models to javafx.fxml;
 }

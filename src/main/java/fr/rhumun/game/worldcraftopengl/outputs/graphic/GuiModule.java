@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 import fr.rhumun.game.worldcraftopengl.Item;
 import fr.rhumun.game.worldcraftopengl.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.Component;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
@@ -81,6 +81,7 @@ public class GuiModule {
                 .translate(offsetX, 0, 0)         // Applique le décalage pour centrer
                 .scale(scaleY);                           // Applique l'échelle uniformément
 
+
         glUseProgram(ShaderUtils.PLAN_SHADERS.id);
         int projection = glGetUniformLocation(ShaderUtils.PLAN_SHADERS.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
@@ -88,9 +89,6 @@ public class GuiModule {
         glUseProgram(ShaderUtils.TEXT_SHADER.id);
         projection = glGetUniformLocation(ShaderUtils.TEXT_SHADER.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
-
-        graphicModule.setWidth((int) width);
-        graphicModule.setHeight((int) height);
     }
 
 
