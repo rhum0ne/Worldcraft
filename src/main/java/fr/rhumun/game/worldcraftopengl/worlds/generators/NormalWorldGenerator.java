@@ -172,13 +172,13 @@ public class NormalWorldGenerator extends WorldGenerator {
         Block block = chunk.getHighestBlock(x, z);
 
         if(block.getMaterial() == Material.GRASS_BLOCK)
-            if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)
+            if((1+x*z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)
                 chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.GRASS);
             else if((1+x+z+chunk.getZ())%4==0 && (chunk.getX()+x+2*z)%7==0)
                 chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.BLUE_FLOWER);
             else if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%9==0)
                 chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.RED_FLOWER);
-            else if((1+z+chunk.getX())%5==0 && (chunk.getZ()+x)%7==0)
+            else if((1+z*x+chunk.getX())%5==0 && (chunk.getZ()+x*z)%7==0)
                 chunk.getWorld().spawnStructure(Structure.TREE, CHUNK_SIZE * chunk.getX() + x, (int) (block.getLocation().getY() + 1), CHUNK_SIZE * chunk.getZ() + z);
     }
 }

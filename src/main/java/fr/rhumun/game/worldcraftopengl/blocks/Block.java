@@ -57,7 +57,9 @@ public class Block {
         this.isSurrounded = true;
     }
 
-    public boolean isOpaque(){ return this.material != null && ( this.model.isOpaque() && this.material.getOpacity() == OpacityType.OPAQUE); }
+    public boolean isOpaque(){
+        return this.material != null && ( this.model.isOpaque() && this.material.getOpacity() == OpacityType.OPAQUE);
+    }
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
         //if(!block.isOpaque()) return false;
@@ -88,7 +90,7 @@ public class Block {
                 this.chunk.getLightningBlocks().add(this);
             }
 
-            if(material.getMaterial().getOpacity() != OpacityType.OPAQUE)
+            if(material.getOpacity()!=OpacityType.OPAQUE)
                 for (Block block : this.getSideBlocks()) {
                     if(block==null) continue;
                     block.setSurrounded(false);
@@ -124,6 +126,17 @@ public class Block {
 
     public Block setModel(Model model){
         this.model = model;
+        if(!model.isOpaque)
+            for (Block block : this.getSideBlocks()) {
+                if(block==null) continue;
+                block.setSurrounded(false);
+            }
+        else
+            for(Block block : this.getSideBlocks()){
+                if(block==null) continue;
+                block.updateIsSurrounded();
+            }
+
         this.chunk.setToUpdate(true);
         return this;
     }

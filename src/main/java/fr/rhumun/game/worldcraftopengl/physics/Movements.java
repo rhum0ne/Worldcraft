@@ -16,7 +16,7 @@ public class Movements {
     public static void applyMovements(Player player) {
         updateVelocity(player);
 // Appliquer la gravité si le joueur ne vole pas
-        if (!player.isFlying()) {
+        if (!player.isFlying() && !Game.NO_CLIP) {
             applyGravityFor(player);
         }
         move(player);
