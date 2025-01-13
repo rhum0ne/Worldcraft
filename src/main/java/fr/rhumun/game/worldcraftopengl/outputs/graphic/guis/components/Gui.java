@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
-import fr.rhumun.game.worldcraftopengl.ItemContainer;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.InventoryGUI;
 import lombok.Getter;

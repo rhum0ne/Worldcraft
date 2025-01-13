@@ -1,9 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory;
 
-import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.CreativeItems;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.InventoryGUI;

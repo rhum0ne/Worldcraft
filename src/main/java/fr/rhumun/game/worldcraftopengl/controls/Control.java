@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import lombok.Getter;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;

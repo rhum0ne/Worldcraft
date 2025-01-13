@@ -1,10 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.worlds.generators.Flat;
+import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
-import fr.rhumun.game.worldcraftopengl.worlds.generators.OneBlock;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import javafx.scene.paint.Color;

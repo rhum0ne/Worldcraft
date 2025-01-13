@@ -1,17 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
-import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
+import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
-import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -101,13 +98,15 @@ public class BlockSelector extends Renderer {
         double z = block.getLocation().getZ();
 
         //if(isBlock(block, x, y ,z)) return;
+        float yOffset = 0;
+        if(block.getModel() == Model.SLAB && !block.isOnTheFloor()) yOffset = 0.5f;
 
         while (indicesBuffer.hasRemaining()) {
             int vertexIndex = indicesBuffer.get();
 
             // Position du sommet
             float vx = (float) (x + verticesBuffer.get(vertexIndex * 3));
-            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
+            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1))+yOffset;
             float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
 
             // Ajoute le sommet dans le renderer approprié

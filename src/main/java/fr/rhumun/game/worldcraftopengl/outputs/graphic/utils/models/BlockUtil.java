@@ -1,8 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
-import fr.rhumun.game.worldcraftopengl.Item;
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
+import fr.rhumun.game.worldcraftopengl.Game;
+import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
@@ -15,6 +16,11 @@ public class BlockUtil {
 
     public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, ArrayList<Block> blocks){
         Chunk chunk = chunkRenderer.getChunk();
+
+        if(!Game.GREEDY_MESHING) {
+            rasterBlockGroup(block, block, chunkRenderer);
+            return;
+        }
 
         Block corner1 = block;
         Block corner2 = block;

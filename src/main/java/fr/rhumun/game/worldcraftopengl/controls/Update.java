@@ -1,10 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
-
-import java.util.Arrays;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 
 public class Update  extends Control{
 

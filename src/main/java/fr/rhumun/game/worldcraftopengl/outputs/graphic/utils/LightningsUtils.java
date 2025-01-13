@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
@@ -30,7 +30,7 @@ public class LightningsUtils {
             if(!chunk.isLoaded()) continue;
             if(chunk.getLightningBlocks().isEmpty()) continue;
             for(Block block : chunk.getLightningBlocks()) {
-                if(block.getTick()==0) continue;
+                if(block.getState()==0) continue;
                 pointLights.add(block);
             }
         }

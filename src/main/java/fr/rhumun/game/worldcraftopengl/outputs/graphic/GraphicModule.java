@@ -1,12 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
-import fr.rhumun.game.worldcraftopengl.blocks.*;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
@@ -260,10 +259,10 @@ public class GraphicModule{
         World world = player.getLocation().getWorld();
 
         for(Shader shader : renderingShaders){
-            shader.setUniform("dirLight.direction", new Vector3f(0, -1, 0));
+            shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
             shader.setUniform("dirLight.ambient", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
             shader.setUniform("dirLight.diffuse", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
-            shader.setUniform("dirLight.specular", new Vector3f(0, 0, 0));
+            shader.setUniform("dirLight.specular", new Vector3f(0.25f, 0.2f, 0.2f));
         }
 
         this.guiModule.updateInventory(player);

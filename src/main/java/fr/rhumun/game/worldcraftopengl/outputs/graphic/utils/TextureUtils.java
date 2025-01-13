@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.TextureTypes;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.content.textures.TextureTypes;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;

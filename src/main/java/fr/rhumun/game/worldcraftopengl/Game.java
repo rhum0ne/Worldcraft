@@ -1,8 +1,10 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
@@ -17,7 +19,7 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     public static int SHOW_DISTANCE = 11;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
@@ -28,6 +30,7 @@ public class Game {
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
     public static boolean NO_CLIP = false;
+    public static boolean GREEDY_MESHING = true;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";

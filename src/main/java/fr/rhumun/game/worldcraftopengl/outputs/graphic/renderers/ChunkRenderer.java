@@ -1,10 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
-import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.blocks.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
+import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;

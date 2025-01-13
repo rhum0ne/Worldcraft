@@ -1,11 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.controls.event;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
-import java.security.Key;
 import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;

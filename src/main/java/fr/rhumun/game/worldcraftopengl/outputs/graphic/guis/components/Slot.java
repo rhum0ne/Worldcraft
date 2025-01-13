@@ -1,11 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
-import fr.rhumun.game.worldcraftopengl.Item;
-import fr.rhumun.game.worldcraftopengl.Player;
-import fr.rhumun.game.worldcraftopengl.blocks.Mesh;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
+import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import lombok.Getter;
@@ -13,7 +12,6 @@ import lombok.Getter;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 public class Slot extends Button {

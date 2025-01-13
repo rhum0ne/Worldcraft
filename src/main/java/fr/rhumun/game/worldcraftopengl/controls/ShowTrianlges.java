@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
-import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 
 public class ShowTrianlges extends Control {
     @Override

@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.blocks.Block;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
 

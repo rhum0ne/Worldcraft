@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
-import fr.rhumun.game.worldcraftopengl.Player;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 
 public class CreativeSlot extends Slot {
     public CreativeSlot(int x, int y, int size, int id, Gui gui) {

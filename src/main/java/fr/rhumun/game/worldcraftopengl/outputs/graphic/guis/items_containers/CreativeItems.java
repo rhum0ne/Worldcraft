@@ -1,10 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers;
 
-import fr.rhumun.game.worldcraftopengl.Item;
-import fr.rhumun.game.worldcraftopengl.ItemContainer;
-import fr.rhumun.game.worldcraftopengl.blocks.Model;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.blocks.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
+import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import lombok.Getter;
 
 @Getter
