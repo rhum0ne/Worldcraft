@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.HeightCalculation;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 
@@ -17,10 +18,13 @@ import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 public class NormalWorldGenerator extends WorldGenerator {
 
     private final JNoise continentalness;
-    private final JNoise secondary;
-    private final JNoise detail;
+    private final JNoise erosion;
+    private final JNoise peakAndValeys;
+
+    private final JNoise caves;
+
     private final long seed;
-    private final int waterHigh = 29;
+    private final int waterHigh = 70;
 
 
     public NormalWorldGenerator(World world) {
@@ -30,20 +34,27 @@ public class NormalWorldGenerator extends WorldGenerator {
 
         // Grande échelle - contrôle des continents
         this.continentalness = JNoise.newBuilder()
-                .perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
+                .perlin(seed, Interpolation.QUADRATIC, FadeFunction.QUINTIC_POLY)
                 .octavate(3, 0.5, 2.2, FractalFunction.FBM, false)
                 .build();
 
         // Variations intermédiaires - collines et plateaux
-        this.secondary = JNoise.newBuilder()
+        this.erosion = JNoise.newBuilder()
                 .perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
                 .octavate(4, 0.4, 1.8, FractalFunction.FBM, false)
                 .build();
 
         // Petits détails - relief local
-        this.detail = JNoise.newBuilder()
+        this.peakAndValeys = JNoise.newBuilder()
                 .perlin(seed, Interpolation.COSINE, FadeFunction.QUINTIC_POLY)
                 .octavate(6, 0.6, 1.5, FractalFunction.FBM, false)
+                .build();
+
+
+        // Petits détails - relief local
+        this.caves = JNoise.newBuilder()
+                .perlin(seed, Interpolation.COSINE, FadeFunction.QUADRATIC_RATIONAL)
+                .octavate(3, 0.6, 1.5, FractalFunction.FBM, false)
                 .build();
     }
 
@@ -55,8 +66,28 @@ public class NormalWorldGenerator extends WorldGenerator {
         shapeTerrain(chunk);
         fillWater(chunk);
         paint(chunk);
+        createCaves(chunk);
 
         chunk.updateBordersChunks();
+    }
+
+    private void createCaves(Chunk chunk) {
+        for(int x=0; x<CHUNK_SIZE; x++)
+            for(int z=0; z<CHUNK_SIZE; z++)
+                for(int y=0; y< getWorld().getHeigth(); y++) {
+                    Block block = chunk.getBlockNoVerif(x, y ,z);
+                    if (block == null || (block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK)) continue;
+                    double xH = (chunk.getX()*CHUNK_SIZE+x)/128.0;
+                    double zH = (chunk.getZ()*CHUNK_SIZE+z)/128.0;
+
+                    float noise = (float) caves.evaluateNoise(xH, y / 24f, zH);
+
+                    float w = (block.getMaterial() == Material.STONE) ? 0.1f : 0.02f;
+                    float t = (block.getMaterial() == Material.STONE) ? 0 : 0.01f;
+                    if(y<5) w+= (float) 1 /y+1;
+
+                    if (noise > t && noise < w) block.setMaterial(null);
+                }
     }
 
     private void paint(Chunk chunk) {
@@ -95,11 +126,11 @@ public class NormalWorldGenerator extends WorldGenerator {
     private void shapeTerrain(Chunk chunk) {
         for(int x=0; x<CHUNK_SIZE; x++){
             for(int z=0; z<CHUNK_SIZE; z++){
-                double xH = (chunk.getX()*CHUNK_SIZE+x)/100.0;
-                double zH = (chunk.getZ()*CHUNK_SIZE+z)/100.0;
+                double xH = (chunk.getX()*CHUNK_SIZE+x)/128.0;
+                double zH = (chunk.getZ()*CHUNK_SIZE+z)/128.0;
 
 
-                int height = calculateHeight(xH, zH);
+                int height = HeightCalculation.calculateHeight(continentalness, erosion, peakAndValeys, xH, zH);
 
 
                 for(int y=0; y<height; y++){
@@ -127,36 +158,6 @@ public class NormalWorldGenerator extends WorldGenerator {
 //        x-=0.1;
 //        return (int) (15*continentalnessValue+73);
 //    }
-
-    private int calculateHeight(double xH, double zH) {
-        float continentalnessValue = (float) continentalness.evaluateNoise(xH, zH);
-
-        // Ajouter des variations supplémentaires avec d'autres bruits
-        float secondaryNoise = (float) secondary.evaluateNoise(xH * 0.5, zH * 0.5); // Bruit de plus basse fréquence
-        float detailNoise = (float) detail.evaluateNoise(xH * 5, zH * 5); // Bruit de plus haute fréquence
-
-        // Ajuster le continentalness avec les variations secondaires
-        float adjustedValue = continentalnessValue +0.2f *secondaryNoise;
-
-        // Normaliser les valeurs pour éviter les extrêmes
-        adjustedValue = Math.max(0, Math.min(1, adjustedValue));
-
-        int baseHeight;
-        if(continentalnessValue < 0.1) baseHeight = (int) (40*adjustedValue+20);
-        else if(continentalnessValue < 0.5) baseHeight = (int) (20*(adjustedValue-0.1f)+29);
-        else if(continentalnessValue < 0.7) baseHeight = (int) (25*(adjustedValue-0.5f)+34);
-        else if(continentalnessValue < 0.8) baseHeight = (int) (45*(adjustedValue-0.7f)+39);
-        else baseHeight = (int) (15 * (adjustedValue-0.8f) + 73);
-
-
-        // Ajouter du détail local pour éviter l'uniformité
-        int finalHeight = baseHeight + (int) (5 * detailNoise);
-
-        // Appliquer une hauteur minimale et maximale
-        finalHeight = Math.max(20, Math.min(120, finalHeight));
-
-        return finalHeight;
-    }
 
 
     @Override

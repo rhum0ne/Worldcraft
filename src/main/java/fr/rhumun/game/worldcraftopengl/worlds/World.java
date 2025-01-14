@@ -18,7 +18,7 @@ public class World {
     private final WorldGenerator generator;
 
     private final HashMap<Point, Chunk> chunks = new HashMap<>();
-    private final int heigth = 128;
+    private final int heigth = 256;
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);

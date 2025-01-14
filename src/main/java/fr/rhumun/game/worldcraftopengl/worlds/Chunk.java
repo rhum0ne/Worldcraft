@@ -56,6 +56,10 @@ public class Chunk {
         //this.blockList.add(block);
     }
 
+    public Block getBlockNoVerif(int x, int y, int z){
+        return blocks[x][y][z];
+    }
+
     public Block get(int x, int y, int z){
         if(y<0 || y>= world.getHeigth()){
             //System.out.println("Y too high.");

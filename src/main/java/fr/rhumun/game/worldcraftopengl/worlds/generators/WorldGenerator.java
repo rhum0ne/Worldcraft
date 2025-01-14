@@ -17,7 +17,7 @@ public abstract class WorldGenerator {
     public void tryGenerate(Chunk chunk){
         if(chunk.isGenerated()) return;
         this.generate(chunk);
-        this.populate(chunk);
+        //this.populate(chunk);
 
         /*for(Block block : chunk.getBlockList()){
             block.getSideBlocks();

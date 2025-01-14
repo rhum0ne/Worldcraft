@@ -29,7 +29,7 @@ public class Game {
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
-    public static boolean NO_CLIP = false;
+    public static boolean NO_CLIP = true;
     public static boolean GREEDY_MESHING = true;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
