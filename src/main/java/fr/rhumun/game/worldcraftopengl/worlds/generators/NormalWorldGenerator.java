@@ -109,7 +109,10 @@ public class NormalWorldGenerator extends WorldGenerator {
             for(int z=0; z<CHUNK_SIZE; z++)
                 for(int y=0; y< getWorld().getHeigth(); y++) {
                     Block block = chunk.getBlockNoVerif(x, y ,z);
-                    if (block == null || (block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK)) continue;
+
+                    if(block == null || block.getMaterial() == null || block.getMaterial() == Material.DARK_COBBLE) continue;
+                    if ((block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK)) continue;
+
                     double xH = (chunk.getX()*CHUNK_SIZE+x)/400.0;
                     double zH = (chunk.getZ()*CHUNK_SIZE+z)/400.0;
 
@@ -138,6 +141,8 @@ public class NormalWorldGenerator extends WorldGenerator {
                     if(block == null) break;
                     block.setMaterial(block.getBiome().getSecondary());
                 }
+
+                chunk.setBlock(x, 0, z, Material.DARK_COBBLE);
             }
     }
 

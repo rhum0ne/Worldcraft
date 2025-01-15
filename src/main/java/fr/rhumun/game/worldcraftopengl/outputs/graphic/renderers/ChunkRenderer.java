@@ -140,7 +140,7 @@ public class ChunkRenderer {
 
         ArrayList<Block> blocks = new ArrayList<>();
         for (int X=0; X<chunk.getBlocks().length; X++ ) {
-            for(int Y=chunk.getBlocks()[X].length-1; Y>0; Y--) {
+            for(int Y=chunk.getBlocks()[X].length-1; Y>=0; Y--) {
                 for(int Z=0; Z<chunk.getBlocks()[X][Y].length; Z++) {
                     Block block = chunk.getBlocks()[X][Y][Z];
                     if(blocks.contains(block)) continue;
