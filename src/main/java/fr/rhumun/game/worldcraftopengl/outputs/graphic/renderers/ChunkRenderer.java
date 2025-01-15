@@ -131,6 +131,7 @@ public class ChunkRenderer {
     }
 
     public void updateData() {
+
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
             renderer.getIndices().clear();

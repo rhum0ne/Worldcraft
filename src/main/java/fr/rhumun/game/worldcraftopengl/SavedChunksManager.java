@@ -89,7 +89,7 @@ public class SavedChunksManager {
 
         for(Chunk loadedChunk : toLoad){
             if(this.chunksToRender.contains(loadedChunk)) continue;
-            game.log("Starting first loading of " + loadedChunk);
+            //game.log("Starting first loading of " + loadedChunk);
             chunk.setLoaded(true);
             GAME.getGraphicModule().addChunkToLoad(loadedChunk);
         }

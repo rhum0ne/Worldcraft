@@ -1,4 +1,4 @@
-package fr.rhumun.game.worldcraftopengl;
+package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
@@ -32,6 +32,10 @@ public class Location {
         this. yaw = yaw;
         this.pitch = pitch;
         this.world = world;
+    }
+
+    public Location(Location loc) {
+        this(loc.world, loc.x, loc.y, loc.z, loc.yaw, loc.pitch);
     }
 
     public Chunk getChunk(){

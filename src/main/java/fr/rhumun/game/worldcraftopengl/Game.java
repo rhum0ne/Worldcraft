@@ -19,8 +19,9 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static int SHOW_DISTANCE = 11;
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static int SHOW_DISTANCE = 12;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = true;
@@ -59,9 +60,13 @@ public class Game {
         audioManager = new AudioManager();
         audioManager.init();
 
+
+        this.player = new Player(this);
         this.world = new World();
 
-        this.player = new Player(this, 0, world.getChunk(0, 0, true).getHighestBlock(0, 0).getLocation().getY()+10, 0);
+        while(!world.isLoaded()){ }
+
+        this.world.spawnPlayer(player);
 
         Timer timer = new Timer();
 

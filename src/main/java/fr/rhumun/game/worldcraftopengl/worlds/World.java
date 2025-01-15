@@ -1,8 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
+import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import javafx.scene.paint.Color;
 import lombok.Getter;
@@ -11,6 +14,7 @@ import org.joml.Vector3f;
 import java.util.HashMap;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 public class World {
@@ -23,11 +27,36 @@ public class World {
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
 
+    private final Seed seed;
+    private Location spawn;
+
+    private boolean isLoaded = false;
+
     public World(){
+        //this.seed = Seed.create("6038198250");
+        this.seed = Seed.random();
         this.generator = new NormalWorldGenerator(this);
         //this.generator = new Flat(this);
 
-        this.createChunk(0, 0);
+        GAME.log("Creating a new World... Seed: " + seed.getLong());
+
+        int xSpawn = seed.getCombinaisonOf(1, 8, 3) * seed.get(7);
+        int zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
+
+        Chunk spawn = this.getChunkAt(xSpawn, zSpawn, true);
+
+        while(isLoading()){}
+
+        this.spawn = new Location(this, xSpawn, spawn.getHighestBlock(xSpawn-CHUNK_SIZE*spawn.getX(), zSpawn-CHUNK_SIZE*spawn.getZ(), false).getLocation().getY()+10, zSpawn);
+        this.isLoaded = true;
+    }
+
+    public boolean isLoading(){
+        return !this.getChunk(0, 0, true).isGenerated();
+    }
+
+    public void spawnPlayer(Player player){
+        player.setLocation(spawn);
     }
 
     public Chunk createChunk(int x, int z){
@@ -39,7 +68,8 @@ public class World {
         //System.out.println("Creating a new chunk at " + x + " : " + z);
         Chunk chunk = new Chunk(this, x, z);
         this.chunks.put(coos, chunk);
-        this.generator.tryGenerate(chunk);
+//        this.generator.tryGenerate(chunk);
+        chunk.generate();
         //System.out.println("");
         //System.out.println(chunks.toString().replace(" ", "\n"));
         // System.out.println("");

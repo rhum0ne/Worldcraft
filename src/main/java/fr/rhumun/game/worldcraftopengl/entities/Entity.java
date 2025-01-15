@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
-import fr.rhumun.game.worldcraftopengl.Location;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -15,7 +14,7 @@ import org.joml.Vector3f;
 public class Entity {
     private final Game game;
 
-    private final Location location;
+    private Location location;
 
     private final int reach = 5;
 
@@ -40,6 +39,10 @@ public class Entity {
     public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
         this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
         this.game = game;
+    }
+
+    public void setLocation(Location loc){
+        this.location = new Location(loc);
     }
 
 

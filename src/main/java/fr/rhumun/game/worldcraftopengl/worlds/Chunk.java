@@ -28,6 +28,7 @@ public class Chunk {
 
     @Setter
     private boolean toUpdate = false;
+    private Thread generator;
     private ChunkRenderer renderer;
 
     @Setter
@@ -48,7 +49,13 @@ public class Chunk {
                     this.addBlock(x, z, new Block(this, (byte) x, (short) y, (byte) z));
                 }
             }
+    }
 
+    public void generate(){
+        if(this.isGenerated()) return;
+
+        this.generator = new ChunkGenerator(this);
+        this.generator.start();
     }
 
     private void addBlock(int x, int z, Block block) {
@@ -61,24 +68,22 @@ public class Chunk {
     }
 
     public Block get(int x, int y, int z){
-        if(y<0 || y>= world.getHeigth()){
-            //System.out.println("Y too high.");
+        if(y<0 || y>= world.getHeigth())
             return null;
-        }
+
+
         if(x<0) x+=CHUNK_SIZE;
         if(z<0) z+=CHUNK_SIZE;
-        //System.out.println("x: "+(x)+", z: "+(z));
+
         if(x>=CHUNK_SIZE || z>=CHUNK_SIZE || x<0 || z<0){
             Chunk chunk = world.getChunkAt(this.X*CHUNK_SIZE+x, this.Z*CHUNK_SIZE+z, false);
             if(chunk == null) return null;
             int xInput = x%CHUNK_SIZE;
             int zInput = z%CHUNK_SIZE;
-//            if(xInput<0) xInput+=16;
-//            if(zInput<0) zInput+=16;
-            return chunk.get(xInput,y,zInput); // blocks est une structure de données représentant le monde
+
+            return chunk.get(xInput,y,zInput);
         }
-        //System.out.println("x: "+(x)+", z: "+(z));
-        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
+
         return blocks[x][y][z];
     }
 
@@ -89,33 +94,37 @@ public class Chunk {
         }
         x-=X*CHUNK_SIZE;
         z-=Z*CHUNK_SIZE;
-        if(x<0) x+=CHUNK_SIZE;
-        if(z<0) z+=CHUNK_SIZE;
 
-        if(x>=CHUNK_SIZE){
-            Chunk chunk = world.getChunk(this.X + 1, this.Z, false);
-            if(chunk == null) return null;
-            return chunk.get(x-16, y, z);
-        } else if (x<0) {
-            Chunk chunk = world.getChunk(this.X - 1, this.Z, false);
-            if(chunk == null) return null;
-            return chunk.get(x+16, y, z);
+        Chunk target = this;
+
+        int xO = 0;
+        int zO = 0;
+        while(x>=CHUNK_SIZE){
+            x-=CHUNK_SIZE;
+            xO++;
         }
 
-        if(z>=CHUNK_SIZE){
-            Chunk chunk = world.getChunk(this.X, this.Z + 1, false);
-            if(chunk == null) return null;
-            return chunk.get(x, y, z-16);
-        } else if (z<0) {
-            Chunk chunk = world.getChunk(this.X, this.Z - 1, false);
-            if(chunk == null) return null;
-            return chunk.get(x, y, z+16);
+        while(z>=CHUNK_SIZE){
+            z-=CHUNK_SIZE;
+            zO++;
         }
 
+        while(x<0){
+            x+=CHUNK_SIZE;
+            xO--;
+        }
+
+        while(z<0){
+            z+=CHUNK_SIZE;
+            zO--;
+        }
+
+        if(xO!=0 || zO!=0) target = world.getChunk(target.X+xO, target.Z+zO, false);
+        if(target==null) return null;
 
         //System.out.println("x: "+(x)+", z: "+(z));
         //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
-        return blocks[x][y][z];
+        return target.blocks[x][y][z];
     }
 
     public void setBlock(int x, int y, int z, Material mat, Model model){
@@ -123,10 +132,10 @@ public class Chunk {
         this.blocks[x][y][z].setModel(model);
     }
 
-    public Block getHighestBlock(int x, int z){
+    public Block getHighestBlock(int x, int z, boolean b){
         for(int y=world.getHeigth()-1; y>=0; y--){
             Block block = blocks[x][y][z];
-            if(block.getMaterial() != null) return block;
+            if(block.getMaterial() != null && (b || !block.getMaterial().isLiquid())) return block;
         }
         return blocks[x][0][z];
     }

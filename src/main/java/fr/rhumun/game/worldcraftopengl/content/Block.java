@@ -1,13 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.content;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.Location;
+import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +24,8 @@ public class Block {
     private byte chunkX;
     private short chunkY;
     private byte chunkZ;
+
+    private Biome biome;
 
     private int state = 0;
 
