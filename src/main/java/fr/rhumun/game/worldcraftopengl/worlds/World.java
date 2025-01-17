@@ -29,6 +29,7 @@ public class World {
 
     private final Seed seed;
     private Location spawn;
+    private Chunk spawnChunk;
 
     private boolean isLoaded = false;
 
@@ -43,16 +44,22 @@ public class World {
         int xSpawn = seed.getCombinaisonOf(1, 8, 3) * seed.get(7);
         int zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
 
-        Chunk spawn = this.getChunkAt(xSpawn, zSpawn, true);
+        spawnChunk = this.getChunkAt(xSpawn, zSpawn, true);
 
-        while(isLoading()){}
+        while(isLoading()){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
-        this.spawn = new Location(this, xSpawn, spawn.getHighestBlock(xSpawn-CHUNK_SIZE*spawn.getX(), zSpawn-CHUNK_SIZE*spawn.getZ(), false).getLocation().getY()+10, zSpawn);
+        this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), false).getLocation().getY()+10, zSpawn);
         this.isLoaded = true;
     }
 
     public boolean isLoading(){
-        return !this.getChunk(0, 0, true).isGenerated();
+        return !this.spawnChunk.isGenerated();
     }
 
     public void spawnPlayer(Player player){

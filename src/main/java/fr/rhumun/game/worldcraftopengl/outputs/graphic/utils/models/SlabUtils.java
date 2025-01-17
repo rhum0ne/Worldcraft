@@ -11,10 +11,11 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 public class SlabUtils {
 
-    public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, ArrayList<Block> blocks){
+    public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, LinkedHashSet<Block> blocks){
         Chunk chunk = chunkRenderer.getChunk();
         boolean isOnFloor = block.isOnTheFloor();
 

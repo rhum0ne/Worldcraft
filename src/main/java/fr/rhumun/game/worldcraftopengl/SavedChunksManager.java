@@ -23,7 +23,7 @@ public class SavedChunksManager {
         this.game = GAME;
     }
 
-    public void tryLoadChunks(){
+    public void tryLoadChunks(){ //A REVOIR ENTIEREMENT -> LAGS
         if(!GENERATION) {
             if(chunksToRender.isEmpty()) chunksToRender.add(player.getLocation().getChunk());
             return;

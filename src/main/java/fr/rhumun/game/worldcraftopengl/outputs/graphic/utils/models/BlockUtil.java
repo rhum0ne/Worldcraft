@@ -11,10 +11,11 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 
 public class BlockUtil {
 
-    public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, ArrayList<Block> blocks){
+    public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, LinkedHashSet<Block> blocks){
         Chunk chunk = chunkRenderer.getChunk();
 
         if(!Game.GREEDY_MESHING) {
@@ -100,7 +101,8 @@ public class BlockUtil {
             }
 
             if(isGood){
-                blocks.addAll(addedBlocks);
+                addedBlocks.forEach(blocks::add);
+                //blocks.addAll(addedBlocks);
                 corner2 = lastBlock;
             }
         }

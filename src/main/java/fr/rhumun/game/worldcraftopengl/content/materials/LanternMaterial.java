@@ -43,10 +43,10 @@ public class LanternMaterial extends PointLight implements ForcedModelMaterial, 
     @Override
     public void interact(Player player, Block block) {
         if(block.getState() == 0){
-            block.setState(1);
+            block.setState((byte) 1);
         }
         else {
-            block.setState(0);
+            block.setState((byte) 0);
         }
         GAME.getGraphicModule().getLightningsUtils().updateLights();
     }

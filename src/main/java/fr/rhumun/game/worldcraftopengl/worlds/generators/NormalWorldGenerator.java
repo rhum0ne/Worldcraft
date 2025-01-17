@@ -163,9 +163,6 @@ public class NormalWorldGenerator extends WorldGenerator {
     }
 
     private void shapeTerrain(Chunk chunk) {
-        int width = 512; // Largeur de la carte
-        int h = 512; // Hauteur de la carte
-        double[][] terrain = new double[width][h];
 
         for(int x=0; x<CHUNK_SIZE; x++){
             for(int z=0; z<CHUNK_SIZE; z++){
@@ -175,10 +172,6 @@ public class NormalWorldGenerator extends WorldGenerator {
                 Biome biome = getBiome(xH, zH);
 
                 int height = heightCalculator.calcHeight(xH, zH, biome);
-
-
-                if(xH<width && xH>-1 && zH<h && zH>0) terrain[xH][zH] = height;
-
 
                 for (int y = 0; y < this.getWorld().getHeigth(); y++) {
                     Block block = chunk.get(x, y, z);

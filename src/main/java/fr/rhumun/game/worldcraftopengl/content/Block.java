@@ -27,7 +27,7 @@ public class Block {
 
     private Biome biome;
 
-    private int state = 0;
+    private byte state = 0;
 
     public Block(Chunk chunk, byte chunkX, short chunkY, byte chunkZ) {
         this.chunk = chunk;
@@ -46,9 +46,10 @@ public class Block {
 
     public Location getLocation(){ return new Location(chunk.getWorld(), this.getX(), this.getY(), this.getZ()); }
 
-    public void updateIsSurrounded() {
+    public void updateIsSurrounded(){ this.updateIsSurrounded(this.getSideBlocks()); }
+    public void updateIsSurrounded(Block[] sideBlocks) {
         // Vérifie les 6 directions pour voir si un bloc est présent
-        for(Block block : this.getSideBlocks()){
+        for(Block block : sideBlocks) {
             if(block == null || !block.isOpaque()) {
                 this.isSurrounded = false;
                 return;
@@ -73,13 +74,15 @@ public class Block {
     }
 
     public Block setMaterial(Material material){
+        //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
         if(this.material != null && this.material.getMaterial() instanceof PointLight){
             this.chunk.getLightningBlocks().remove(this);
         }
         this.material = material;
+        Block[] sideBlocks = this.getSideBlocks();
 
         if(material==null) {
-            for (Block block : this.getSideBlocks()){
+            for (Block block :sideBlocks ){
                 if(block==null) continue;
                 block.setSurrounded(false);
             }
@@ -91,12 +94,12 @@ public class Block {
             }
 
             if(material.getOpacity()!=OpacityType.OPAQUE)
-                for (Block block : this.getSideBlocks()) {
+                for (Block block : sideBlocks) {
                     if(block==null) continue;
                     block.setSurrounded(false);
                 }
             else
-                for(Block block : this.getSideBlocks()){
+                for(Block block : sideBlocks){
                     if(block==null) continue;
                     block.updateIsSurrounded();
                 }
@@ -126,13 +129,15 @@ public class Block {
 
     public Block setModel(Model model){
         this.model = model;
+        Block[] sideBlocks = this.getSideBlocks();
+
         if(!model.isOpaque)
-            for (Block block : this.getSideBlocks()) {
+            for (Block block : sideBlocks) {
                 if(block==null) continue;
                 block.setSurrounded(false);
             }
         else
-            for(Block block : this.getSideBlocks()){
+            for(Block block : sideBlocks){
                 if(block==null) continue;
                 block.updateIsSurrounded();
             }
@@ -178,5 +183,9 @@ public class Block {
 
     public boolean isCliquable() {
         return this.material != null && this.material.getOpacity() != OpacityType.LIQUID;
+    }
+
+    public void setState(int state) {
+        this.state = (byte) state;
     }
 }

@@ -15,6 +15,7 @@ import lombok.Setter;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -145,15 +146,13 @@ public class ChunkRenderer {
     }
 
     public void updateData() {
-        System.out.println("Updating a chunk");
-
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
             renderer.getIndices().clear();
             renderer.setIndice(0);
         }
 
-        ArrayList<Block> blocks = new ArrayList<>();
+        LinkedHashSet<Block> blocks = new LinkedHashSet<>();
         if(chunk.getBlocks() == null) {
             this.verticesNumber = 0;
 
@@ -172,12 +171,10 @@ public class ChunkRenderer {
             for(int Y=chunk.getBlocks()[X].length-1; Y>=0; Y--) {
                 for(int Z=0; Z<chunk.getBlocks()[X][Y].length; Z++) {
                     Block block = chunk.getBlocks()[X][Y][Z];
-                    if(blocks.contains(block)) continue;
-
                     if (block == null || block.getMaterial() == null) continue;
-
                     Model model = block.getModel();
                     if (model == null) continue;
+                    if(blocks.contains(block)) continue;
 
                     if (block.isSurrounded()) continue;
 

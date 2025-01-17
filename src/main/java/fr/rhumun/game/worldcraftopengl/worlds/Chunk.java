@@ -54,8 +54,10 @@ public class Chunk {
     public void generate(){
         if(this.isGenerated()) return;
 
-        this.generator = new ChunkGenerator(this);
-        this.generator.start();
+        this.getWorld().getGenerator().generate(this);
+        //this.populate(chunk);
+        this.setGenerated(true);
+        System.out.println("Generated chunk at " + this.X + ", " + this.Z);
     }
 
     private void addBlock(int x, int z, Block block) {
@@ -154,9 +156,18 @@ public class Chunk {
         GAME.log("Unloading chunk " + this.toString());
         this.loaded = false;
         this.getWorld().unload(this);
+
+        for (int x = 0; x < blocks.length; x++)
+            for (int y = 0; y<blocks[x].length; y++) {
+                for(int z = 0; z<blocks[x][y].length; z++){
+                    this.blocks[x][y][z] = null;
+                }
+            }
+
         this.blocks = null;
         this.visibleBlock = null;
         this.lightningBlocks = null;
+
 
 //        if(this.isRendererInitialized()){
 //            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();
