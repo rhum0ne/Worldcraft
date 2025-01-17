@@ -19,7 +19,7 @@ public class DandelionMaterial extends AbstractMaterial implements ForcedModelMa
 
     @Override
     public OpacityType getOpacity() {
-        return OpacityType.TRANSPARENT;
+        return OpacityType.CLOSE_TRANSPARENT;
     }
 
     @Override

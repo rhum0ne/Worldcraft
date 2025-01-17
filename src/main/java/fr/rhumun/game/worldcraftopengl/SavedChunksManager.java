@@ -58,6 +58,7 @@ public class SavedChunksManager {
                 // Si la distance est dans le rayon de chargement, on l'ajoute
                 if (distance <= SHOW_DISTANCE) {
                     Chunk chunk = player.getLocation().getWorld().getChunk(x, z, true);
+                    chunk.getRenderer().setDistanceFromPlayer((int) distance);
                     chunkQueue.add(new ChunkDistance(chunk, distance));
                 }
             }

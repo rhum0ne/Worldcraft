@@ -100,6 +100,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         fillWater(chunk);
         paint(chunk);
         createCaves(chunk);
+        populate(chunk);
 
         chunk.updateBordersChunks();
     }
@@ -268,7 +269,7 @@ public class NormalWorldGenerator extends WorldGenerator {
     }
 
     private void spawnVegetation(Chunk chunk, int x, int z) {
-        Block block = chunk.getHighestBlock(x, z, false);
+        Block block = chunk.getHighestBlock(x, z, true);
 
         if(block.getMaterial() == Material.GRASS_BLOCK)
             if((1+x*z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)

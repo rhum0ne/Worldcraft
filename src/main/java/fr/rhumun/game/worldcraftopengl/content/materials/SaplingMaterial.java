@@ -19,7 +19,7 @@ public class SaplingMaterial extends AbstractMaterial implements ForcedModelMate
 
     @Override
     public OpacityType getOpacity() {
-        return OpacityType.TRANSPARENT;
+        return OpacityType.CLOSE_TRANSPARENT;
     }
 
     @Override

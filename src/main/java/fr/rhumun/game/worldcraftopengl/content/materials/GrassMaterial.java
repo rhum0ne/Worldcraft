@@ -19,7 +19,7 @@ public class GrassMaterial extends AbstractMaterial implements ForcedModelMateri
 
     @Override
     public OpacityType getOpacity() {
-        return OpacityType.TRANSPARENT;
+        return OpacityType.CLOSE_TRANSPARENT;
     }
 
     @Override

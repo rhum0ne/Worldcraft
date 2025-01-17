@@ -8,4 +8,11 @@ public class Liquid implements AbstractOpacity {
         if(block.getMaterial() == null) return true;
         return !block.isOpaque() && block.getMaterial().getOpacity() != OpacityType.LIQUID;
     }
+
+    @Override
+    public int getMaxViewDistance() {
+        return -1;
+    }
+
+
 }

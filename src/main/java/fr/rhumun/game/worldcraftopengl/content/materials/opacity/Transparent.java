@@ -7,4 +7,8 @@ public class Transparent implements AbstractOpacity {
     public boolean isVisibleWith(Block block) {
         return true;
     }
+    @Override
+    public int getMaxViewDistance() {
+        return -1;
+    }
 }

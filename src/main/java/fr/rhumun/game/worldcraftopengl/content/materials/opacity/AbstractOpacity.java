@@ -6,5 +6,7 @@ public interface AbstractOpacity {
 
     boolean isVisibleWith(Block block);
 
+    int getMaxViewDistance();
+
 
 }

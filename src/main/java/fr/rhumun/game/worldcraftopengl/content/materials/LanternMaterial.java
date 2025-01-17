@@ -32,7 +32,7 @@ public class LanternMaterial extends PointLight implements ForcedModelMaterial, 
 
     @Override
     public OpacityType getOpacity() {
-        return OpacityType.TRANSPARENT;
+        return OpacityType.CLOSE_TRANSPARENT;
     }
 
     @Override

@@ -64,6 +64,7 @@ public class Chunk {
     }
 
     public Block getBlockNoVerif(int x, int y, int z){
+        if(!this.isLoaded()) return null;
         return blocks[x][y][z];
     }
 
@@ -121,7 +122,7 @@ public class Chunk {
 
         if(xO!=0 || zO!=0) target = world.getChunk(target.X+xO, target.Z+zO, false);
         if(target==null) return null;
-
+        if(target.blocks == null) return null;
         //System.out.println("x: "+(x)+", z: "+(z));
         //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
         return target.blocks[x][y][z];

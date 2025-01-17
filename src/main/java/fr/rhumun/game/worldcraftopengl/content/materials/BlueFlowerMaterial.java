@@ -19,7 +19,7 @@ public class BlueFlowerMaterial extends AbstractMaterial implements ForcedModelM
 
     @Override
     public OpacityType getOpacity() {
-        return OpacityType.TRANSPARENT;
+        return OpacityType.CLOSE_TRANSPARENT;
     }
 
     @Override

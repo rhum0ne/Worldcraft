@@ -5,7 +5,8 @@ import fr.rhumun.game.worldcraftopengl.content.Block;
 public enum OpacityType {
     OPAQUE(new Opaque()),
     TRANSPARENT(new Transparent()),
-    LIQUID(new Liquid());
+    LIQUID(new Liquid()),
+    CLOSE_TRANSPARENT(new CloseTransparent());
 
     private final AbstractOpacity opacity;
 
@@ -18,4 +19,8 @@ public enum OpacityType {
     }
 
     public int getPriority(){ return this.ordinal(); }
+
+    public int getMaxChunkDistance() {
+        return this.opacity.getMaxViewDistance();
+    }
 }

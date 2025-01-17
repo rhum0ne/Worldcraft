@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -43,6 +44,9 @@ public class ChunkRenderer {
     private boolean isDataUpdating = false;
     private boolean isDataReady = false;
 
+    @Setter
+    private int distanceFromPlayer;
+
     private int verticesNumber;
 
 
@@ -51,18 +55,32 @@ public class ChunkRenderer {
         this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
         this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
         this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+        this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
     }
 
     public void render() {
 
-        if(chunk.isToUpdate()) update();
 
+        if(chunk.isToUpdate()) update();
         //System.out.println("Rendering chunk " + chunk);
 
         glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
         //glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
+
+        glEnable(GL_DEPTH_TEST);
+
         this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
 
+        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > distanceFromPlayer && this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+            glEnable(GL_BLEND);
+            //glDepthMask(false);
+
+            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
+            this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
+
+            //glDepthMask(true);
+            glDisable(GL_BLEND);
+        }
         if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
@@ -90,11 +108,7 @@ public class ChunkRenderer {
         if (!isDataReady && !isDataUpdating) {
             // Lance le calcul dans un thread séparé
             isDataUpdating = true;
-            Thread th = new Thread(() -> {
-                updateData();
-                isDataReady = true; // Marque les données comme prêtes
-            });
-            th.start();
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
         } else {
             // Les données sont prêtes, on peut mettre à jour le VAO
             updateVAO();
@@ -131,6 +145,7 @@ public class ChunkRenderer {
     }
 
     public void updateData() {
+        System.out.println("Updating a chunk");
 
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
@@ -139,6 +154,20 @@ public class ChunkRenderer {
         }
 
         ArrayList<Block> blocks = new ArrayList<>();
+        if(chunk.getBlocks() == null) {
+            this.verticesNumber = 0;
+
+            for (Renderer renderer : this.renderers) {
+                renderer.toArrays();
+                if(SHOWING_RENDERER_DATA) {
+                    int length = renderer.getVertices().size();
+                    //GAME.log("DATA LOADED: " + length + " floats");
+                    this.verticesNumber += length;
+                }
+            }
+            return;
+        }
+
         for (int X=0; X<chunk.getBlocks().length; X++ ) {
             for(int Y=chunk.getBlocks()[X].length-1; Y>=0; Y--) {
                 for(int Z=0; Z<chunk.getBlocks()[X][Y].length; Z++) {
@@ -172,6 +201,8 @@ public class ChunkRenderer {
                 this.verticesNumber += length;
             }
         }
+
+        isDataReady = true; // Marque les données comme prêtes
     }
 
 

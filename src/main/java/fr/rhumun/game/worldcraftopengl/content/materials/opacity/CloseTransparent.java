@@ -2,13 +2,14 @@ package fr.rhumun.game.worldcraftopengl.content.materials.opacity;
 
 import fr.rhumun.game.worldcraftopengl.content.Block;
 
-public class Opaque implements AbstractOpacity {
+public class CloseTransparent implements AbstractOpacity {
     @Override
     public boolean isVisibleWith(Block block) {
-        return !block.isOpaque();
+        return true;
     }
+
     @Override
     public int getMaxViewDistance() {
-        return -1;
+        return 11;
     }
 }

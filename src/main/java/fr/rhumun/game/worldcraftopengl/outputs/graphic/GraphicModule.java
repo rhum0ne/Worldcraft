@@ -222,7 +222,6 @@ public class GraphicModule{
         // Délier le VAO (facultatif, mais utile pour éviter des modifications accidentelles)
         //glBindVertexArray(0);
 
-        glEnable(GL_DEPTH_TEST);
         ShaderUtils.initShaders();
 
         //glEnable(GL_PROGRAM_POINT_SIZE);

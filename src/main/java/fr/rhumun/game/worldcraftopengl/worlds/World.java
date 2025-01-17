@@ -68,8 +68,8 @@ public class World {
         //System.out.println("Creating a new chunk at " + x + " : " + z);
         Chunk chunk = new Chunk(this, x, z);
         this.chunks.put(coos, chunk);
-//        this.generator.tryGenerate(chunk);
-        chunk.generate();
+        this.generator.tryGenerate(chunk);
+        //chunk.generate();
         //System.out.println("");
         //System.out.println(chunks.toString().replace(" ", "\n"));
         // System.out.println("");
