@@ -5,15 +5,14 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
-public class OakLogMaterial extends AbstractMaterial {
-    public OakLogMaterial() {
-        super(Texture.OAK_LOG);
-        this.setTopAndBottomTexture(Texture.OAK_LOG_TOP);
+public class CalciteBrickMaterial extends AbstractMaterial {
+    public CalciteBrickMaterial() {
+        super(Texture.CALCITE_BRICK);
     }
 
     @Override
     public Sound getSound() {
-        return Sound.WOOD;
+        return Sound.STONE;
     }
 
     @Override

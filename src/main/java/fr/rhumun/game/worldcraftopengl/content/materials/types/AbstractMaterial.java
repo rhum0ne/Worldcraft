@@ -30,6 +30,11 @@ public abstract class AbstractMaterial {
         this.textures[3] = texture;
     }
 
+    public void setTopAndBottomTexture(Texture texture) {
+        this.textures[2] = texture;
+        this.textures[3] = texture;
+    }
+
     public void setLeftTexture(Texture texture) {
         this.textures[5] = texture;
     }

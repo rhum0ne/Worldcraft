@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 public class BirchLogMaterial extends AbstractMaterial {
     public BirchLogMaterial() {
         super(Texture.BIRCH_LOG);
+        this.setTopAndBottomTexture(Texture.BIRCH_LOG_TOP);
     }
 
     @Override

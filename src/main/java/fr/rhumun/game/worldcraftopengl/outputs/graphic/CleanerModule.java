@@ -17,6 +17,7 @@ public class CleanerModule {
     public void clean(){
         ArrayList<Renderer> work = new ArrayList<>(renderers);
         for(Renderer renderer : work){
+            if(renderer==null) continue;
             renderer.cleanup();
             renderers.remove(renderer);
         }

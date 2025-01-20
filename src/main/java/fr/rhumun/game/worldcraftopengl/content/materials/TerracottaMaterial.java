@@ -5,15 +5,19 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
-public class OakLogMaterial extends AbstractMaterial {
-    public OakLogMaterial() {
-        super(Texture.OAK_LOG);
-        this.setTopAndBottomTexture(Texture.OAK_LOG_TOP);
+public class TerracottaMaterial extends AbstractMaterial {
+
+    public TerracottaMaterial(String name) {
+        super(Texture.getByName(name + "_terracotta"));
+    }
+
+    public TerracottaMaterial() {
+        super(Texture.TERRACOTTA);
     }
 
     @Override
     public Sound getSound() {
-        return Sound.WOOD;
+        return Sound.STONE;
     }
 
     @Override

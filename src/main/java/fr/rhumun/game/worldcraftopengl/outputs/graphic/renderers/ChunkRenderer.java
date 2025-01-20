@@ -237,7 +237,7 @@ public class ChunkRenderer {
             float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
             float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
 
-            Texture texture = block.getMaterial().getMaterial().getTextureFromFaceWithNormal(vx, vy, vz);
+            Texture texture = block.getMaterial().getMaterial().getTextureFromFaceWithNormal(nx, ny, nz);
             // Coordonnées de texture
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
