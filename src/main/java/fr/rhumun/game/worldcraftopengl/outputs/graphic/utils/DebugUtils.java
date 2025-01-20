@@ -5,6 +5,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 import static org.lwjgl.opengl.GL43.*;
+import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
+import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class DebugUtils {
     private long lastTime;
@@ -12,6 +15,18 @@ public class DebugUtils {
 
     public DebugUtils(){
         lastTime = System.nanoTime(); // Initialiser lastTime avec le temps actuel
+    }
+
+
+    public void setDebug(boolean state){
+        if(state) {
+            glEnable(GL_DEBUG_OUTPUT);
+            glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+                System.err.println("GL CALLBACK: " + GLDebugSeverityToString(severity) + " - " + GLDebugMessageTypeToString(type) + ": " + GLDebugSourceToString(source) + " - " + GLMessageToString(message, length));
+            }, NULL);
+        }else{
+            glDisable(GL_DEBUG_OUTPUT);
+        }
     }
 
     public void checkGLError() {

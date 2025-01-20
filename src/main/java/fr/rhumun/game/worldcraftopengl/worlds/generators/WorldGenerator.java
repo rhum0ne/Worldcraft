@@ -4,7 +4,8 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,30 +14,42 @@ public abstract class WorldGenerator {
 
     private final World world;
     private final ExecutorService executor;
+    private final ConcurrentLinkedDeque<Chunk> toGenerate = new ConcurrentLinkedDeque<>();
+    private final int maxConcurrentGenerations = 4; // Limiter les tâches actives
 
     public WorldGenerator(World world) {
         this.world = world;
-        this.executor = Executors.newFixedThreadPool(8);
+        this.executor = Executors.newFixedThreadPool(maxConcurrentGenerations);
     }
 
+    public void tryGenerate(Chunk chunk) {
+        if (chunk.isGenerated()) return;
 
-    public void tryGenerate(Chunk chunk){
-        if(chunk.isGenerated()) return;
-        executor.submit(chunk::generate);
-
-        /*for(Block block : chunk.getBlockList()){
-            block.getSideBlocks();
+        try {
+            executor.submit(chunk::generate);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-
-        for(int x=0; x<16; x++)
-            for(int z=0; z<16; z++)
-                chunk.get(x, world.getHeigth()-1, z).updateLight();
-        */
-
-        //chunk.setToUpdate(false);
     }
 
     public abstract void generate(Chunk chunk);
+
     public abstract void populate(Chunk chunk);
 
+    public void processChunkQueue() {
+        while (!toGenerate.isEmpty()) {
+            Chunk chunk = toGenerate.poll();
+            if (chunk != null && !chunk.isGenerated()) {
+                tryGenerate(chunk);
+            }
+        }
+    }
+
+    public void addToGenerate(Chunk chunk) {
+        toGenerate.offer(chunk);
+    }
+
+    public void shutdown() {
+        executor.shutdown();
+    }
 }

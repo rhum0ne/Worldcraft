@@ -21,7 +21,8 @@ public class World {
 
     private final WorldGenerator generator;
 
-    private final HashMap<Point, Chunk> chunks = new HashMap<>();
+    //private final HashMap<Point, Chunk> chunks = new HashMap<>();
+    private final ChunksContainer chunks;
     private final int heigth = 256;
 
     private Color skyColor = Color.rgb(77, 150, 230);
@@ -36,6 +37,7 @@ public class World {
     public World(){
         //this.seed = Seed.create("6038198250");
         this.seed = Seed.random();
+        this.chunks = new ChunksContainer(this);
         this.generator = new NormalWorldGenerator(this);
         //this.generator = new Flat(this);
 
@@ -45,6 +47,7 @@ public class World {
         int zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
 
         spawnChunk = this.getChunkAt(xSpawn, zSpawn, true);
+        this.generator.tryGenerate(spawnChunk);
 
         while(isLoading()){
             try {
@@ -54,7 +57,7 @@ public class World {
             }
         }
 
-        this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), false).getLocation().getY()+10, zSpawn);
+        this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), true).getLocation().getY()+10, zSpawn);
         this.isLoaded = true;
     }
 
@@ -65,46 +68,17 @@ public class World {
     public void spawnPlayer(Player player){
         player.setLocation(spawn);
     }
+    public Chunk createChunk(int x, int z){ return this.chunks.createChunk(x, z, false); }
 
-    public Chunk createChunk(int x, int z){
-        Point coos = new Point(x, z);
-        if(chunks.containsKey(coos)){
-            System.out.println("ERROR : chunk " + x + " : " + z + " already exists.");
-            return chunks.get(coos);
-        }
-        //System.out.println("Creating a new chunk at " + x + " : " + z);
-        Chunk chunk = new Chunk(this, x, z);
-        this.chunks.put(coos, chunk);
-        this.generator.tryGenerate(chunk);
-        //chunk.generate();
-        //System.out.println("");
-        //System.out.println(chunks.toString().replace(" ", "\n"));
-        // System.out.println("");
-        return chunk;
-    }
+    public Chunk getChunk(int x, int z, boolean generateIfNull){ return this.chunks.getChunk(x, z, generateIfNull); }
+
+    public boolean isChunkLoaded(int x, int z){ return chunks.exists(x, z); }
+    public void unload(Chunk chunk) { chunks.remove(chunk); }
 
     public boolean isChunkLoadedAt(int x, int z){
         if(x < 0 && x%CHUNK_SIZE!=0) x-=CHUNK_SIZE;
         if(z < 0 && z%CHUNK_SIZE!=0) z-=CHUNK_SIZE;
         return isChunkLoaded(x/CHUNK_SIZE, z/CHUNK_SIZE);
-    }
-
-    public boolean isChunkLoaded(int x, int z){
-        if(this.chunks.containsKey(new Point(x, z))){
-            //System.out.println("Chunk " + x + " " + z + " is loaded");
-            return true;
-        }
-        //System.out.println("Chunk " + x + " " + z + " not loaded");
-        return false;
-    }
-
-    public Chunk getChunk(int x, int z, boolean generateIfNull){
-        Chunk chunk = chunks.get(new Point(x, z));
-        if(generateIfNull && chunk == null) {
-            System.out.println("ERROR: Chunk " + x + " : " + z + " is not loaded. Loading it...");
-            chunk = createChunk(x, z);
-        }
-        return chunk;
     }
 
     public Chunk getChunkAt(int x, int z, boolean generateIfNull){
@@ -145,7 +119,4 @@ public class World {
         structure.getStructure().tryBuildAt(this, x, y ,z);
     }
 
-    public void unload(Chunk chunk) {
-        this.chunks.remove(new Point(chunk.getX(), chunk.getZ()));
-    }
 }

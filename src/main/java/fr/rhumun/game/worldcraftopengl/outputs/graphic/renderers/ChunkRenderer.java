@@ -61,8 +61,8 @@ public class ChunkRenderer {
 
     public void render() {
 
-
         if(chunk.isToUpdate()) update();
+
         //System.out.println("Rendering chunk " + chunk);
 
         glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
@@ -146,6 +146,9 @@ public class ChunkRenderer {
     }
 
     public void updateData() {
+        if(!chunk.isGenerated()) return;
+        System.out.println("Updating data for " + chunk);
+
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
             renderer.getIndices().clear();

@@ -14,7 +14,7 @@ public class SavedChunksManager {
     private final Player player;
     private final Game game;
 
-    private Set<Chunk> chunksToRender = new LinkedHashSet<>();
+    private LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
     private Chunk centralChunk;
 
 
@@ -24,6 +24,7 @@ public class SavedChunksManager {
     }
 
     public void tryLoadChunks(){ //A REVOIR ENTIEREMENT -> LAGS
+        game.getWorld().getGenerator().processChunkQueue();
         if(!GENERATION) {
             if(chunksToRender.isEmpty()) chunksToRender.add(player.getLocation().getChunk());
             return;
@@ -39,11 +40,8 @@ public class SavedChunksManager {
 
     private LinkedHashSet<Chunk> getChunksToLoad() {
         LinkedHashSet<Chunk> chunks = new LinkedHashSet<>();
-        PriorityQueue<ChunkDistance> chunkQueue = new PriorityQueue<>(new Comparator<ChunkDistance>() {
-            @Override
-            public int compare(ChunkDistance c1, ChunkDistance c2) {
-                return Double.compare(c2.distance, c1.distance); // Trier du plus éloigné au plus proche
-            }
+        PriorityQueue<ChunkDistance> chunkQueue = new PriorityQueue<>((c1, c2) -> {
+            return Double.compare(c2.distance, c1.distance); // Trier du plus éloigné au plus proche
         });
 
         int centerX = this.centralChunk.getX();
@@ -57,7 +55,7 @@ public class SavedChunksManager {
 
                 // Si la distance est dans le rayon de chargement, on l'ajoute
                 if (distance <= SHOW_DISTANCE) {
-                    Chunk chunk = player.getLocation().getWorld().getChunk(x, z, true);
+                    Chunk chunk = player.getLocation().getWorld().getChunk(x, z, false);
                     chunk.getRenderer().setDistanceFromPlayer((int) distance);
                     chunkQueue.add(new ChunkDistance(chunk, distance));
                 }
@@ -86,10 +84,11 @@ public class SavedChunksManager {
     public void loadChunks(Chunk chunk){
         this.centralChunk = chunk;
 
-        Set<Chunk> toLoad = getChunksToLoad();
+        LinkedHashSet<Chunk> toLoad = getChunksToLoad();
 
         for(Chunk loadedChunk : toLoad){
             if(this.chunksToRender.contains(loadedChunk)) continue;
+            game.getWorld().getGenerator().addToGenerate(loadedChunk);
             //game.log("Starting first loading of " + loadedChunk);
             chunk.setLoaded(true);
             GAME.getGraphicModule().addChunkToLoad(loadedChunk);

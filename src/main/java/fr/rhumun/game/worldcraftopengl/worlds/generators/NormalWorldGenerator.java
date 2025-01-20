@@ -102,7 +102,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         createCaves(chunk);
         populate(chunk);
 
-        chunk.updateBordersChunks();
+        //chunk.updateBordersChunks();
     }
 
     private void createCaves(Chunk chunk) {

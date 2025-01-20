@@ -19,7 +19,7 @@ public class Block {
     private Model model;
     private Material material;
     private final Chunk chunk;
-    private boolean isSurrounded;
+    private boolean isSurrounded= false;
 
     private byte chunkX;
     private short chunkY;
@@ -46,8 +46,20 @@ public class Block {
 
     public Location getLocation(){ return new Location(chunk.getWorld(), this.getX(), this.getY(), this.getZ()); }
 
-    public void updateIsSurrounded(){ this.updateIsSurrounded(this.getSideBlocks()); }
+    public void updateIsSurrounded(){
+        if(!chunk.isGenerated()) return;
+
+        if(!this.isOpaque()) {
+            this.isSurrounded = false;
+            return;
+        }
+
+
+        this.updateIsSurrounded(this.getSideBlocks());
+    }
     public void updateIsSurrounded(Block[] sideBlocks) {
+        if(!chunk.isGenerated()) return;
+
         // Vérifie les 6 directions pour voir si un bloc est présent
         for(Block block : sideBlocks) {
             if(block == null || !block.isOpaque()) {
@@ -79,35 +91,50 @@ public class Block {
             this.chunk.getLightningBlocks().remove(this);
         }
         this.material = material;
-        Block[] sideBlocks = this.getSideBlocks();
 
         if(material==null) {
+            chunk.getVisibleBlock().remove(this);
+
+            if(!chunk.isGenerated()) return this;
+
+            Block[] sideBlocks = this.getSideBlocks();
             for (Block block :sideBlocks ){
                 if(block==null) continue;
                 block.setSurrounded(false);
+                if(block.getChunk() != chunk) block.getChunk().setToUpdate(true);
             }
-            chunk.getVisibleBlock().remove(this);
         }
         else {
             if(material.getMaterial() instanceof PointLight){
                 this.chunk.getLightningBlocks().add(this);
             }
-
-            if(material.getOpacity()!=OpacityType.OPAQUE)
-                for (Block block : sideBlocks) {
-                    if(block==null) continue;
-                    block.setSurrounded(false);
-                }
-            else
-                for(Block block : sideBlocks){
-                    if(block==null) continue;
-                    block.updateIsSurrounded();
-                }
             chunk.getVisibleBlock().add(this);
 
             if(material.getMaterial() instanceof ForcedModelMaterial fMat){
                 this.setModel(fMat.getModel());
             }
+
+            if(chunk.isGenerated()){
+
+                if(material.getOpacity()!=OpacityType.OPAQUE) {
+
+                    Block[] sideBlocks = this.getSideBlocks();
+                    for (Block block : sideBlocks) {
+                        if (block == null) continue;
+                        block.setSurrounded(false);
+                        if(block.getChunk() != chunk) block.getChunk().setToUpdate(true);
+                    }
+                }
+                else {
+                    Block[] sideBlocks = this.getSideBlocks();
+                    for (Block block : sideBlocks) {
+                        if (block == null) continue;
+                        block.updateIsSurrounded();
+                        if(block.getChunk() != chunk) block.getChunk().setToUpdate(true);
+                    }
+                }
+            }
+
         }
 
         this.chunk.setToUpdate(true);
@@ -131,16 +158,18 @@ public class Block {
         this.model = model;
         Block[] sideBlocks = this.getSideBlocks();
 
-        if(!model.isOpaque)
-            for (Block block : sideBlocks) {
-                if(block==null) continue;
-                block.setSurrounded(false);
-            }
-        else
-            for(Block block : sideBlocks){
-                if(block==null) continue;
-                block.updateIsSurrounded();
-            }
+        if(chunk.isGenerated())
+            if (!model.isOpaque)
+                for (Block block : sideBlocks) {
+                    if (block == null) continue;
+                    block.setSurrounded(false);
+                }
+            else
+                for (Block block : sideBlocks) {
+                    if (block == null) continue;
+                    block.updateIsSurrounded();
+                }
+
 
         this.chunk.setToUpdate(true);
         return this;

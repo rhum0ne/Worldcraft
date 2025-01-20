@@ -4,11 +4,14 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -28,7 +31,6 @@ public class Chunk {
 
     @Setter
     private boolean toUpdate = false;
-    private Thread generator;
     private ChunkRenderer renderer;
 
     @Setter
@@ -43,22 +45,43 @@ public class Chunk {
 
         blocks = new Block[CHUNK_SIZE][world.getHeigth()][CHUNK_SIZE];
 
-        for (int x = 0; x < blocks.length; x++)
-            for (int y = 0; y<blocks[x].length; y++) {
-                for(int z = 0; z<blocks[x][y].length; z++){
+        for (int x = 0; x < blocks.length; x++) {
+            for (int y = 0; y < blocks[x].length; y++) {
+                for (int z = 0; z < blocks[x][y].length; z++) {
                     this.addBlock(x, z, new Block(this, (byte) x, (short) y, (byte) z));
+                }
+            }
+        }
+    }
+
+    private void updateAllBlock(){
+        for (Block[][] value : blocks)
+            for (Block[] item : value) {
+                for (Block block : item) {
+                    if(block == null) return;
+                    if (block.getMaterial() == null) continue;
+
+                    block.updateIsSurrounded();
                 }
             }
     }
 
-    public void generate(){
-        if(this.isGenerated()) return;
+    public boolean generate() {
+        if (this.isGenerated()) return true;
 
-        this.getWorld().getGenerator().generate(this);
-        //this.populate(chunk);
-        this.setGenerated(true);
-        System.out.println("Generated chunk at " + this.X + ", " + this.Z);
+        try {
+            this.getWorld().getGenerator().generate(this);
+            this.setGenerated(true);
+            updateAllBlock();
+            this.setToUpdate(true);
+            updateBordersChunks();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 
     private void addBlock(int x, int z, Block block) {
         this.blocks[x][(int) block.getLocation().getY()][z] = block;
@@ -87,6 +110,7 @@ public class Chunk {
             return chunk.get(xInput,y,zInput);
         }
 
+        if(blocks == null) return null;
         return blocks[x][y][z];
     }
 
@@ -135,10 +159,10 @@ public class Chunk {
         this.blocks[x][y][z].setModel(model);
     }
 
-    public Block getHighestBlock(int x, int z, boolean b){
+    public Block getHighestBlock(int x, int z, boolean countLiquids){
         for(int y=world.getHeigth()-1; y>=0; y--){
             Block block = blocks[x][y][z];
-            if(block.getMaterial() != null && (b || !block.getMaterial().isLiquid())) return block;
+            if(block.getMaterial() != null && (countLiquids || !block.getMaterial().isLiquid())) return block;
         }
         return blocks[x][0][z];
     }
@@ -153,7 +177,7 @@ public class Chunk {
     }
 
     public void unload(){
-        GAME.log("Unloading chunk " + this.toString());
+        //GAME.log("Unloading chunk " + this.toString());
         this.loaded = false;
         this.getWorld().unload(this);
 
@@ -168,6 +192,10 @@ public class Chunk {
         this.visibleBlock = null;
         this.lightningBlocks = null;
 
+        for(Renderer renderer : renderer.getRenderers())
+            GAME.getGraphicModule().cleanup(renderer);
+
+        this.renderer = null;
 
 //        if(this.isRendererInitialized()){
 //            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();

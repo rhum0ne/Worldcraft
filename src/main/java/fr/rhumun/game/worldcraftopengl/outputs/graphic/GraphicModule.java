@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
@@ -45,6 +46,7 @@ public class GraphicModule{
     private final Game game;
     private final Camera camera;
     private final Player player;
+    private World world;
 
     private boolean areChunksUpdated = false;
     private Set<Chunk> loadedChunks;
@@ -67,6 +69,7 @@ public class GraphicModule{
     private final DebugUtils debugUtils = new DebugUtils();
     private final LightningsUtils lightningsUtils;
     private GuiModule guiModule;
+    private final CleanerModule cleaner;
     private BlockSelector blockSelector;
 
     private boolean isInitialized = false;
@@ -87,6 +90,7 @@ public class GraphicModule{
         updateLoop = new UpdateLoop(this, game, player);
         chunkLoader = new ChunkLoader(this, player);
         cursorEvent = new CursorEvent(camera);
+        this.cleaner = new CleanerModule(this);
     }
 
 
@@ -171,60 +175,12 @@ public class GraphicModule{
         glfwShowWindow(window);
 
         GL.createCapabilities();
-        //this.setDebug(true);
-    }
+        this.debugUtils.setDebug(GL_DEBUG);
 
-    public void setDebug(boolean state){
-        if(state) {
-            glEnable(GL_DEBUG_OUTPUT);
-            glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-                System.err.println("GL CALLBACK: " + GLDebugSeverityToString(severity) + " - " + GLDebugMessageTypeToString(type) + ": " + GLDebugSourceToString(source) + " - " + GLMessageToString(message, length));
-            }, NULL);
-        }else{
-            glDisable(GL_DEBUG_OUTPUT);
-        }
-    }
-
-    public void updateViewMatrix() {
-        if(projectionMatrix == null) return;
-
-        // Mise à jour de la matrice de vue à chaque frame
-        Matrix4f viewMatrix = new Matrix4f().lookAt(
-                camera.getPos(),       // Position de la caméra mise à jour
-                camera.getLookPoint(), // Point de regard mis à jour
-                camera.getUp()         // Vecteur "up" pour la caméra
-        );
-
-        if(UPDATE_FRUSTRUM) {
-            Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
-            frustumIntersection = new FrustumIntersection(combinedMatrix);
-        }
-
-        for(Shader shader : this.renderingShaders) {
-            glUseProgram(shader.id);
-            int viewLoc = glGetUniformLocation(shader.id, "view");
-            glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
-        }
-
-        Shader shader = ShaderUtils.SELECTED_BLOCK_SHADER;
-        glUseProgram(shader.id);
-        int viewLoc = glGetUniformLocation(shader.id, "view");
-        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
-    }
-
-    private void loop() {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        // Set the clear color
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-        // Délier le VAO (facultatif, mais utile pour éviter des modifications accidentelles)
-        //glBindVertexArray(0);
-
         ShaderUtils.initShaders();
-
-        //glEnable(GL_PROGRAM_POINT_SIZE);
 
         this.blockSelector = new BlockSelector(this, player);
         blockSelector.init();
@@ -255,7 +211,7 @@ public class GraphicModule{
 
         debugUtils.checkGLError();
 
-        World world = player.getLocation().getWorld();
+        this.world = player.getLocation().getWorld();
 
         for(Shader shader : renderingShaders){
             shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
@@ -267,10 +223,13 @@ public class GraphicModule{
         this.guiModule.updateInventory(player);
 
         this.isInitialized = true;
+    }
 
+    private void loop() {
         while ( !glfwWindowShouldClose(window) ) {
-            //glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+
+            this.cleaner.clean();
 
             if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
             if(game.isShowingTriangles() != this.isShowingTriangles) this.setShowingTriangles(game.isShowingTriangles());
@@ -302,14 +261,36 @@ public class GraphicModule{
         int projectionLoc = glGetUniformLocation(shader.id, "projection");
         int modelLoc = glGetUniformLocation(shader.id, "model");
 
-// Assurez-vous que le programme de shaders est actif avant de passer les matrices
         glUseProgram(shader.id);
-
-// Passer la matrice de projection au shader
         glUniformMatrix4fv(projectionLoc, false, projectionMatrix.get(new float[16]));
-
-// Passer la matrice de modèle au shader
         glUniformMatrix4fv(modelLoc, false, modelMatrix.get(new float[16]));
+    }
+
+    public void updateViewMatrix() {
+        if(projectionMatrix == null) return;
+
+        // Mise à jour de la matrice de vue à chaque frame
+        Matrix4f viewMatrix = new Matrix4f().lookAt(
+                camera.getPos(),       // Position de la caméra mise à jour
+                camera.getLookPoint(), // Point de regard mis à jour
+                camera.getUp()         // Vecteur "up" pour la caméra
+        );
+
+        if(UPDATE_FRUSTRUM) {
+            Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
+            frustumIntersection = new FrustumIntersection(combinedMatrix);
+        }
+
+        for(Shader shader : this.renderingShaders) {
+            glUseProgram(shader.id);
+            int viewLoc = glGetUniformLocation(shader.id, "view");
+            glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
+        }
+
+        Shader shader = ShaderUtils.SELECTED_BLOCK_SHADER;
+        glUseProgram(shader.id);
+        int viewLoc = glGetUniformLocation(shader.id, "view");
+        glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
     }
 
     private void updateWaterTime() {
@@ -356,15 +337,6 @@ public class GraphicModule{
         }
     }
 
-    private void loadOneChunk() {
-        if(chunkToLoad.isEmpty()) return;
-        Chunk chunk = chunkToLoad.pop();
-        //chunk.setToUpdate(true); //To load it.
-        //if(!loadedChunks.contains(chunk)) loadOneChunk();
-        System.out.println("Loaded chunk " + chunk);
-    }
-
-
     private void cleanup() {
 
         this.guiModule.cleanup();
@@ -409,4 +381,6 @@ public class GraphicModule{
         }
         this.isShowingTriangles = b;
     }
+
+    public void cleanup(Renderer renderer){ this.cleaner.add(renderer); }
 }

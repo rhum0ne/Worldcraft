@@ -19,19 +19,20 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SHOW_DISTANCE = 14;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
-    public static boolean SHOWING_FPS = true;
+    public static boolean SHOWING_FPS = false;
     public static boolean SHOWING_RENDERER_DATA = true;
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
-    public static boolean NO_CLIP = true;
+    public static boolean NO_CLIP = false;
     public static boolean GREEDY_MESHING = true;
+    public static boolean GL_DEBUG = false;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
@@ -84,9 +85,8 @@ public class Game {
 
         player.updateInventory();
 
-        graphicModule = new GraphicModule(this);
-
         timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
+        graphicModule = new GraphicModule(this);
         graphicModule.run();
     }
 

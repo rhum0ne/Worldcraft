@@ -101,7 +101,7 @@ public class BlockUtil {
             }
 
             if(isGood){
-                addedBlocks.forEach(blocks::add);
+                blocks.addAll(addedBlocks);
                 //blocks.addAll(addedBlocks);
                 corner2 = lastBlock;
             }
