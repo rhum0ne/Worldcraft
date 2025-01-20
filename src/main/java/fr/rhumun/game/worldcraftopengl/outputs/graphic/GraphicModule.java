@@ -117,8 +117,8 @@ public class GraphicModule{
         if ( !glfwInit() )
             throw new IllegalStateException("Unable to initialize GLFW");
 
-        Timer timer = new Timer();
-        timer.schedule(chunkLoader, Date.from(Instant.now()), 100);
+//        Timer timer = new Timer();
+//        timer.schedule(chunkLoader, Date.from(Instant.now()), 100);
 
         // Configure GLFW
         glfwDefaultWindowHints(); // optional, the current window hints are already the default

@@ -19,7 +19,7 @@ public class ChunkLoader extends TimerTask {
         this.graphicModule = graphicModule;
         this.player = player;
 
-        executor = Executors.newFixedThreadPool(4);
+        executor = Executors.newFixedThreadPool(1);
     }
 
     @Override

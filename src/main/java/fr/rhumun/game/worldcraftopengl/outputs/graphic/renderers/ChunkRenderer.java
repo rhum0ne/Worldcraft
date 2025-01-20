@@ -147,7 +147,7 @@ public class ChunkRenderer {
 
     public void updateData() {
         if(!chunk.isGenerated()) return;
-        System.out.println("Updating data for " + chunk);
+        long start = System.currentTimeMillis();
 
         for (Renderer renderer : this.renderers) {
             renderer.getVertices().clear();
@@ -202,6 +202,8 @@ public class ChunkRenderer {
             }
         }
 
+        long end = System.currentTimeMillis();
+        GAME.debug("Finished updating data for " + chunk + " in " + (end - start) + " ms");
         isDataReady = true; // Marque les données comme prêtes
     }
 

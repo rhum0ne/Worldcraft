@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL43.*;
 import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
 import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
@@ -61,7 +62,7 @@ public class DebugUtils {
             lastTime = currentTime;
 
             // Afficher les FPS ou utiliser les FPS comme vous le souhaitez
-            System.out.println("FPS: " + fps);
+            GAME.log("FPS: " + fps);
         }
     }
 

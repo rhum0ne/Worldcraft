@@ -33,7 +33,7 @@ public class ShaderUtils {
     }
 
     public static int loadShader(String vertexPath, String fragmentPath){
-        System.out.println("Loading shader " + vertexPath + " and " + fragmentPath);
+        GAME.debug("Loading shader " + vertexPath + " and " + fragmentPath);
         String vertexCode = null;
         try {
             vertexCode = new String(Files.readAllBytes(Paths.get(SHADERS_PATH + vertexPath)));
@@ -50,8 +50,8 @@ public class ShaderUtils {
 
             // Vérifier les erreurs de linkage
             if (glGetProgrami(shaderProgram, GL_LINK_STATUS) == GL_FALSE) {
-                System.err.println("Erreur lors du linkage des shaders.");
-                System.err.println(glGetProgramInfoLog(shaderProgram));
+                GAME.errorLog("Erreur lors du linkage des shaders.");
+                GAME.errorLog(glGetProgramInfoLog(shaderProgram));
                 System.exit(-1);
             }
 

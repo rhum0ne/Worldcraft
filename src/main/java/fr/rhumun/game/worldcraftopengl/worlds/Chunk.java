@@ -70,11 +70,14 @@ public class Chunk {
         if (this.isGenerated()) return true;
 
         try {
+            long start = System.currentTimeMillis();
             this.getWorld().getGenerator().generate(this);
             this.setGenerated(true);
             updateAllBlock();
             this.setToUpdate(true);
             updateBordersChunks();
+            long end = System.currentTimeMillis();
+            GAME.debug("Finished Generating " + this + " in " + (end - start) + " ms");
             return true;
         } catch (Exception e) {
             e.printStackTrace();

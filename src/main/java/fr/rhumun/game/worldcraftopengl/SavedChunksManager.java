@@ -31,7 +31,7 @@ public class SavedChunksManager {
         }
         Chunk chunk = player.getLocation().getChunk();
         if(chunk == null) {
-            game.log("ERROR: Player's chunk seems to be null");
+            game.errorLog("Player's chunk seems to be null");
             return;
         }
         if(centralChunk == null) loadChunks(chunk);
@@ -82,6 +82,7 @@ public class SavedChunksManager {
 
 
     public void loadChunks(Chunk chunk){
+        long start = System.currentTimeMillis();
         this.centralChunk = chunk;
 
         LinkedHashSet<Chunk> toLoad = getChunksToLoad();
@@ -102,5 +103,7 @@ public class SavedChunksManager {
         this.chunksToRender = toLoad;
 
         GAME.getGraphicModule().changeLoadedBlocks();
+        long end = System.currentTimeMillis();
+        GAME.debug("Updating loaded Chnks in " + (end - start) + " ms");
     }
 }

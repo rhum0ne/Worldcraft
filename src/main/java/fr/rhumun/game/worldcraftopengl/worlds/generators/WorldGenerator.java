@@ -15,7 +15,7 @@ public abstract class WorldGenerator {
     private final World world;
     private final ExecutorService executor;
     private final ConcurrentLinkedDeque<Chunk> toGenerate = new ConcurrentLinkedDeque<>();
-    private final int maxConcurrentGenerations = 4; // Limiter les tâches actives
+    private final int maxConcurrentGenerations = 1; // Limiter les tâches actives
 
     public WorldGenerator(World world) {
         this.world = world;

@@ -25,7 +25,7 @@ public class Game {
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
-    public static boolean SHOWING_RENDERER_DATA = true;
+    public static boolean SHOWING_RENDERER_DATA = false;
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
@@ -33,6 +33,7 @@ public class Game {
     public static boolean NO_CLIP = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
+    public static boolean DEBUG = false;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
@@ -59,7 +60,7 @@ public class Game {
         Controls.init();
         Texture.init();
 
-        audioManager = new AudioManager();
+        audioManager = new AudioManager(this);
         audioManager.init();
 
 
@@ -97,11 +98,8 @@ public class Game {
         this.isPaused = b;
     }
 
-    public void errorLog(String log){
-        System.err.println(log);
-    }
-
-    public void log(String log){
-        System.out.println(log);
-    }
+    public void errorLog(String log){System.err.println("[ERROR] - " + log);}
+    public void log(String log){ System.out.println("INFO: " + log); }
+    public void debug(String s) {if(DEBUG) System.out.println("[DEBUG] - " + s);}
+    public void warn(String s) { System.out.println("[WARNING] - " + s);}
 }

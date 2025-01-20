@@ -31,11 +31,14 @@ public class GameLoop extends Thread {
         while (game.isPlaying) {
             long nextTime = time + 1000;
             long currentTime = System.currentTimeMillis();
+            long delta = currentTime - previousUpdate;
             if(currentTime > nextTime)
                 this.time = currentTime;
-            else if(currentTime - previousUpdate < 1000/rate){
+            else if(delta < 1000/rate){
                 //System.out.println(previousUpdate + " - " + currentTime + " = " + (previousUpdate - currentTime) + " < 1/" + rate);
                 continue;
+            } else if (delta > 1000) {
+                game.warn("Lag Spike detected : " + delta + " ms");
             }
 
             if (game.getGraphicModule() != null) {
@@ -48,6 +51,7 @@ public class GameLoop extends Thread {
                     continue;
                 }
                 Movements.applyMovements(player);
+                player.getSavedChunksManager().tryLoadChunks();
             }
 
             previousUpdate = currentTime;

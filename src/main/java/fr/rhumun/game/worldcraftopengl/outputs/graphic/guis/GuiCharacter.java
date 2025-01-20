@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.util.HashMap;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 public class GuiCharacter {
 
@@ -28,7 +30,7 @@ public class GuiCharacter {
         this.yOffset = yOffset;
         this.advance = advance;
 
-        System.out.println("Adding font char " + c + " -> Array texture ID: " + textureID);
+        GAME.debug("Adding font char " + c + " -> Array texture ID: " + textureID);
 
         characters.put(c, this);
     }

@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 public class ChunksContainer {
     private final World world;
     private final ConcurrentHashMap<Long, Chunk> chunks = new ConcurrentHashMap<>();
@@ -18,7 +20,7 @@ public class ChunksContainer {
         long key = toLongKey(x, z);
 
         return chunks.computeIfAbsent(key, k -> {
-            System.out.println("Creating chunk at " + x + " : " + z);
+            GAME.debug("Creating chunk at " + x + " : " + z);
             Chunk chunk = new Chunk(world, x, z);
             if(generate)
                 world.getGenerator().addToGenerate(chunk);
@@ -31,7 +33,7 @@ public class ChunksContainer {
         Chunk chunk = chunks.get(key);
 
         if (chunk == null) {
-            System.out.println("ERROR: Chunk " + x + " : " + z + " is not loaded. Loading it...");
+            GAME.debug("Chunk " + x + " : " + z + " is not loaded. Loading it...");
             chunk = createChunk(x, z, generateIfNull);
         }
 

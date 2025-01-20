@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.audio;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import org.lwjgl.openal.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.stb.STBVorbis;
@@ -19,6 +20,11 @@ public class AudioManager {
 
     private long device;
     private long context;
+    private final Game game;
+
+    public AudioManager(Game game) {
+        this.game = game;
+    }
 
     public void init() {
         String deviceName = ALC10.alcGetString(0, ALC10.ALC_DEFAULT_DEVICE_SPECIFIER);
@@ -26,14 +32,14 @@ public class AudioManager {
         if (device == MemoryUtil.NULL) {
             throw new IllegalStateException("Failed to open OpenAL device.");
         } else {
-            System.out.println("OpenAL device opened successfully.");
+            game.log("OpenAL device opened successfully.");
         }
 
         context = ALC10.alcCreateContext(device, new int[]{0});
         if (context == MemoryUtil.NULL) {
             throw new IllegalStateException("Failed to create OpenAL context.");
         } else {
-            System.out.println("OpenAL context created successfully.");
+            game.log("OpenAL context created successfully.");
         }
 
         ALC10.alcMakeContextCurrent(context);
@@ -44,7 +50,7 @@ public class AudioManager {
         }
 
         AL.createCapabilities(alcCapabilities);
-        System.out.println("OpenAL capabilities created successfully.");
+        game.log("OpenAL capabilities created successfully.");
     }
 
 
@@ -56,7 +62,7 @@ public class AudioManager {
 
     public int loadSound(String path) {
         int buffer = alGenBuffers();
-        System.out.println("Loading sound: " + path);
+        game.debug("Loading sound: " + path);
 
         try (MemoryStack stack = stackPush()) {
             STBVorbisInfo info = STBVorbisInfo.mallocStack(stack);

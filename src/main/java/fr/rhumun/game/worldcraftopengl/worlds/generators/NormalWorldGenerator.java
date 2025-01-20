@@ -132,7 +132,7 @@ public class NormalWorldGenerator extends WorldGenerator {
             for(int z=0; z<CHUNK_SIZE; z++){
                 Block block = chunk.getHighestBlock(x, z, false);
                 if(block == null) {
-                    System.out.println("No block found for x="+x+",z="+z);
+                    GAME.errorLog("No block found for x="+x+",z="+z);
                     continue;
                 }
                 if(block.getMaterial() != Material.STONE) continue;

@@ -491,7 +491,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                fr.rhumun.game.worldcraftopengl/fr.rhumun.game.worldcraftopengl.WorldCraftOpenGL
+                                fr/rhumun/game/worldcraftopengl/Game.java
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

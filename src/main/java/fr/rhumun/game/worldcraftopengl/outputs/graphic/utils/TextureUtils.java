@@ -48,7 +48,7 @@ public class TextureUtils {
 
         ShaderUtils.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
 
-        System.out.println("Done!");
+        GAME.debug("Done!");
     }
 
     private static int loadTexture(String path) {
@@ -56,7 +56,7 @@ public class TextureUtils {
         glActiveTexture(GL_TEXTURE0 + textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        System.out.println(path + " -> " + textureID );
+        GAME.debug(path + " -> " + textureID );
 
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
@@ -68,7 +68,7 @@ public class TextureUtils {
             glGenerateMipmap(GL_TEXTURE_2D);
             STBImage.stbi_image_free(image);
         } else {
-            System.err.println("Erreur lors du chargement de la texture " + path);
+            GAME.errorLog("Erreur lors du chargement de la texture " + path);
         }
 
         return textureID;
@@ -83,7 +83,7 @@ public class TextureUtils {
         glActiveTexture(GL_TEXTURE0 + textureID); // Utilisation de l'unité de texture 0
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
 
-        System.out.println("Texture Array ID: " + textureID);
+        GAME.debug("Texture Array ID: " + textureID);
 
         // Dimensions des textures
         int width = 32;  // Par exemple, chaque texture fait 32x32 pixels
@@ -105,13 +105,13 @@ public class TextureUtils {
             ByteBuffer image = STBImage.stbi_load(texturePath, widthBuf, heightBuf, compBuf, 4);
 
             if (image != null) {
-                GAME.log("Loading " + texture.getName());
+                GAME.debug("Loading " + texture.getName());
                 // Copier l'image dans la couche appropriée de la texture array
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, widthBuf.get(0), heightBuf.get(0), 1, GL_RGBA, GL_UNSIGNED_BYTE, image);
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY); // Générer les mipmaps
                 STBImage.stbi_image_free(image);
             } else {
-                System.err.println("Erreur lors du chargement de la texture " + texturePath);
+                GAME.errorLog("Erreur lors du chargement de la texture " + texturePath);
             }
         }
 
@@ -131,7 +131,7 @@ public class TextureUtils {
 
         ShaderUtils.PLAN_SHADERS.setUniform("texturesNumber", blockTextureCount);
 
-        System.out.println("Done!");
+        GAME.debug("Done!");
         return textureID;
     }
 }
