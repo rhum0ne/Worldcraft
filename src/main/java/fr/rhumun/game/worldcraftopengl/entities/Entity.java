@@ -24,10 +24,10 @@ public class Entity {
 
     private final int jumpForce = 2;
 
-    private final int walkSpeed = 5;
-    private final int sneakSpeed = 3;
-    private final int sprintSpeed = 8;
-    private float accelerationByTick = 0.2f;
+    private final int walkSpeed = 3;
+    private final int sneakSpeed = 2;
+    private final int sprintSpeed = 5;
+    private float accelerationByTick = 0.1f;
 
     private final int[] movements = new int[3];
     private final Vector3f velocity = new Vector3f(0, 0, 0);
@@ -68,6 +68,11 @@ public class Entity {
         this.getLocation().addZ(a);
     }
     public void addY(double a){
+        if(!Game.NO_CLIP && a>0 && this.hasBlockTop()){
+            return;
+        } else if(!Game.NO_CLIP && a<0 && this.hasBlockDown()) {
+            return;
+        }
         this.getLocation().addY(a);
     }
     public void setYaw(float a){
@@ -133,10 +138,8 @@ public class Entity {
 
     public void jump() {
         if(this.velocity.get(1) == 0)
-            this.getVelocity().add(0, (float)jumpForce/5, 0);
+            this.getVelocity().add(0, (float)jumpForce/7, 0);
     }
-
-
 
 
     public Block getSelectedBlock() {

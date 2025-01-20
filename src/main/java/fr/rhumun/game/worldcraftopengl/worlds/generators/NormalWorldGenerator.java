@@ -168,10 +168,16 @@ public class NormalWorldGenerator extends WorldGenerator {
             for(int z=0; z<CHUNK_SIZE; z++){
                 int xH = (chunk.getX()*CHUNK_SIZE+x);
                 int zH = (chunk.getZ()*CHUNK_SIZE+z);
-                
-                Biome biome = getBiome(xH, zH);
 
-                int height = heightCalculator.calcHeight(xH, zH, biome);
+                double continentalValue = continentalness.evaluateNoise(xH/512f, zH/512f);
+                double erosionValue = erosion.evaluateNoise(xH/612f, zH/612f);
+
+                double pavLargeScale = pav.evaluateNoise(xH / 500.0, zH / 500.0); // Relief large
+                double pavSmallScale = pav.evaluateNoise(xH / 40.0, zH / 40.0); // Détails fins
+
+                Biome biome = getBiome(xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
+
+                int height = heightCalculator.calcHeight(xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
                 for (int y = 0; y < this.getWorld().getHeigth(); y++) {
                     Block block = chunk.get(x, y, z);
@@ -193,11 +199,7 @@ public class NormalWorldGenerator extends WorldGenerator {
 //        }
     }
 
-    private Biome getBiome(double x, double z) {
-        // Récupération des valeurs de bruit à partir des coordonnées
-        double continentalValue = heightCalculator.getContinentalGraph().getResult(continentalness.evaluateNoise(x / 512.0, z / 512.0));
-        double erosionValue = heightCalculator.getErosionGraph().getResult(erosion.evaluateNoise(x / 612.0, z / 612.0));
-        double peakValue = heightCalculator.getPavGraph().getResult(pav.evaluateNoise(x / 400.0, z / 400.0));
+    private Biome getBiome(double x, double z, double continentalValue, double erosionValue, double pavLargeScale, double pavSmallScale) {
 
         double temperatureValue = temperature.evaluateNoise(x / 300.0, z / 300.0);
         double humidityValue = humidity.evaluateNoise(x / 300.0, z / 300.0);
@@ -211,9 +213,9 @@ public class NormalWorldGenerator extends WorldGenerator {
                 return Biome.OCEAN; // Océan profond ou lagon
             }
         } else {
-            if (temperatureValue > 0.5 && humidityValue < 0.3) {
+            if (temperatureValue > 0.3 && humidityValue < 0) {
                 return Biome.DESERT;
-            } else if (peakValue > 40) {
+            } else if (pavSmallScale > 40) {
                 if (temperatureValue > 0.5 && humidityValue > 0.7)
                     return Biome.MESA;
                 return Biome.MOUNTAIN;

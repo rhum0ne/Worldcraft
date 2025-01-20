@@ -19,8 +19,8 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SHOW_DISTANCE = 14;
     public static int CHUNK_SIZE = 16;
     public static boolean SHOWING_GUIS = true;
@@ -42,6 +42,7 @@ public class Game {
     final GameLoop gameLoop;
 
     boolean isPaused = false;
+    boolean isPlaying = true;
     boolean isShowingTriangles = false;
     World world;
     Player player;
@@ -69,7 +70,7 @@ public class Game {
 
         this.world.spawnPlayer(player);
 
-        Timer timer = new Timer();
+        //Timer timer = new Timer();
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
@@ -85,7 +86,9 @@ public class Game {
 
         player.updateInventory();
 
-        timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
+        //timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
+        gameLoop = new GameLoop(this, player);
+        gameLoop.start();
         graphicModule = new GraphicModule(this);
         graphicModule.run();
     }

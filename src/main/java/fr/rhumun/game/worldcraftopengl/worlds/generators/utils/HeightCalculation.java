@@ -50,15 +50,9 @@ public class HeightCalculation {
                 .build();
     }
 
-    public int calcHeight(double x, double z, Biome biome){
+    public int calcHeight(int x, int z, double continentalValue, double erosionValue, double pavLargeScale, double pavSmallScale){
         double regularityValue = regularity.evaluateNoise(x / 500.0, z / 500.0); // Bruit à grande échelle
-
-        double continentalValue = continentalness.evaluateNoise(x/512f, z/512f);
-        double erosionValue = erosion.evaluateNoise(x/612f, z/612f);
         double absContinentalValue = Math.abs(continentalValue);
-
-        double pavLargeScale = pav.evaluateNoise(x / 500.0, z / 500.0); // Relief large
-        double pavSmallScale = pav.evaluateNoise(x / 40.0, z / 40.0); // Détails fins
 
 
         double pavEffect = pavGraph.getResult(pavLargeScale)* (((absContinentalValue<0.4) ? 0 : (absContinentalValue-0.4)*10)+0.2) ; // Modulation dynamique

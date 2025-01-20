@@ -101,7 +101,7 @@ public class GraphicModule{
 
         // Free the window callbacks and destroy the window
         this.cleanup();
-        game.getGameLoop().cancel();
+        game.setPlaying(false);
         this.updateLoop.interrupt();
 
         System.exit(0);

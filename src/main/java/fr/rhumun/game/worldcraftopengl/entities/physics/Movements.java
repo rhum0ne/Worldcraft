@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.entities.physics;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.content.Block;
+import org.joml.Vector3f;
 
 public class Movements {
     private static final float DEFAULT_GRAVITY = 9.81f;
@@ -73,15 +74,22 @@ public class Movements {
             player.getVelocity().setComponent(1, 0);
         } else {
             // Appliquer la gravité vers le bas
-            player.getVelocity().add(0, -DEFAULT_GRAVITY / 250.0f, 0);
+            player.getVelocity().add(0, -DEFAULT_GRAVITY / 500.0f, 0);
         }
     }
 
     public static void move(Player player) {
         // Déplacement sur les trois axes
-        moveOnAxis(player, 0); // Mouvement sur l'axe X
-        moveOnAxis(player, 1); // Mouvement sur l'axe Y
-        moveOnAxis(player, 2); // Mouvement sur l'axe Z
+        Vector3f v = player.getVelocity();
+        float yawCos = (float) Math.cos(Math.toRadians(player.getLocation().getYaw()));
+        float yawSin = (float) Math.sin(Math.toRadians(player.getLocation().getYaw()));
+        player.addX((yawCos*v.x - yawSin*v.z));
+        player.addY(v.y);
+        player.addZ((yawCos*v.z + yawSin*v.x));
+
+//        moveOnAxis(player, 0); // Mouvement sur l'axe X
+//        moveOnAxis(player, 1); // Mouvement sur l'axe Y
+//        moveOnAxis(player, 2); // Mouvement sur l'axe Z
     }
 
     private static void moveOnAxis(Player player, int axis) {
