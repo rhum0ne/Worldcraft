@@ -41,7 +41,7 @@ public class World {
         this.generator = new NormalWorldGenerator(this);
         //this.generator = new Flat(this);
 
-        GAME.log("Creating a new World... Seed: " + seed.getLong());
+        GAME.log("Creating a new World... \nSeed: " + seed.getLong());
 
         int xSpawn = seed.getCombinaisonOf(1, 8, 3) * seed.get(7);
         int zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
@@ -51,8 +51,10 @@ public class World {
 
         while(isLoading()){
             try {
+                Thread.yield();
                 Thread.sleep(100);
             } catch (InterruptedException e) {
+                GAME.errorLog(e.getMessage());
                 throw new RuntimeException(e);
             }
         }

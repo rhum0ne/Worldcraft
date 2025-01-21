@@ -61,8 +61,9 @@ public class ShaderUtils {
 
             return shaderProgram;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            GAME.errorLog(e.getLocalizedMessage());
         }
+        return -1;
     }
 
     private static int compileShader(String code, int type) {

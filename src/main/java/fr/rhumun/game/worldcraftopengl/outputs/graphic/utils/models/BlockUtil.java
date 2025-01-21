@@ -32,8 +32,8 @@ public class BlockUtil {
 
         for(x++; x<16; x++){
             Block testBlock = chunk.getBlocks()[x][y][z];
-            if (blocks.contains(testBlock)) break;
             if (testBlock.isSurrounded()) break;
+            if (blocks.contains(testBlock)) break;
 
             if (testBlock.getModel() == Model.BLOCK) {
                 if (testBlock.getMaterial() == corner1.getMaterial()) {
@@ -84,9 +84,9 @@ public class BlockUtil {
                 for(int ztest=corner1.getChunkZ(); ztest<=corner2.getChunkZ(); ztest++) {
                     Block testBlock = chunk.getBlocks()[xtest][y][ztest];
 
-                    if (!blocks.contains(testBlock)) {
-                        if (testBlock.getModel() == Model.BLOCK) {
-                            if (testBlock.getMaterial() == corner1.getMaterial()) {
+                    if (testBlock.getModel() == Model.BLOCK) {
+                        if (testBlock.getMaterial() == corner1.getMaterial()) {
+                            if (!blocks.contains(testBlock)) {
                                 if (!testBlock.isSurrounded()) {
                                     addedBlocks.add(testBlock);
                                     lastBlock = testBlock;

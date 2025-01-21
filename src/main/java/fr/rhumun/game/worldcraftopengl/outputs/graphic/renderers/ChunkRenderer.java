@@ -69,19 +69,11 @@ public class ChunkRenderer {
         //glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
 
         glEnable(GL_DEPTH_TEST);
+        //boolean isFar = OpacityType.TRANSPARENT.getMaxChunkDistance() < distanceFromPlayer;
 
         this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
+        //if(isFar) this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
 
-        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > distanceFromPlayer && this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            //glDepthMask(false);
-
-            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-            this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
-
-            //glDepthMask(true);
-            glDisable(GL_BLEND);
-        }
         if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
@@ -92,12 +84,22 @@ public class ChunkRenderer {
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
-        if(this.renderers.get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+        if(/*!isFar &&*/ this.renderers.get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
+
+            //glDepthMask(true);
+            glDisable(GL_BLEND);
+        }
+        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > distanceFromPlayer && this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+            glEnable(GL_BLEND);
+            //glDepthMask(false);
+
+            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
+            this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
             glDisable(GL_BLEND);
@@ -173,13 +175,16 @@ public class ChunkRenderer {
         for (int X=0; X<chunk.getBlocks().length; X++ ) {
             for(int Y=chunk.getBlocks()[X].length-1; Y>=0; Y--) {
                 for(int Z=0; Z<chunk.getBlocks()[X][Y].length; Z++) {
+
                     Block block = chunk.getBlocks()[X][Y][Z];
                     if (block == null || block.getMaterial() == null) continue;
+
                     Model model = block.getModel();
                     if (model == null) continue;
-                    if(blocks.contains(block)) continue;
 
                     if (block.isSurrounded()) continue;
+
+                    if(blocks.contains(block)) continue;
 
                     blocks.add(block);
 

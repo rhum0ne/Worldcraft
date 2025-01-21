@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.TimerTask;
@@ -22,6 +23,7 @@ public class GameLoop extends Thread {
         this.player = player;
         this.setName("GameLoop");
 
+        this.setPriority(Thread.MAX_PRIORITY);
         this.time = System.currentTimeMillis();
     }
     @Override
@@ -35,19 +37,20 @@ public class GameLoop extends Thread {
             if(currentTime > nextTime)
                 this.time = currentTime;
             else if(delta < 1000/rate){
-                //System.out.println(previousUpdate + " - " + currentTime + " = " + (previousUpdate - currentTime) + " < 1/" + rate);
                 continue;
-            } else if (delta > 1000) {
+            } else if (delta > Game.LAG_SPIKE_LIMIT) {
                 game.warn("Lag Spike detected : " + delta + " ms");
             }
 
             if (game.getGraphicModule() != null) {
                 try {
-                    for (Controls control : game.getPressedKeys()) {
+                    ArrayList<Controls> keys = new ArrayList<>(game.getPressedKeys());
+                    for (Controls control : keys) {
                         control.press(player);
                         if (!control.isRepeatable()) game.pressedKeys.remove(control);
                     }
                 } catch (ConcurrentModificationException e) {
+                    game.debug("Controls Concurrent Modif");
                     continue;
                 }
                 Movements.applyMovements(player);
@@ -55,6 +58,11 @@ public class GameLoop extends Thread {
             }
 
             previousUpdate = currentTime;
+            try {
+                Thread.sleep(1000/60);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         game.log("GameLoop Ended");

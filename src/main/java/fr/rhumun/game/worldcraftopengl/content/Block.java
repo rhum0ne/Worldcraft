@@ -19,6 +19,7 @@ public class Block {
     private Model model;
     private Material material;
     private final Chunk chunk;
+    @Setter
     private boolean isSurrounded= false;
 
     private byte chunkX;

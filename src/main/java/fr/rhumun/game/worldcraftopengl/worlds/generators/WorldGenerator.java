@@ -4,10 +4,9 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 public abstract class WorldGenerator {
@@ -19,7 +18,14 @@ public abstract class WorldGenerator {
 
     public WorldGenerator(World world) {
         this.world = world;
-        this.executor = Executors.newFixedThreadPool(maxConcurrentGenerations);
+
+        ThreadFactory factory = r -> {
+            Thread thread = new Thread(r);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            return thread;
+        };
+
+        this.executor = Executors.newFixedThreadPool(maxConcurrentGenerations, factory);
     }
 
     public void tryGenerate(Chunk chunk) {
@@ -28,7 +34,7 @@ public abstract class WorldGenerator {
         try {
             executor.submit(chunk::generate);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            GAME.errorLog(e.getMessage());
         }
     }
 

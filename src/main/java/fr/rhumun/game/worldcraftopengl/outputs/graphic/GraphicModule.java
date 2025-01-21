@@ -129,6 +129,7 @@ public class GraphicModule{
         //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //Pour macOS
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_SAMPLES, 3); // 4x Multisampling (ou plus selon le support matériel)
 
         // Create the window
         window = glfwCreateWindow(startWidth, startHeight, "WorldCraft OpenGL", NULL, NULL);
@@ -201,6 +202,7 @@ public class GraphicModule{
 
         this.guiModule.resize(startWidth, startHeight);
 
+        if(ANTIALIASING) glEnable(GL_MULTISAMPLE);
 
         for(Shader shader : this.renderingShaders) {
             updateModelAndProjectionFor(modelMatrix, shader);
@@ -227,23 +229,33 @@ public class GraphicModule{
 
     private void loop() {
         while ( !glfwWindowShouldClose(window) ) {
+            long start = System.currentTimeMillis();
+
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
 
+            long cStart = System.currentTimeMillis();
             this.cleaner.clean();
+            long cEnd = System.currentTimeMillis();
 
             if(game.isPaused() != this.isPaused) this.setPaused(game.isPaused());
             if(game.isShowingTriangles() != this.isShowingTriangles) this.setShowingTriangles(game.isShowingTriangles());
 
             updateWaterTime();
 
+            long vMStart = System.currentTimeMillis();
             game.getGraphicModule().updateViewMatrix();
+            long vMEnd = System.currentTimeMillis();
+
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
+            long rEnd = System.currentTimeMillis();
 
             this.guiModule.render();
+            long guiStart = System.currentTimeMillis();
 
             glUseProgram(ShaderUtils.SELECTED_BLOCK_SHADER.id);
             this.blockSelector.render();
+            long sStart = System.currentTimeMillis();
 
             glUseProgram(0);
 
@@ -251,8 +263,20 @@ public class GraphicModule{
             if(SHOWING_FPS) debugUtils.calculateFPS();
 
             // Swap des buffers et gestion des événements
+            long bStart = System.currentTimeMillis();
             glfwSwapBuffers(window);
+            long bEnd = System.currentTimeMillis();
             glfwPollEvents();
+
+            long end = System.currentTimeMillis();
+            if(end-start > 30) game.debug("Rendering took " + (end - start) + "ms. Details: \n" +
+                    "    - Cleaner took : " + (cStart - cEnd) + "ms\n" +
+                    "    - View Matrix took : " + (vMEnd-vMStart) + "ms\n" +
+                    "    - Rendering took : " + (rEnd-vMEnd) + "ms\n" +
+                    "    - Gui Rendering : " + (guiStart-rEnd) + "ms\n" +
+                    "    - Selector Rendering : " + (sStart-guiStart) + "ms\n" +
+                    "    - Finishing : " + (end-sStart) + "ms\n" +
+                    "    - Swapping Buffers : " + (bEnd-bStart) + "ms");
         }
         debugUtils.checkGLError();
     }
@@ -301,8 +325,6 @@ public class GraphicModule{
     }
 
     private void update(){
-
-        updateLoop.run();
         //if(!UPDATE_FRUSTRUM) return;
 
         if(!areChunksUpdated) {
@@ -331,7 +353,17 @@ public class GraphicModule{
             float x = chunk.getX()*CHUNK_SIZE;
             float z = chunk.getZ()*CHUNK_SIZE;
             if (frustumIntersection.testAab(x, 0f, z, x+CHUNK_SIZE, h , z+CHUNK_SIZE)) {
+                //OPTIMISATIONS CHUNKS 3D (16x16x16):
+                //DEFINIR CHUNK.ISSURROUNDED et si le joueur n'est pas dedans et que le chunk est surrounded
+                //Alors on ne le render pas.
+                //Voir si un chunk est Surrounded ou pas:
+                // - UpdateAll() -> Regarde tous les blocks frontière, s'ils sont tous opaques, alors le chunk est surrounded
+                // - false lorsqu'un block frontière est cassé
+                // - UpdateAll() si un block frontière est posé
 
+                //Ca limitera le nombre de vertices a update à chaque modification,
+                //permettra de faire de la génération pro. en 3D
+                //Fera de plus petites zones a rendre en retirant
                 chunk.getRenderer().render();
             }
         }

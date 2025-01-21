@@ -9,6 +9,6 @@ public class Transparent implements AbstractOpacity {
     }
     @Override
     public int getMaxViewDistance() {
-        return -1;
+        return 12;
     }
 }

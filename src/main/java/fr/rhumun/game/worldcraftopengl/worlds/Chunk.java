@@ -31,6 +31,7 @@ public class Chunk {
 
     @Setter
     private boolean toUpdate = false;
+    private boolean toUnload = false;
     private ChunkRenderer renderer;
 
     @Setter
@@ -59,8 +60,6 @@ public class Chunk {
             for (Block[] item : value) {
                 for (Block block : item) {
                     if(block == null) return;
-                    if (block.getMaterial() == null) continue;
-
                     block.updateIsSurrounded();
                 }
             }
@@ -78,9 +77,11 @@ public class Chunk {
             updateBordersChunks();
             long end = System.currentTimeMillis();
             GAME.debug("Finished Generating " + this + " in " + (end - start) + " ms");
+
+            if(toUnload) unload();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            GAME.errorLog(e.getLocalizedMessage());
             return false;
         }
     }
@@ -180,6 +181,11 @@ public class Chunk {
     }
 
     public void unload(){
+        if(!this.isGenerated()) {
+            this.toUnload = true;
+            return;
+        }
+
         //GAME.log("Unloading chunk " + this.toString());
         this.loaded = false;
         this.getWorld().unload(this);
