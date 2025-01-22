@@ -37,7 +37,7 @@ public enum Model {
     public Mesh get(){ return model; }
 
     public static void init(){
-        MODELS = Model.values();
+        MODELS = Model.values().clone();
     }
 
     public static Model getById(short id){

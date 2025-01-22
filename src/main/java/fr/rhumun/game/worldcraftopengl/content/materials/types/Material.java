@@ -91,7 +91,7 @@ public enum Material {
     }
 
     public static void init(){
-        MATERIALS = Material.values();
+        MATERIALS = Material.values().clone();
     }
 
     public static Material getById(short id){
