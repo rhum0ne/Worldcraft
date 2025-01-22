@@ -74,7 +74,7 @@ public class Movements {
             player.getVelocity().setComponent(1, 0);
         } else {
             // Appliquer la gravité vers le bas
-            player.getVelocity().add(0, -DEFAULT_GRAVITY / 500.0f, 0);
+            player.getVelocity().add(0, -DEFAULT_GRAVITY / 750.0f, 0);
         }
     }
 

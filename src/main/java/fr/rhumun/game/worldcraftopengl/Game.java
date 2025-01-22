@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl;
 
+import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
@@ -19,8 +20,8 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SHOW_DISTANCE = 15;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
@@ -61,6 +62,8 @@ public class Game {
         GAME = this;
         Controls.init();
         Texture.init();
+        Material.init();
+        Model.init();
 
         audioManager = new AudioManager(this);
         audioManager.init();

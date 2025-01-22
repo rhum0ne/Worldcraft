@@ -250,12 +250,12 @@ public class GraphicModule{
             update();
             long rEnd = System.currentTimeMillis();
 
-            this.guiModule.render();
-            long guiStart = System.currentTimeMillis();
-
             glUseProgram(ShaderUtils.SELECTED_BLOCK_SHADER.id);
             this.blockSelector.render();
             long sStart = System.currentTimeMillis();
+
+            this.guiModule.render();
+            long guiStart = System.currentTimeMillis();
 
             glUseProgram(0);
 
@@ -270,12 +270,14 @@ public class GraphicModule{
 
             long end = System.currentTimeMillis();
             if(end-start > 30) game.debug("Rendering took " + (end - start) + "ms. Details: \n" +
+                    "    - Initializing : " + (cStart-start) + "ms\n" +
                     "    - Cleaner took : " + (cStart - cEnd) + "ms\n" +
                     "    - View Matrix took : " + (vMEnd-vMStart) + "ms\n" +
                     "    - Rendering took : " + (rEnd-vMEnd) + "ms\n" +
-                    "    - Gui Rendering : " + (guiStart-rEnd) + "ms\n" +
-                    "    - Selector Rendering : " + (sStart-guiStart) + "ms\n" +
+                    "    - Selector Rendering : " + (sStart-rEnd) + "ms\n" +
+                    "    - Gui Rendering : " + (guiStart-sStart) + "ms\n" +
                     "    - Finishing : " + (end-sStart) + "ms\n" +
+                    "    - Events : " + (end-bEnd) +"ms\n" +
                     "    - Swapping Buffers : " + (bEnd-bStart) + "ms");
         }
         debugUtils.checkGLError();

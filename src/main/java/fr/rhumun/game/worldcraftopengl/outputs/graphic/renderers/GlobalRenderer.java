@@ -73,5 +73,6 @@ public class GlobalRenderer extends Renderer {
     public void cleanup() {
         glDeleteBuffers(this.getVBO());
         glDeleteVertexArrays(this.getVAO());
+        glDeleteBuffers(this.getEBO());
     }
 }

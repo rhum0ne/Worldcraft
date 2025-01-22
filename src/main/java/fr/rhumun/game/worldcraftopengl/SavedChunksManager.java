@@ -104,6 +104,6 @@ public class SavedChunksManager {
 
         GAME.getGraphicModule().changeLoadedBlocks();
         long end = System.currentTimeMillis();
-        GAME.debug("Updating loaded Chnks in " + (end - start) + " ms");
+        GAME.debug("Updating loaded Chunks in " + (end - start) + " ms");
     }
 }

@@ -138,7 +138,7 @@ public class Entity {
 
     public void jump() {
         if(this.velocity.get(1) == 0)
-            this.getVelocity().add(0, (float)jumpForce/7, 0);
+            this.getVelocity().add(0, (float)jumpForce/9, 0);
     }
 
 

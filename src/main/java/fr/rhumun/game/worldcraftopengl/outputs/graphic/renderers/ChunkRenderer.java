@@ -34,7 +34,7 @@ public class ChunkRenderer {
      * NE PAS OUBLIER: UN CHUNK MODIFIE DOIT S'UPDATE IMMEDIATEMENT DONC FAIRE LES 2 ETAPES
      */
 
-    private final Chunk chunk;
+    private Chunk chunk;
 
     private final ArrayList<Renderer> renderers = new ArrayList<>();
     //private final GlobalRenderer globalRenderer = new GlobalRenderer(GAME.getGraphicModule());
@@ -259,5 +259,9 @@ public class ChunkRenderer {
     private void addVertex(Renderer renderer, float[] vertexData) {
         renderer.getVertices().add(vertexData);
         renderer.addIndice();
+    }
+
+    public void cleanup(){
+        this.chunk = null;
     }
 }

@@ -5,6 +5,11 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 @Getter
 public enum Material {
     COBBLE(new CobbleMaterial()),
@@ -80,8 +85,17 @@ public enum Material {
     static int maxID = 0;
 
     final AbstractMaterial material;
+    static Material[] MATERIALS;
     Material(final AbstractMaterial material) {
         this.material = material;
+    }
+
+    public static void init(){
+        MATERIALS = Material.values();
+    }
+
+    public static Material getById(short id){
+        return MATERIALS[id];
     }
 
     public Sound getSound(){ return this.material.getSound(); }
@@ -90,7 +104,7 @@ public enum Material {
     public OpacityType getOpacity(){ return this.material.getOpacity(); }
 
     public static int createID(){
-        return ++maxID;
+        return maxID++;
     }
 
     public boolean isLiquid() {

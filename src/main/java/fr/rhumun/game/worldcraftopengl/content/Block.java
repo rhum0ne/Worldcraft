@@ -16,34 +16,67 @@ import lombok.Setter;
 @Setter
 public class Block {
 
-    private Model model;
-    private Material material;
-    private final Chunk chunk;
+    private short model;
+    private short material;
+    private Chunk chunk;
     @Setter
     private boolean isSurrounded= false;
 
-    private byte chunkX;
-    private short chunkY;
-    private byte chunkZ;
+    private byte chunkXZ; // Stocke chunkX et chunkZ ensemble (4 bits chacun)
+    private byte chunkY;
 
-    private Biome biome;
+    private byte state = 0; //Créer un block data, et une interface BlockDataMaterial
 
-    private byte state = 0;
-
-    public Block(Chunk chunk, byte chunkX, short chunkY, byte chunkZ) {
+    public Block(Chunk chunk, byte chunkX, int chunkY, byte chunkZ) {
         this.chunk = chunk;
-        this.model = Model.BLOCK;
-        this.chunkY = chunkY;
-        this.chunkX = chunkX;
-        this.chunkZ = chunkZ;
-
+        this.model = Model.BLOCK.getId();
+        this.chunkY = (byte) (chunkY - 128);
+        this.chunkXZ = (byte) ((chunkX & 0xF) | ((chunkZ & 0xF) << 4)); // Stocker chunkX et chunkZ dans chunkXZ
+        this.material = -1;
     }
 
-    public World getWorld(){ return this.chunk.getWorld(); }
+    // Méthodes pour extraire chunkX et chunkZ de chunkXZ
+    public byte getChunkX() {
+        return (byte) (chunkXZ & 0xF); // Extraire les 4 bits de poids faible
+    }
 
-    public int getX(){ return Game.CHUNK_SIZE*chunk.getX() +  this.chunkX; }
-    public int getY(){ return this.chunkY; }
-    public int getZ(){ return Game.CHUNK_SIZE*chunk.getZ() +  this.chunkZ; }
+    public byte getChunkZ() {
+        return (byte) ((chunkXZ >> 4) & 0xF); // Extraire les 4 bits de poids fort
+    }
+
+    // Récupérer les coordonnées absolues
+    public int getX() {
+        return Game.CHUNK_SIZE * chunk.getX() + getChunkX();
+    }
+
+    public int getY() {
+        return this.chunkY + 128;
+    }
+
+    public int getZ() {
+        return Game.CHUNK_SIZE * chunk.getZ() + getChunkZ();
+    }
+
+    public World getWorld() {
+        return this.chunk.getWorld();
+    }
+
+
+    public void setBiome(Biome biome){
+        this.chunk.setBiome(this, biome);
+    }
+
+    public Biome getBiome(){
+        return this.chunk.getBiome(this);
+    }
+
+    public Material getMaterial(){
+        return (this.material == -1) ? null : Material.getById(material);
+    }
+
+    public Model getModel(){
+        return Model.getById(this.model);
+    }
 
     public Location getLocation(){ return new Location(chunk.getWorld(), this.getX(), this.getY(), this.getZ()); }
 
@@ -72,7 +105,7 @@ public class Block {
     }
 
     public boolean isOpaque(){
-        return this.material != null && ( this.model.isOpaque() && this.material.getOpacity() == OpacityType.OPAQUE);
+        return this.getMaterial() != null && ( this.getModel().isOpaque() && this.getMaterial().getOpacity() == OpacityType.OPAQUE);
     }
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
@@ -83,17 +116,18 @@ public class Block {
         int z = this.getZ() + Math.round(nz);
 
         Block face = chunk.getAt(x,y,z);
-        return face != null && !this.material.getOpacity().isVisibleWith(face) ;
+        return face != null && !this.getMaterial().getOpacity().isVisibleWith(face) ;
     }
 
     public Block setMaterial(Material material){
         //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
-        if(this.material != null && this.material.getMaterial() instanceof PointLight){
+        if(this.getMaterial() != null && this.getMaterial().getMaterial() instanceof PointLight){
             this.chunk.getLightningBlocks().remove(this);
         }
-        this.material = material;
 
         if(material==null) {
+            this.material = -1;
+
             chunk.getVisibleBlock().remove(this);
 
             if(!chunk.isGenerated()) return this;
@@ -106,6 +140,8 @@ public class Block {
             }
         }
         else {
+            this.material = (short) material.getId();
+
             if(material.getMaterial() instanceof PointLight){
                 this.chunk.getLightningBlocks().add(this);
             }
@@ -156,11 +192,11 @@ public class Block {
     }
 
     public Block setModel(Model model){
-        this.model = model;
+        this.model = model.getId();
         Block[] sideBlocks = this.getSideBlocks();
 
         if(chunk.isGenerated())
-            if (!model.isOpaque)
+            if (!this.getModel().isOpaque)
                 for (Block block : sideBlocks) {
                     if (block == null) continue;
                     block.setSurrounded(false);
@@ -212,10 +248,11 @@ public class Block {
     }
 
     public boolean isCliquable() {
-        return this.material != null && this.material.getOpacity() != OpacityType.LIQUID;
+        return this.getMaterial() != null && this.getMaterial().getOpacity() != OpacityType.LIQUID;
     }
 
     public void setState(int state) {
         this.state = (byte) state;
     }
+
 }

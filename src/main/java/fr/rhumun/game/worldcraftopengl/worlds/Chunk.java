@@ -5,13 +5,12 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -23,6 +22,8 @@ public class Chunk {
     //private final List<Block> blockList = new ArrayList<>();
     private List<Block> visibleBlock = new ArrayList<>();
     private List<Block> lightningBlocks = new ArrayList<>();
+
+    private final Biome[][] biomesMap = new Biome[16][16];
 
     private final int X;
     private final int Z;
@@ -63,6 +64,14 @@ public class Chunk {
                     block.updateIsSurrounded();
                 }
             }
+    }
+
+    public void setBiome(Block block, Biome biome){
+        this.biomesMap[block.getChunkX()][block.getChunkZ()] = biome;
+    }
+
+    public Biome getBiome(Block block){
+        return this.biomesMap[block.getChunkX()][block.getChunkZ()];
     }
 
     public boolean generate() {
@@ -193,17 +202,21 @@ public class Chunk {
         for (int x = 0; x < blocks.length; x++)
             for (int y = 0; y<blocks[x].length; y++) {
                 for(int z = 0; z<blocks[x][y].length; z++){
+                    this.blocks[x][y][z].setChunk(null);
                     this.blocks[x][y][z] = null;
                 }
             }
 
         this.blocks = null;
+        this.visibleBlock.clear();
+        this.lightningBlocks.clear();
         this.visibleBlock = null;
         this.lightningBlocks = null;
 
         for(Renderer renderer : renderer.getRenderers())
             GAME.getGraphicModule().cleanup(renderer);
 
+        this.renderer.cleanup();
         this.renderer = null;
 
 //        if(this.isRendererInitialized()){

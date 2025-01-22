@@ -7,6 +7,8 @@ import lombok.Getter;
 
 import java.util.Arrays;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 public abstract class AbstractMaterial {
 
@@ -20,6 +22,8 @@ public abstract class AbstractMaterial {
         this.id = Material.createID();
         this.friction = friction;
         Arrays.fill(textures, texture);
+
+        GAME.debug("Created material " + id + " with texture " + texture.getName());
     }
 
     public void setTopTexture(Texture texture) {
