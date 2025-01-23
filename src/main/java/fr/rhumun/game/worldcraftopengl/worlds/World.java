@@ -31,6 +31,8 @@ public class World {
     private final Seed seed;
     private Location spawn;
     private Chunk spawnChunk;
+    private int xSpawn;
+    private int zSpawn;
 
     private boolean isLoaded = false;
 
@@ -43,9 +45,11 @@ public class World {
 
         GAME.log("Creating a new World... \nSeed: " + seed.getLong());
 
-        int xSpawn = seed.getCombinaisonOf(1, 8, 3) * seed.get(7);
-        int zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
+        xSpawn = seed.getCombinaisonOf(1, 8, 3) * seed.get(7);
+        zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
+    }
 
+    public void load(){
         spawnChunk = this.getChunkAt(xSpawn, zSpawn, true);
         this.generator.tryGenerate(spawnChunk);
 

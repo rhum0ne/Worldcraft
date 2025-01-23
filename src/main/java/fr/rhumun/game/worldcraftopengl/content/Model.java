@@ -15,20 +15,20 @@ import static fr.rhumun.game.worldcraftopengl.Game.TEXTURES_PATH;
 @Getter
 public enum Model {
 
-    BLOCK(load("block.obj"), true, (short) 0),
-    SLAB(load("slab.obj"), false, (short) 1),
-    CYLINDER(load("cylinder.obj"), false, (short) 2),
-    CROSS(load("cross-model.obj"), false, 13, (short) 3),;
+    BLOCK(load("block.obj"), true, (byte) 0),
+    SLAB(load("slab.obj"), false, (byte) 1),
+    CYLINDER(load("cylinder.obj"), false, (byte) 2),
+    CROSS(load("cross-model.obj"), false, 13, (byte) 3),;
 
     final Mesh model;
     final boolean isOpaque;
     final int maxChunkDistance;
-    final short id;
+    final byte id;
 
     static Model[] MODELS;
-    Model(Mesh model, boolean isOpaque, short id) {this(model, isOpaque, -1, id);}
+    Model(Mesh model, boolean isOpaque, byte id) {this(model, isOpaque, -1, id);}
 
-    Model(Mesh model, boolean isOpaque, int maxChunkDistance, short id){
+    Model(Mesh model, boolean isOpaque, int maxChunkDistance, byte id){
         this.model = model;
         this.isOpaque = isOpaque;
         this.maxChunkDistance = maxChunkDistance;
@@ -40,7 +40,7 @@ public enum Model {
         MODELS = Model.values().clone();
     }
 
-    public static Model getById(short id){
+    public static Model getById(byte id){
         return MODELS[id];
     }
 

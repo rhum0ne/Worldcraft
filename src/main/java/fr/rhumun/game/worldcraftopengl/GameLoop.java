@@ -5,9 +5,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ConcurrentModificationException;
-import java.util.TimerTask;
 
 public class GameLoop extends Thread {
 
@@ -54,7 +52,7 @@ public class GameLoop extends Thread {
                     continue;
                 }
                 Movements.applyMovements(player);
-                player.getSavedChunksManager().tryLoadChunks();
+                player.getLoadedChunksManager().tryLoadChunks();
             }
 
             previousUpdate = currentTime;

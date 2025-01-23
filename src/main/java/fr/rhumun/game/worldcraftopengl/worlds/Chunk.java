@@ -16,6 +16,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
+@Setter
 public class Chunk {
 
     Block[][][] blocks;
@@ -24,6 +25,8 @@ public class Chunk {
     private List<Block> lightningBlocks = new ArrayList<>();
 
     private final Biome[][] biomesMap = new Biome[16][16];
+
+    private final short renderID;
 
     private final int X;
     private final int Z;
@@ -40,7 +43,8 @@ public class Chunk {
     @Setter
     private boolean loaded = false; //For the first chunk render
 
-    public Chunk(World world, int X, int Z){
+    public Chunk(World world, short renderID, int X, int Z){
+        this.renderID = renderID;
         this.X = X;
         this.Z = Z;
         this.world = world;
@@ -50,7 +54,7 @@ public class Chunk {
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[x].length; y++) {
                 for (int z = 0; z < blocks[x][y].length; z++) {
-                    this.addBlock(x, z, new Block(this, (byte) x, (short) y, (byte) z));
+                    this.addBlock(x, y, z, new Block(this, (byte) x, (short) y, (byte) z));
                 }
             }
         }
@@ -96,8 +100,8 @@ public class Chunk {
     }
 
 
-    private void addBlock(int x, int z, Block block) {
-        this.blocks[x][(int) block.getLocation().getY()][z] = block;
+    private void addBlock(int x, int y, int z, Block block) {
+        this.blocks[x][y][z] = block;
         //this.blockList.add(block);
     }
 
@@ -202,7 +206,6 @@ public class Chunk {
         for (int x = 0; x < blocks.length; x++)
             for (int y = 0; y<blocks[x].length; y++) {
                 for(int z = 0; z<blocks[x][y].length; z++){
-                    this.blocks[x][y][z].setChunk(null);
                     this.blocks[x][y][z] = null;
                 }
             }

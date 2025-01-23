@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
-import fr.rhumun.game.worldcraftopengl.SavedChunksManager;
+import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.content.Block;
@@ -15,7 +15,7 @@ import org.joml.Vector3f;
 @Setter
 public class Player extends Entity{
 
-    private final SavedChunksManager savedChunksManager = new SavedChunksManager(this);
+    private final LoadedChunksManager loadedChunksManager = new LoadedChunksManager(this);
 
     private int selectedSlot;
     private Inventory inventory;

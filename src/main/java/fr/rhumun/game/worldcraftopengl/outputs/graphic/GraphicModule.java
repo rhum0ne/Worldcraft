@@ -22,16 +22,12 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
-import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils.*;
 import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils.initTextures;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;  // OpenGL 3.0 pour les VAO
-import static org.lwjgl.opengl.GL43C.GL_DEBUG_OUTPUT;
-import static org.lwjgl.opengl.GL43C.glDebugMessageCallback;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.IntBuffer;
-import java.time.Instant;
 import java.util.*;
 import java.util.List;
 
@@ -96,7 +92,11 @@ public class GraphicModule{
 
     public void run() {
         init();
-        loop();
+        try {
+            loop();
+        } catch(Exception e) {
+            game.errorLog(e.getLocalizedMessage());
+        }
 
 
         // Free the window callbacks and destroy the window
@@ -330,7 +330,7 @@ public class GraphicModule{
         //if(!UPDATE_FRUSTRUM) return;
 
         if(!areChunksUpdated) {
-            loadedChunks = new LinkedHashSet<>(game.getPlayer().getSavedChunksManager().getChunksToRender());
+            loadedChunks = new LinkedHashSet<>(game.getPlayer().getLoadedChunksManager().getChunksToRender());
             this.areChunksUpdated = true;
             this.lightningsUtils.updateLights();
             if(SHOWING_RENDERER_DATA){

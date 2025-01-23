@@ -20,9 +20,9 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
-    public static int SHOW_DISTANCE = 14;
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static int SHOW_DISTANCE = 20;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -71,6 +71,7 @@ public class Game {
 
         this.player = new Player(this);
         this.world = new World();
+        this.world.load();
 
         while(!world.isLoaded()){ }
 

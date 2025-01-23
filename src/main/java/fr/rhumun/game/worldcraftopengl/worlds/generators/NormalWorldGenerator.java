@@ -186,7 +186,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                     if (y < height) {
                         block.setMaterial(Material.STONE);
                     }
-                    block.setBiome(biome);
+                    chunk.setBiome(block, biome);
                 }
 
             }

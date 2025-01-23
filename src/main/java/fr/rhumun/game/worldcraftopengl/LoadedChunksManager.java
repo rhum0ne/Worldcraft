@@ -9,16 +9,19 @@ import java.util.*;
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
 @Getter
-public class SavedChunksManager {
+public class LoadedChunksManager {
+
+    private static final int MAX_CHUNKS = 65536; // Nombre maximum de chunks (short = 2^16)
 
     private final Player player;
     private final Game game;
 
     private LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
+
     private Chunk centralChunk;
 
 
-    public SavedChunksManager(Player player) {
+    public LoadedChunksManager(Player player) {
         this.player = player;
         this.game = GAME;
     }

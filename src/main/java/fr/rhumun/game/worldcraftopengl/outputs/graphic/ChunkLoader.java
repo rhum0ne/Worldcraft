@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
-import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +25,7 @@ public class ChunkLoader extends TimerTask {
     public void run() {
         if(!graphicModule.isInitialized()) return;
 
-        player.getSavedChunksManager().tryLoadChunks();
+        player.getLoadedChunksManager().tryLoadChunks();
     }
 
     public void updateDataFor(ChunkRenderer chunk){

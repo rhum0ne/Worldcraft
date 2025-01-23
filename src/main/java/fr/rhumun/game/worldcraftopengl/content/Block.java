@@ -12,15 +12,18 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 @Setter
 public class Block {
 
-    private short model;
+    //Créer un baseBlock pour les blocks d'air, qui ne contiendra que XYZ et Chunk.
+    //Le setMaterial remplacera ce baseBlock par un block qui aura un material
+    //Ou remplacera un Block par un BaseBlock si le material est null
+    private byte model;
     private short material;
-    private Chunk chunk;
-    @Setter
-    private boolean isSurrounded= false;
+    private short chunkID;
 
     private byte chunkXZ; // Stocke chunkX et chunkZ ensemble (4 bits chacun)
     private byte chunkY;
@@ -28,7 +31,7 @@ public class Block {
     private byte state = 0; //Créer un block data, et une interface BlockDataMaterial
 
     public Block(Chunk chunk, byte chunkX, int chunkY, byte chunkZ) {
-        this.chunk = chunk;
+        this.chunkID = chunk.getRenderID();
         this.model = Model.BLOCK.getId();
         this.chunkY = (byte) (chunkY - 128);
         this.chunkXZ = (byte) ((chunkX & 0xF) | ((chunkZ & 0xF) << 4)); // Stocker chunkX et chunkZ dans chunkXZ
@@ -46,7 +49,7 @@ public class Block {
 
     // Récupérer les coordonnées absolues
     public int getX() {
-        return Game.CHUNK_SIZE * chunk.getX() + getChunkX();
+        return Game.CHUNK_SIZE * getChunk().getX() + getChunkX();
     }
 
     public int getY() {
@@ -54,20 +57,20 @@ public class Block {
     }
 
     public int getZ() {
-        return Game.CHUNK_SIZE * chunk.getZ() + getChunkZ();
+        return Game.CHUNK_SIZE * getChunk().getZ() + getChunkZ();
     }
 
     public World getWorld() {
-        return this.chunk.getWorld();
+        return this.getChunk().getWorld();
     }
 
 
     public void setBiome(Biome biome){
-        this.chunk.setBiome(this, biome);
+        this.getChunk().setBiome(this, biome);
     }
 
     public Biome getBiome(){
-        return this.chunk.getBiome(this);
+        return this.getChunk().getBiome(this);
     }
 
     public Material getMaterial(){
@@ -78,13 +81,31 @@ public class Block {
         return Model.getById(this.model);
     }
 
-    public Location getLocation(){ return new Location(chunk.getWorld(), this.getX(), this.getY(), this.getZ()); }
+    public Chunk getChunk(){
+        return GAME.getWorld().getChunks().getChunkById(this.chunkID);
+    }
+
+    // Vérifie si le bit 7 (isSurrounded) est actif
+    public boolean isSurrounded() {
+        return (state & 0b10000000) != 0; // Vérifie si le bit 7 est à 1
+    }
+
+    // Définit la valeur du bit 7 (isSurrounded)
+    public void setSurrounded(boolean surrounded) {
+        if (surrounded) {
+            state |= 0b10000000; // Définit le bit 7 à 1
+        } else {
+            state &= 0b01111111; // Définit le bit 7 à 0
+        }
+    }
+
+    public Location getLocation(){ return new Location(GAME.getWorld(), this.getX(), this.getY(), this.getZ()); }
 
     public void updateIsSurrounded(){
-        if(!chunk.isGenerated()) return;
+        if(!getChunk().isGenerated()) return;
 
         if(!this.isOpaque()) {
-            this.isSurrounded = false;
+            this.setSurrounded(false);
             return;
         }
 
@@ -92,16 +113,16 @@ public class Block {
         this.updateIsSurrounded(this.getSideBlocks());
     }
     public void updateIsSurrounded(Block[] sideBlocks) {
-        if(!chunk.isGenerated()) return;
+        if(!getChunk().isGenerated()) return;
 
         // Vérifie les 6 directions pour voir si un bloc est présent
         for(Block block : sideBlocks) {
             if(block == null || !block.isOpaque()) {
-                this.isSurrounded = false;
+                this.setSurrounded(false);
                 return;
             }
         }
-        this.isSurrounded = true;
+        this.setSurrounded(true);
     }
 
     public boolean isOpaque(){
@@ -115,14 +136,15 @@ public class Block {
         int y = this.getY() + Math.round(ny);
         int z = this.getZ() + Math.round(nz);
 
-        Block face = chunk.getAt(x,y,z);
+        Block face = getChunk().getAt(x,y,z);
         return face != null && !this.getMaterial().getOpacity().isVisibleWith(face) ;
     }
 
     public Block setMaterial(Material material){
+        Chunk chunk = getChunk();
         //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
         if(this.getMaterial() != null && this.getMaterial().getMaterial() instanceof PointLight){
-            this.chunk.getLightningBlocks().remove(this);
+            chunk.getLightningBlocks().remove(this);
         }
 
         if(material==null) {
@@ -143,7 +165,7 @@ public class Block {
             this.material = (short) material.getId();
 
             if(material.getMaterial() instanceof PointLight){
-                this.chunk.getLightningBlocks().add(this);
+                chunk.getLightningBlocks().add(this);
             }
             chunk.getVisibleBlock().add(this);
 
@@ -174,7 +196,7 @@ public class Block {
 
         }
 
-        this.chunk.setToUpdate(true);
+        chunk.setToUpdate(true);
 
         return this;
     }
@@ -192,6 +214,7 @@ public class Block {
     }
 
     public Block setModel(Model model){
+        Chunk chunk = getChunk();
         this.model = model.getId();
         Block[] sideBlocks = this.getSideBlocks();
 
@@ -208,7 +231,7 @@ public class Block {
                 }
 
 
-        this.chunk.setToUpdate(true);
+        chunk.setToUpdate(true);
         return this;
     }
 
@@ -220,24 +243,26 @@ public class Block {
     public Block getBlockAtEast(){ return getBlockAtEast(true); }
 
     public Block getBlockAtUp(boolean generateIfNull) {
-        if(this.getY() == this.chunk.getWorld().getHeigth()-1) return null;
+        Chunk chunk = getChunk();
+        if(this.getY() == chunk.getWorld().getHeigth()-1) return null;
         return chunk.getAt(this.getX(), this.getY() + 1, this.getZ());
     }
     public Block getBlockAtDown(boolean generateIfNull) {
+        Chunk chunk = getChunk();
         if(this.getY() == 0) return null;
         return chunk.getAt(this.getX(), this.getY() - 1,this.getZ());
     }
     public Block getBlockAtNorth(boolean generateIfNull) {
-        return chunk.getAt(this.getX()+1, this.getY(), this.getZ());
+        return getChunk().getAt(this.getX()+1, this.getY(), this.getZ());
     }
     public Block getBlockAtSouth(boolean generateIfNull) {
-        return chunk.getAt(this.getX() - 1, this.getY(), this.getZ());
+        return getChunk().getAt(this.getX() - 1, this.getY(), this.getZ());
     }
     public Block getBlockAtEast(boolean generateIfNull) {
-        return chunk.getAt(this.getX(), this.getY(),this.getZ() - 1);
+        return getChunk().getAt(this.getX(), this.getY(),this.getZ() - 1);
     }
     public Block getBlockAtWest(boolean generateIfNull) {
-        return chunk.getAt(this.getX(), this.getY(), this.getZ() + 1);
+        return getChunk().getAt(this.getX(), this.getY(), this.getZ() + 1);
     }
 
     public boolean isOnTheFloor(){
