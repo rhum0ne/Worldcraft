@@ -12,8 +12,10 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.HeightCalculation;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.trees.TreeType;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
 
@@ -49,8 +51,8 @@ public class NormalWorldGenerator extends WorldGenerator {
                // .perlin(seed, Interpolation.LINEAR, FadeFunction.SMOOTHSTEP)
         // Grande échelle - contrôle des continents
         continentalness = JNoise.newBuilder()
-                .superSimplex(seed.getLong(), Simplex2DVariant.CLASSIC, Simplex3DVariant.CLASSIC, Simplex4DVariant.CLASSIC)
-                .octavate(6, 0.5, 1.3, FractalFunction.FBM, true)
+                .superSimplex(seed.getLong(), Simplex2DVariant.CLASSIC, Simplex3DVariant.IMPROVE_XZ, Simplex4DVariant.CLASSIC)
+                .octavate(8, 0.5, 1.3, FractalFunction.FBM, true)
                 .build();
 
         // Grande échelle - contrôle des continents
@@ -175,9 +177,8 @@ public class NormalWorldGenerator extends WorldGenerator {
                 double pavLargeScale = pav.evaluateNoise(xH / 500.0, zH / 500.0); // Relief large
                 double pavSmallScale = pav.evaluateNoise(xH / 40.0, zH / 40.0); // Détails fins
 
-                Biome biome = getBiome(xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
-
                 int height = heightCalculator.calcHeight(xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
+                Biome biome = getBiome(height, xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
                 for (int y = 0; y < this.getWorld().getHeigth(); y++) {
                     Block block = chunk.get(x, y, z);
@@ -191,68 +192,31 @@ public class NormalWorldGenerator extends WorldGenerator {
 
             }
         }
-
-//        try {
-//            exportTerrainToImage(terrain, TEXTURES_PATH + "terrain.png", chunk.getX(), chunk.getZ());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
     }
 
-    private Biome getBiome(double x, double z, double continentalValue, double erosionValue, double pavLargeScale, double pavSmallScale) {
+    private Biome getBiome(int height, double x, double z, double continentalValue, double erosionValue, double pavLargeScale, double pavSmallScale) {
 
         double temperatureValue = temperature.evaluateNoise(x / 300.0, z / 300.0);
         double humidityValue = humidity.evaluateNoise(x / 300.0, z / 300.0);
 
 
         // Logique de sélection des biomes
-        if (continentalValue < 0.1) {
-            if (erosionValue < 40) {
-                return Biome.BEACH; // Plage avec faible érosion
-            } else {
-                return Biome.OCEAN; // Océan profond ou lagon
-            }
-        } else {
-            if (temperatureValue > 0.3 && humidityValue < 0) {
-                return Biome.DESERT;
-            } else if (pavSmallScale > 40) {
+        if (height<waterHigh-3) return Biomes.OCEAN;
+        else if (height<waterHigh && erosionValue > 0) return Biomes.BEACH;
+        else {
+            if (temperatureValue > 0.6 && humidityValue < 0.4) {
+                return Biomes.DESERT;
+            } else if (pavSmallScale > 0.8 || pavLargeScale > 0.6) {
                 if (temperatureValue > 0.5 && humidityValue > 0.7)
-                    return Biome.MESA;
-                return Biome.MOUNTAIN;
-            } else if (erosionValue > 30) {
-                return Biome.PLAIN;
+                    return Biomes.MESA;
+                return Biomes.MOUNTAIN;
+            } else if (erosionValue > 0.5) {
+                return Biomes.PLAIN;
             } else {
-                return Biome.HILL;
+                return Biomes.HILL;
             }
         }
     }
-
-
-    private void exportTerrainToImage(double[][] terrain, String filePath, int xC, int zC) throws IOException{
-        File file = new File(filePath);
-
-        int width = terrain.length;
-        int height = terrain[0].length;
-
-        BufferedImage image;
-        if(file.exists())
-            image = ImageIO.read(file);
-        else image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
-        for (int x = xC*16; x < xC*16+16; x++) {
-            for (int z = zC*16; z < zC*16+16; z++) {
-                if(x<width && x>-1 && z<height && z>0) {
-                    int heightValue = (int) terrain[x][z];
-                    int color = (heightValue << 16) | (heightValue << 8) | heightValue; // Grisaille
-                    image.setRGB(x, z, color);
-                }
-            }
-        }
-
-        ImageIO.write(image, "png", file);
-    }
-
-
 
     @Override
     public void populate(Chunk chunk) {
@@ -265,15 +229,10 @@ public class NormalWorldGenerator extends WorldGenerator {
 
     private void spawnVegetation(Chunk chunk, int x, int z) {
         Block block = chunk.getHighestBlock(x, z, true);
+        Biome biome = chunk.getBiome(block);
 
         if(block.getMaterial() == Material.GRASS_BLOCK)
-            if((1+x*z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%7==0)
-                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.GRASS);
-            else if((1+x+z+chunk.getZ())%4==0 && (chunk.getX()+x+2*z)%7==0)
-                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.BLUE_FLOWER);
-            else if((1+x+z+chunk.getZ())%5==0 && (chunk.getX()+x+2*z)%9==0)
-                chunk.get(x, (int) (block.getLocation().getY() + 1), z).setMaterial(Material.RED_FLOWER);
-            else if((1+z*x+chunk.getX())%5==0 && (chunk.getZ()+x*z)%7==0)
-                chunk.getWorld().spawnStructure(Structure.TREE, CHUNK_SIZE * chunk.getX() + x, (int) (block.getLocation().getY() + 1), CHUNK_SIZE * chunk.getZ() + z);
+            biome.spawnVegetation(chunk, block, x, z, this.getWorld().getSeed());
+
     }
 }

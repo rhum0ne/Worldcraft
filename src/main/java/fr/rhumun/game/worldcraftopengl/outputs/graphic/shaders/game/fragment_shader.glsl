@@ -137,5 +137,5 @@ void main()
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  // On utilise FragPos ici
     }
 
-    FragColor = vec4(result, textureColor.a);
+    FragColor = vec4(result.r, result.g, result.b, textureColor.a);
 }

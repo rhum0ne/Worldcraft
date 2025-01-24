@@ -75,7 +75,8 @@ public class ChunksContainer {
 
     public void remove(int x, int z){
         long key = toLongKey(x, z);
-         Chunk chunk = chunks.remove(key);
+        Chunk chunk = chunks.remove(key);
+        if(chunk == null) return;
 
         Chunk chunkByID = loadedChunks.remove(chunk.getRenderID());
         if (chunkByID == null) return; // Chunk non chargé

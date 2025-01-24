@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
@@ -11,7 +12,9 @@ import javafx.scene.paint.Color;
 import lombok.Getter;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -19,16 +22,18 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Getter
 public class World {
 
+    private final Seed seed;
     private final WorldGenerator generator;
 
     //private final HashMap<Point, Chunk> chunks = new HashMap<>();
     private final ChunksContainer chunks;
-    private final int heigth = 256;
+    private final List<Entity> entities = new ArrayList<>();
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
 
-    private final Seed seed;
+    private final int heigth = 256;
+
     private Location spawn;
     private Chunk spawnChunk;
     private int xSpawn;
@@ -65,6 +70,14 @@ public class World {
 
         this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), true).getLocation().getY()+10, zSpawn);
         this.isLoaded = true;
+    }
+
+    public void addEntity(Entity entity){
+        this.entities.add(entity);
+    }
+
+    public void removeEntity(Entity entity){
+        this.entities.remove(entity);
     }
 
     public boolean isLoading(){

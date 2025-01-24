@@ -26,14 +26,6 @@ import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 @Getter
 public class ChunkRenderer {
 
-    /**
-     * POUR OPTIMISER LE CHARGEMENT: SEPARER LA CREATION DU TABLEAU ET SA MISE DANS LE VAO
-     * POUR PERMETTRE DE REALISER LE CALCUL LONG HORS DE OPENGL
-     * PUIS DE SIMPLEMENT TRANSFERER LES DONNEES QUAND CELUI-CI EST PRET
-     *
-     * NE PAS OUBLIER: UN CHUNK MODIFIE DOIT S'UPDATE IMMEDIATEMENT DONC FAIRE LES 2 ETAPES
-     */
-
     private Chunk chunk;
 
     private final ArrayList<Renderer> renderers = new ArrayList<>();

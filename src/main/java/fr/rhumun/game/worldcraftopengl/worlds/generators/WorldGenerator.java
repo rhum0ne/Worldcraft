@@ -44,7 +44,7 @@ public abstract class WorldGenerator {
 
     public void processChunkQueue() {
         while (!toGenerate.isEmpty()) {
-            Chunk chunk = toGenerate.poll();
+            Chunk chunk = toGenerate.pollLast();
             if (chunk != null && !chunk.isGenerated()) {
                 tryGenerate(chunk);
             }

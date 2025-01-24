@@ -118,17 +118,37 @@ public class Chunk {
         if(x<0) x+=CHUNK_SIZE;
         if(z<0) z+=CHUNK_SIZE;
 
-        if(x>=CHUNK_SIZE || z>=CHUNK_SIZE || x<0 || z<0){
-            Chunk chunk = world.getChunkAt(this.X*CHUNK_SIZE+x, this.Z*CHUNK_SIZE+z, false);
-            if(chunk == null) return null;
-            int xInput = x%CHUNK_SIZE;
-            int zInput = z%CHUNK_SIZE;
 
-            return chunk.get(xInput,y,zInput);
+        Chunk target = this;
+
+        int xO = 0;
+        int zO = 0;
+        while(x>=CHUNK_SIZE){
+            x-=CHUNK_SIZE;
+            xO++;
         }
 
-        if(blocks == null) return null;
-        return blocks[x][y][z];
+        while(z>=CHUNK_SIZE){
+            z-=CHUNK_SIZE;
+            zO++;
+        }
+
+        while(x<0){
+            x+=CHUNK_SIZE;
+            xO--;
+        }
+
+        while(z<0){
+            z+=CHUNK_SIZE;
+            zO--;
+        }
+
+        if(xO!=0 || zO!=0) target = world.getChunk(target.X+xO, target.Z+zO, false);
+        if(target==null) return null;
+        if(target.blocks == null) return null;
+        //System.out.println("x: "+(x)+", z: "+(z));
+        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
+        return target.blocks[x][y][z];
     }
 
     public Block getAt(int x, int y, int z){
@@ -136,6 +156,7 @@ public class Chunk {
             //System.out.println("Y too high.");
             return null;
         }
+
         x-=X*CHUNK_SIZE;
         z-=Z*CHUNK_SIZE;
 
@@ -199,16 +220,20 @@ public class Chunk {
             return;
         }
 
+        if(!this.isLoaded()) return;
+
         //GAME.log("Unloading chunk " + this.toString());
         this.loaded = false;
         this.getWorld().unload(this);
 
-        for (int x = 0; x < blocks.length; x++)
-            for (int y = 0; y<blocks[x].length; y++) {
-                for(int z = 0; z<blocks[x][y].length; z++){
-                    this.blocks[x][y][z] = null;
+        if (this.blocks != null) {
+            for (int x = 0; x < blocks.length; x++)
+                for (int y = 0; y < blocks[x].length; y++) {
+                    for (int z = 0; z < blocks[x][y].length; z++) {
+                        this.blocks[x][y][z] = null;
+                    }
                 }
-            }
+        }
 
         this.blocks = null;
         this.visibleBlock.clear();
