@@ -20,8 +20,8 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
@@ -104,7 +104,19 @@ public class Game {
         this.isPaused = b;
     }
 
-    public void errorLog(String log){System.err.println("[ERROR] - " + log);}
+    public void errorLog(String log){
+        System.err.println("Thread : " + Thread.currentThread().getName());
+        System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+        System.err.println("[ERROR MESSAGE] - " + log);
+    }
+    public void errorLog(Exception e){
+        System.err.println("Thread : " + Thread.currentThread().getName());
+        System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+
+        System.err.println("[ERROR] - " + e.getMessage());
+        System.err.println("[ERROR] - " + e.getCause().getMessage());
+        System.err.println("[ERROR] - " + Arrays.toString(e.getStackTrace()));
+    }
     public void log(String log){ System.out.println("INFO: " + log); }
     public void debug(String s) {if(DEBUG) System.out.println("[DEBUG] - " + s);}
     public void warn(String s) { System.out.println("[WARNING] - " + s);}

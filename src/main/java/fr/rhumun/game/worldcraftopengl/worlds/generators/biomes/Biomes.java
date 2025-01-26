@@ -14,4 +14,6 @@ public abstract class Biomes {
     public static Biome MESA = new MesaBiome();
     public static Biome DESERT = new DesertBiome();
     public static Biome OCEAN = new OceanBiome();
+    public static Biome FOREST = new ForestBiome();
+    public static Biome BIRCH_FOREST = new BirchForestBiome();
 }

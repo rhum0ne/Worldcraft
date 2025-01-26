@@ -34,7 +34,7 @@ public abstract class WorldGenerator {
         try {
             executor.submit(chunk::generate);
         } catch (Exception e) {
-            GAME.errorLog(e.getMessage());
+            GAME.errorLog(e);
         }
     }
 

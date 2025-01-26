@@ -70,15 +70,15 @@ public class NormalWorldGenerator extends WorldGenerator {
 
         // Température
         this.temperature = JNoise.newBuilder()
-                .perlin(seed.getLong() + 1, Interpolation.LINEAR, FadeFunction.SMOOTHSTEP)
-                .octavate(2, 0.4, 2.0, FractalFunction.FBM, false)
+                .perlin(seed.getLong() + 1, Interpolation.LINEAR, FadeFunction.CUBIC_RATIONAL)
+                .octavate(2, 0.4, 1.6, FractalFunction.FBM, false)
                 .abs()
                 .build();
 
         // Humidité
         this.humidity = JNoise.newBuilder()
-                .perlin(seed.getLong() + 2, Interpolation.LINEAR, FadeFunction.SMOOTHSTEP)
-                .octavate(2, 0.4, 2.0, FractalFunction.FBM, false)
+                .perlin(seed.getLong() + 2, Interpolation.LINEAR, FadeFunction.CUBIC_RATIONAL)
+                .octavate(2, 0.4, 1.6, FractalFunction.FBM, false)
                 .abs()
                 .build();
 
@@ -96,37 +96,42 @@ public class NormalWorldGenerator extends WorldGenerator {
 
     @Override
     public void generate(Chunk chunk) {
+
         init();
-        
+
         shapeTerrain(chunk);
         fillWater(chunk);
         paint(chunk);
-        createCaves(chunk);
+        //createCaves(chunk);
         populate(chunk);
 
-        //chunk.updateBordersChunks();
+        chunk.updateAllBordersChunks();
     }
 
     private void createCaves(Chunk chunk) {
-        for(int x=0; x<CHUNK_SIZE; x++)
-            for(int z=0; z<CHUNK_SIZE; z++)
-                for(int y=0; y< getWorld().getHeigth(); y++) {
-                    Block block = chunk.getBlockNoVerif(x, y ,z);
+        for(int x=0; x<CHUNK_SIZE; x++) {
+            double xH = (chunk.getX() * CHUNK_SIZE + x) / 400.0;
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                double zH = (chunk.getZ() * CHUNK_SIZE + z) / 400.0;
+                for (int y = 0; y < getWorld().getHeigth(); y++) {
+                    Block block = chunk.getBlockNoVerif(x, y, z);
 
-                    if(block == null || block.getMaterial() == null || block.getMaterial() == Material.DARK_COBBLE) continue;
-                    if ((block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK)) continue;
+                    if (block == null || block.getMaterial() == null || block.getMaterial() == Material.DARK_COBBLE)
+                        continue;
+                    if ((block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK))
+                        continue;
 
-                    double xH = (chunk.getX()*CHUNK_SIZE+x)/400.0;
-                    double zH = (chunk.getZ()*CHUNK_SIZE+z)/400.0;
 
                     float noise = (float) caves.evaluateNoise(xH, y / 64f, zH);
 
                     float w = (block.getMaterial() == Material.STONE) ? 0.1f : 0.02f;
                     float t = (block.getMaterial() == Material.STONE) ? 0 : 0.01f;
-                    if(y<5) w+= (float) 1 /y+1;
+                    if (y < 5) w += (float) 1 / y + 1;
 
                     if (noise > t && noise < w) block.setMaterial(null);
                 }
+            }
+        }
     }
 
     private void paint(Chunk chunk) {
@@ -154,7 +159,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         for(int x=0; x<CHUNK_SIZE; x++)
             for(int z=0; z<CHUNK_SIZE; z++)
                 for(int y=0; y< waterHigh; y++) {
-                    Block block = chunk.getBlocks()[x][y][z];
+                    Block block = chunk.getBlockNoVerif(x,y,z);
                     if (block.getMaterial() != null) continue;
                     block.setMaterial(Material.WATER);
                 }
@@ -181,7 +186,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                 Biome biome = getBiome(height, xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
                 for (int y = 0; y < this.getWorld().getHeigth(); y++) {
-                    Block block = chunk.get(x, y, z);
+                    Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block == null) continue;
 
                     if (y < height) {
@@ -203,19 +208,20 @@ public class NormalWorldGenerator extends WorldGenerator {
         // Logique de sélection des biomes
         if (height<waterHigh-3) return Biomes.OCEAN;
         else if (height<waterHigh && erosionValue > 0) return Biomes.BEACH;
-        else {
-            if (temperatureValue > 0.6 && humidityValue < 0.4) {
-                return Biomes.DESERT;
-            } else if (pavSmallScale > 0.8 || pavLargeScale > 0.6) {
-                if (temperatureValue > 0.5 && humidityValue > 0.7)
-                    return Biomes.MESA;
-                return Biomes.MOUNTAIN;
-            } else if (erosionValue > 0.5) {
-                return Biomes.PLAIN;
-            } else {
-                return Biomes.HILL;
-            }
-        }
+
+        if (temperatureValue > 0.6 && humidityValue < 0.4)  return Biomes.DESERT;
+
+        else if (pavSmallScale > 0.8 || pavLargeScale > 0.6)
+            if (temperatureValue > 0.5 && humidityValue > 0.7) return Biomes.MESA;
+            else return Biomes.MOUNTAIN;
+
+        else if (erosionValue > 0.5)
+            if(humidityValue < 0.3) return Biomes.HILL;
+            else return Biomes.BIRCH_FOREST;
+
+
+        if(humidityValue < 0.3) return Biomes.PLAIN;
+        return Biomes.FOREST;
     }
 
     @Override
@@ -231,8 +237,10 @@ public class NormalWorldGenerator extends WorldGenerator {
         Block block = chunk.getHighestBlock(x, z, true);
         Biome biome = chunk.getBiome(block);
 
-        if(block.getMaterial() == Material.GRASS_BLOCK)
+        if(block.getMaterial() == Material.GRASS_BLOCK){
             biome.spawnVegetation(chunk, block, x, z, this.getWorld().getSeed());
+
+        }
 
     }
 }

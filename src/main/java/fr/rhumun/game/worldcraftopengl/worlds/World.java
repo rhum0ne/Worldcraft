@@ -42,7 +42,7 @@ public class World {
     private boolean isLoaded = false;
 
     public World(){
-        //this.seed = Seed.create("6038198250");
+        //this.seed = Seed.create("1408502280");
         this.seed = Seed.random();
         this.chunks = new ChunksContainer(this);
         this.generator = new NormalWorldGenerator(this);
@@ -63,7 +63,7 @@ public class World {
                 Thread.yield();
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                GAME.errorLog(e.getMessage());
+                GAME.errorLog(e);
                 throw new RuntimeException(e);
             }
         }

@@ -109,7 +109,6 @@ public class Block {
             return;
         }
 
-
         this.updateIsSurrounded(this.getSideBlocks());
     }
     public void updateIsSurrounded(Block[] sideBlocks) {

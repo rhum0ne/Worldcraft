@@ -49,7 +49,7 @@ public enum Model {
             //return MeshObjectLoader.loadModelMeshFromStream(new FileInputStream(TEXTURES_PATH + name));
             return new Mesh(ObjUtils.convertToRenderable(ObjReader.read(new FileInputStream(TEXTURES_PATH + "models\\" + name))));
         } catch (IOException e) {
-            GAME.errorLog(e.getMessage());
+            GAME.errorLog(e);
             throw new RuntimeException(e);
         }
     }

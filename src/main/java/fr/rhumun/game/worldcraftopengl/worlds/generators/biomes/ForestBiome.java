@@ -6,10 +6,9 @@ import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.trees.TreeType;
 
-public class HillBiome extends Biome {
-
-    public HillBiome() {
-        super("Hill", 0, Material.GRASS_BLOCK, Material.DIRT);
+public class ForestBiome extends Biome{
+    public ForestBiome() {
+        super("Forest", 0, Material.GRASS_BLOCK, Material.DIRT);
     }
 
     @Override
@@ -25,7 +24,14 @@ public class HillBiome extends Biome {
         } else if ((1 + x + z + chunkZ + seed.get(8)) % 7 == 0 && (chunkX + x + 2 * z + seed.get(2) * seed.getCombinaisonOf(4, 3, 1)) % (seed.get((z + x * seed.get(1)) % 9) + 3) == 0) {
             chunk.get(x, y, z).setMaterial(Material.RED_FLOWER);
         }
+
+        // Arbres : Rareté modérée avec plus de chaos
+        else if ((seed.get((x * chunkX + (z * chunkZ)) % 9) + x * z + seed.get(3)) % 11 == 0) {
+            // Conditions simplifiées mais avec plus de variations
+            if ((x * x + z * z + chunkX * chunkZ + seed.get(1)) % 23 == 0 ||
+                    (seed.getCombinaisonOf(x % 5, z % 3, chunkX % 7) + chunkX + z) % 19 == 0) {
+                TreeType.OAK.buildAt(chunk, x, y, z);
+            }
+        }
     }
-
-
 }

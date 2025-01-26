@@ -27,9 +27,9 @@ public class Seed
         for(int i=0; i<seed.length; i++){
             char c = enteredSeed.charAt(i);
             if(Character.isDigit(c)){
-                seed[i] = c - '0';
+                seed[seed.length-1-i] = c - '0';
             }
-            else seed[i] = c%10;
+            else seed[seed.length-1-i] = c%10;
         }
         return Seed.create(seed);
     }
@@ -68,7 +68,7 @@ public class Seed
 
         return result;
     }
-    public int get(int i){ return this.seed[i]; }
+    public int get(int i){ return this.seed[(i<0) ? i+seed.length : i]; }
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
@@ -79,6 +79,6 @@ public class Seed
     }
 
     public int getCombinaisonOf(int i, int i1, int i2) {
-        return 100*seed[i] + 10*seed[i1] + seed[i2];
+        return 100*get(i)+ 10*get(i1) + get(i2);
     }
 }

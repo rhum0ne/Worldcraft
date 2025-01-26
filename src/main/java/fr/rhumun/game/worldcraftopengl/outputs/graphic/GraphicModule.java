@@ -95,7 +95,7 @@ public class GraphicModule{
         try {
             loop();
         } catch(Exception e) {
-            game.errorLog(e.getLocalizedMessage());
+            game.errorLog(e);
         }
 
 

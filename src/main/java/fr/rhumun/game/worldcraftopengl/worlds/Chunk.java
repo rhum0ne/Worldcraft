@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
@@ -20,7 +21,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class Chunk {
 
     Block[][][] blocks;
-    //private final List<Block> blockList = new ArrayList<>();
+
     private List<Block> visibleBlock = new ArrayList<>();
     private List<Block> lightningBlocks = new ArrayList<>();
 
@@ -41,7 +42,7 @@ public class Chunk {
     @Setter
     private boolean generated = false;
     @Setter
-    private boolean loaded = false; //For the first chunk render
+    private boolean loaded = false;
 
     public Chunk(World world, short renderID, int X, int Z){
         this.renderID = renderID;
@@ -94,9 +95,9 @@ public class Chunk {
             if(toUnload) unload();
             return true;
         } catch (Exception e) {
-            GAME.errorLog(e.getLocalizedMessage());
-            return false;
+            GAME.errorLog(e);
         }
+        return false;
     }
 
 
@@ -106,18 +107,13 @@ public class Chunk {
     }
 
     public Block getBlockNoVerif(int x, int y, int z){
-        if(!this.isLoaded()) return null;
+        //if(!this.isLoaded()) return null;
         return blocks[x][y][z];
     }
 
     public Block get(int x, int y, int z){
         if(y<0 || y>= world.getHeigth())
             return null;
-
-
-        if(x<0) x+=CHUNK_SIZE;
-        if(z<0) z+=CHUNK_SIZE;
-
 
         Chunk target = this;
 
@@ -273,5 +269,19 @@ public class Chunk {
 
         chunk = world.getChunk(X, Z+1, false);
         if(chunk != null) chunk.setToUpdate(true);
+    }
+
+    public void updateAllBordersChunks() {
+        Chunk chunk = world.getChunk(X-1, Z, false);
+        if(chunk != null) chunk.updateAllBlock();
+
+        chunk = world.getChunk(X+1, Z, false);
+        if(chunk != null) chunk.updateAllBlock();
+
+        chunk = world.getChunk(X, Z-1, false);
+        if(chunk != null) chunk.updateAllBlock();
+
+        chunk = world.getChunk(X, Z+1, false);
+        if(chunk != null) chunk.updateAllBlock();
     }
 }

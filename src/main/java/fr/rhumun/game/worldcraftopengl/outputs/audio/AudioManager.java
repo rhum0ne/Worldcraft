@@ -70,7 +70,7 @@ public class AudioManager {
 
             alBufferData(buffer, AL_FORMAT_MONO16, pcm, info.sample_rate());
         } catch (Exception e) {
-            game.errorLog(e.getLocalizedMessage());
+            game.errorLog(e);
         }
 
         return buffer;
