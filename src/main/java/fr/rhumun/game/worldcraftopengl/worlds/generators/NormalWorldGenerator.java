@@ -102,7 +102,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         shapeTerrain(chunk);
         fillWater(chunk);
         paint(chunk);
-        //createCaves(chunk);
+        createCaves(chunk);
         populate(chunk);
 
         chunk.updateAllBordersChunks();
@@ -124,8 +124,10 @@ public class NormalWorldGenerator extends WorldGenerator {
 
                     float noise = (float) caves.evaluateNoise(xH, y / 64f, zH);
 
-                    float w = (block.getMaterial() == Material.STONE) ? 0.1f : 0.02f;
-                    float t = (block.getMaterial() == Material.STONE) ? 0 : 0.01f;
+//                    float w = (block.getMaterial() == Material.STONE) ? 0.1f : 0.02f;
+//                    float t = (block.getMaterial() == Material.STONE) ? 0 : 0.01f;
+                    float w = 0.15f + y/70f;
+                    float t = -0.2f + y/70f;
                     if (y < 5) w += (float) 1 / y + 1;
 
                     if (noise > t && noise < w) block.setMaterial(null);

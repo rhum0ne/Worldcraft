@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import lombok.Getter;
@@ -180,7 +181,8 @@ public class ChunkRenderer {
 
                     blocks.add(block);
 
-                    if(model==Model.BLOCK) BlockUtil.loadDataFor(block, this, X, Y, Z, blocks);
+                    if(block.getMaterial().isLiquid()) LiquidsUtil.loadDataFor(block, this, X, Y,Z,blocks);
+                    else if(model==Model.BLOCK) BlockUtil.loadDataFor(block, this, X, Y, Z, blocks);
                     else if(model==Model.SLAB) SlabUtils.loadDataFor(block, this, X, Y, Z, blocks);
                     else raster(block, model);
 

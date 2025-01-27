@@ -14,6 +14,9 @@ public class Update  extends Control{
         System.out.print(player.getLocation().getX() + " ");
         System.out.print(player.getLocation().getY() + " ");
         System.out.println(player.getLocation().getZ());
+
+        System.out.println("Players cameras : " + player.getLocation().getYaw() + " " + player.getLocation().getPitch());
+
         System.out.println(player.getLocation().getChunk().toString());
 
 
