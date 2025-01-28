@@ -10,7 +10,6 @@ public class ShowFPS extends Control{
     public void onKeyPressed(Player player) {
         DebugMenu debugMenu = getGame().getGraphicModule().getGuiModule().getDebugMenu();
         debugMenu.setShowed(!debugMenu.isShowed());
-        SHOWING_FPS = !SHOWING_FPS;
     }
 
     @Override

@@ -9,9 +9,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -22,8 +20,8 @@ public class Chunk {
 
     Block[][][] blocks;
 
-    private List<Block> visibleBlock = new ArrayList<>();
-    private List<Block> lightningBlocks = new ArrayList<>();
+    private HashSet<Block> visibleBlock = new HashSet<>();
+    private HashSet<Block> lightningBlocks = new HashSet<>();
 
     private final Biome[][] biomesMap = new Biome[16][16];
 

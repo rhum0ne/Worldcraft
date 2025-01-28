@@ -8,7 +8,6 @@ import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL20.*;
 
 public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
 
@@ -27,7 +26,7 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
         graphicModule.getGuiModule().resize(width, height);
 
         // Recalculer la matrice de projection
-        graphicModule.setProjectionMatrix(new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SHOW_DISTANCE *16f));
+        graphicModule.setProjectionMatrix(new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SIMULATION_DISTANCE *16f));
 
         // Mettre à jour la matrice de projection dans le shader
 

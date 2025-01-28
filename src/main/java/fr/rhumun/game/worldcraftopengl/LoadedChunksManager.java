@@ -51,13 +51,13 @@ public class LoadedChunksManager {
         int centerZ = this.centralChunk.getZ();
 
         // On parcourt les chunks dans un carré qui englobe le cercle
-        for (int x = centerX - SHOW_DISTANCE; x <= centerX + SHOW_DISTANCE; x++) {
-            for (int z = centerZ - SHOW_DISTANCE; z <= centerZ + SHOW_DISTANCE; z++) {
+        for (int x = centerX - SIMULATION_DISTANCE; x <= centerX + SIMULATION_DISTANCE; x++) {
+            for (int z = centerZ - SIMULATION_DISTANCE; z <= centerZ + SIMULATION_DISTANCE; z++) {
                 // Calculer la distance au centre du chunk du joueur
                 double distance = Math.sqrt(Math.pow(centerX - x, 2) + Math.pow(centerZ - z, 2));
 
                 // Si la distance est dans le rayon de chargement, on l'ajoute
-                if (distance <= SHOW_DISTANCE) {
+                if (distance <= SIMULATION_DISTANCE) {
                     Chunk chunk = player.getLocation().getWorld().getChunk(x, z, false);
                     chunk.getRenderer().setDistanceFromPlayer((int) distance);
                     chunkQueue.add(new ChunkDistance(chunk, distance));

@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.pause_menu.PauseGui;
 
 public class Escape extends Control {
 
@@ -12,8 +13,7 @@ public class Escape extends Control {
         if(getGame().getGraphicModule().getGuiModule().hasGUIOpened()){
             getGame().getGraphicModule().getGuiModule().closeGUI();
         }else {
-            //else open PauseGui
-            player.getGame().setPaused(!player.getGame().isPaused());
+            player.openGui(new PauseGui());
         }
     }
 

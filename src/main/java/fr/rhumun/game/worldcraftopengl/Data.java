@@ -9,6 +9,7 @@ public class Data {
     private final Game game;
 
     private int FPS;
+    private int verticesCount;
     private double[] playerPos = new double[5];
 
 
@@ -32,5 +33,12 @@ public class Data {
 
         GuiModule guiModule = game.getGraphicModule().getGuiModule();
         if(guiModule != null) guiModule.getDebugMenu().setPlayerPos(this.playerPos);
+    }
+
+    public void setVerticesCount(int verticesNumber) {
+        this.verticesCount = verticesNumber;
+
+        GuiModule guiModule = game.getGraphicModule().getGuiModule();
+        if(guiModule != null) guiModule.getDebugMenu().setVerticesChunksCount(this.verticesCount);
     }
 }

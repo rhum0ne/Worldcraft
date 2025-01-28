@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,9 @@ public class TextComponent extends Component {
     }
 
     public void setRGB(int r, int g, int b){ this.setRGBA(r, g, b, 255);}
+    public void setColor(Color color){
+        this.setRGB(color.getRed(), color.getGreen(), color.getBlue());
+    }
 
     @Override
     public void update() {

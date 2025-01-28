@@ -198,7 +198,7 @@ public class GraphicModule{
         this.guiModule.init();
 
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
-        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *CHUNK_SIZE);
+        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SIMULATION_DISTANCE *CHUNK_SIZE);
 
         this.guiModule.resize(startWidth, startHeight);
 
@@ -228,7 +228,7 @@ public class GraphicModule{
     }
 
     private void loop() {
-        while ( !glfwWindowShouldClose(window) ) {
+        while ( !glfwWindowShouldClose(window) && game.isPlaying() ) {
             long start = System.currentTimeMillis();
 
             glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
@@ -338,7 +338,7 @@ public class GraphicModule{
                 for(Chunk chunk : loadedChunks){
                     this.verticesNumber += chunk.getRenderer().getVerticesNumber();
                 }
-                game.log("Total vertices: " + this.verticesNumber);
+                game.getData().setVerticesCount(this.verticesNumber);
             }
         }
 

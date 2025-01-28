@@ -12,7 +12,6 @@ import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.util.*;
 
 @Getter @Setter
@@ -22,7 +21,7 @@ public class Game {
 
     public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
-    public static int SHOW_DISTANCE = 16;
+    public static int SIMULATION_DISTANCE = 7;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -105,6 +104,10 @@ public class Game {
 
     public void setPaused(boolean b) {
         this.isPaused = b;
+    }
+
+    public void closeGame(){
+        this.isPlaying = false;
     }
 
     public void errorLog(String log){
