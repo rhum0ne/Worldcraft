@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 
 @Getter
 @Setter
-public class Entity {
+public abstract class Entity {
     private final Game game;
 
     private Location location;
@@ -60,12 +60,14 @@ public class Entity {
             return;
         }
         this.getLocation().addX(a);
+        this.onMove();
     }
     public void addZ(double a){
         if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !Game.NO_CLIP)) {
             return;
         }
         this.getLocation().addZ(a);
+        this.onMove();
     }
     public void addY(double a){
         if(!Game.NO_CLIP && a>0 && this.hasBlockTop()){
@@ -74,15 +76,18 @@ public class Entity {
             return;
         }
         this.getLocation().addY(a);
+        this.onMove();
     }
     public void setYaw(float a){
         this.getLocation().setYaw(a);
+        this.onMove();
     }
     public void setPitch(float a){
         this.getLocation().setPitch(a);
+        this.onMove();
     }
 
-    private void onMove(){
+    protected void onMove(){
 
     }
 

@@ -25,7 +25,7 @@ public class CreativeInventoryGui extends CenteredGUI {
                 this.createCreativeSlot(getXForSlot(id), getYForSlot(id), (int) Math.ceil(ratio* Slot.DEFAULT_SIZE));
             }
 
-        this.addText(77,10, "Inventaire");
+        this.addText(77,10, "Blocks");
         this.addButton(new SlabButton(0, 10, this));
     }
 

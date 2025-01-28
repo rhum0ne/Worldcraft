@@ -62,7 +62,7 @@ public class DebugUtils {
             lastTime = currentTime;
 
             // Afficher les FPS ou utiliser les FPS comme vous le souhaitez
-            GAME.log("FPS: " + fps);
+            GAME.getData().setFPS(fps);
         }
     }
 

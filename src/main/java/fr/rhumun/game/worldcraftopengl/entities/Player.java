@@ -40,6 +40,11 @@ public class Player extends Entity{
         super.setFlying(state);
     }
 
+    @Override
+    protected void onMove(){
+        getGame().getData().setPlayerPos(this.getLocation());
+    }
+
     public Block getBlockToPlace() {
 
         float stepSize = 0.02F;

@@ -7,6 +7,8 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 import static org.lwjgl.opengl.GL11.*;
@@ -128,14 +130,14 @@ public abstract class Component{
         if(!isInitialized) this.init();
 
         update();
-        if(indices == null || vertices == null) return;
+        if(indices == null || vertices == null) {
+            return;
+        }
+
         glUseProgram(this.getShader());
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-//        if(this instanceof TextComponent) {
-//            glBindTexture(GL_TEXTURE_2D, this.getTextureArray());
-//        }
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);

@@ -74,7 +74,7 @@ public class LiquidsUtil {
                 Block testBlock = chunk.getBlocks()[xtest][y][z];
 
                 if (!blocks.contains(testBlock)) {
-                    if (testBlock.getModel() == Model.BLOCK) {
+                    if (testBlock.getModel() == model) {
                         if (testBlock.getMaterial() == corner1.getMaterial()) {
                             if (!testBlock.isSurrounded()) {
                                 if(isToRender(testBlock, testBlock.getBlockAtNorth()) != hasBlockNorth) break;
@@ -114,18 +114,18 @@ public class LiquidsUtil {
         float y2 = (float) corner2.getLocation().getY(); // Déplacer pour utiliser le coin haut
         float z2 = (float) corner2.getLocation().getZ() + 0.5f; // Déplacer pour utiliser le coin arrière
 
-        boolean hasBlockNorth = isToRender(corner1, corner1.getBlockAtNorth());
-        boolean hasBlockSouth = isToRender(corner1, corner1.getBlockAtSouth());
-        boolean hasBlockWest = isToRender(corner1, corner1.getBlockAtWest());
-        boolean hasBlockEast = isToRender(corner1, corner1.getBlockAtEast());
-        boolean hasBlockDown = isToRender(corner1, corner1.getBlockAtDown());
+//        boolean hasBlockNorth = isToRender(corner1, corner1.getBlockAtNorth());
+//        boolean hasBlockSouth = isToRender(corner1, corner1.getBlockAtSouth());
+//        boolean hasBlockWest = isToRender(corner1, corner1.getBlockAtWest());
+//        boolean hasBlockEast = isToRender(corner1, corner1.getBlockAtEast());
+//        boolean hasBlockDown = isToRender(corner1, corner1.getBlockAtDown());
 
         int i=1;
-        if(hasBlockNorth)i++;
-        if(hasBlockSouth)i++;
-        if(hasBlockWest)i++;
-        if(hasBlockEast)i++;
-        if(hasBlockDown)i++;
+        //if(hasBlockNorth)i++;
+//        if(hasBlockSouth)i++;
+//        if(hasBlockWest)i++;
+//        if(hasBlockEast)i++;
+//        if(hasBlockDown)i++;
 
         //Tailles du regroupement de blocks:
         float texScaleX = x2-x1;
@@ -149,40 +149,40 @@ public class LiquidsUtil {
         vertices[j++] = new float[]{x1, y1, z2, 0.0f, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}; // Haut gauche
         vertices[j++] = new float[]{x2, y1, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}; // Haut droite
 
-        if(hasBlockWest){
-            vertices[j++] = new float[]{x1, y1, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f};
-            vertices[j++] = new float[]{x2, y1, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f};
-            vertices[j++] = new float[]{x2, y2, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f};
-            vertices[j++] = new float[]{x1, y2, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f};
-        }
+//        if(hasBlockWest){
+//            vertices[j++] = new float[]{x1, y1, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f};
+//            vertices[j++] = new float[]{x2, y1, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f};
+//            vertices[j++] = new float[]{x2, y2, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f};
+//            vertices[j++] = new float[]{x1, y2, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f};
+//        }
 
-        if(hasBlockEast){
-            vertices[j++] = new float[]{x1, y1, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f};
-            vertices[j++] = new float[]{x2, y1, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f};
-            vertices[j++] = new float[]{x2, y2, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f};
-            vertices[j++] = new float[]{x1, y2, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f};
-        }
-
-        if(hasBlockSouth){
-            vertices[j++] = new float[]{x1, y1, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x1, y2, z1, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x1, y1, z2, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x1, y2, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f};
-        }
-
-        if(hasBlockNorth){
-            vertices[j++] = new float[]{x2, y1, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x2, y2, z1, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x2, y1, z2, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f};
-            vertices[j++] = new float[]{x2, y2, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f};
-        }
-
-        if(hasBlockDown){
-            vertices[j++] = new float[]{x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}; // Bas gauche
-            vertices[j++] = new float[]{x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}; // Bas droite
-            vertices[j++] = new float[]{x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}; // Haut gauche
-            vertices[j++] = new float[]{x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}; // Haut droite
-        }
+//        if(hasBlockEast){
+//            vertices[j++] = new float[]{x1, y1, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f};
+//            vertices[j++] = new float[]{x2, y1, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f};
+//            vertices[j++] = new float[]{x2, y2, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f};
+//            vertices[j++] = new float[]{x1, y2, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f};
+//        }
+//
+//        if(hasBlockSouth){
+//            vertices[j++] = new float[]{x1, y1, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x1, y2, z1, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x1, y1, z2, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x1, y2, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f};
+//        }
+//
+//        if(hasBlockNorth){
+//            vertices[j++] = new float[]{x2, y1, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x2, y2, z1, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x2, y1, z2, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f};
+//            vertices[j++] = new float[]{x2, y2, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f};
+//        }
+//
+//        if(hasBlockDown){
+//            vertices[j++] = new float[]{x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}; // Bas gauche
+//            vertices[j++] = new float[]{x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}; // Bas droite
+//            vertices[j++] = new float[]{x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}; // Haut gauche
+//            vertices[j++] = new float[]{x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}; // Haut droite
+//        }
 
         Renderer renderer = chunkRenderer.getRenderers().get((corner1.getMaterial().getOpacity().getPriority()));
         int offset = (renderer.getIndices().isEmpty()) ? 0 : renderer.getIndices().getLast() + 1;

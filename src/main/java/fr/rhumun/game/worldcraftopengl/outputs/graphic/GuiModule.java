@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.DebugMenu;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
@@ -32,6 +33,8 @@ public class GuiModule {
     private final FontLoader fontLoader;
 
     private final List<Gui> hud = new ArrayList<Gui>();
+
+    private final DebugMenu debugMenu;
     private final HotBarGui hotbar;
     private Gui gui;
     private Item selectedItem;
@@ -46,6 +49,7 @@ public class GuiModule {
 
     public GuiModule(GraphicModule graphicModule) {
         this.graphicModule = graphicModule;
+        this.debugMenu = new DebugMenu();
         try {
             GAME.log("Loading font...");
             this.fontLoader = new FontLoader(TEXTURES_PATH + "hud\\vcr_osd.ttf");
@@ -100,6 +104,8 @@ public class GuiModule {
         glDisable(GL_DEPTH_TEST);
 
 
+        if(this.debugMenu.isShowed()) this.debugMenu.render();
+
         if(gui != null){
             if(gui.isClosed()){
                 gui.cleanup();
@@ -152,18 +158,9 @@ public class GuiModule {
         float virtualWidthScaled = virtualWidth * scaleY;              // Largeur virtuelle ajustée à l'échelle
         float offsetX = (graphicModule.getWidth() - virtualWidthScaled) / 2.0f;
 
-//        System.out.println(scaleX);
-//        System.out.println(scaleY);
-
         // Convertir les coordonnées OpenGL en pixels pour l'interface utilisateur
         cursorX = (int) ((xpos - offsetX) / scaleY);
         cursorY = (int) (ypos / scaleY);
-
-        // Limiter les coordonnées à l'espace UI virtuel
-//        cursorX = Math.max(0, Math.min(cursorX, (int) virtualWidth));
-//        cursorY = Math.max(0, Math.min(cursorY, (int) virtualHeight));
-
-        //System.out.println(cursorX + " - " + cursorY);
     }
 
 

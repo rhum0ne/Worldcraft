@@ -22,6 +22,7 @@ public class InventoryGUI extends Gui {
         //LE GUI ZOOM*11 est hasardeux et ne fonctionne que pour une taille de GUI de 2
         for(int i=0; i<9; i++)
             this.createClickableSlot(getXForSlot(i), 3, (int) Math.ceil(ratio* Slot.DEFAULT_SIZE));
+        this.addText(0, -20, "Inventory");
     }
 
     private int getXForSlot(int slot){

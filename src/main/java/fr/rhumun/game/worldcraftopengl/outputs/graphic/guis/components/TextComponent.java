@@ -28,7 +28,6 @@ public class TextComponent extends Component {
     public TextComponent(int x, int y, String text, int r, int g, int b, int a, Gui container) {
         super(x, y, 0, 0, null, container);
         this.text = text;
-        updateVertices();
         this.setRGBA(r, g, b, a);
     }
 
@@ -43,8 +42,11 @@ public class TextComponent extends Component {
 
     @Override
     public void update() {
-        if(!text.equals(showedText))
+        if(!text.equals(showedText)) {
             updateVertices();
+            updateVAO();
+        }
+
     }
 
     @Override
@@ -71,6 +73,17 @@ public class TextComponent extends Component {
         // Récupère l'ID de la texture de l'atlas une seule fois
 
         for (char c : text.toCharArray()) {
+            if(c == ' '){
+                xCursor += 18; // Avancer le curseur horizontal
+                continue;
+            }
+
+            if(c == '\n'){
+                xCursor = getX(); // Avancer le curseur horizontal
+                yCursor += 40;
+                continue;
+            }
+
             GuiCharacter glyph = GuiCharacter.get(c);
             if (glyph == null) continue;
 

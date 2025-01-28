@@ -43,6 +43,7 @@ public class Game {
 
     final GraphicModule graphicModule;
     final AudioManager audioManager;
+    final Data data;
     final GameLoop gameLoop;
 
     boolean isPaused = false;
@@ -64,6 +65,8 @@ public class Game {
         Texture.init();
         Material.init();
         Model.init();
+
+        this.data = new Data(this);
 
         audioManager = new AudioManager(this);
         audioManager.init();
