@@ -27,14 +27,15 @@ public class Movements {
         //System.out.println("Movements : " + Arrays.toString(player.getMovements()));
 
         // Appliquer le frottement de l'air
-        player.getVelocity().mul(AIR_FRICTION);
-        if(player.isFlying()) player.getVelocity().mul(AIR_FRICTION_FLYING);
 
         Block block = player.getBlockDown();
         if (block != null && block.getMaterial() != null) {
             // Appliquer le frottement du matériau au sol
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             player.getVelocity().mul(groundFriction, 1, groundFriction);
+        } else {
+            if(player.isFlying()) player.getVelocity().mul(AIR_FRICTION_FLYING);
+            else player.getVelocity().mul(AIR_FRICTION);
         }
 
         // Mise à jour de la vélocité en fonction des mouvements du joueur
@@ -97,50 +98,6 @@ public class Movements {
         if(tick++ % stepSoundFrequency == 0) {
             Block block = player.getBlockDown();
             if (block.getMaterial() != null) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
-        }
-
-//        moveOnAxis(player, 0); // Mouvement sur l'axe X
-//        moveOnAxis(player, 1); // Mouvement sur l'axe Y
-//        moveOnAxis(player, 2); // Mouvement sur l'axe Z
-    }
-
-    private static void moveOnAxis(Player player, int axis) {
-        double moveStep = 0.0001;
-        double i = 0;
-        float velocity = player.getVelocity().get(axis);
-        int sign = (velocity < 0) ? -1 : 1;
-
-        float yawCos = (float) Math.cos(Math.toRadians(player.getLocation().getYaw()));
-        float yawSin = (float) Math.sin(Math.toRadians(player.getLocation().getYaw()));
-
-        // Répéter les mouvements selon la vélocité sur l'axe
-        while (i < Math.abs(velocity)) {
-            switch (axis) {
-                case 0: // Axe X
-//                    if ((player.hasBlockInDirection(new Vector3f(yawCos, 0, sign * yawSin)) && !Game.NO_CLIP)) {
-//                        player.getVelocity().setComponent(0, 0);
-//                        return;
-//                    }
-                    player.addX(sign * moveStep * yawCos);
-                    player.addZ(sign * moveStep * yawSin);
-                    break;
-                case 1: // Axe Y
-                    if (!Game.NO_CLIP && ((player.hasBlockDown() && velocity < 0) || (player.hasBlockTop()) && velocity>0) ) {
-                        player.getVelocity().setComponent(1, 0);
-                        return;
-                    }
-                    player.addY(sign * moveStep);
-                    break;
-                case 2: // Axe Z
-//                    if ((player.hasBlockInDirection(new Vector3f(-sign * yawSin, 0, sign * yawCos)) && !Game.NO_CLIP)) {
-//                        player.getVelocity().setComponent(2, 0);
-//                        return;
-//                    }
-                    player.addX(-sign * moveStep * yawSin);
-                    player.addZ(sign * moveStep * yawCos);
-                    break;
-            }
-            i += moveStep;
         }
     }
 }
