@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 import static fr.rhumun.game.worldcraftopengl.content.textures.Texture.BOOKSHELF_TOP;
 
@@ -17,8 +18,12 @@ public class BookshelfMaterial extends AbstractMaterial implements ForcedModelMa
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.WOOD;
+    public Sound getPlaceSound() {
+        return SoundPack.WOOD.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.WOOD.getRandom();
     }
 
     @Override

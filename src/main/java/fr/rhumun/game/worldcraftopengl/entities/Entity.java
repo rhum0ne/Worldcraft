@@ -231,8 +231,9 @@ public abstract class Entity {
     public Material breakBlock(){
         Block block = this.getSelectedBlock();
         if(block == null || block.getMaterial() == null) return null;
+        Material mat = block.getMaterial();
         block.setMaterial(null);
-        return block.getMaterial();
+        return mat;
     }
 
     public String getName() {

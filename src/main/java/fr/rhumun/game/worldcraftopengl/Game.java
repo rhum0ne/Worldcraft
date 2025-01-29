@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
@@ -94,6 +95,8 @@ public class Game {
         player.addItem(new Item(Material.STONE_BRICK));
 
         player.updateInventory();
+
+        player.playSound(Sound.MUSIC_1);
 
         //timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
         gameLoop = new GameLoop(this, player);

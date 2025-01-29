@@ -88,6 +88,7 @@ public abstract class AbstractMaterial {
 
     public Texture getTexture() {return textures[0];}
 
-    public abstract Sound getSound();
+    public abstract Sound getPlaceSound();
+    public abstract Sound getBreakSound();
     public abstract OpacityType getOpacity();
 }

@@ -5,11 +5,6 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 @Getter
 public enum Material {
     COBBLE(new CobbleMaterial()),
@@ -98,7 +93,8 @@ public enum Material {
         return MATERIALS[id];
     }
 
-    public Sound getSound(){ return this.material.getSound(); }
+    public Sound getPlaceSound(){ return this.material.getPlaceSound(); }
+    public Sound getBreakSound(){ return this.material.getBreakSound(); }
     public int getId(){ return this.material.getId(); }
     public int getTextureID(){ return this.material.getTexture().getId(); }
     public OpacityType getOpacity(){ return this.material.getOpacity(); }

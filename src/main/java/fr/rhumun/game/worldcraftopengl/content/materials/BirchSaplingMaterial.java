@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class BirchSaplingMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public BirchSaplingMaterial() {
@@ -13,8 +14,12 @@ public class BirchSaplingMaterial extends AbstractMaterial implements ForcedMode
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.GRASS;
+    public Sound getPlaceSound() {
+        return SoundPack.GRASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.WET_GRASS.getRandom();
     }
 
     @Override

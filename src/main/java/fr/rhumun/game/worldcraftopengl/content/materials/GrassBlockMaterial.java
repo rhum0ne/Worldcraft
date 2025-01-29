@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class GrassBlockMaterial extends AbstractMaterial {
     public GrassBlockMaterial() {
@@ -13,8 +14,12 @@ public class GrassBlockMaterial extends AbstractMaterial {
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.GRASS;
+    public Sound getPlaceSound() {
+        return SoundPack.GRASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.GRASS.getRandom();
     }
 
     @Override

@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMater
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -24,8 +25,12 @@ public class CyanLampMaterial extends PointLight implements InteractableMaterial
 
 
     @Override
-    public Sound getSound() {
-        return Sound.STONE;
+    public Sound getPlaceSound() {
+        return SoundPack.GLASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.GLASS_BREAK.getRandom();
     }
 
     @Override

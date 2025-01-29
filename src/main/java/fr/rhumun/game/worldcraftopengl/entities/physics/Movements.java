@@ -11,6 +11,9 @@ public class Movements {
     private static final float AIR_FRICTION_FLYING = 0.5f; // Constante de frottement dans l'air
     private static final float GROUND_FRICTION = 0.6f; // Frottement au sol
 
+    private static int tick = 0;
+    private static int stepSoundFrequency = 15;
+
     public static void applyMovements(Player player) {
         updateVelocity(player);
 // Appliquer la gravité si le joueur ne vole pas
@@ -81,11 +84,20 @@ public class Movements {
     public static void move(Player player) {
         // Déplacement sur les trois axes
         Vector3f v = player.getVelocity();
+        if(v.x == 0 && v.y == 0 && v.z == 0) return;
+
         float yawCos = (float) Math.cos(Math.toRadians(player.getLocation().getYaw()));
         float yawSin = (float) Math.sin(Math.toRadians(player.getLocation().getYaw()));
         player.addX((yawCos*v.x - yawSin*v.z));
         player.addY(v.y);
         player.addZ((yawCos*v.z + yawSin*v.x));
+
+        if(v.x == 0 && v.z == 0) return;
+
+        if(tick++ % stepSoundFrequency == 0) {
+            Block block = player.getBlockDown();
+            if (block.getMaterial() != null) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
+        }
 
 //        moveOnAxis(player, 0); // Mouvement sur l'axe X
 //        moveOnAxis(player, 1); // Mouvement sur l'axe Y

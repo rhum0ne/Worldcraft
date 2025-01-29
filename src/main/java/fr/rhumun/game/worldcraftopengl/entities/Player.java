@@ -78,20 +78,22 @@ public class Player extends Entity{
     @Override
     public void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
         super.placeBlockAt(item, block, hitPosition, direction);
-        this.playSound(item.getMaterial().getSound());
+        this.playSound(item.getMaterial().getPlaceSound());
     }
 
     @Override
     public Material breakBlock(){
         Material mat = super.breakBlock();
         if(mat==null) return null;
-        this.playSound(mat.getMaterial().getSound());
+        this.playSound(mat.getMaterial().getBreakSound());
         return mat;
     }
 
     public void playSound(final Sound sound){
         this.getGame().getAudioManager().playSound(sound);
     }
+
+    public void playSound(final Sound sound, final float pitch){ this.getGame().getAudioManager().playSound(sound, pitch);}
 
     public void setSelectedSlot(int slot){
         this.selectedSlot=slot;

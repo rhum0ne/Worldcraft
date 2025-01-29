@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMateri
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class DandelionMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public DandelionMaterial() {
@@ -13,8 +14,12 @@ public class DandelionMaterial extends AbstractMaterial implements ForcedModelMa
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.GRASS;
+    public Sound getPlaceSound() {
+        return SoundPack.GRASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.WET_GRASS.getRandom();
     }
 
     @Override

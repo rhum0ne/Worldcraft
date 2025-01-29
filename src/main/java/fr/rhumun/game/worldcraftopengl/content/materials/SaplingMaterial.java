@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class SaplingMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public SaplingMaterial() {
@@ -13,8 +14,12 @@ public class SaplingMaterial extends AbstractMaterial implements ForcedModelMate
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.GRASS;
+    public Sound getPlaceSound() {
+        return SoundPack.GRASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.WET_GRASS.getRandom();
     }
 
     @Override

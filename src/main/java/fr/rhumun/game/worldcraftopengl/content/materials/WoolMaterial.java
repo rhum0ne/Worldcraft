@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class WoolMaterial extends AbstractMaterial {
     public WoolMaterial(String name) {
@@ -11,8 +12,12 @@ public class WoolMaterial extends AbstractMaterial {
     }
 
     @Override
-    public Sound getSound() {
-        return null;
+    public Sound getPlaceSound() {
+        return SoundPack.CLOTH.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.CLOTH.getRandom();
     }
 
     @Override

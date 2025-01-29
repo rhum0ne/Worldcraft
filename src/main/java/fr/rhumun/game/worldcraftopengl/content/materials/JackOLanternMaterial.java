@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMateri
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
 
 public class JackOLanternMaterial extends PointLight implements ForcedModelMaterial {
@@ -25,8 +26,12 @@ public class JackOLanternMaterial extends PointLight implements ForcedModelMater
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.STONE;
+    public Sound getPlaceSound() {
+        return SoundPack.WOOD.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.WOOD.getRandom();
     }
 
     @Override

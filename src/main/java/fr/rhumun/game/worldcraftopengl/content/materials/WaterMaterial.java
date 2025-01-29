@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class WaterMaterial extends AbstractMaterial {
     public WaterMaterial() {
@@ -11,7 +12,11 @@ public class WaterMaterial extends AbstractMaterial {
     }
 
     @Override
-    public Sound getSound() {
+    public Sound getPlaceSound() {
+        return null;
+    }
+    @Override
+    public Sound getBreakSound() {
         return null;
     }
 

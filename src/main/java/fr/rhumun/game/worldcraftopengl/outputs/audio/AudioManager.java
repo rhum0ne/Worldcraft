@@ -82,18 +82,32 @@ public class AudioManager {
         }
 
         ShortBuffer pcm;
+        long decoder = NULL;
         try (MemoryStack stack = stackPush()) {
-            IntBuffer error = stack.mallocInt(1);
-            long decoder = STBVorbis.stb_vorbis_open_filename(path, error, null);
+            IntBuffer error = stack.mallocInt(1); // Pour recueillir l'état d'erreur
+            decoder = STBVorbis.stb_vorbis_open_filename(path, error, null);
             if (decoder == NULL) {
                 throw new Exception("Erreur lors du chargement du fichier OGG: " + path);
             }
 
+            // Obtenir des informations audio
             STBVorbis.stb_vorbis_get_info(decoder, info);
 
+            // Calculer le nombre total d'échantillons
             int numSamples = STBVorbis.stb_vorbis_stream_length_in_samples(decoder) * info.channels();
-            pcm = MemoryStack.stackMallocShort(numSamples);
+
+            // Remplacer stackMallocShort par MemoryUtil.memAllocShort
+            pcm = MemoryUtil.memAllocShort(numSamples);
+
+            // Charger les échantillons audio dans le tampon PCM
             STBVorbis.stb_vorbis_get_samples_short_interleaved(decoder, info.channels(), pcm);
+        } catch (Exception e) {
+            throw new Exception("Erreur pendant le traitement audio: " + e.getMessage(), e);
+        } finally {
+            // S'assurer que le décodeur est fermé
+            if (decoder != NULL) {
+                STBVorbis.stb_vorbis_close(decoder);
+            }
         }
 
         return pcm;
@@ -108,6 +122,13 @@ public class AudioManager {
 
     public void playSound(final Sound sound) {
         if(sound == null) return;
+        alSourcef(sound.getId(), AL_GAIN, 1);
+        alSourcePlay(sound.getId());
+    }
+
+    public void playSound(final Sound sound, final float volume) {
+        if(sound == null) return;
+        alSourcef(sound.getId(), AL_GAIN, volume);
         alSourcePlay(sound.getId());
     }
 }

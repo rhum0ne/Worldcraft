@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMateri
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class GrassMaterial extends AbstractMaterial implements ForcedModelMaterial {
     public GrassMaterial() {
@@ -13,8 +14,12 @@ public class GrassMaterial extends AbstractMaterial implements ForcedModelMateri
     }
 
     @Override
-    public Sound getSound() {
-        return Sound.GRASS;
+    public Sound getPlaceSound() {
+        return SoundPack.GRASS.getRandom();
+    }
+    @Override
+    public Sound getBreakSound() {
+        return SoundPack.GRASS.getRandom();
     }
 
     @Override
