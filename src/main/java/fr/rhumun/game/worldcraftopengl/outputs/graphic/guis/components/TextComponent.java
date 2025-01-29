@@ -32,6 +32,10 @@ public class TextComponent extends Component {
         this.setRGBA(r, g, b, a);
     }
 
+    public void print(String msg) {
+        this.setText(this.getText() + msg);
+    }
+
     public void setRGBA(int r, int g, int b, int a){
         this.rgba[0] = (float) r /255;
         this.rgba[1] = (float) g /255;

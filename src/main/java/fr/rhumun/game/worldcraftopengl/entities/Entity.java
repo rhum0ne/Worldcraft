@@ -234,4 +234,8 @@ public abstract class Entity {
         block.setMaterial(null);
         return block.getMaterial();
     }
+
+    public String getName() {
+        return "PlayerXXX";
+    }
 }

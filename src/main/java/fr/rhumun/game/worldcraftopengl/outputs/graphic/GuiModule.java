@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.DebugMenu;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
@@ -35,6 +36,7 @@ public class GuiModule {
     private final List<Gui> hud = new ArrayList<Gui>();
 
     private final DebugMenu debugMenu;
+    private final ChatGui chat;
     private final HotBarGui hotbar;
     private Gui gui;
     private Item selectedItem;
@@ -50,6 +52,7 @@ public class GuiModule {
     public GuiModule(GraphicModule graphicModule) {
         this.graphicModule = graphicModule;
         this.debugMenu = new DebugMenu();
+        this.chat = new ChatGui(graphicModule.getGame());
         try {
             GAME.log("Loading font...");
             this.fontLoader = new FontLoader(TEXTURES_PATH + "hud\\vcr_osd.ttf");
@@ -105,6 +108,7 @@ public class GuiModule {
 
 
         if(this.debugMenu.isShowed()) this.debugMenu.render();
+        if(this.chat.isShowed()) this.chat.render();
 
         if(gui != null){
             if(gui.isClosed()){

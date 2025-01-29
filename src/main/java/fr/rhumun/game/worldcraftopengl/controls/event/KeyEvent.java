@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.controls.event;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
@@ -22,6 +23,13 @@ public class KeyEvent implements GLFWKeyCallbackI {
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
+
+            ChatGui chat = game.getGraphicModule().getGuiModule().getChat();
+            if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
+                chat.getEnteredText().print(String.valueOf((char) key));
+                return;
+            }
+
             List<Controls> pressedKeys = game.getPressedKeys();
             if(Controls.exists(key) && !pressedKeys.contains(Controls.get(key))){
                 Controls control = Controls.get(key);
