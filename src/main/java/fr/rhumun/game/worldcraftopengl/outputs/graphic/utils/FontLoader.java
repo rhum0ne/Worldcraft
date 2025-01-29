@@ -11,6 +11,7 @@ import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.ARBInternalformatQuery2.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_NEAREST_MIPMAP_LINEAR;

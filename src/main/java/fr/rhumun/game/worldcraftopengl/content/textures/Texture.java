@@ -93,8 +93,6 @@ public class Texture {
     public static Texture INVENTORY;
     public static Texture BUTTON;
 
-    public static Map<Character, Integer> chars = new HashMap<>();
-
     public static void init(){
         COBBLE = new Texture("cobble.png");
         DIRT = new Texture("dirt.png");

@@ -216,7 +216,7 @@ public class Chunk {
 
         if(!this.isLoaded()) return;
 
-        //GAME.log("Unloading chunk " + this.toString());
+        GAME.debug("Unloading chunk " + this.toString());
         this.loaded = false;
         this.getWorld().unload(this);
 

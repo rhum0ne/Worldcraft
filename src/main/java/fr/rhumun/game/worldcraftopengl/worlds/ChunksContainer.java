@@ -12,6 +12,7 @@ public class ChunksContainer {
     private final ConcurrentHashMap<Long, Chunk> chunks = new ConcurrentHashMap<>();
 
     private final Deque<Short> availableIds; // IDs disponibles
+    private short maxID = Short.MIN_VALUE;
     private final HashMap<Short, Chunk> loadedChunks; // Mapping ID -> Chunk
 
     public ChunksContainer(World world){
@@ -19,11 +20,6 @@ public class ChunksContainer {
 
         this.availableIds = new ArrayDeque<>();
         this.loadedChunks = new HashMap<>();
-
-        // Initialiser tous les IDs possibles (0 à 65535)
-        for (short i = Short.MIN_VALUE; i < Short.MAX_VALUE; i++) {
-            availableIds.add(i);
-        }
     }
 
     public Chunk getChunkById(short chunkId) {
@@ -39,12 +35,16 @@ public class ChunksContainer {
 
         return chunks.computeIfAbsent(key, k -> {
             if (availableIds.isEmpty()) {
-                GAME.errorLog("No ID Available to create Chunk " + x + " " + z);
-                return null;
+                if(maxID==Short.MAX_VALUE){
+                    GAME.errorLog("No ID Available to create Chunk " + x + " " + z);
+                    return null;
+                }
+                availableIds.add(maxID++);
             }
 
             short chunkId = availableIds.poll(); // Prend un ID disponible
             GAME.debug("Creating chunk at " + x + " : " + z);
+            GAME.debug("Loaded Chunks: " + chunks.size() + " | " + loadedChunks.size());
 
             Chunk chunk = new Chunk(world, chunkId, x, z);
             loadedChunks.put(chunkId, chunk); // Associe le Chunk à cet ID
@@ -74,18 +74,40 @@ public class ChunksContainer {
     }
 
     public void remove(int x, int z){
+        GAME.debug("Removing Chunk " + x + " " + z + " from Container...");
         long key = toLongKey(x, z);
         Chunk chunk = chunks.remove(key);
-        if(chunk == null) return;
+        if(chunk == null){
+            GAME.debug("Error during removing chunk " + x + " " + z + " from HashMap 1. NULL");
+            return;
+        }
 
         Chunk chunkByID = loadedChunks.remove(chunk.getRenderID());
-        if (chunkByID == null) return; // Chunk non chargé
+        if (chunkByID == null){
+            GAME.debug("Error during removing chunk " + chunk + " from HashMap 2. NULL");
+            return;
+        }
 
         // Remet l'ID dans la liste des disponibles
         availableIds.add(chunk.getRenderID());
     }
     public void remove(Chunk chunk){
-        remove(chunk.getX(), chunk.getZ());
+        GAME.debug("Removing Chunk " + chunk + " from Container...");
+        Chunk chunkByID = loadedChunks.remove(chunk.getRenderID());
+        if (chunkByID == null){
+            GAME.debug("Error during removing chunk " + chunk + " from HashMap 2. NULL");
+            return;
+        }
+
+        long key = toLongKey(chunk.getX(), chunk.getZ());
+        Chunk chunk2 = chunks.remove(key);
+        if(chunk2 == null){
+            GAME.debug("Error during removing chunk " + chunk + " from HashMap 1. NULL");
+            return;
+        }
+
+        // Remet l'ID dans la liste des disponibles
+        availableIds.add(chunk.getRenderID());
     }
 
 }

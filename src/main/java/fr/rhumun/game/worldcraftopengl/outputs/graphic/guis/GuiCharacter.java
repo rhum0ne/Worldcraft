@@ -16,7 +16,7 @@ public class GuiCharacter {
     private final float yOffset;
     private final float advance;
 
-    private static HashMap<Character, GuiCharacter> characters = new HashMap<>();
+    public static HashMap<Character, GuiCharacter> characters = new HashMap<>();
 
     public static GuiCharacter get(char c) {
         return characters.get(c);
