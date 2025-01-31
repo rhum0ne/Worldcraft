@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
@@ -67,6 +68,7 @@ public class GraphicModule{
     private GuiModule guiModule;
     private final CleanerModule cleaner;
     private BlockSelector blockSelector;
+    private EntitiesRenderer entitiesRenderer;
 
     private boolean isInitialized = false;
     private boolean isPaused = false;
@@ -188,11 +190,14 @@ public class GraphicModule{
 
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.renderingShaders.add(ShaderUtils.LIQUID_SHADER);
+        this.renderingShaders.add(ShaderUtils.ENTITY_SHADER);
         this.shaders.add(ShaderUtils.SELECTED_BLOCK_SHADER);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.LIQUID_SHADER);
+        this.shaders.add(ShaderUtils.ENTITY_SHADER);
 
+        this.entitiesRenderer = new EntitiesRenderer(this, player);
         this.guiModule = new GuiModule(this);
         initTextures();
         this.guiModule.init();
@@ -243,7 +248,7 @@ public class GraphicModule{
             updateWaterTime();
 
             long vMStart = System.currentTimeMillis();
-            game.getGraphicModule().updateViewMatrix();
+            updateViewMatrix();
             long vMEnd = System.currentTimeMillis();
 
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
@@ -369,6 +374,8 @@ public class GraphicModule{
                 chunk.getRenderer().render();
             }
         }
+
+        this.entitiesRenderer.render();
     }
 
     private void cleanup() {

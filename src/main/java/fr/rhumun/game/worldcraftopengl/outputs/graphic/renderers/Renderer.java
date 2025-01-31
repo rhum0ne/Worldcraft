@@ -18,10 +18,10 @@ public abstract class Renderer {
     GraphicModule graphicModule;
     private int VBO, EBO, VAO;
 
-    private final List<float[]> vertices = new ArrayList<>();
+    private final ArrayList<float[]> vertices = new ArrayList<>();
     private float[] verticesArray = new float[0];
 
-    private final List<Integer> indices = new ArrayList<>();
+    private final ArrayList<Integer> indices = new ArrayList<>();
     private int indice;
     int[] indicesArray = new int[0];
 

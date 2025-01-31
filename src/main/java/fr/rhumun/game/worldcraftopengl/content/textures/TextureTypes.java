@@ -5,6 +5,7 @@ import java.util.List;
 
 public enum TextureTypes {
     BLOCKS,
+    ENTITIES,
     GUIS,
     TEXT;
 

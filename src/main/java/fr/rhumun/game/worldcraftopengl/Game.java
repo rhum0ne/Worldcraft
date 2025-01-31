@@ -20,8 +20,8 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 9;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
@@ -96,7 +96,7 @@ public class Game {
 
         player.updateInventory();
 
-        player.playSound(Sound.MUSIC_1);
+        player.playSound(Sound.STONE1);
 
         //timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
         gameLoop = new GameLoop(this, player);

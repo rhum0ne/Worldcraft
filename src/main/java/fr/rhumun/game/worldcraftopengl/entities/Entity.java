@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 
 @Getter
 @Setter
-public abstract class Entity {
+public class Entity {
     private final Game game;
 
     private Location location;
@@ -35,10 +35,19 @@ public abstract class Entity {
     private float radius = 0.25f;
     private float height = 1.8f;
 
+    private Model model;
+    private short textureID;
 
-    public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+
+    public Entity(Game game, Model model, short textureID, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
         this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
         this.game = game;
+        this.model = model;
+        this.textureID = textureID;
+    }
+
+    public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+        this(game, null, (short) 0, reach, radius, height, walkSpeed, sneakSpeed, sprintSpeed, accelerationByTick, jumpForce, x, y, z, yaw, pitch);
     }
 
     public void setLocation(Location loc){
