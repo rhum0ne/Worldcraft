@@ -322,9 +322,9 @@ public class BlockUtil {
         float y1 = (float) loc.getY(); // Déplacer pour utiliser le coin bas
         float z1 = (float) loc.getZ(); // Déplacer pour utiliser le coin avant
 
-        float x2 = x1+0.2f; // Déplacer pour utiliser le coin arrière-droit
-        float y2 = y1-0.2f; // Déplacer pour utiliser le coin haut
-        float z2 = z1+0.2f; // Déplacer pour utiliser le coin arrière
+        float x2 = x1+0.4f; // Déplacer pour utiliser le coin arrière-droit
+        float y2 = y1-0.4f; // Déplacer pour utiliser le coin haut
+        float z2 = z1+0.4f; // Déplacer pour utiliser le coin arrière
 
         //Tailles du regroupement de blocks:
         float texScaleX = 1f;
@@ -343,40 +343,40 @@ public class BlockUtil {
         // Sommets du rectangle englobant (2 triangles par face)
         float[][] vertices = {
                 // Face avant (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDFront}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, texIDFront}, // Bas droite
-                {x2, y1, z1, texScaleX, texScaleY, texIDFront}, // Haut droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDFront}, // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas droite
+                {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut gauche
 
                 // Face arrière (2 triangles)
-                {x1, y2, z2, 0.0f, 0.0f, texIDBack}, // Bas gauche
-                {x2, y2, z2, texScaleX, 0.0f, texIDBack}, // Bas droite
-                {x2, y1, z2, texScaleX, texScaleY, texIDBack}, // Haut droite
-                {x1, y1, z2, 0.0f, texScaleY, texIDBack}, // Haut gauche
+                {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas gauche
+                {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas droite
+                {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut droite
+                {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut gauche
 
                 // Face gauche (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDLeft}, // Bas gauche
-                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft}, // Bas droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDLeft}, // Haut gauche
-                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft}, // Haut droite
+                {x1, y2, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face droite (2 triangles)
-                {x2, y2, z1, 0.0f, 0.0f, texIDRight}, // Bas gauche
-                {x2, y2, z2, texScaleZ, 0.0f, texIDRight}, // Bas droite
-                {x2, y1, z1, 0.0f, texScaleY, texIDRight}, // Haut gauche
-                {x2, y1, z2, texScaleZ, texScaleY, texIDRight}, // Haut droite
+                {x2, y2, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x2, y2, z2, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas droite
+                {x2, y1, z1, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face supérieure (2 triangles)
-                {x1, y1, z1, 0.0f, 0.0f, texIDTop}, // Bas gauche
-                {x2, y1, z1, texScaleX, 0.0f, texIDTop}, // Bas droite
-                {x1, y1, z2, 0.0f, texScaleZ, texIDTop}, // Haut gauche
-                {x2, y1, z2, texScaleX, texScaleZ, texIDTop}, // Haut droite
+                {x1, y1, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas gauche
+                {x2, y1, z1, texScaleX, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas droite
+                {x1, y1, z2, 0.0f, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut droite
 
                 // Face inférieure (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDBottom}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, texIDBottom}, // Bas droite
-                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom}, // Haut gauche
-                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom}, // Haut droite
+                {x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas droite
+                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut gauche
+                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut droite
         };
 
         // Indices pour dessiner le rectangle

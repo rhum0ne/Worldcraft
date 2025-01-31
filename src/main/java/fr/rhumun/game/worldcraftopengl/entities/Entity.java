@@ -5,9 +5,12 @@ import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
+import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 @Getter
 @Setter
@@ -16,24 +19,23 @@ public class Entity {
 
     private Location location;
 
-    private final int reach = 5;
+    private final int reach;
 
     private boolean isFlying = false;
     private boolean isSneaking = false;
     private boolean isSprinting = false;
 
-    private final int jumpForce = 2;
+    private final int jumpForce;
 
-    private final int walkSpeed = 3;
-    private final int sneakSpeed = 2;
-    private final int sprintSpeed = 5;
-    private float accelerationByTick = 0.1f;
+    private final int walkSpeed;
+    private final int sneakSpeed;
+    private final int sprintSpeed;
+    private float accelerationByTick;
 
-    private final int[] movements = new int[3];
     private final Vector3f velocity = new Vector3f(0, 0, 0);
 
-    private float radius = 0.25f;
-    private float height = 1.8f;
+    private float radius;
+    private float height;
 
     private Model model;
     private short textureID;
@@ -43,7 +45,19 @@ public class Entity {
         this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
         this.game = game;
         this.model = model;
+        this.height = height;
+        this.radius = radius;
+        this.reach = reach;
+        this.accelerationByTick = accelerationByTick;
+        this.walkSpeed = walkSpeed;
+        this.sneakSpeed = sneakSpeed;
+        this.sprintSpeed = sprintSpeed;
+        this.jumpForce = jumpForce;
         this.textureID = textureID;
+    }
+
+    public void update(){
+        Movements.applyMovements(this);
     }
 
     public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
@@ -246,6 +260,20 @@ public class Entity {
     }
 
     public String getName() {
-        return "PlayerXXX";
+        return "EntityXXX";
     }
+
+    public World getWorld() {return this.location.getWorld();}
+
+    public Vector3fc getViewNormalVector() {
+        float yawRad = (float) Math.toRadians(this.getLocation().getYaw());
+        float pitchRad = (float) Math.toRadians(this.getLocation().getPitch());
+
+        float x = (float) (Math.cos(yawRad));
+        float y = (float) Math.sin(pitchRad);
+        float z = (float) (Math.sin(yawRad));
+
+        return new Vector3f(x, y, z).normalize();
+    }
+
 }

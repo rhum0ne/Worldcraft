@@ -35,10 +35,10 @@ public class EntitiesRenderer extends GlobalRenderer{
         glBindVertexArray(this.getVAO());
 
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray().clone(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray(), GL_STATIC_DRAW);
 
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 
@@ -67,7 +67,6 @@ public class EntitiesRenderer extends GlobalRenderer{
         }
 
         this.toArrays();
-        System.out.println(Arrays.toString(this.getVerticesArray()));
     }
 
     private void raster(Entity entity, Model model) {

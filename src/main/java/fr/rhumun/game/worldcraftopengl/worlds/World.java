@@ -138,4 +138,12 @@ public class World {
         structure.getStructure().tryBuildAt(this, x, y ,z);
     }
 
+    //Update entities around the given entity with the given radius
+    public void updateEntities(Entity entity, int radius) {
+        for(Entity entities : this.entities){
+            if(entities.equals(entity)) continue;
+
+            entities.update();
+        }
+    }
 }

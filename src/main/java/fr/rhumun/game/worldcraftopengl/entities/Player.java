@@ -14,12 +14,14 @@ import org.joml.Vector3f;
 
 @Getter
 @Setter
-public class Player extends Entity{
+public class Player extends Entity implements MovingEntity{
 
     private final LoadedChunksManager loadedChunksManager = new LoadedChunksManager(this);
 
     private int selectedSlot;
     private Inventory inventory;
+
+    private final int[] movements = new int[3];
 
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
@@ -32,7 +34,6 @@ public class Player extends Entity{
     public Player(Game game, double x, double y, double z, float yaw, float pitch){
         super(game, 5, 0.25f, 1.8f, 5, 3, 8, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
-        //this.normal = Vector.fromYawPitch(yaw, pitch);
 
     }
 
