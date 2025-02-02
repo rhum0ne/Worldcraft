@@ -22,6 +22,7 @@ public class Entity {
     private final int reach;
 
     private boolean isFlying = false;
+    private boolean isNoClipping = false;
     private boolean isSneaking = false;
     private boolean isSprinting = false;
 
@@ -79,30 +80,30 @@ public class Entity {
     }
 
     public void addX(double a){
-        if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !Game.NO_CLIP)) {
+        if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !this.isNoClipping)) {
             return;
         }
         this.getLocation().addX(a);
         this.onMove();
     }
     public void addZ(double a){
-        if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !Game.NO_CLIP)) {
+        if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !this.isNoClipping)) {
             return;
         }
         this.getLocation().addZ(a);
         this.onMove();
     }
     public void addY(double a){
-        if(!Game.NO_CLIP && a>0 && this.hasBlockTop()){
+        if(!this.isNoClipping && a>0 && this.hasBlockTop()){
             return;
-        } else if(!Game.NO_CLIP && a<0 && this.hasBlockDown()) {
+        } else if(!this.isNoClipping && a<0 && this.hasBlockDown()) {
             return;
         }
 
         double step = a/10;
         for(int i=0; i<10; i++){
-            if(!Game.NO_CLIP && a>0 && this.hasBlockTop()) break;
-            if(!Game.NO_CLIP && a<0 && this.hasBlockDown()) break;
+            if(!this.isNoClipping && a>0 && this.hasBlockTop()) break;
+            if(!this.isNoClipping && a<0 && this.hasBlockDown()) break;
             this.getLocation().addY(step);
         }
 

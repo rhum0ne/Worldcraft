@@ -32,7 +32,6 @@ public class Game {
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean ENABLE_VSYNC = false;
-    public static boolean NO_CLIP = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
     public static boolean DEBUG = false;

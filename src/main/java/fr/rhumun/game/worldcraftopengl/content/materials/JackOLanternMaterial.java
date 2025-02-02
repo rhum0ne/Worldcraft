@@ -5,12 +5,13 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
 
-public class JackOLanternMaterial extends PointLight implements ForcedModelMaterial {
+public class JackOLanternMaterial extends PointLight implements ForcedModelMaterial, RotableMaterial {
     public JackOLanternMaterial() {
         super(Texture.PUMPKIN);
         this.setTopAndBottomTexture(Texture.PUMPKIN_TOP);

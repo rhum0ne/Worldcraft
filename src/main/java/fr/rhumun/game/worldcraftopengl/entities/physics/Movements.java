@@ -17,7 +17,7 @@ public class Movements {
     private static int stepSoundFrequency = 15;
 
     public static void applyMovements(Entity entity) {
-        if (!entity.isFlying() && !Game.NO_CLIP) {
+        if (!entity.isFlying() && !entity.isNoClipping()) {
             applyGravityFor(entity);
 
         }

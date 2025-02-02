@@ -279,4 +279,7 @@ public class Block {
         this.state = (byte) state;
     }
 
+    public short getMaterialID() {
+        return this.material;
+    }
 }

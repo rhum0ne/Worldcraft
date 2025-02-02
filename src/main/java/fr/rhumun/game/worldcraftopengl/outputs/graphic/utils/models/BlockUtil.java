@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
@@ -35,14 +36,11 @@ public class BlockUtil {
 
         for(x++; x<16; x++){
             Block testBlock = chunk.getBlocks()[x][y][z];
-            if (testBlock.isSurrounded()) break;
             if (blocks.contains(testBlock)) break;
 
-            if (testBlock.getModel() == Model.BLOCK) {
-                if (testBlock.getMaterial() == corner1.getMaterial()) {
+            if (canMerge(corner1, testBlock)) {
                     blocks.add(testBlock);
                     corner2 = testBlock;
-                } else break;
             } else break;
         }
 
@@ -55,16 +53,12 @@ public class BlockUtil {
             for(int xtest=X; xtest<=corner2.getChunkX(); xtest++){
                 Block testBlock = chunk.getBlocks()[xtest][y][z];
 
-                if (!blocks.contains(testBlock)) {
-                    if (testBlock.getModel() == Model.BLOCK) {
-                        if (testBlock.getMaterial() == corner1.getMaterial()) {
-                            if (!testBlock.isSurrounded()) {
-                                addedBlocks.add(testBlock);
-                                lastBlock = testBlock;
+                if (canMerge(corner1, testBlock)) {
+                    if (!blocks.contains(testBlock)) {
+                        addedBlocks.add(testBlock);
+                        lastBlock = testBlock;
 
-                                continue;
-                            }
-                        }
+                        continue;
                     }
                 }
                 isGood = false;
@@ -87,15 +81,11 @@ public class BlockUtil {
                 for(int ztest=corner1.getChunkZ(); ztest<=corner2.getChunkZ(); ztest++) {
                     Block testBlock = chunk.getBlocks()[xtest][y][ztest];
 
-                    if (testBlock.getModel() == Model.BLOCK) {
-                        if (testBlock.getMaterial() == corner1.getMaterial()) {
-                            if (!blocks.contains(testBlock)) {
-                                if (!testBlock.isSurrounded()) {
-                                    addedBlocks.add(testBlock);
-                                    lastBlock = testBlock;
-                                    continue;
-                                }
-                            }
+                    if (canMerge(corner1, testBlock)) {
+                        if (!blocks.contains(testBlock)) {
+                            addedBlocks.add(testBlock);
+                            lastBlock = testBlock;
+                            continue;
                         }
                     }
                     isGood = false;
@@ -113,6 +103,16 @@ public class BlockUtil {
         rasterBlockGroup(corner1, corner2, chunkRenderer);
     }
 
+    private static boolean canMerge(Block corner1, Block testBlock) {
+        if (testBlock.getModel() == Model.BLOCK)
+            if (testBlock.getMaterialID() == corner1.getMaterialID())
+                if(testBlock.getState() == corner1.getState())
+                    if (!testBlock.isSurrounded())
+                        return true;
+
+        return false;
+    }
+
     private static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
         float x1 = (float) corner1.getLocation().getX() - 0.5f; // Déplacer pour utiliser le coin avant-gauche
@@ -128,52 +128,46 @@ public class BlockUtil {
         float texScaleY = y1-y2;
         float texScaleZ = z2-z1;
 
-        // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = corner1.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = corner2.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = corner1.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = corner2.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = corner1.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = corner2.getMaterial().getMaterial().getRightTexture().getId();
+        float[] textureIDs = getTextureIDs(corner1);
 
 
         // Sommets du rectangle englobant (2 triangles par face)
         float[][] vertices = {
                 // Face avant (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas droite
-                {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Bas droite
+                {x2, y1, z1, texScaleX, texScaleY, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, texScaleY, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Haut gauche
 
                 // Face arrière (2 triangles)
-                {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas gauche
-                {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas droite
-                {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut droite
-                {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut gauche
+                {x1, y2, z2, 0.0f, 0.0f, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Bas gauche
+                {x2, y2, z2, texScaleX, 0.0f, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Bas droite
+                {x2, y1, z2, texScaleX, texScaleY, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Haut droite
+                {x1, y1, z2, 0.0f, texScaleY, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Haut gauche
 
                 // Face gauche (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut droite
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x1, y2, z2, texScaleZ, 0.0f, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Bas droite
+                {x1, y1, z1, 0.0f, texScaleY, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x1, y1, z2, texScaleZ, texScaleY, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face droite (2 triangles)
-                {x2, y2, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x2, y2, z2, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas droite
-                {x2, y1, z1, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x2, y1, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut droite
+                {x2, y2, z1, 0.0f, 0.0f, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x2, y2, z2, texScaleZ, 0.0f, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Bas droite
+                {x2, y1, z1, 0.0f, texScaleY, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleZ, texScaleY, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face supérieure (2 triangles)
-                {x1, y1, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas gauche
-                {x2, y1, z1, texScaleX, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas droite
-                {x1, y1, z2, 0.0f, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut gauche
-                {x2, y1, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas gauche
+                {x2, y1, z1, texScaleX, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas droite
+                {x1, y1, z2, 0.0f, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleX, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut droite
 
                 // Face inférieure (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f}, // Bas droite
-                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut gauche
-                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}, // Haut droite
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas droite
+                {x1, y2, z2, 0.0f, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut gauche
+                {x2, y2, z2, texScaleX, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut droite
         };
 
         // Indices pour dessiner le rectangle
@@ -211,54 +205,29 @@ public class BlockUtil {
         renderer.addAllIndices(indices);
     }
 
-    public void applyStateTransformation(Block block, Vector3f pos1, Vector3f pos2) {
-        int state = block.getState();
+    private static float[] getTextureIDs(Block corner1) {
+        if(corner1.getMaterial().getMaterial() instanceof RotableMaterial){
+            int blockState = corner1.getState();
 
-        switch (state) {
-            case 1: // Est
-                swap(pos1, pos2, true, false, false);
-                break;
-            case 2: // Ouest
-                swap(pos1, pos2, true, false, false);
-                break;
-            case 3: // Haut
-                swap(pos1, pos2, false, true, false);
-                break;
-            case 4: // Bas
-                swap(pos1, pos2, false, true, false);
-                break;
-            case 5: // Sud
-                swap(pos1, pos2, false, false, true);
-                break;
-            case 6: // Nord
-                swap(pos1, pos2, false, false, true);
-                break;
-            default:
-                break;
+            return new float[]{
+                    corner1.getMaterial().getMaterial().getTextures()[(2 + blockState)%4].getId(),
+                    corner1.getMaterial().getMaterial().getTextures()[(blockState)%4].getId(),
+                    corner1.getMaterial().getMaterial().getTextures()[(1 + blockState)%4].getId(),
+                    corner1.getMaterial().getMaterial().getTextures()[(3 + blockState)%4].getId(),
+                    corner1.getMaterial().getMaterial().getTopTexture().getId(),
+                    corner1.getMaterial().getMaterial().getBottomTexture().getId()
+            };
         }
+
+        return new float[]{
+                corner1.getMaterial().getMaterial().getFrontTexture().getId(),
+                corner1.getMaterial().getMaterial().getBackTexture().getId(),
+                corner1.getMaterial().getMaterial().getLeftTexture().getId(),
+                corner1.getMaterial().getMaterial().getRightTexture().getId(),
+                corner1.getMaterial().getMaterial().getTopTexture().getId(),
+                corner1.getMaterial().getMaterial().getBottomTexture().getId()
+        };
     }
-
-    // Fonction utilitaire pour intervertir les axes
-    private void swap(Vector3f v1, Vector3f v2, boolean swapX, boolean swapY, boolean swapZ) {
-        if (swapX) {
-            float temp = v1.x;
-            v1.x = v2.x;
-            v2.x = temp;
-        }
-        if (swapY) {
-            float temp = v1.y;
-            v1.y = v2.y;
-            v2.y = temp;
-        }
-        if (swapZ) {
-            float temp = v1.z;
-            v1.z = v2.z;
-            v2.z = temp;
-        }
-    }
-
-
-
 
     public static void rasterBlockItem(Item block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)

@@ -27,61 +27,61 @@ public abstract class AbstractMaterial {
     }
 
     public void setTopTexture(Texture texture) {
-        this.textures[2] = texture;
-    }
-
-    public void setBottomTexture(Texture texture) {
-        this.textures[3] = texture;
-    }
-
-    public void setTopAndBottomTexture(Texture texture) {
-        this.textures[2] = texture;
-        this.textures[3] = texture;
-    }
-
-    public void setLeftTexture(Texture texture) {
-        this.textures[5] = texture;
-    }
-
-    public void setRightTexture(Texture texture) {
         this.textures[4] = texture;
     }
 
+    public void setBottomTexture(Texture texture) {
+        this.textures[5] = texture;
+    }
+
+    public void setTopAndBottomTexture(Texture texture) {
+        this.textures[4] = texture;
+        this.textures[5] = texture;
+    }
+
+    public void setLeftTexture(Texture texture) {
+        this.textures[1] = texture;
+    }
+
+    public void setRightTexture(Texture texture) {
+        this.textures[3] = texture;
+    }
+
     public void setFrontTexture(Texture texture) {
-        this.textures[0] = texture;
+        this.textures[2] = texture;
     }
 
     public void setBackTexture(Texture texture) {
-        this.textures[1] = texture;
+        this.textures[0] = texture;
     }
 
     public Texture getTexture(int i) {
         return textures[i];
     }
 
-    public Texture getTopTexture() {return textures[2];}
-    public Texture getBottomTexture() {return textures[3];}
-    public Texture getLeftTexture() {return textures[5];}
-    public Texture getRightTexture() {return textures[4];}
-    public Texture getFrontTexture() {return textures[0];}
-    public Texture getBackTexture() {return textures[1];}
+    public Texture getTopTexture() {return textures[4];}
+    public Texture getBottomTexture() {return textures[5];}
+    public Texture getLeftTexture() {return textures[1];}
+    public Texture getRightTexture() {return textures[3];}
+    public Texture getFrontTexture() {return textures[2];}
+    public Texture getBackTexture() {return textures[0];}
 
     public Texture getTextureFromFaceWithNormal(float x, float y, float z) {
         // Normales des 6 faces des blocs
         //POUR LES CYLINDRE ETC VOIR SI SIMPLEMENT RETIRER LES && ... = 0 fonctionnerait pas mal
 
         if (x == 1.0f && y == 0.0f && z == 0.0f) {
-            return textures[0]; // Face avant (positive X)
+            return textures[2]; // Face avant (positive X)
         } else if (x == -1.0f && y == 0.0f && z == 0.0f) {
-            return textures[1]; // Face arrière (négative X)
+            return textures[0]; // Face arrière (négative X)
         } else if (x == 0.0f && y == 1.0f && z == 0.0f) {
-            return textures[2]; // Face supérieure (positive Y)
+            return textures[4]; // Face supérieure (positive Y)
         } else if (x == 0.0f && y == -1.0f && z == 0.0f) {
-            return textures[3]; // Face inférieure (négative Y)
+            return textures[5]; // Face inférieure (négative Y)
         } else if (x == 0.0f && y == 0.0f && z == 1.0f) {
-            return textures[4]; // Face droite (positive Z)
+            return textures[1]; // Face droite (positive Z)
         } else if (x == 0.0f && y == 0.0f && z == -1.0f) {
-            return textures[5]; // Face gauche (négative Z)
+            return textures[3]; // Face gauche (négative Z)
         }
         return this.getTexture(); // Si la normale ne correspond à aucune face
     }

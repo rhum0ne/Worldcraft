@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.content.models;
 
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.content.Model.load;
@@ -14,6 +15,10 @@ public class BlockModel extends AbstractModel {
 
     @Override
     public void setBlockDataOnPlace(Block block, Vector3f hitPosition, Vector3f direction) {
+        if(!(block.getMaterial().getMaterial() instanceof RotableMaterial)){
+            block.setState(0);
+            return;
+        }
         // Trouver la face touchée en regardant quel axe a la plus grande valeur absolue
         float absX = Math.abs(direction.x);
         float absY = Math.abs(direction.y);
@@ -21,19 +26,15 @@ public class BlockModel extends AbstractModel {
 
         int state;
 
-        if (absX > absY && absX > absZ) {
+        if (absX > absZ) {
             // X dominant → Est/Ouest
-            state = (direction.x > 0) ? 1 : 2; // 1 = Est, 2 = Ouest
-        } else if (absY > absX && absY > absZ) {
-            // Y dominant → Haut/Bas
-            state = (direction.y > 0) ? 3 : 4; // 3 = Haut, 4 = Bas
+            state = (direction.x > 0) ? 1 : 3; // 1 = Est, 2 = Ouest
         } else {
             // Z dominant → Nord/Sud
-            state = (direction.z > 0) ? 5 : 6; // 5 = Sud, 6 = Nord
+            state = (direction.z > 0) ? 0 : 2; // 5 = Sud, 6 = Nord
         }
 
         block.setState(state);
-        System.out.println("New state: " + state);
     }
 
 }
