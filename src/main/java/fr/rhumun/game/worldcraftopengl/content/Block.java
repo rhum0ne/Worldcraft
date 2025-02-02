@@ -218,7 +218,7 @@ public class Block {
         Block[] sideBlocks = this.getSideBlocks();
 
         if(chunk.isGenerated())
-            if (!this.getModel().isOpaque)
+            if (!this.getModel().isOpaque())
                 for (Block block : sideBlocks) {
                     if (block == null) continue;
                     block.setSurrounded(false);

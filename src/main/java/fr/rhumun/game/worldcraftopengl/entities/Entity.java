@@ -70,7 +70,7 @@ public class Entity {
 
 
 
-    Vector3f getRayDirection() {
+    public Vector3f getRayDirection() {
         return new Vector3f(
                 (float) Math.cos(Math.toRadians(this.getLocation().getYaw())) * (float) Math.cos(Math.toRadians(this.getLocation().getPitch())),
                 (float) Math.sin(Math.toRadians(this.getLocation().getPitch())),
@@ -98,7 +98,14 @@ public class Entity {
         } else if(!Game.NO_CLIP && a<0 && this.hasBlockDown()) {
             return;
         }
-        this.getLocation().addY(a);
+
+        double step = a/10;
+        for(int i=0; i<10; i++){
+            if(!Game.NO_CLIP && a>0 && this.hasBlockTop()) break;
+            if(!Game.NO_CLIP && a<0 && this.hasBlockDown()) break;
+            this.getLocation().addY(step);
+        }
+
         this.onMove();
     }
     public void setYaw(float a){
@@ -141,7 +148,7 @@ public class Entity {
 
 
     public Block getBlockDown(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockDown(){
@@ -150,7 +157,7 @@ public class Entity {
     }
 
     public Block getBlockTop(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.height, this.getLocation().getZ(), false);
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockTop(){
@@ -241,14 +248,9 @@ public class Entity {
         Material material = item.getMaterial();
 
         Model model = item.getModel();
-        // Appeler la méthode pour placer le bloc dans le jeu
-        if(model == Model.SLAB){
-            float y = (float) (hitPosition.y() - Math.floor(hitPosition.y()));
-            if(y>0.5f) block.setState(1);
-            else if(y<0.5f) block.setState(0);
-            else model = Model.BLOCK;
-        }
         block.setModel(model).setMaterial(material);
+
+        model.setBlockDataOnPlace(block, hitPosition, direction);
     }
 
     public Material breakBlock(){
@@ -264,16 +266,5 @@ public class Entity {
     }
 
     public World getWorld() {return this.location.getWorld();}
-
-    public Vector3fc getViewNormalVector() {
-        float yawRad = (float) Math.toRadians(this.getLocation().getYaw());
-        float pitchRad = (float) Math.toRadians(this.getLocation().getPitch());
-
-        float x = (float) (Math.cos(yawRad));
-        float y = (float) Math.sin(pitchRad);
-        float z = (float) (Math.sin(yawRad));
-
-        return new Vector3f(x, y, z).normalize();
-    }
 
 }

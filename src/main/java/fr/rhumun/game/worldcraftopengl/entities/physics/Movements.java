@@ -17,11 +17,13 @@ public class Movements {
     private static int stepSoundFrequency = 15;
 
     public static void applyMovements(Entity entity) {
-        updateVelocity(entity);
-// Appliquer la gravité si le joueur ne vole pas
         if (!entity.isFlying() && !Game.NO_CLIP) {
             applyGravityFor(entity);
+
         }
+        updateVelocity(entity);
+// Appliquer la gravité si le joueur ne vole pas
+
         move(entity);
     }
 
@@ -99,9 +101,9 @@ public class Movements {
 
         if(v.x == 0 && v.z == 0) return;
 
-        if(tick++ % stepSoundFrequency == 0) {
+        if(entity instanceof Player player && tick++ % stepSoundFrequency == 0) {
             Block block = entity.getBlockDown();
-            if (block.getMaterial() != null && entity instanceof Player player) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
+            if (block.getMaterial() != null ) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
         }
     }
 }

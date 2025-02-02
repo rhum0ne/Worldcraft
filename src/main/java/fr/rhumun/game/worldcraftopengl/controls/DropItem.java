@@ -14,9 +14,9 @@ public class DropItem extends Control {
         if(item==null) return;
 
         Entity entity = EntityFactory.createItemEntity(player.getLocation(), item);
-        entity.getVelocity().add(player.getViewNormalVector());
-        System.out.println("DROP : " + item.getMaterial() + "  " + item.getModel());
-        //player.getInventory().setItem(player.getSelectedSlot(), null);
+        entity.getVelocity().add(player.getRayDirection());
+        //System.out.println("DROP : " + item.getMaterial() + "  " + item.getModel());
+        player.getInventory().setItem(player.getSelectedSlot(), null);
     }
 
     @Override

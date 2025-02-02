@@ -32,7 +32,7 @@ public class Player extends Entity implements MovingEntity{
     }
 
     public Player(Game game, double x, double y, double z, float yaw, float pitch){
-        super(game, 5, 0.25f, 1.8f, 5, 3, 8, 0.2f, 2, x, y ,z, yaw, pitch);
+        super(game, 5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
 
     }
@@ -130,5 +130,13 @@ public class Player extends Entity implements MovingEntity{
 
     public void closeInventory() {
         getGame().getGraphicModule().getGuiModule().closeGUI();
+    }
+
+    public Block getBlockDown(){
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);
+    }
+
+    public Block getBlockTop(){
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
     }
 }

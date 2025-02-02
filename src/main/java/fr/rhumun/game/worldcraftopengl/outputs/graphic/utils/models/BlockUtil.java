@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +210,53 @@ public class BlockUtil {
         renderer.addAllVertices(vertices);
         renderer.addAllIndices(indices);
     }
+
+    public void applyStateTransformation(Block block, Vector3f pos1, Vector3f pos2) {
+        int state = block.getState();
+
+        switch (state) {
+            case 1: // Est
+                swap(pos1, pos2, true, false, false);
+                break;
+            case 2: // Ouest
+                swap(pos1, pos2, true, false, false);
+                break;
+            case 3: // Haut
+                swap(pos1, pos2, false, true, false);
+                break;
+            case 4: // Bas
+                swap(pos1, pos2, false, true, false);
+                break;
+            case 5: // Sud
+                swap(pos1, pos2, false, false, true);
+                break;
+            case 6: // Nord
+                swap(pos1, pos2, false, false, true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Fonction utilitaire pour intervertir les axes
+    private void swap(Vector3f v1, Vector3f v2, boolean swapX, boolean swapY, boolean swapZ) {
+        if (swapX) {
+            float temp = v1.x;
+            v1.x = v2.x;
+            v2.x = temp;
+        }
+        if (swapY) {
+            float temp = v1.y;
+            v1.y = v2.y;
+            v2.y = temp;
+        }
+        if (swapZ) {
+            float temp = v1.z;
+            v1.z = v2.z;
+            v2.z = temp;
+        }
+    }
+
 
 
 
