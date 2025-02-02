@@ -93,6 +93,9 @@ public class Texture {
     public static Texture INVENTORY;
     public static Texture BUTTON;
 
+
+    public static Texture OTTER;
+
     public static void init(){
         COBBLE = new Texture("cobble.png");
         DIRT = new Texture("dirt.png");
@@ -173,6 +176,8 @@ public class Texture {
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
         BUTTON = new Texture(TextureTypes.GUIS,"hud\\button.png");
+
+        OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();

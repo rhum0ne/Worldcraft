@@ -5,6 +5,8 @@ import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.OtterEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
@@ -34,7 +36,7 @@ public class Game {
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static final long LAG_SPIKE_LIMIT = 100;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
@@ -118,6 +120,7 @@ public class Game {
 
     public void processCommand(String cmd){
         log("processing command " + cmd);
+        world.addEntity(new OtterEntity(this, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
     }
 
     public void errorLog(String log){

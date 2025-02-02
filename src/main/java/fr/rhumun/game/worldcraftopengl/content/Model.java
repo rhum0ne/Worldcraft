@@ -20,7 +20,8 @@ public enum Model {
     BLOCK(new BlockModel(), (byte) 0),
     SLAB(new SlabModel(), (byte) 1),
     CYLINDER(new CylinderModel(), (byte) 2),
-    CROSS(new CrossModel(), (byte) 3);
+    CROSS(new CrossModel(), (byte) 3),
+    OTTER(new OtterModel(), (byte) 4);
 
     final AbstractModel model;
     final byte id;

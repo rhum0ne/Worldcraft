@@ -33,7 +33,9 @@ in vec3 FragPos;  // Position interpolée du fragment en espace monde
 out vec4 FragPosLightSpace;
 
 //uniform sampler2D textures[32];  // Tableau de textures
+uniform sampler2DArray entitiesTextures;
 uniform sampler2DArray textures;
+uniform int texturesNumber;
 uniform sampler2D shadowMap;  // Pour les ombres directionnelles
 uniform samplerCube depthMap; // Pour les ombres des lumières ponctuelles
 uniform float far_plane;      // Distance maximum de la lumière ponctuelle
@@ -124,9 +126,13 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
-void main()
-{
-    vec4 textureColor = texture(textures, vec3(TexCoord, TextureID));
+void main(){
+    vec4 textureColor;
+    if(TextureID >= texturesNumber){
+        textureColor = texture(entitiesTextures, vec3(TexCoord, TextureID-texturesNumber));
+    }else{
+        textureColor = texture(textures, vec3(TexCoord, TextureID));
+    }
     vec3 norm = normalize(FragNormal);  // Normalisation des normales
     vec3 viewDir = normalize(viewPos - FragPos);  // Direction de la caméra en espace monde
 

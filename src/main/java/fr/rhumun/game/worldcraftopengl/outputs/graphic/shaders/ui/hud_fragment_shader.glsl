@@ -14,7 +14,6 @@ void main() {
     if (id >= texturesNumber) {
         FragColor = texture(guiTextures[id-texturesNumber], TexCoord);
     } else {
-        //FragColor = vec4(0.0, 1.0, 0.0, 1.0);  // Vert si faux
         FragColor = texture(textures, vec3(TexCoord, id));  // Utilise les coordonnées pour appliquer la texture
     }
 }

@@ -24,10 +24,11 @@ public class TextureUtils {
 
     public static void initTextures(){
         BLOCKS_TEXTURES = initBlocksTextures();
-        initGuiTextures();
+        GUIS_TEXTURES = initGuiTextures();
+        initEntitiesTextures();
     }
 
-    private static void initGuiTextures() {
+    private static int initGuiTextures() {
         int[] guiTexturesUnits = new int[TextureTypes.GUIS.get().size()];
         int i=0;
         for (Texture texture : TextureTypes.GUIS.get()) {
@@ -47,6 +48,64 @@ public class TextureUtils {
         }
 
         ShaderUtils.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
+        ShaderUtils.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
+
+        GAME.debug("Done!");
+        return guiTexturesUnits.length;
+    }
+
+    private static void initEntitiesTextures() {
+        int entitesTextureCount = TextureTypes.ENTITIES.get().size();
+        int[] entitiesTexturesUnits = new int[entitesTextureCount + 1]; // Unité de texture pour chaque texture
+
+        // Création de la texture 2D array
+        int textureID = glGenTextures();
+        glActiveTexture(GL_TEXTURE0 + textureID); // Utilisation de l'unité de texture 0
+        glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+
+        GAME.debug("Texture Array ID: " + textureID);
+
+        // Dimensions des textures
+        int width = 64;  // Par exemple, chaque texture fait 32x32 pixels
+        int height = 64;
+
+        // Allouer de l'espace pour la texture 2D array
+        glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, entitesTextureCount);
+
+        // Charger toutes les textures dans la texture array
+        for (int i = 0; i < entitesTextureCount; i++) {
+            Texture texture = TextureTypes.ENTITIES.get().get(i);
+            String texturePath = texture.getPath();
+
+
+            // Charger l'image
+            IntBuffer widthBuf = BufferUtils.createIntBuffer(1);
+            IntBuffer heightBuf = BufferUtils.createIntBuffer(1);
+            IntBuffer compBuf = BufferUtils.createIntBuffer(1);
+            ByteBuffer image = STBImage.stbi_load(texturePath, widthBuf, heightBuf, compBuf, 4);
+
+            if (image != null) {
+                GAME.debug("Loading " + texture.getName());
+                // Copier l'image dans la couche appropriée de la texture array
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, widthBuf.get(0), heightBuf.get(0), 1, GL_RGBA, GL_UNSIGNED_BYTE, image);
+                glGenerateMipmap(GL_TEXTURE_2D_ARRAY); // Générer les mipmaps
+                STBImage.stbi_image_free(image);
+            } else {
+                GAME.errorLog("Erreur lors du chargement de la texture " + texturePath);
+            }
+        }
+
+        // Paramètres de texture
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        // Associe la texture array à l'unité de texture
+        entitiesTexturesUnits[0] = textureID;
+
+        // Remplir le shader avec l'unité de texture et le sampler
+        ShaderUtils.ENTITY_SHADER.setUniform("entitiesTextures", entitiesTexturesUnits);
 
         GAME.debug("Done!");
     }
@@ -73,10 +132,11 @@ public class TextureUtils {
 
         return textureID;
     }
-    public static int initBlocksTextures() {
+
+    private static int initBlocksTextures() {
         // Nombre de textures pour les blocs
         int blockTextureCount = TextureTypes.BLOCKS.get().size();
-        int[] blockTexturesUnits = new int[blockTextureCount + 1]; // Unité de texture pour chaque texture
+        int[] blockTexturesUnits = new int[blockTextureCount]; // Unité de texture pour chaque texture
 
         // Création de la texture 2D array
         int textureID = glGenTextures();
