@@ -13,6 +13,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,8 +48,9 @@ public class GraphicModule{
 
     private boolean areChunksUpdated = false;
     private Set<Chunk> loadedChunks;
+    private Set<LightChunk> loadedFarChunks;
     private final UpdateLoop updateLoop;
-    private final Stack<Chunk> chunkToLoad = new Stack<>();
+    //private final Stack<Chunk> chunkToLoad = new Stack<>();
     private final ChunkLoader chunkLoader;
 
     private long window;
@@ -191,11 +193,13 @@ public class GraphicModule{
         this.renderingShaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.renderingShaders.add(ShaderUtils.LIQUID_SHADER);
         this.renderingShaders.add(ShaderUtils.ENTITY_SHADER);
+        //this.renderingShaders.add(ShaderUtils.FAR_SHADER);
         this.shaders.add(ShaderUtils.SELECTED_BLOCK_SHADER);
         this.shaders.add(ShaderUtils.PLAN_SHADERS);
         this.shaders.add(ShaderUtils.GLOBAL_SHADERS);
         this.shaders.add(ShaderUtils.LIQUID_SHADER);
         this.shaders.add(ShaderUtils.ENTITY_SHADER);
+        this.shaders.add(ShaderUtils.FAR_SHADER);
 
         this.entitiesRenderer = new EntitiesRenderer(this, player);
         this.guiModule = new GuiModule(this);
@@ -203,7 +207,7 @@ public class GraphicModule{
         this.guiModule.init();
 
         Matrix4f modelMatrix = new Matrix4f().identity(); // Matrice modèle, ici une identité (sans transformation)
-        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SIMULATION_DISTANCE *CHUNK_SIZE);
+        projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, Game.SHOW_DISTANCE *CHUNK_SIZE);
 
         this.guiModule.resize(startWidth, startHeight);
 
@@ -213,6 +217,7 @@ public class GraphicModule{
             updateModelAndProjectionFor(modelMatrix, shader);
         }
         updateModelAndProjectionFor(modelMatrix, ShaderUtils.SELECTED_BLOCK_SHADER);
+        updateModelAndProjectionFor(modelMatrix, ShaderUtils.FAR_SHADER);
 
         updateViewMatrix();
 
@@ -229,6 +234,8 @@ public class GraphicModule{
 
         this.guiModule.updateInventory(player);
 
+        Timer timer = new Timer();
+        timer.schedule(this.chunkLoader, 0, 1000);
         this.isInitialized = true;
     }
 
@@ -251,6 +258,8 @@ public class GraphicModule{
             updateViewMatrix();
             long vMEnd = System.currentTimeMillis();
 
+            glUseProgram(ShaderUtils.FAR_SHADER.id);
+            updateFarChunks();
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
             long rEnd = System.currentTimeMillis();
@@ -322,6 +331,11 @@ public class GraphicModule{
         glUseProgram(shader.id);
         int viewLoc = glGetUniformLocation(shader.id, "view");
         glUniformMatrix4fv(viewLoc, false, viewMatrix.get(new float[16]));
+
+        Shader shader2 = ShaderUtils.FAR_SHADER;
+        glUseProgram(shader2.id);
+        int viewLoc2 = glGetUniformLocation(shader2.id, "view");
+        glUniformMatrix4fv(viewLoc2, false, viewMatrix.get(new float[16]));
     }
 
     private void updateWaterTime() {
@@ -336,6 +350,7 @@ public class GraphicModule{
 
         if(!areChunksUpdated) {
             loadedChunks = new LinkedHashSet<>(game.getPlayer().getLoadedChunksManager().getChunksToRender());
+            loadedFarChunks = new LinkedHashSet<>(game.getPlayer().getLoadedChunksManager().getChunksToRenderLight());
             this.areChunksUpdated = true;
             this.lightningsUtils.updateLights();
             if(SHOWING_RENDERER_DATA){
@@ -351,8 +366,6 @@ public class GraphicModule{
 
         if(loadedChunks.isEmpty()) return;
         this.lightningsUtils.getPointLights().clear();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float h = game.getWorld().getHeigth();
 
@@ -378,6 +391,42 @@ public class GraphicModule{
         this.entitiesRenderer.render();
     }
 
+    private void updateFarChunks(){
+        //if(!UPDATE_FRUSTRUM) return;
+
+        if(!areChunksUpdated) {
+            loadedChunks = new LinkedHashSet<>(game.getPlayer().getLoadedChunksManager().getChunksToRender());
+            loadedFarChunks = new LinkedHashSet<>(game.getPlayer().getLoadedChunksManager().getChunksToRenderLight());
+            this.areChunksUpdated = true;
+            if(SHOWING_RENDERER_DATA){
+                this.verticesNumber = 0;
+                for(LightChunk chunk : loadedFarChunks){
+                    this.verticesNumber += chunk.getRenderer().getVerticesNumber();
+                }
+                game.getData().setVerticesCount(this.verticesNumber);
+            }
+        }
+
+        //loadOneChunk(); TOUT CHARGE MEME SANS CETTE METHODE, A VOIR POURQUOI
+
+        if(loadedChunks.isEmpty()) return;
+        this.lightningsUtils.getPointLights().clear();
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        float h = game.getWorld().getHeigth();
+
+        for(LightChunk chunk : loadedFarChunks) {
+            //System.out.println("UPDATING FAR CHUNK " + chunk.getX() + " " + chunk.getZ());
+
+            float x = chunk.getX()*CHUNK_SIZE;
+            float z = chunk.getZ()*CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x+CHUNK_SIZE, h , z+CHUNK_SIZE)) {
+                chunk.getRenderer().render();
+            }
+        }
+    }
+
     private void cleanup() {
 
         this.guiModule.cleanup();
@@ -399,7 +448,7 @@ public class GraphicModule{
         this.areChunksUpdated = false;
     }
 
-    public void addChunkToLoad(final Chunk chunk){ this.chunkToLoad.add(chunk); }
+    //public void addChunkToLoad(final Chunk chunk){ this.chunkToLoad.add(chunk); }
 
     private void setPaused(boolean state) {
         if (state) {

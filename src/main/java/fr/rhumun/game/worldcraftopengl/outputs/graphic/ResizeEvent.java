@@ -26,12 +26,13 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
         graphicModule.getGuiModule().resize(width, height);
 
         // Recalculer la matrice de projection
-        graphicModule.setProjectionMatrix(new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SIMULATION_DISTANCE *16f));
+        graphicModule.setProjectionMatrix(new Matrix4f().perspective((float) Math.toRadians(45.0f), ratio, 0.1f, Game.SHOW_DISTANCE *16f));
 
         // Mettre à jour la matrice de projection dans le shader
 
         for(Shader shader : GAME.getGraphicModule().getRenderingShaders())
             shader.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
         ShaderUtils.SELECTED_BLOCK_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
+        ShaderUtils.FAR_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
     }
 }

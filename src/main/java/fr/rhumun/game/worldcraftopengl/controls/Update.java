@@ -3,6 +3,8 @@ package fr.rhumun.game.worldcraftopengl.controls;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 public class Update  extends Control{
 
     public Update(){
@@ -21,6 +23,8 @@ public class Update  extends Control{
 
 
         player.getLocation().getChunk().updateBordersChunks();
+
+        player.getLoadedChunksManager().printChunksMap();
 
         player.updateInventory();
     }

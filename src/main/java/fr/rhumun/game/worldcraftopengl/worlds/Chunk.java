@@ -16,7 +16,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 @Setter
-public class Chunk {
+public class Chunk extends AbstractChunk {
 
     Block[][][] blocks;
 
@@ -25,17 +25,9 @@ public class Chunk {
 
     private final Biome[][] biomesMap = new Biome[16][16];
 
-    private final short renderID;
-
-    private final int X;
-    private final int Z;
-
-    private final World world;
-
     @Setter
     private boolean toUpdate = false;
     private boolean toUnload = false;
-    private ChunkRenderer renderer;
 
     @Setter
     private boolean generated = false;
@@ -43,10 +35,7 @@ public class Chunk {
     private boolean loaded = false;
 
     public Chunk(World world, short renderID, int X, int Z){
-        this.renderID = renderID;
-        this.X = X;
-        this.Z = Z;
-        this.world = world;
+        super(renderID, X, Z, world);
 
         blocks = new Block[CHUNK_SIZE][world.getHeigth()][CHUNK_SIZE];
 
@@ -93,7 +82,9 @@ public class Chunk {
             if(toUnload) unload();
             return true;
         } catch (Exception e) {
-            GAME.errorLog(e);
+            GAME.errorLog("Error during generating chunk " + this.toString());
+            GAME.errorLog(e.getMessage());
+            GAME.errorLog(e.getStackTrace().toString());
         }
         return false;
     }
@@ -110,7 +101,7 @@ public class Chunk {
     }
 
     public Block get(int x, int y, int z){
-        if(y<0 || y>= world.getHeigth())
+        if(y<0 || y>= this.getWorld().getHeigth())
             return null;
 
         Chunk target = this;
@@ -137,7 +128,7 @@ public class Chunk {
             zO--;
         }
 
-        if(xO!=0 || zO!=0) target = world.getChunk(target.X+xO, target.Z+zO, false);
+        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, false);
         if(target==null) return null;
         if(target.blocks == null) return null;
         //System.out.println("x: "+(x)+", z: "+(z));
@@ -146,13 +137,13 @@ public class Chunk {
     }
 
     public Block getAt(int x, int y, int z){
-        if(y<0 || y>= world.getHeigth()){
+        if(y<0 || y>= this.getWorld().getHeigth()){
             //System.out.println("Y too high.");
             return null;
         }
 
-        x-=X*CHUNK_SIZE;
-        z-=Z*CHUNK_SIZE;
+        x-=this.getX()*CHUNK_SIZE;
+        z-=this.getZ()*CHUNK_SIZE;
 
         Chunk target = this;
 
@@ -178,7 +169,7 @@ public class Chunk {
             zO--;
         }
 
-        if(xO!=0 || zO!=0) target = world.getChunk(target.X+xO, target.Z+zO, false);
+        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, false);
         if(target==null) return null;
         if(target.blocks == null) return null;
         //System.out.println("x: "+(x)+", z: "+(z));
@@ -192,7 +183,7 @@ public class Chunk {
     }
 
     public Block getHighestBlock(int x, int z, boolean countLiquids){
-        for(int y=world.getHeigth()-1; y>=0; y--){
+        for(int y=this.getWorld().getHeigth()-1; y>=0; y--){
             Block block = blocks[x][y][z];
             if(block.getMaterial() != null && (countLiquids || !block.getMaterial().isLiquid())) return block;
         }
@@ -205,7 +196,7 @@ public class Chunk {
     }
 
     public String toString(){
-        return "Chunk : [ " + X + " : " + Z + " ]";
+        return "Chunk : [ " + this.getX() + " : " + this.getZ() + " ]";
     }
 
     public void unload(){
@@ -235,11 +226,10 @@ public class Chunk {
         this.visibleBlock = null;
         this.lightningBlocks = null;
 
-        for(Renderer renderer : renderer.getRenderers())
+        for(Renderer renderer : this.getRenderer().getRenderers())
             GAME.getGraphicModule().cleanup(renderer);
 
-        this.renderer.cleanup();
-        this.renderer = null;
+        this.cleanup();
 
 //        if(this.isRendererInitialized()){
 //            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();
@@ -247,15 +237,11 @@ public class Chunk {
 //        }
     }
 
-    public boolean isRendererInitialized() {
-        return this.renderer != null;
-    }
-
-    public ChunkRenderer getRenderer(){
-        return (this.renderer == null) ? this.renderer = new ChunkRenderer(this) : this.renderer;
-    }
-
     public void updateBordersChunks() {
+        World world = this.getWorld();
+        int X = this.getX();
+        int Z = this.getZ();
+
         Chunk chunk = world.getChunk(X-1, Z, false);
         if(chunk != null) chunk.setToUpdate(true);
 
@@ -270,6 +256,10 @@ public class Chunk {
     }
 
     public void updateAllBordersChunks() {
+        World world = this.getWorld();
+        int X = this.getX();
+        int Z = this.getZ();
+
         Chunk chunk = world.getChunk(X-1, Z, false);
         if(chunk != null) chunk.updateAllBlock();
 

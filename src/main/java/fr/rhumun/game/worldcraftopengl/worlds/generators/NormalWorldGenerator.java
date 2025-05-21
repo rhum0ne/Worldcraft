@@ -145,7 +145,9 @@ public class NormalWorldGenerator extends WorldGenerator {
                     continue;
                 }
                 if(block.getMaterial() != Material.STONE) continue;
-                block.setMaterial(block.getBiome().getTop());
+                Biome biome = block.getBiome();
+                if(biome == null) block.setMaterial(Material.BLUE_TERRACOTTA);
+                else block.setMaterial(biome.getTop());
                 for(int i=0; i<3; i++){
                     block = block.getBlockAtDown();
                     if(block == null) break;

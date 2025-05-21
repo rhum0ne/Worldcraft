@@ -146,4 +146,8 @@ public class World {
             entities.update();
         }
     }
+
+    public LightChunk getLightChunk(int x, int z, boolean b) {
+        return this.chunks.getLightChunkAt(x, z);
+    }
 }

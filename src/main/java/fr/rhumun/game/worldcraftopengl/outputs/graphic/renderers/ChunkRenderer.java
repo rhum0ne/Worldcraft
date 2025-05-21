@@ -9,9 +9,10 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -25,31 +26,25 @@ import static org.lwjgl.opengl.GL20C.glUseProgram;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
-public class ChunkRenderer {
+public class ChunkRenderer extends AbstractChunkRenderer{
 
     private Chunk chunk;
 
-    private final ArrayList<Renderer> renderers = new ArrayList<>();
-    //private final GlobalRenderer globalRenderer = new GlobalRenderer(GAME.getGraphicModule());
-    //private final GlobalRenderer transparentBlocksRenderer = new GlobalRenderer(GAME.getGraphicModule());
-
-    private boolean areRenderersInitialized = false;
-
-    private boolean isDataUpdating = false;
-    private boolean isDataReady = false;
-
-    @Setter
-    private int distanceFromPlayer;
-
-    private int verticesNumber;
-
-
     public ChunkRenderer(Chunk chunk) {
         this.chunk = chunk;
-        this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        this.renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+
+        ArrayList<Renderer> renderers = this.getRenderers();
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+    }
+
+    public static AbstractChunkRenderer createChunkRenderer(AbstractChunk abstractChunk) {
+        if(abstractChunk instanceof Chunk chunk) return new ChunkRenderer(chunk);
+        else if(abstractChunk instanceof LightChunk lightChunk) return new LightChunkRenderer(lightChunk);
+
+        return null;
     }
 
     public void render() {
@@ -64,53 +59,53 @@ public class ChunkRenderer {
         glEnable(GL_DEPTH_TEST);
         //boolean isFar = OpacityType.TRANSPARENT.getMaxChunkDistance() < distanceFromPlayer;
 
-        this.renderers.get(OpacityType.OPAQUE.getPriority()).render();
+        this.getRenderers().get(OpacityType.OPAQUE.getPriority()).render();
         //if(isFar) this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
 
-        if(this.renderers.get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
+        if(this.getRenderers().get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
             glUseProgram(ShaderUtils.LIQUID_SHADER.id);
-            this.renderers.get(OpacityType.LIQUID.getPriority()).render();
+            this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
 
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
-        if(/*!isFar &&*/ this.renderers.get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+        if(/*!isFar &&*/ this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-            this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
+            this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
-        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > distanceFromPlayer && this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > this.getDistanceFromPlayer() && this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
-            this.renderers.get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
+            this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
     }
-    private void update() {
-        if (!chunk.isGenerated() || (isDataUpdating && !isDataReady)) return; // Vérifie que le chunk est prêt
+    public void update() {
+        if (!chunk.isGenerated() || (this.isDataUpdating() && !this.isDataReady())) return; // Vérifie que le chunk est prêt
 
-        if (!isDataReady && !isDataUpdating) {
+        if (!this.isDataReady() && !this.isDataUpdating()) {
             // Lance le calcul dans un thread séparé
-            isDataUpdating = true;
+            setDataUpdating(true);
             GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
         } else {
             // Les données sont prêtes, on peut mettre à jour le VAO
             updateVAO();
             chunk.setToUpdate(false);
-            isDataUpdating = false;
-            isDataReady = false; // Réinitialise pour la prochaine mise à jour
+            setDataUpdating(false);
+            setDataReady(false); // Réinitialise pour la prochaine mise à jour
         }
 
 //        updateData();
@@ -120,14 +115,14 @@ public class ChunkRenderer {
 
 
     public void updateVAO() {
-        if(!areRenderersInitialized) {
-            for(Renderer renderer : this.renderers) renderer.init();
-            this.areRenderersInitialized = true;
+        if(!this.isAreRenderersInitialized()) {
+            for(Renderer renderer : this.getRenderers()) renderer.init();
+            this.setAreRenderersInitialized(true);
         }
 
-        this.renderers.getFirst().getGraphicModule().getLightningsUtils().updateLights();
+        this.getRenderers().getFirst().getGraphicModule().getLightningsUtils().updateLights();
 
-        for(Renderer renderer : this.renderers) {
+        for(Renderer renderer : this.getRenderers()) {
             glBindVertexArray(renderer.getVAO());
 
             glBindBuffer(GL_ARRAY_BUFFER, renderer.getVBO());
@@ -144,7 +139,7 @@ public class ChunkRenderer {
         if(!chunk.isGenerated()) return;
         long start = System.currentTimeMillis();
 
-        for (Renderer renderer : this.renderers) {
+        for (Renderer renderer : this.getRenderers()) {
             renderer.getVertices().clear();
             renderer.getIndices().clear();
             renderer.setIndice(0);
@@ -152,14 +147,14 @@ public class ChunkRenderer {
 
         LinkedHashSet<Block> blocks = new LinkedHashSet<>();
         if(chunk.getBlocks() == null) {
-            this.verticesNumber = 0;
+            this.setVerticesNumber(0);
 
-            for (Renderer renderer : this.renderers) {
+            for (Renderer renderer : this.getRenderers()) {
                 renderer.toArrays();
                 if(SHOWING_RENDERER_DATA) {
                     int length = renderer.getVertices().size();
                     //GAME.log("DATA LOADED: " + length + " floats");
-                    this.verticesNumber += length;
+                    this.setVerticesNumber(this.getVerticesNumber()+length);
                 }
             }
             return;
@@ -190,20 +185,20 @@ public class ChunkRenderer {
             }
         }
 
-        this.verticesNumber = 0;
+        this.setVerticesNumber(0);
 
-        for (Renderer renderer : this.renderers) {
+        for (Renderer renderer : this.getRenderers()) {
             renderer.toArrays();
             if(SHOWING_RENDERER_DATA) {
                 int length = renderer.getVertices().size();
                 //GAME.log("DATA LOADED: " + length + " floats");
-                this.verticesNumber += length;
+                this.setVerticesNumber(this.getVerticesNumber()+length);
             }
         }
 
         long end = System.currentTimeMillis();
         GAME.debug("Finished updating data for " + chunk + " in " + (end - start) + " ms");
-        isDataReady = true; // Marque les données comme prêtes
+        this.setDataReady(true); // Marque les données comme prêtes
     }
 
 
@@ -246,7 +241,7 @@ public class ChunkRenderer {
             // Ajoute le sommet dans le renderer approprié
 
             float[] vertexData = new float[]{vx, vy, vz, u, v, texture.getId(), nx, ny, nz};
-            this.addVertex(this.renderers.get(block.getMaterial().getOpacity().getPriority()), vertexData);
+            this.addVertex(this.getRenderers().get(block.getMaterial().getOpacity().getPriority()), vertexData);
         }
     }
 

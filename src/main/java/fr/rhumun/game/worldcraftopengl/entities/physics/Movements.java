@@ -103,7 +103,7 @@ public class Movements {
 
         if(entity instanceof Player player && tick++ % stepSoundFrequency == 0) {
             Block block = entity.getBlockDown();
-            if (block.getMaterial() != null ) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
+            if (block != null && block.getMaterial() != null ) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
         }
     }
 }

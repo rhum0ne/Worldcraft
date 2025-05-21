@@ -82,7 +82,7 @@ public class Block {
     }
 
     public Chunk getChunk(){
-        return GAME.getWorld().getChunks().getChunkById(this.chunkID);
+        return (Chunk) GAME.getWorld().getChunks().getChunkById(this.chunkID);
     }
 
     // Vérifie si le bit 7 (isSurrounded) est actif

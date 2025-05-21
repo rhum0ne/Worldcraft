@@ -1,10 +1,14 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
+import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
@@ -17,6 +21,8 @@ public class LoadedChunksManager {
     private final Game game;
 
     private LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
+    private LinkedHashSet<LightChunk> chunksToRenderLight = new LinkedHashSet<>();
+
 
     private Chunk centralChunk;
 
@@ -26,87 +32,101 @@ public class LoadedChunksManager {
         this.game = GAME;
     }
 
-    public void tryLoadChunks(){ //A REVOIR ENTIEREMENT -> LAGS
-        game.getWorld().getGenerator().processChunkQueue();
-        if(!GENERATION) {
-            if(chunksToRender.isEmpty()) chunksToRender.add(player.getLocation().getChunk());
-            return;
-        }
-        Chunk chunk = player.getLocation().getChunk();
-        if(chunk == null) {
-            game.errorLog("Player's chunk seems to be null");
-            return;
-        }
-        if(centralChunk == null) loadChunks(chunk);
-        else if(!chunk.equals(centralChunk)) loadChunks(chunk);
-    }
+    public void updateChunksGradually() {
+        if(!game.isPlaying() || game.isPaused) return;
 
-    private LinkedHashSet<Chunk> getChunksToLoad() {
-        LinkedHashSet<Chunk> chunks = new LinkedHashSet<>();
-        PriorityQueue<ChunkDistance> chunkQueue = new PriorityQueue<>((c1, c2) -> {
-            return Double.compare(c2.distance, c1.distance); // Trier du plus éloigné au plus proche
-        });
+        System.out.println("CHECKING CHUNKS");
 
-        int centerX = this.centralChunk.getX();
-        int centerZ = this.centralChunk.getZ();
+        World world = player.getLocation().getWorld();
+        int centerX = player.getLocation().getChunk().getX();
+        int centerZ = player.getLocation().getChunk().getZ();
 
-        // On parcourt les chunks dans un carré qui englobe le cercle
-        for (int x = centerX - SIMULATION_DISTANCE; x <= centerX + SIMULATION_DISTANCE; x++) {
-            for (int z = centerZ - SIMULATION_DISTANCE; z <= centerZ + SIMULATION_DISTANCE; z++) {
-                // Calculer la distance au centre du chunk du joueur
-                double distance = Math.sqrt(Math.pow(centerX - x, 2) + Math.pow(centerZ - z, 2));
+        Set<AbstractChunk> keepChunks = new HashSet<>();
 
-                // Si la distance est dans le rayon de chargement, on l'ajoute
-                if (distance <= SIMULATION_DISTANCE) {
-                    Chunk chunk = player.getLocation().getWorld().getChunk(x, z, false);
-                    chunk.getRenderer().setDistanceFromPlayer((int) distance);
-                    chunkQueue.add(new ChunkDistance(chunk, distance));
+        for (int x = centerX - SHOW_DISTANCE; x <= centerX + SHOW_DISTANCE; x++) {
+            for (int z = centerZ - SHOW_DISTANCE; z <= centerZ + SHOW_DISTANCE; z++) {
+                double dist = Math.sqrt((x - centerX) * (x - centerX) + (z - centerZ) * (z - centerZ));
+
+                AbstractChunk current = world.getChunks().getAbstractChunk(x, z);
+
+                if (dist <= SIMULATION_DISTANCE) {
+                    if (!(current instanceof Chunk)) {
+                        // Créer ou convertir en Chunk (simulation)
+                        Chunk chunk = world.getChunk(x, z, true);
+                        game.getWorld().getGenerator().tryGenerate(chunk);
+                        chunk.setLoaded(true);
+                        current = chunk;
+                    }
+                } else if (dist <= SHOW_DISTANCE) {
+                    if (!(current instanceof LightChunk)) {
+                        // Créer ou convertir en LightChunk (visuel uniquement)
+                        LightChunk lightChunk = world.getLightChunk(x, z, true);
+                        lightChunk.setLoaded(true);
+                        current = lightChunk;
+                    }
+                }
+
+                if (current != null) {
+                    keepChunks.add(current);
                 }
             }
         }
 
-        // Extraire les chunks dans l'ordre croissant de distance
-        while (!chunkQueue.isEmpty()) {
-            chunks.add(chunkQueue.poll().chunk);
+        // Déchargement de tout ce qui est hors zone
+        for (Chunk chunk : chunksToRender) {
+            if (!keepChunks.contains(chunk)) {
+                chunk.unload();
+            }
         }
 
-        return chunks;
-    }
-
-    private static class ChunkDistance {
-        Chunk chunk;
-        double distance;
-
-        public ChunkDistance(Chunk chunk, double distance) {
-            this.chunk = chunk;
-            this.distance = distance;
-        }
-    }
-
-
-    public void loadChunks(Chunk chunk){
-        long start = System.currentTimeMillis();
-        this.centralChunk = chunk;
-
-        LinkedHashSet<Chunk> toLoad = getChunksToLoad();
-
-        for(Chunk loadedChunk : toLoad){
-            if(this.chunksToRender.contains(loadedChunk)) continue;
-            game.getWorld().getGenerator().addToGenerate(loadedChunk);
-            //game.log("Starting first loading of " + loadedChunk);
-            chunk.setLoaded(true);
-            GAME.getGraphicModule().addChunkToLoad(loadedChunk);
+        for (LightChunk lightChunk : chunksToRenderLight) {
+            if (!keepChunks.contains(lightChunk)) {
+                lightChunk.unload();
+            }
         }
 
-        for(Chunk loadedChunk : this.chunksToRender){
-            if(toLoad.contains(loadedChunk)) continue;
-            loadedChunk.unload();
-        }
+        // Mise à jour des listes internes
+        chunksToRender = keepChunks.stream()
+                .filter(c -> c instanceof Chunk)
+                .map(c -> (Chunk) c)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        this.chunksToRender = toLoad;
+        chunksToRenderLight = keepChunks.stream()
+                .filter(c -> c instanceof LightChunk)
+                .map(c -> (LightChunk) c)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
 
         GAME.getGraphicModule().changeLoadedBlocks();
-        long end = System.currentTimeMillis();
-        GAME.debug("Updating loaded Chunks in " + (end - start) + " ms");
+        System.out.println("Chunks : " + chunksToRender.size());
+        System.out.println("Light Chunks : " + chunksToRenderLight.size());
     }
+
+
+    public void printChunksMap() {
+        int centerX = player.getLocation().getChunk().getX();
+        int centerZ = player.getLocation().getChunk().getZ();
+
+        StringBuilder builder = new StringBuilder();
+        for (int z = centerZ + SHOW_DISTANCE; z >= centerZ - SHOW_DISTANCE; z--) {
+            for (int x = centerX - SHOW_DISTANCE; x <= centerX + SHOW_DISTANCE; x++) {
+                AbstractChunk chunk = game.getWorld().getChunks().exists(x, z)
+                        ? game.getWorld().getChunks().getAbstractChunk(x, z)
+                        : null;
+
+                if (chunk instanceof Chunk) {
+                    builder.append("F ");
+                } else if (chunk instanceof LightChunk) {
+                    builder.append("L ");
+                } else {
+                    builder.append("\\ ");
+                }
+            }
+            builder.append("\n");
+        }
+
+        GAME.log("Carte des chunks :\n" + builder);
+    }
+
+
+
 }

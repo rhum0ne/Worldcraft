@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.*;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.EntityShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.FarShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.GlobalShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.LiquidShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.HUDShader;
@@ -25,6 +26,7 @@ public class ShaderUtils {
     public static Shader PLAN_SHADERS;
     public static Shader LIQUID_SHADER;
     public static Shader TEXT_SHADER;
+    public static Shader FAR_SHADER;
 
     public static void initShaders(){
         GLOBAL_SHADERS = new GlobalShader();
@@ -33,6 +35,7 @@ public class ShaderUtils {
         LIQUID_SHADER = new LiquidShader();
         SELECTED_BLOCK_SHADER = new SelectedBlockShader();
         ENTITY_SHADER = new EntityShader();
+        FAR_SHADER = new FarShader();
     }
 
     public static int loadShader(String vertexPath, String fragmentPath){

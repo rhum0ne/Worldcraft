@@ -5,109 +5,141 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class ChunksContainer {
     private final World world;
-    private final ConcurrentHashMap<Long, Chunk> chunks = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, AbstractChunk> chunks = new ConcurrentHashMap<>();
+    private final HashMap<Short, AbstractChunk> loadedChunks = new HashMap<>();
 
-    private final Deque<Short> availableIds; // IDs disponibles
+    private final Deque<Short> availableIds = new ArrayDeque<>();
     private short maxID = Short.MIN_VALUE;
-    private final HashMap<Short, Chunk> loadedChunks; // Mapping ID -> Chunk
 
-    public ChunksContainer(World world){
+    public ChunksContainer(World world) {
         this.world = world;
-
-        this.availableIds = new ArrayDeque<>();
-        this.loadedChunks = new HashMap<>();
-    }
-
-    public Chunk getChunkById(short chunkId) {
-        return loadedChunks.get(chunkId);
     }
 
     private long toLongKey(int x, int z) {
         return ((long) x << 32) | (z & 0xFFFFFFFFL);
     }
 
-    public Chunk createChunk(int x, int z, boolean generate) {
-        long key = toLongKey(x, z);
+    private void registerChunk(long key, AbstractChunk chunk) {
+        chunks.put(key, chunk);
+        loadedChunks.put(chunk.getRenderID(), chunk);
+    }
 
-        return chunks.computeIfAbsent(key, k -> {
-            if (availableIds.isEmpty()) {
-                if(maxID==Short.MAX_VALUE){
-                    GAME.errorLog("No ID Available to create Chunk " + x + " " + z);
-                    return null;
-                }
-                availableIds.add(maxID++);
+    private void unregisterChunk(AbstractChunk chunk) {
+        long key = toLongKey(chunk.getX(), chunk.getZ());
+        if(!chunks.get(key).getClass().equals(chunk.getClass())) return;
+
+        loadedChunks.remove(chunk.getRenderID());
+        chunks.remove(key);
+        availableIds.add(chunk.getRenderID());
+    }
+
+    private Short nextAvailableId() {
+        if (availableIds.isEmpty()) {
+            if (maxID == Short.MAX_VALUE) {
+                GAME.errorLog("No ID Available");
+                return null;
             }
-
-            short chunkId = availableIds.poll(); // Prend un ID disponible
-            GAME.debug("Creating chunk at " + x + " : " + z);
-            GAME.debug("Loaded Chunks: " + chunks.size() + " | " + loadedChunks.size());
-
-            Chunk chunk = new Chunk(world, chunkId, x, z);
-            loadedChunks.put(chunkId, chunk); // Associe le Chunk à cet ID
-            if(generate)
-                world.getGenerator().addToGenerate(chunk);
-            return chunk;
-        });
+            availableIds.add(maxID++);
+        }
+        return availableIds.poll();
     }
 
     public Chunk getChunk(int x, int z, boolean generateIfNull) {
         long key = toLongKey(x, z);
-        Chunk chunk = chunks.get(key);
+        AbstractChunk chunk = chunks.get(key);
 
-        if (chunk == null) {
-            GAME.debug("Chunk " + x + " : " + z + " is not loaded. Loading it...");
-            chunk = createChunk(x, z, generateIfNull);
-        }
+        if (chunk instanceof Chunk c) return c;
+        if (chunk instanceof LightChunk l) return convertLightToFullChunk(l, key, x, z, generateIfNull);
 
+        return createChunk(x, z, generateIfNull);
+    }
+
+    public LightChunk getLightChunkAt(int x, int z) {
+        long key = toLongKey(x, z);
+        AbstractChunk chunk = chunks.get(key);
+
+        if (chunk instanceof LightChunk l) return l;
+        if (chunk instanceof Chunk c) return convertFullToLightChunk(c, key, x, z);
+
+        return createLightChunkAt(x, z);
+    }
+
+    Chunk createChunk(int x, int z, boolean generate) {
+        Short id = nextAvailableId();
+        if (id == null) return null;
+
+        Chunk chunk = new Chunk(world, id, x, z);
+        if (generate) world.getGenerator().addToGenerate(chunk);
+
+        long key = toLongKey(x, z);
+        registerChunk(key, chunk);
         return chunk;
     }
 
-    public boolean exists(Chunk chunk){ return chunks.containsValue(chunk); }
+    private LightChunk createLightChunkAt(int x, int z) {
+        Short id = nextAvailableId();
+        if (id == null) return null;
 
-    public boolean exists(int x, int z){
+        LightChunk chunk = new LightChunk(id, x, z, world);
+        chunk.setToUpdate(true);
+
         long key = toLongKey(x, z);
-        return chunks.containsKey(key);
+        registerChunk(key, chunk);
+        return chunk;
     }
 
-    public void remove(int x, int z){
-        GAME.debug("Removing Chunk " + x + " " + z + " from Container...");
+    private Chunk convertLightToFullChunk(LightChunk lightChunk, long key, int x, int z, boolean generate) {
+        lightChunk.setToUnload(true);
+        return createChunk(x, z, generate);
+    }
+
+    private LightChunk convertFullToLightChunk(Chunk fullChunk, long key, int x, int z) {
+        Short id = nextAvailableId();
+        if (id == null) return null;
+
+        LightChunk light = new LightChunk(id, x, z, world);
+
+        for (int xi = 0; xi < CHUNK_SIZE; xi++)
+            for (int y = 0; y < world.getHeigth(); y++)
+                for (int zi = 0; zi < CHUNK_SIZE; zi++)
+                    light.getMaterials()[xi][y][zi] = fullChunk.getBlocks()[xi][y][zi].getMaterial();
+
+        light.setToUpdate(true);
+
+        fullChunk.setToUnload(true);
+        registerChunk(key, light);
+        return light;
+    }
+
+    public boolean exists(int x, int z) {
+        return chunks.containsKey(toLongKey(x, z));
+    }
+
+    public boolean exists(Chunk chunk) {
+        return chunks.containsValue(chunk);
+    }
+
+    public AbstractChunk getChunkById(short id) {
+        return loadedChunks.get(id);
+    }
+
+    public void remove(int x, int z) {
+        AbstractChunk chunk = chunks.get(toLongKey(x, z));
+        if (chunk != null) remove(chunk);
+    }
+
+    public void remove(AbstractChunk chunk) {
+        GAME.debug("Removing Chunk " + chunk);
+        unregisterChunk(chunk);
+    }
+
+    public AbstractChunk getAbstractChunk(int x, int z) {
         long key = toLongKey(x, z);
-        Chunk chunk = chunks.remove(key);
-        if(chunk == null){
-            GAME.debug("Error during removing chunk " + x + " " + z + " from HashMap 1. NULL");
-            return;
-        }
-
-        Chunk chunkByID = loadedChunks.remove(chunk.getRenderID());
-        if (chunkByID == null){
-            GAME.debug("Error during removing chunk " + chunk + " from HashMap 2. NULL");
-            return;
-        }
-
-        // Remet l'ID dans la liste des disponibles
-        availableIds.add(chunk.getRenderID());
+        return chunks.get(key);
     }
-    public void remove(Chunk chunk){
-        GAME.debug("Removing Chunk " + chunk + " from Container...");
-        Chunk chunkByID = loadedChunks.remove(chunk.getRenderID());
-        if (chunkByID == null){
-            GAME.debug("Error during removing chunk " + chunk + " from HashMap 2. NULL");
-            return;
-        }
-
-        long key = toLongKey(chunk.getX(), chunk.getZ());
-        Chunk chunk2 = chunks.remove(key);
-        if(chunk2 == null){
-            GAME.debug("Error during removing chunk " + chunk + " from HashMap 1. NULL");
-            return;
-        }
-
-        // Remet l'ID dans la liste des disponibles
-        availableIds.add(chunk.getRenderID());
-    }
-
 }
