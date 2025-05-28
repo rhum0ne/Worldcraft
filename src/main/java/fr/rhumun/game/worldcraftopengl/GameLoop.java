@@ -52,7 +52,6 @@ public class GameLoop extends Thread {
                     continue;
                 }
                 Movements.applyMovements(player);
-                //player.getLoadedChunksManager().tryLoadChunks();
 
                 player.getWorld().updateEntities(player, 48);
             }

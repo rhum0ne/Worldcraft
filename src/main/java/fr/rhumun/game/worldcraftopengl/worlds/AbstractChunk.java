@@ -14,6 +14,7 @@ public abstract class AbstractChunk {
 
     private final World world;
     private AbstractChunkRenderer renderer;
+    private boolean generated = false;
 
     protected AbstractChunk(short renderID, int x, int z, World world) {
         this.renderID = renderID;

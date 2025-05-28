@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +19,8 @@ import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 @Setter
 public class GlobalRenderer extends Renderer {
 
-    public GlobalRenderer(GraphicModule graphicModule) {
-        super(graphicModule);
+    public GlobalRenderer(GraphicModule graphicModule, Shader shader) {
+        super(graphicModule, shader);
     }
 
     @Override

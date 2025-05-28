@@ -56,7 +56,7 @@ public class World {
 
     public void load(){
         spawnChunk = this.getChunkAt(xSpawn, zSpawn, true);
-        this.generator.tryGenerate(spawnChunk);
+        this.generator.forceGenerate(spawnChunk);
 
         while(isLoading()){
             try {

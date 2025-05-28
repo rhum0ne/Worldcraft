@@ -30,8 +30,6 @@ public class Chunk extends AbstractChunk {
     private boolean toUnload = false;
 
     @Setter
-    private boolean generated = false;
-    @Setter
     private boolean loaded = false;
 
     public Chunk(World world, short renderID, int X, int Z){

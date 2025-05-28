@@ -14,7 +14,10 @@ import lombok.Getter;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -25,6 +28,7 @@ import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 public class LightChunkRenderer extends AbstractChunkRenderer{
 
     private LightChunk chunk;
+    private int lodLevel = 0;
 
     public LightChunkRenderer(LightChunk chunk){
         this.chunk = chunk;
@@ -71,11 +75,15 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
         }
     }
 
+    @Override
     public void updateData() {
-        if(!chunk.isGenerated()) return;
+        if (!chunk.isGenerated() || lodLevel < 1) return;
         long start = System.currentTimeMillis();
 
-        chunk.updateAllBlock();
+        double dist = this.getDistanceFromPlayer();
+        int lod = this.lodLevel;
+        int size = CHUNK_SIZE;
+        int height = chunk.getWorld().getHeigth();
 
         for (Renderer renderer : this.getRenderers()) {
             renderer.getVertices().clear();
@@ -83,14 +91,26 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
             renderer.setIndice(0);
         }
 
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < chunk.getWorld().getHeigth(); y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    if(!chunk.getIsVisible()[x][y][z]) continue;
+        for (int x = 0; x < size; x += lod) {
+            for (int z = 0; z < size; z += lod) {
+                for (int y = 0; y < height; y += lod) {
 
-                    Material mat = chunk.getMaterials()[x][y][z];
-                    this.getRenderers().getFirst().getVertices().add(new float[]{chunk.getX()*CHUNK_SIZE+ x, y, chunk.getZ()*CHUNK_SIZE+z, mat.getTextureID()});
-                    this.getRenderers().getFirst().setIndice(this.getRenderers().getFirst().getIndice()+1);
+                    // Sélection du matériau dominant
+                    Material dominant = chunk.getMaterials()[x][y][z];
+                    if(dominant==null) continue;
+
+                    // Coordonnées globales
+                    float worldX = chunk.getX() * CHUNK_SIZE + x;
+                    float worldY = y;
+                    float worldZ = chunk.getZ() * CHUNK_SIZE + z;
+
+                    // Envoie un cube simplifié (ici juste 1 point avec texture ID, à remplacer par cube si besoin)
+                    this.getRenderers().getFirst().getVertices().add(new float[]{
+                            worldX, worldY, worldZ, dominant.getTextureID()
+                    });
+                    this.getRenderers().getFirst().setIndice(
+                            this.getRenderers().getFirst().getIndice() + 1
+                    );
                 }
             }
         }
@@ -99,32 +119,41 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
         for (Renderer renderer : this.getRenderers()) {
             renderer.toArrays();
-            if(SHOWING_RENDERER_DATA) {
+            if (SHOWING_RENDERER_DATA) {
                 int length = renderer.getVertices().size();
-                //GAME.log("DATA LOADED: " + length + " floats");
-                this.setVerticesNumber(this.getVerticesNumber()+length);
+                this.setVerticesNumber(this.getVerticesNumber() + length);
             }
         }
 
         long end = System.currentTimeMillis();
-        GAME.debug("Finished updating data for " + chunk + " in " + (end - start) + " ms");
-        this.setDataReady(true); // Marque les données comme prêtes
+        GAME.debug("Finished updating full-volume LOD data in " + (end - start) + " ms");
+        this.setDataReady(true);
     }
+
 
     @Override
     public void render() {
         if(chunk.isToUpdate()) update();
 
-        //System.out.println("RENDERING FAR CHUNK " + chunk.getX() + " " + chunk.getZ());
-        glDisable(GL_CULL_FACE);
-
         this.getRenderers().getFirst().render();
-        glEnable(GL_CULL_FACE);
-
     }
 
     @Override
     public void cleanup() {
         this.chunk = null;
+    }
+
+    @Override
+    public void setDistanceFromPlayer(int distance) {
+        if(distance == this.getDistanceFromPlayer()) return;
+        super.setDistanceFromPlayer(distance);
+
+        int lod = chunk.getLODLevel(distance);
+        if(this.lodLevel != lod){
+            System.out.println("new lod is " + lod);
+            this.lodLevel = lod;
+            this.chunk.setToUpdate(true);
+        }
+
     }
 }

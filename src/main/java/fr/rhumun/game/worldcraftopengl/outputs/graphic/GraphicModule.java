@@ -259,7 +259,9 @@ public class GraphicModule{
             long vMEnd = System.currentTimeMillis();
 
             glUseProgram(ShaderUtils.FAR_SHADER.id);
+            glDisable(GL_CULL_FACE);
             updateFarChunks();
+            glEnable(GL_CULL_FACE);
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
             long rEnd = System.currentTimeMillis();

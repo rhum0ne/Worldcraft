@@ -42,6 +42,15 @@ public class LightChunk extends AbstractChunk{
         this.toUpdate = true;
     }
 
+    public int getLODLevel(double distance) {
+        if (distance < 150*150) return 1;       // haute qualité
+        if (distance < 250*250) return 2;       // 2x2
+        if (distance < 350*350) return 4;       // 4x4
+        if (distance < 400*400) return 8;       // 8x8
+        return 16;                          // max compression
+    }
+
+
     public void updateAllBlock() {
         if(!isGenerated) generate();
 
@@ -107,7 +116,9 @@ public class LightChunk extends AbstractChunk{
 
         try {
             long start = System.currentTimeMillis();
-            //this.getWorld().getGenerator().generate(this);
+
+            this.getWorld().getGenerator().generate(this);
+
             this.setGenerated(true);
             updateAllBlock();
             this.setToUpdate(true);
@@ -125,5 +136,9 @@ public class LightChunk extends AbstractChunk{
 
     public String toString(){
         return "Light Chunk : [ " + this.getX() + " : " + this.getZ() + " ]";
+    }
+
+    public void setMaterial(int x, int y, int z, Material material) {
+        this.materials[x][y][z] = material;
     }
 }

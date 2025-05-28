@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 
 import java.nio.FloatBuffer;
@@ -25,7 +26,7 @@ public class EntitiesRenderer extends GlobalRenderer{
     private final Player player;
 
     public EntitiesRenderer(GraphicModule graphicModule, Player player) {
-        super(graphicModule);
+        super(graphicModule, ShaderUtils.ENTITY_SHADER);
         this.player = player;
         this.init();
     }

@@ -27,6 +27,7 @@ public class ChunkLoader extends TimerTask {
     public void run() {
         if(!graphicModule.isInitialized()) return;
 
+        player.getWorld().getGenerator().processChunkQueue();
         player.getLoadedChunksManager().updateChunksGradually();
     }
 

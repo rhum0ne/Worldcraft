@@ -23,7 +23,7 @@ public class FarRenderer extends Renderer {
     private int dummyVBO;
 
     public FarRenderer(GraphicModule graphicModule) {
-        super(graphicModule);
+        super(graphicModule, ShaderUtils.GLOBAL_SHADERS);
     }
 
     @Override

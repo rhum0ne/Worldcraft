@@ -1,6 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.worlds.generators;
 
+import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 
@@ -13,7 +15,7 @@ public abstract class WorldGenerator {
 
     private final World world;
     private final ExecutorService executor;
-    private final ConcurrentLinkedDeque<Chunk> toGenerate = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<AbstractChunk> toGenerate = new ConcurrentLinkedDeque<>();
     private final int maxConcurrentGenerations = 1; // Limiter les tâches actives
 
     public WorldGenerator(World world) {
@@ -28,7 +30,7 @@ public abstract class WorldGenerator {
         this.executor = Executors.newFixedThreadPool(maxConcurrentGenerations, factory);
     }
 
-    public void tryGenerate(Chunk chunk) {
+    private void tryGenerate(AbstractChunk chunk) {
         if (chunk.isGenerated()) return;
 
         System.out.println("Trying generate " + chunk);
@@ -41,23 +43,28 @@ public abstract class WorldGenerator {
     }
 
     public abstract void generate(Chunk chunk);
+    public abstract void generate(LightChunk chunk);
 
     public abstract void populate(Chunk chunk);
 
     public void processChunkQueue() {
         while (!toGenerate.isEmpty()) {
-            Chunk chunk = toGenerate.pollLast();
+            AbstractChunk chunk = toGenerate.pollLast();
             if (chunk != null && !chunk.isGenerated()) {
                 tryGenerate(chunk);
             }
         }
     }
 
-    public void addToGenerate(Chunk chunk) {
+    public void addToGenerate(AbstractChunk chunk) {
         toGenerate.offer(chunk);
     }
 
     public void shutdown() {
         executor.shutdown();
+    }
+
+    public void forceGenerate(Chunk chunk) {
+        this.tryGenerate(chunk);
     }
 }

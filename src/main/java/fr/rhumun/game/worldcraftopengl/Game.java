@@ -22,10 +22,10 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
-    public static int SIMULATION_DISTANCE = 6;
-    public static int SHOW_DISTANCE = 30;
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static int SIMULATION_DISTANCE = 5;
+    public static int SHOW_DISTANCE = 15;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;

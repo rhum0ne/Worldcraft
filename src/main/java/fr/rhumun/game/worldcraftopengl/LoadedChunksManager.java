@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.LightChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
@@ -24,9 +25,6 @@ public class LoadedChunksManager {
     private LinkedHashSet<LightChunk> chunksToRenderLight = new LinkedHashSet<>();
 
 
-    private Chunk centralChunk;
-
-
     public LoadedChunksManager(Player player) {
         this.player = player;
         this.game = GAME;
@@ -45,31 +43,37 @@ public class LoadedChunksManager {
 
         for (int x = centerX - SHOW_DISTANCE; x <= centerX + SHOW_DISTANCE; x++) {
             for (int z = centerZ - SHOW_DISTANCE; z <= centerZ + SHOW_DISTANCE; z++) {
-                double dist = Math.sqrt((x - centerX) * (x - centerX) + (z - centerZ) * (z - centerZ));
+                int dist = (x - centerX) * (x - centerX) + (z - centerZ) * (z - centerZ);
+                int distPlayer = (x*CHUNK_SIZE - player.getLocation().getXInt()) * (x*CHUNK_SIZE - player.getLocation().getXInt()) + (z*CHUNK_SIZE - player.getLocation().getZInt()) * (z*CHUNK_SIZE - player.getLocation().getZInt());
 
                 AbstractChunk current = world.getChunks().getAbstractChunk(x, z);
-
-                if (dist <= SIMULATION_DISTANCE) {
+                if (dist <= SIMULATION_DISTANCE*SIMULATION_DISTANCE) {
                     if (!(current instanceof Chunk)) {
                         // Créer ou convertir en Chunk (simulation)
                         Chunk chunk = world.getChunk(x, z, true);
-                        game.getWorld().getGenerator().tryGenerate(chunk);
+                        game.getWorld().getGenerator().addToGenerate(chunk);
                         chunk.setLoaded(true);
                         current = chunk;
                     }
-                } else if (dist <= SHOW_DISTANCE) {
+                } else if (dist <= SHOW_DISTANCE*SHOW_DISTANCE) {
                     if (!(current instanceof LightChunk)) {
-                        // Créer ou convertir en LightChunk (visuel uniquement)
                         LightChunk lightChunk = world.getLightChunk(x, z, true);
                         lightChunk.setLoaded(true);
                         current = lightChunk;
                     }
+
+                    LightChunkRenderer renderer = (LightChunkRenderer)(current.getRenderer());
+                    renderer.setDistanceFromPlayer(distPlayer);
                 }
 
                 if (current != null) {
                     keepChunks.add(current);
                 }
             }
+        }
+
+        for(AbstractChunk chunk : keepChunks) {
+            if(chunk instanceof Chunk chunkF && !chunkF.isGenerated()) world.getGenerator().addToGenerate(chunkF);
         }
 
         // Déchargement de tout ce qui est hors zone

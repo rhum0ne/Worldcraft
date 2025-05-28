@@ -86,6 +86,7 @@ public class ChunksContainer {
         if (id == null) return null;
 
         LightChunk chunk = new LightChunk(id, x, z, world);
+        world.getGenerator().addToGenerate(chunk);
         chunk.setToUpdate(true);
 
         long key = toLongKey(x, z);
@@ -141,5 +142,9 @@ public class ChunksContainer {
     public AbstractChunk getAbstractChunk(int x, int z) {
         long key = toLongKey(x, z);
         return chunks.get(key);
+    }
+
+    public long getChunkKey(int x, int z) {
+        return toLongKey(x, z);
     }
 }

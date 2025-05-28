@@ -10,19 +10,13 @@ import de.articdive.jnoise.pipeline.JNoise;
 import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.HeightCalculation;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
-import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.trees.TreeType;
-import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import lombok.Getter;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
@@ -247,4 +241,39 @@ public class NormalWorldGenerator extends WorldGenerator {
         }
 
     }
+
+    @Override
+    public void generate(LightChunk chunk) {
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            int worldX = chunk.getX() * CHUNK_SIZE + x;
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int worldZ = chunk.getZ() * CHUNK_SIZE + z;
+
+                double continentalValue = continentalness.evaluateNoise(worldX / 512f, worldZ / 512f);
+                double erosionValue = erosion.evaluateNoise(worldX / 612f, worldZ / 612f);
+                double pavLargeScale = pav.evaluateNoise(worldX / 500.0, worldZ / 500.0);
+                double pavSmallScale = pav.evaluateNoise(worldX / 40.0, worldZ / 40.0);
+
+                int height = heightCalculator.calcHeight(worldX, worldZ, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
+
+                for (int y = 0; y < Math.min(height, this.getWorld().getHeigth()); y++) {
+                    chunk.getMaterials()[x][y][z] = Material.STONE;
+                }
+
+                if (height < waterHigh) {
+                    for (int y = height; y < waterHigh; y++) {
+                        chunk.getMaterials()[x][y][z] = Material.WATER;
+                    }
+                }
+
+                // Petite coloration simple
+                if (height > waterHigh && height < this.getWorld().getHeigth()) {
+                    chunk.getMaterials()[x][height][z] = Material.GRASS_BLOCK;
+                }
+            }
+        }
+
+        chunk.setGenerated(true);
+    }
+
 }

@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.worlds.generators;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 
@@ -21,6 +22,19 @@ public class Flat extends WorldGenerator {
                     if(y==9) chunk.setBlock(x, y, z, Material.GRASS_BLOCK);
                     else if(y==8 || y==7) chunk.setBlock(x, y, z, Material.DIRT);
                     else chunk.setBlock(x, y, z, Material.STONE);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void generate(LightChunk chunk) {
+        for(int x=0; x<CHUNK_SIZE; x++){
+            for(int z=0; z<CHUNK_SIZE; z++){
+                for(int y=1; y<10; y++) {
+                    if(y==9) chunk.setMaterial(x, y, z, Material.GRASS_BLOCK);
+                    else if(y==8 || y==7) chunk.setMaterial(x, y, z, Material.DIRT);
+                    else chunk.setMaterial(x, y, z, Material.STONE);
                 }
             }
         }

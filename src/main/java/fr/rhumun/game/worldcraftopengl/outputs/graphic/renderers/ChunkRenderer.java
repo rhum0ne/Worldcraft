@@ -34,10 +34,10 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         this.chunk = chunk;
 
         ArrayList<Renderer> renderers = this.getRenderers();
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule()));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.LIQUID_SHADER));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
     }
 
     public static AbstractChunkRenderer createChunkRenderer(AbstractChunk abstractChunk) {

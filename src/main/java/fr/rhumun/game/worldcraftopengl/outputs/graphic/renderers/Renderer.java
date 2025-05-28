@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 @Setter
 public abstract class Renderer {
     GraphicModule graphicModule;
+    private final Shader shader;
     private int VBO, EBO, VAO;
 
     private final ArrayList<float[]> vertices = new ArrayList<>();
@@ -25,10 +27,11 @@ public abstract class Renderer {
     private int indice;
     int[] indicesArray = new int[0];
 
-    public Renderer(GraphicModule graphicModule) {
+    public Renderer(GraphicModule graphicModule, Shader shader) {
         //System.out.println("Creating Renderer");
         this.graphicModule = graphicModule;
         //glBindVertexArray(this.graphicModule.VAO);
+        this.shader = shader;
     }
 
     public void addIndice(){ indices.add((indices.isEmpty()) ? 0 : (indices.getLast()+1)); }

@@ -26,7 +26,7 @@ public class GuiRenderer extends Renderer {
     private boolean isInitialized = false;
 
     public GuiRenderer(float x1, float y1, float x2, float y2, Texture texture) {
-        super(GAME.getGraphicModule());
+        super(GAME.getGraphicModule(), ShaderUtils.PLAN_SHADERS);
 
         vertices = new float[]{
                 // Positions        // Coordonnées de texture

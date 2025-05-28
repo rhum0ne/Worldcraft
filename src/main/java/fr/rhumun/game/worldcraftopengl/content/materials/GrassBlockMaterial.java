@@ -22,6 +22,8 @@ public class GrassBlockMaterial extends AbstractMaterial {
         return SoundPack.GRASS.getRandom();
     }
 
+    public Texture getTexture() {return this.getTopTexture(); }
+
     @Override
     public OpacityType getOpacity() {
         return OpacityType.OPAQUE;

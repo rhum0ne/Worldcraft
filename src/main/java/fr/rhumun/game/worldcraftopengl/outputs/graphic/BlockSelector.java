@@ -23,7 +23,7 @@ public class BlockSelector extends Renderer {
     private final Player player;
 
     public BlockSelector(GraphicModule graphicModule, Player player) {
-        super(graphicModule);
+        super(graphicModule, ShaderUtils.SELECTED_BLOCK_SHADER);
         this.player = player;
     }
 
