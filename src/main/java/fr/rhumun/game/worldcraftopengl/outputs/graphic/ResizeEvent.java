@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 
@@ -32,7 +32,7 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
 
         for(Shader shader : GAME.getGraphicModule().getRenderingShaders())
             shader.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
-        ShaderUtils.SELECTED_BLOCK_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
-        ShaderUtils.FAR_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
+        ShaderManager.SELECTED_BLOCK_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
+        ShaderManager.FAR_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
     }
 }

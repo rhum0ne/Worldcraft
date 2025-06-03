@@ -1,11 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL11.*;
@@ -22,14 +20,12 @@ public class FarRenderer extends Renderer {
     private int dummyVBO;
 
     public FarRenderer(GraphicModule graphicModule) {
-        super(graphicModule, ShaderUtils.GLOBAL_SHADERS);
+        super(graphicModule, ShaderManager.GLOBAL_SHADERS);
     }
 
     @Override
     public void init() {
         super.init();
-
-        GAME.debug("FAR RENDERER INITIALIZED");
 
         float[] dummyVertices = new float[36]; // Peut être n’importe quoi
 

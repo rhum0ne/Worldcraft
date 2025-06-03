@@ -56,7 +56,7 @@ public class FontLoader {
             int width = fontSize; // Largeur fixe pour chaque glyphe
             int height = fontSize; // Hauteur fixe pour chaque glyphe
 
-            glUseProgram(ShaderUtils.TEXT_SHADER.id);
+            glUseProgram(ShaderManager.TEXT_SHADER.id);
             // Création de la texture array
             int textureID = glGenTextures();
             glActiveTexture(GL_TEXTURE0 + textureID); // Utilisation de l'unité de texture 2 (ou une autre disponible)
@@ -104,7 +104,7 @@ public class FontLoader {
 //            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 //            glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-            ShaderUtils.TEXT_SHADER.setUniform("charsTextures", textureID);
+            ShaderManager.TEXT_SHADER.setUniform("charsTextures", textureID);
             TEXTURES_ARRAY = textureID;
 
             GAME.log("Character Texture Array creation complete! " + GuiCharacter.characters.size() + " entries.");

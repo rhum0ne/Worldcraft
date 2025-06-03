@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
@@ -27,7 +27,7 @@ public class LiquidsUtil {
     }
 
     private static boolean isToRender(Block block, Block counterBlock){
-        return !counterBlock.isOpaque() && block.getMaterial() != counterBlock.getMaterial();
+        return counterBlock != null && !counterBlock.isOpaque() && block.getMaterial() != counterBlock.getMaterial();
     }
 
     private static Block loadLiquidSurface(Chunk chunk, Block corner1, int X, int Y, int Z, LinkedHashSet<Block> blocks){

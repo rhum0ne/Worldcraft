@@ -1,19 +1,16 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -26,7 +23,7 @@ public class EntitiesRenderer extends GlobalRenderer{
     private final Player player;
 
     public EntitiesRenderer(GraphicModule graphicModule, Player player) {
-        super(graphicModule, ShaderUtils.ENTITY_SHADER);
+        super(graphicModule, ShaderManager.ENTITY_SHADER);
         this.player = player;
         this.init();
     }

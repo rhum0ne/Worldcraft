@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
-import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
@@ -13,7 +12,6 @@ import lombok.Getter;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
@@ -89,7 +87,9 @@ public class World {
     }
     public Chunk createChunk(int x, int z){ return this.chunks.createChunk(x, z, false); }
 
-    public Chunk getChunk(int x, int z, boolean generateIfNull){ return this.chunks.getChunk(x, z, generateIfNull); }
+    public Chunk getChunk(int x, int z, boolean createIfNull, boolean generateIfNull){ return this.chunks.getChunk(x, z, createIfNull, generateIfNull); }
+
+    public Chunk getChunk(int x, int z, boolean generateIfNull){ return this.chunks.getChunk(x, z, false, generateIfNull); }
 
     public boolean isChunkLoaded(int x, int z){ return chunks.exists(x, z); }
     public void unload(Chunk chunk) { chunks.remove(chunk); }
@@ -100,11 +100,13 @@ public class World {
         return isChunkLoaded(x/CHUNK_SIZE, z/CHUNK_SIZE);
     }
 
-    public Chunk getChunkAt(int x, int z, boolean generateIfNull){
+    public Chunk getChunkAt(int x, int z, boolean createIfNull, boolean generateIfNull){
         if(x < 0 && x%CHUNK_SIZE!=0) x-=CHUNK_SIZE;
         if(z < 0 && z%CHUNK_SIZE!=0) z-=CHUNK_SIZE;
         return getChunk(x/CHUNK_SIZE, z/CHUNK_SIZE, generateIfNull);
     }
+
+    public Chunk getChunkAt(int x, int z, boolean generateIfNull){ return getChunkAt(x, z, false, generateIfNull); }
 
     public Chunk getChunkAt(double xD, double zD, boolean generateIfNull){
         int x = (int) Math.round(xD);

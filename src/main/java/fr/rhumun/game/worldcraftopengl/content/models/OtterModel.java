@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.models;
 
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.content.Model.load;

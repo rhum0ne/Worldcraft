@@ -1,8 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.models.*;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import lombok.Getter;
 
 import java.io.FileInputStream;

@@ -10,7 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
@@ -89,12 +89,12 @@ public class GuiModule {
                 .scale(scaleY);                           // Applique l'échelle uniformément
 
 
-        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
-        int projection = glGetUniformLocation(ShaderUtils.PLAN_SHADERS.id, "projection");
+        glUseProgram(ShaderManager.PLAN_SHADERS.id);
+        int projection = glGetUniformLocation(ShaderManager.PLAN_SHADERS.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
 
-        glUseProgram(ShaderUtils.TEXT_SHADER.id);
-        projection = glGetUniformLocation(ShaderUtils.TEXT_SHADER.id, "projection");
+        glUseProgram(ShaderManager.TEXT_SHADER.id);
+        projection = glGetUniformLocation(ShaderManager.TEXT_SHADER.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
     }
 

@@ -15,6 +15,8 @@ import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Getter @Setter
@@ -22,10 +24,10 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
-    public static int SHOW_DISTANCE = 18;
+    public static int SHOW_DISTANCE = 25;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -38,6 +40,7 @@ public class Game {
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
     public static boolean DEBUG = false;
+    public static int LOD = 4;
     public static final long LAG_SPIKE_LIMIT = 100;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
@@ -125,19 +128,22 @@ public class Game {
     }
 
     public void errorLog(String log){
+        System.err.println("ERROR -- at " + getTime());
         System.err.println("Thread : " + Thread.currentThread().getName());
         System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-        System.err.println("[ERROR MESSAGE] - " + log);
+        System.err.println(log + "\n");
     }
-    public void errorLog(Exception e){
+    public void errorLog(Exception e) {
+        System.err.println("ERROR -- at " + getTime());
         System.err.println("Thread : " + Thread.currentThread().getName());
-        System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
+        e.printStackTrace(); // Meilleur que Arrays.toString(e.getStackTrace())
+        System.err.println("\n");
+    }
+    public void log(String log){ System.out.println("["+ getTime() + "] " + log); }
+    public void debug(String s) {if(DEBUG) System.out.println("["+ getTime() + "] [DEBUG] - " + s);}
+    public void warn(String s) { System.out.println("[" + getTime() + "] [WARNING] - " + s);}
 
-        System.err.println("[ERROR] - " + e.getMessage());
-        System.err.println("[ERROR] - " + e.getCause().getMessage());
-        System.err.println("[ERROR] - " + Arrays.toString(e.getStackTrace()));
+    private String getTime() {
+        return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
-    public void log(String log){ System.out.println("INFO: " + log); }
-    public void debug(String s) {if(DEBUG) System.out.println("[DEBUG] - " + s);}
-    public void warn(String s) { System.out.println("[WARNING] - " + s);}
 }

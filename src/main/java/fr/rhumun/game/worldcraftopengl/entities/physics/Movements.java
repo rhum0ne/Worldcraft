@@ -1,10 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.entities.physics;
 
-import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
 public class Movements {

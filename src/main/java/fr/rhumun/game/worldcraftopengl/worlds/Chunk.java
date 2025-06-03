@@ -2,8 +2,6 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.Block;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
@@ -37,6 +35,8 @@ public class Chunk extends AbstractChunk {
                 }
             }
         }
+
+        this.setLoaded(true);
     }
 
     private void updateAllBlock(){
@@ -57,10 +57,10 @@ public class Chunk extends AbstractChunk {
         return this.biomesMap[block.getChunkX()][block.getChunkZ()];
     }
 
-    public boolean generate() {
+    public synchronized boolean generate() {
+        if(!isLoaded()) return false;
         if (this.isGenerated()) return true;
 
-        this.lock();
         try {
             long start = System.currentTimeMillis();
             this.getWorld().getGenerator().generate(this);
@@ -75,13 +75,14 @@ public class Chunk extends AbstractChunk {
 
             if(this.isToUnload()) unload();
             return true;
+
         } catch (Exception e) {
             GAME.errorLog("Error during generating chunk " + this.toString());
             GAME.errorLog(e.getMessage());
             GAME.errorLog(e.getStackTrace().toString());
+            return false;
+
         }
-        this.unlock();
-        return false;
     }
 
 
@@ -123,7 +124,7 @@ public class Chunk extends AbstractChunk {
             zO--;
         }
 
-        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, false);
+        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, true, false);
         if(target==null) return null;
         if(target.blocks == null) return null;
         //System.out.println("x: "+(x)+", z: "+(z));
@@ -194,13 +195,13 @@ public class Chunk extends AbstractChunk {
         return "Chunk : [ " + this.getX() + " : " + this.getZ() + " ]";
     }
 
-    public void unload(){
-        if(!this.isGenerated() || this.isLocked()) {
+    public synchronized void unload(){
+        if(!this.isLoaded()) return;
+
+        if(!this.isGenerated()) {
             this.setToUnload(true);
             return;
         }
-
-        if(!this.isLoaded()) return;
 
         GAME.debug("Unloading chunk " + this.toString());
         this.setLoaded(false);
@@ -225,6 +226,7 @@ public class Chunk extends AbstractChunk {
             GAME.getGraphicModule().cleanup(renderer);
 
         this.cleanup();
+        getWorld().getChunks().unregisterChunk(this);
 
 //        if(this.isRendererInitialized()){
 //            for(Renderer renderer : renderer.getRenderers()) renderer.cleanup();
@@ -267,4 +269,47 @@ public class Chunk extends AbstractChunk {
         chunk = world.getChunk(X, Z+1, false);
         if(chunk != null) chunk.updateAllBlock();
     }
+
+    public void debugChunk() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("---- Chunk Debug Info ----\n");
+        sb.append("Position : ").append(this.toString()).append("\n");
+        sb.append("RenderID : ").append(this.getRenderID()).append("\n");
+        sb.append("Generated : ").append(this.isGenerated()).append("\n");
+        sb.append("Loaded : ").append(this.isLoaded()).append("\n");
+        sb.append("ToUnload : ").append(this.isToUnload()).append("\n");
+        sb.append("ToUpdate : ").append(this.isToUpdate()).append("\n");
+
+        int nonAir = 0;
+        int air = 0;
+        int total = 0;
+        HashMap<Material, Integer> materialCount = new HashMap<>();
+
+        if (blocks != null) {
+            for (int x = 0; x < CHUNK_SIZE; x++) {
+                for (int y = 0; y < getWorld().getHeigth(); y++) {
+                    for (int z = 0; z < CHUNK_SIZE; z++) {
+                        Block block = blocks[x][y][z];
+                        if (block == null) continue;
+                        total++;
+
+                        Material mat = block.getMaterial();
+                        if (mat == null) {
+                            air++;
+                        } else {
+                            nonAir++;
+                            materialCount.put(mat, materialCount.getOrDefault(mat, 0) + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        sb.append("Total blocks : ").append(total).append("\n");
+        sb.append("Air blocks   : ").append(air).append("\n");
+        sb.append("Solid blocks : ").append(nonAir).append("\n");
+
+        GAME.log(sb.toString());
+    }
+
 }

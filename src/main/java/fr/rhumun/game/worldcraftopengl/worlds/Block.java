@@ -1,13 +1,12 @@
-package fr.rhumun.game.worldcraftopengl.content;
+package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
+import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
-import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,14 +17,11 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Setter
 public class Block {
 
-    //Créer un baseBlock pour les blocks d'air, qui ne contiendra que XYZ et Chunk.
-    //Le setMaterial remplacera ce baseBlock par un block qui aura un material
-    //Ou remplacera un Block par un BaseBlock si le material est null
     private byte model;
     private short material;
     private short chunkID;
 
-    private byte chunkXZ; // Stocke chunkX et chunkZ ensemble (4 bits chacun)
+    private byte chunkXZ;
     private byte chunkY;
 
     private byte state = 0; //Créer un block data, et une interface BlockDataMaterial
@@ -82,7 +78,8 @@ public class Block {
     }
 
     public Chunk getChunk(){
-        return (Chunk) GAME.getWorld().getChunks().getChunkById(this.chunkID);
+        AbstractChunk chunkA = GAME.getWorld().getChunks().getChunkById(this.chunkID);
+        return chunkA instanceof Chunk chunk ? chunk : null;
     }
 
     // Vérifie si le bit 7 (isSurrounded) est actif

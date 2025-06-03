@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.GuiCharacter;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,13 +59,13 @@ public class TextComponent extends Component {
 
     @Override
     public void render(){
-        ShaderUtils.TEXT_SHADER.setUniform("textColor", this.rgba);
+        ShaderManager.TEXT_SHADER.setUniform("textColor", this.rgba);
         super.render();
     }
 
     @Override
     public int getShader() {
-        return ShaderUtils.TEXT_SHADER.id;
+        return ShaderManager.TEXT_SHADER.id;
     }
     public int getTextureArray(){ return FontLoader.TEXTURES_ARRAY; }
     @Override

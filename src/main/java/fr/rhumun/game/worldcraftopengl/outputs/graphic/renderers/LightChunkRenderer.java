@@ -1,24 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.Block;
-import fr.rhumun.game.worldcraftopengl.content.Mesh;
-import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import lombok.Getter;
 
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.*;
-
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
@@ -33,28 +20,16 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
         this.getRenderers().add(new FarRenderer(GAME.getGraphicModule()));
     }
 
-    public void update() {
-        if (!chunk.isGenerated() || (this.isDataUpdating() && !this.isDataReady())) return; // Vérifie que le chunk est prêt
+    public synchronized void update() {
+        if (!chunk.isGenerated()) return; // Vérifie que le chunk est prêt
+        chunk.setToUpdate(false);
 
-        if (!this.isDataReady() && !this.isDataUpdating()) {
-            // Lance le calcul dans un thread séparé
-            setDataUpdating(true);
-            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
-        } else {
-            // Les données sont prêtes, on peut mettre à jour le VAO
-            updateVAO();
-            chunk.setToUpdate(false);
-            setDataUpdating(false);
-            setDataReady(false); // Réinitialise pour la prochaine mise à jour
-        }
-
-//        updateData();
-//        updateVAO();
-//        chunk.setToUpdate(false);
+        updateData();
+        updateVAO();
     }
 
 
-    public void updateVAO() {
+    public synchronized void updateVAO() {
         if(!this.isAreRenderersInitialized()) {
             for(Renderer renderer : this.getRenderers()) renderer.init();
             this.setAreRenderersInitialized(true);
@@ -67,8 +42,6 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
             glBufferData(GL_ARRAY_BUFFER, renderer.getVerticesArray().clone(), GL_DYNAMIC_DRAW);
 
             glBindVertexArray(0);
-
-            GAME.debug("FINISHED VAO UPDATE FOR LIGHTCHUNK");
         }
     }
 
@@ -102,7 +75,7 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
                     // Expansion en Y d'abord
                     outerY:
-                    for (int yTest = y + lod; yTest < height; yTest += lod) {
+                    for (int yTest = height -1 -lod; yTest >= 0; yTest -= lod) {
                         for (int dx = 0; dx < xM; dx += lod) {
                             for (int dz = 0; dz < zM; dz += lod) {
                                 if (used[x + dx][yTest][z + dz]) break outerY;
@@ -153,7 +126,7 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
                     float worldZ = chunk.getZ() * CHUNK_SIZE + z;
 
                     this.getRenderers().getFirst().getVertices().add(new float[] {
-                            worldX, worldY, worldZ,
+                            worldX- 0.5f, worldY-1f, worldZ- 0.5f,
                             baseMat.getTextureID(),
                             xM, yM, zM
                     });
@@ -170,8 +143,6 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
             if (SHOWING_RENDERER_DATA)
                 this.setVerticesNumber(this.getVerticesNumber() + renderer.getVertices().size());
         }
-
-        this.setDataReady(true);
     }
 
 

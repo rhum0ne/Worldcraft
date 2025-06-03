@@ -11,10 +11,6 @@ public abstract class AbstractChunkRenderer {
 
     private final ArrayList<Renderer> renderers = new ArrayList<>();
     private boolean areRenderersInitialized = false;
-
-    private boolean isDataUpdating = false;
-    private boolean isDataReady = false;
-
     @Setter
     private int distanceFromPlayer;
 

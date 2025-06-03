@@ -33,8 +33,6 @@ public class LoadedChunksManager {
     public void updateChunksGradually() {
         if(!game.isPlaying() || game.isPaused) return;
 
-        System.out.println("CHECKING CHUNKS");
-
         World world = player.getLocation().getWorld();
         int centerX = player.getLocation().getChunk().getX();
         int centerZ = player.getLocation().getChunk().getZ();
@@ -50,10 +48,7 @@ public class LoadedChunksManager {
                 if (dist <= SIMULATION_DISTANCE*SIMULATION_DISTANCE) {
                     if (!(current instanceof Chunk)) {
                         // Créer ou convertir en Chunk (simulation)
-                        Chunk chunk = world.getChunk(x, z, true);
-                        game.getWorld().getGenerator().addToGenerate(chunk);
-                        chunk.setLoaded(true);
-                        current = chunk;
+                        current = world.getChunk(x, z, true, true);
                     }
                 } else if (dist <= SHOW_DISTANCE*SHOW_DISTANCE) {
                     if (!(current instanceof LightChunk)) {
@@ -85,7 +80,6 @@ public class LoadedChunksManager {
 
         for (LightChunk lightChunk : chunksToRenderLight) {
             if (!keepChunks.contains(lightChunk)) {
-                System.out.println("Unload cause of manager");
                 lightChunk.unload();
             }
         }
@@ -94,6 +88,11 @@ public class LoadedChunksManager {
         chunksToRender = keepChunks.stream()
                 .filter(c -> c instanceof Chunk)
                 .map(c -> (Chunk) c)
+                .sorted(Comparator.comparingInt(chunk -> {
+                    int dx = chunk.getX() * CHUNK_SIZE - player.getLocation().getXInt();
+                    int dz = chunk.getZ() * CHUNK_SIZE - player.getLocation().getZInt();
+                    return -(dx * dx + dz * dz); // tri du plus loin au plus proche
+                }))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         chunksToRenderLight = keepChunks.stream()
@@ -102,8 +101,6 @@ public class LoadedChunksManager {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
         GAME.getGraphicModule().changeLoadedBlocks();
-        System.out.println("Chunks : " + chunksToRender.size());
-        System.out.println("Light Chunks : " + chunksToRenderLight.size());
     }
 
 
@@ -119,7 +116,9 @@ public class LoadedChunksManager {
                         : null;
 
                 if (chunk instanceof Chunk) {
-                    builder.append("F ");
+                    if(!chunk.isLoaded()) builder.append("P ");
+                    else if(!chunk.isGenerated()) builder.append("G ");
+                    else builder.append("F ");
                 } else if (chunk instanceof LightChunk) {
                     if(chunk.isGenerated()) builder.append("L ");
                     else if(!game.getGraphicModule().getLoadedFarChunks().contains(chunk)) builder.append("I ");

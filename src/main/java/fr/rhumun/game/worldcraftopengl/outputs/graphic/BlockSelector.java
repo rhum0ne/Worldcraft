@@ -1,11 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.entities.Player;
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -23,14 +23,14 @@ public class BlockSelector extends Renderer {
     private final Player player;
 
     public BlockSelector(GraphicModule graphicModule, Player player) {
-        super(graphicModule, ShaderUtils.SELECTED_BLOCK_SHADER);
+        super(graphicModule, ShaderManager.SELECTED_BLOCK_SHADER);
         this.player = player;
     }
 
     @Override
     public void init() {
         super.init();
-        glUseProgram(ShaderUtils.SELECTED_BLOCK_SHADER.id);
+        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);

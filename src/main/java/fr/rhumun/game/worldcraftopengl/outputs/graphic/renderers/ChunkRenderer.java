@@ -1,11 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
@@ -34,10 +34,10 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         this.chunk = chunk;
 
         ArrayList<Renderer> renderers = this.getRenderers();
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.LIQUID_SHADER));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
-        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderUtils.GLOBAL_SHADERS));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderManager.GLOBAL_SHADERS));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderManager.LIQUID_SHADER));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderManager.GLOBAL_SHADERS));
+        renderers.add(new GlobalRenderer(GAME.getGraphicModule(), ShaderManager.GLOBAL_SHADERS));
     }
 
     public static AbstractChunkRenderer createChunkRenderer(AbstractChunk abstractChunk) {
@@ -47,13 +47,13 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         return null;
     }
 
-    public void render() {
+    public synchronized void render() {
 
         if(chunk.isToUpdate()) update();
 
         //System.out.println("Rendering chunk " + chunk);
 
-        glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         //glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
 
         glEnable(GL_DEPTH_TEST);
@@ -66,7 +66,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
-            glUseProgram(ShaderUtils.LIQUID_SHADER.id);
+            glUseProgram(ShaderManager.LIQUID_SHADER.id);
             this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
 
             //glDepthMask(true);
@@ -76,7 +76,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
-            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
+            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
             this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
@@ -86,35 +86,22 @@ public class ChunkRenderer extends AbstractChunkRenderer{
             glEnable(GL_BLEND);
             //glDepthMask(false);
 
-            glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
+            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
             this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
 
             //glDepthMask(true);
             glDisable(GL_BLEND);
         }
     }
-    public void update() {
-        if (!chunk.isGenerated() || (this.isDataUpdating() && !this.isDataReady())) return; // Vérifie que le chunk est prêt
-
-        if (!this.isDataReady() && !this.isDataUpdating()) {
-            // Lance le calcul dans un thread séparé
-            setDataUpdating(true);
-            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
-        } else {
-            // Les données sont prêtes, on peut mettre à jour le VAO
-            updateVAO();
-            chunk.setToUpdate(false);
-            setDataUpdating(false);
-            setDataReady(false); // Réinitialise pour la prochaine mise à jour
-        }
-
-//        updateData();
-//        updateVAO();
-//        chunk.setToUpdate(false);
+    public synchronized void update() {
+        if (!chunk.isGenerated()) return;
+        chunk.setToUpdate(false);
+        updateData();
+        updateVAO();
     }
 
 
-    public void updateVAO() {
+    public synchronized void updateVAO() {
         if(!this.isAreRenderersInitialized()) {
             for(Renderer renderer : this.getRenderers()) renderer.init();
             this.setAreRenderersInitialized(true);
@@ -137,6 +124,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
     public void updateData() {
         if(!chunk.isGenerated()) return;
+
         long start = System.currentTimeMillis();
 
         for (Renderer renderer : this.getRenderers()) {
@@ -198,7 +186,6 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
         long end = System.currentTimeMillis();
         GAME.debug("Finished updating data for " + chunk + " in " + (end - start) + " ms");
-        this.setDataReady(true); // Marque les données comme prêtes
     }
 
 

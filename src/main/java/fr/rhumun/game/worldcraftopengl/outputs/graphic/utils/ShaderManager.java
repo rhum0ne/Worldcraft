@@ -18,7 +18,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.SHADERS_PATH;
 import static org.lwjgl.opengl.GL20.*;
 
-public class ShaderUtils {
+public class ShaderManager {
 
     public static Shader SELECTED_BLOCK_SHADER;
     public static Shader ENTITY_SHADER;

@@ -2,12 +2,10 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Arrays;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
@@ -144,7 +142,7 @@ public abstract class Component{
     }
 
     public int getShader() {
-        return ShaderUtils.PLAN_SHADERS.id;
+        return ShaderManager.PLAN_SHADERS.id;
     }
     public int getTextureArray() { return TextureUtils.GUIS_TEXTURES; }
 

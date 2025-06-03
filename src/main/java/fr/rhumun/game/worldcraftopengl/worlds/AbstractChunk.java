@@ -5,6 +5,8 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 @Getter @Setter
 public abstract class AbstractChunk {
     private final short renderID;
@@ -16,7 +18,6 @@ public abstract class AbstractChunk {
     private AbstractChunkRenderer renderer;
 
     private boolean generated = false;
-    private boolean locked = false;
     @Setter
     private boolean toUpdate = false;
     private boolean toUnload = false;
@@ -39,9 +40,9 @@ public abstract class AbstractChunk {
         return (!isRendererInitialized()) ? this.renderer = ChunkRenderer.createChunkRenderer(this) : this.renderer;
     }
 
-    public void unload(){
+    public synchronized void unload(){
 
-        if(!this.isGenerated() || this.isLocked()) {
+        if(!this.isGenerated()) {
             this.setToUnload(true);
             return;
         }
@@ -51,14 +52,14 @@ public abstract class AbstractChunk {
             this.renderer = null;
         }
     }
-    public void cleanup(){
+    public synchronized void cleanup(){
         this.getRenderer().cleanup();
         this.renderer = null;
     }
 
     public abstract boolean generate();
 
-
-    public void lock(){ this.locked = true; }
-    public void unlock(){ this.locked = false; }
+    public synchronized void render() {
+        this.getRenderer().render();
+    }
 }

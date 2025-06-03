@@ -47,8 +47,8 @@ public class TextureUtils {
             i++;
         }
 
-        ShaderUtils.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
-        ShaderUtils.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
+        ShaderManager.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
+        ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
 
         GAME.debug("Done!");
         return guiTexturesUnits.length;
@@ -105,7 +105,7 @@ public class TextureUtils {
         entitiesTexturesUnits[0] = textureID;
 
         // Remplir le shader avec l'unité de texture et le sampler
-        ShaderUtils.ENTITY_SHADER.setUniform("entitiesTextures", entitiesTexturesUnits);
+        ShaderManager.ENTITY_SHADER.setUniform("entitiesTextures", entitiesTexturesUnits);
 
         GAME.debug("Done!");
     }
@@ -189,7 +189,7 @@ public class TextureUtils {
             shader.setUniform("textures", textureID);
         }
 
-        ShaderUtils.PLAN_SHADERS.setUniform("texturesNumber", blockTextureCount);
+        ShaderManager.PLAN_SHADERS.setUniform("texturesNumber", blockTextureCount);
 
         GAME.debug("Done!");
         return textureID;

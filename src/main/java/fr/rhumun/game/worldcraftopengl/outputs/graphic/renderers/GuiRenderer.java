@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL11.*;
@@ -26,7 +26,7 @@ public class GuiRenderer extends Renderer {
     private boolean isInitialized = false;
 
     public GuiRenderer(float x1, float y1, float x2, float y2, Texture texture) {
-        super(GAME.getGraphicModule(), ShaderUtils.PLAN_SHADERS);
+        super(GAME.getGraphicModule(), ShaderManager.PLAN_SHADERS);
 
         vertices = new float[]{
                 // Positions        // Coordonnées de texture
@@ -42,7 +42,7 @@ public class GuiRenderer extends Renderer {
     public void init() {
         super.init();
 
-        glUseProgram(ShaderUtils.PLAN_SHADERS.id);
+        glUseProgram(ShaderManager.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);

@@ -1,11 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.AbstractChunkRenderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.LightChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,10 +35,10 @@ public class LightChunk extends AbstractChunk{
     }
 
     public int getLODLevel(double distance) {
-        if (distance < 250*250) return 1;       // haute qualité
-        if (distance < 300*300) return 2;       // 2x2
-        if (distance < 350*350) return 4;       // 4x4
-        if (distance < 400*400) return 8;       // 8x8
+        if (distance < Game.LOD*200*200/2) return 1;       // haute qualité
+        if (distance < Game.LOD*350*350/2) return 2;       // 2x2
+        if (distance < Game.LOD*450*450/2) return 4;       // 4x4
+        if (distance < Game.LOD*600*600/2) return 8;       // 8x8
         return 16;                          // max compression
     }
 
@@ -85,7 +82,7 @@ public class LightChunk extends AbstractChunk{
     }
 
 
-    public void unload() {
+    public synchronized void unload() {
         if(!this.isGenerated()) {
             this.setToUnload(true);
             return;
@@ -93,8 +90,8 @@ public class LightChunk extends AbstractChunk{
 
         if(!this.isLoaded()) return;
 
-        System.out.println("Unloading chunk " + this.toString());
         this.setLoaded(false);
+        getWorld().getChunks().unregisterChunk(this);
 
         this.materials = null;
         this.isVisible = null;
@@ -106,10 +103,9 @@ public class LightChunk extends AbstractChunk{
     }
 
     @Override
-    public boolean generate() {
+    public synchronized boolean generate() {
         if (this.isGenerated()) return true;
 
-        this.lock();
 
         try {
             long start = System.currentTimeMillis();
@@ -126,10 +122,10 @@ public class LightChunk extends AbstractChunk{
             if(isToUnload()) unload();
             return true;
         } catch (Exception e) {
-            GAME.errorLog(e);
+            GAME.errorLog("Error during generating light chunk " + this.toString());
+            GAME.errorLog(e.getMessage());
+            GAME.errorLog(e.getStackTrace().toString());
         }
-
-        this.unlock();
         return false;
     }
 

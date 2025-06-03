@@ -33,8 +33,6 @@ public abstract class WorldGenerator {
     private void tryGenerate(AbstractChunk chunk) {
         if (chunk.isGenerated()) return;
 
-        System.out.println("Trying generate " + chunk);
-
         try {
             executor.submit(chunk::generate);
         } catch (Exception e) {

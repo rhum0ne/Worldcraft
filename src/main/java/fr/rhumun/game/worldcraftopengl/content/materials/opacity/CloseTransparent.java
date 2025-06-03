@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.opacity;
 
-import fr.rhumun.game.worldcraftopengl.content.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 public class CloseTransparent implements AbstractOpacity {
     @Override
