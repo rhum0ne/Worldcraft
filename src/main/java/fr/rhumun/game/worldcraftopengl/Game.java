@@ -24,13 +24,13 @@ public class Game {
 
     public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
-    public static int SIMULATION_DISTANCE = 5;
-    public static int SHOW_DISTANCE = 15;
+    public static int SIMULATION_DISTANCE = 6;
+    public static int SHOW_DISTANCE = 18;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
     public static boolean SHOWING_FPS = false;
-    public static boolean SHOWING_RENDERER_DATA = false;
+    public static boolean SHOWING_RENDERER_DATA = true;
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;

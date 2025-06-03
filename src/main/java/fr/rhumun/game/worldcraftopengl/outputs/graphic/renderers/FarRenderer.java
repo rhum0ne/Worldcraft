@@ -11,8 +11,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
 import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
@@ -41,22 +40,28 @@ public class FarRenderer extends Renderer {
         glBufferData(GL_ARRAY_BUFFER, dummyVertices, GL_STATIC_DRAW);
 
         // Attribut fictif pour activer gl_VertexID (on n'utilise pas réellement ces données)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 0, 0);
-        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(3, 1, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(3);
 
         // Création du VAO
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBufferData(GL_ARRAY_BUFFER, 0, GL_DYNAMIC_DRAW);
 
         // Attribut 0 : vec3 position
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 4 * Float.BYTES, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 7 * Float.BYTES, 0);
         glEnableVertexAttribArray(0);
         glVertexAttribDivisor(0, 1); // 1 : changement par instance
 
         // Attribut 1 : float texID
-        glVertexAttribPointer(1, 1, GL_FLOAT, false, 4 * Float.BYTES, 3 * Float.BYTES);
+        glVertexAttribPointer(1, 1, GL_FLOAT, false, 7 * Float.BYTES, 3 * Float.BYTES);
         glEnableVertexAttribArray(1);
         glVertexAttribDivisor(1, 1); // 1 : changement par instance
+
+        // Attribut 2 : vec3 scale
+        glVertexAttribPointer(2, 3, GL_FLOAT, false, 7 * Float.BYTES, 4 * Float.BYTES);
+        glEnableVertexAttribArray(2);
+        glVertexAttribDivisor(2, 1);
+
 
         glBindVertexArray(0);
     }
@@ -65,10 +70,8 @@ public class FarRenderer extends Renderer {
     public void render() {
         if (this.getIndice() == 0) return;
 
-        //System.out.println("RENDERING FAR CHUNK " + this.getVerticesArray().length/4 + " blocks");
+        //System.out.println("RENDERING FAR CHUNK " + this.getVerticesArray().length/7 + " blocks");
         glBindVertexArray(this.getVAO());
-        glUseProgram(ShaderUtils.FAR_SHADER.id);
-
         // 36 sommets par cube
         glDrawArraysInstanced(GL_TRIANGLES, 0, 36, this.getIndice());
 

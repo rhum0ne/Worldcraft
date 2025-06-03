@@ -19,11 +19,6 @@ public class LightChunk extends AbstractChunk{
     private Material[][][] materials;
     private boolean[][][] isVisible;
 
-    private boolean isGenerated = false;
-    private boolean toUpdate = false;
-    private boolean toUnload = false;
-    private boolean loaded = false;
-
     public LightChunk(short renderID, int X, int Z, World world) {
         super(renderID, X, Z, world);
 
@@ -39,12 +34,12 @@ public class LightChunk extends AbstractChunk{
 
         updateAllBlock();
 
-        this.toUpdate = true;
+        this.setToUpdate(true);
     }
 
     public int getLODLevel(double distance) {
-        if (distance < 150*150) return 1;       // haute qualité
-        if (distance < 250*250) return 2;       // 2x2
+        if (distance < 250*250) return 1;       // haute qualité
+        if (distance < 300*300) return 2;       // 2x2
         if (distance < 350*350) return 4;       // 4x4
         if (distance < 400*400) return 8;       // 8x8
         return 16;                          // max compression
@@ -52,7 +47,7 @@ public class LightChunk extends AbstractChunk{
 
 
     public void updateAllBlock() {
-        if(!isGenerated) generate();
+        if(!isGenerated()) generate();
 
         int sizeX = materials.length;
         int sizeY = materials[0].length;
@@ -86,20 +81,20 @@ public class LightChunk extends AbstractChunk{
 
     private boolean isMaterialTransparent(int x, int y, int z){
         Material material = materials[x][y][z];
-        return material == null ? true : material.getOpacity() != OpacityType.OPAQUE;
+        return material == null || material.getOpacity() != OpacityType.OPAQUE;
     }
 
 
     public void unload() {
         if(!this.isGenerated()) {
-            this.toUnload = true;
+            this.setToUnload(true);
             return;
         }
 
         if(!this.isLoaded()) return;
 
-        GAME.debug("Unloading chunk " + this.toString());
-        this.loaded = false;
+        System.out.println("Unloading chunk " + this.toString());
+        this.setLoaded(false);
 
         this.materials = null;
         this.isVisible = null;
@@ -114,6 +109,8 @@ public class LightChunk extends AbstractChunk{
     public boolean generate() {
         if (this.isGenerated()) return true;
 
+        this.lock();
+
         try {
             long start = System.currentTimeMillis();
 
@@ -126,11 +123,13 @@ public class LightChunk extends AbstractChunk{
             long end = System.currentTimeMillis();
             GAME.debug("Finished Generating " + this + " in " + (end - start) + " ms");
 
-            if(toUnload) unload();
+            if(isToUnload()) unload();
             return true;
         } catch (Exception e) {
             GAME.errorLog(e);
         }
+
+        this.unlock();
         return false;
     }
 

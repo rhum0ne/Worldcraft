@@ -54,9 +54,9 @@ public class ChunksContainer {
         AbstractChunk chunk = chunks.get(key);
 
         if (chunk instanceof Chunk c) return c;
-        if (chunk instanceof LightChunk l) return convertLightToFullChunk(l, key, x, z, generateIfNull);
+        if (generateIfNull && chunk instanceof LightChunk l) return convertLightToFullChunk(l, key, x, z, generateIfNull);
 
-        return createChunk(x, z, generateIfNull);
+        return generateIfNull ? createChunk(x, z, generateIfNull) : null;
     }
 
     public LightChunk getLightChunkAt(int x, int z) {

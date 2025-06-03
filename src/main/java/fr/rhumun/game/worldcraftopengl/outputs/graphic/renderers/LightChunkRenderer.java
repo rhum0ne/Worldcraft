@@ -14,10 +14,7 @@ import lombok.Getter;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.*;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -80,7 +77,6 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
         if (!chunk.isGenerated() || lodLevel < 1) return;
         long start = System.currentTimeMillis();
 
-        double dist = this.getDistanceFromPlayer();
         int lod = this.lodLevel;
         int size = CHUNK_SIZE;
         int height = chunk.getWorld().getHeigth();
@@ -91,44 +87,94 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
             renderer.setIndice(0);
         }
 
+        boolean[][][] used = new boolean[size][height][size];
+
         for (int x = 0; x < size; x += lod) {
             for (int z = 0; z < size; z += lod) {
-                for (int y = 0; y < height; y += lod) {
+                for (int y = height - 1; y >= 0; y -= lod) {
 
-                    // Sélection du matériau dominant
-                    Material dominant = chunk.getMaterials()[x][y][z];
-                    if(dominant==null) continue;
+                    if (used[x][y][z] || !chunk.getIsVisible()[x][y][z]) continue;
 
-                    // Coordonnées globales
+                    Material baseMat = chunk.getMaterials()[x][y][z];
+                    if (baseMat == null) continue;
+
+                    int xM = lod, yM = lod, zM = lod;
+
+                    // Expansion en Y d'abord
+                    outerY:
+                    for (int yTest = y + lod; yTest < height; yTest += lod) {
+                        for (int dx = 0; dx < xM; dx += lod) {
+                            for (int dz = 0; dz < zM; dz += lod) {
+                                if (used[x + dx][yTest][z + dz]) break outerY;
+                                Material m = chunk.getMaterials()[x + dx][yTest][z + dz];
+                                if (m == null || !m.equals(baseMat)) break outerY;
+                            }
+                        }
+                        yM += lod;
+                    }
+
+                    // Expansion en X
+                    outerX:
+                    for (int xTest = x + lod; xTest < size; xTest += lod) {
+                        for (int dy = 0; dy < yM; dy += lod) {
+                            for (int dz = 0; dz < zM; dz += lod) {
+                                if (used[xTest][y + dy][z + dz]) break outerX;
+                                Material m = chunk.getMaterials()[xTest][y + dy][z + dz];
+                                if (m == null || !m.equals(baseMat)) break outerX;
+                            }
+                        }
+                        xM += lod;
+                    }
+
+                    // Expansion en Z
+                    outerZ:
+                    for (int zTest = z + lod; zTest < size; zTest += lod) {
+                        for (int dx = 0; dx < xM; dx += lod) {
+                            for (int dy = 0; dy < yM; dy += lod) {
+                                if (used[x + dx][y + dy][zTest]) break outerZ;
+                                Material m = chunk.getMaterials()[x + dx][y + dy][zTest];
+                                if (m == null || !m.equals(baseMat)) break outerZ;
+                            }
+                        }
+                        zM += lod;
+                    }
+
+                    // Marque tout le bloc comme utilisé
+                    for (int dx = 0; dx < xM; dx += lod) {
+                        for (int dy = 0; dy < yM; dy += lod) {
+                            for (int dz = 0; dz < zM; dz += lod) {
+                                used[x + dx][y + dy][z + dz] = true;
+                            }
+                        }
+                    }
+
                     float worldX = chunk.getX() * CHUNK_SIZE + x;
                     float worldY = y;
                     float worldZ = chunk.getZ() * CHUNK_SIZE + z;
 
-                    // Envoie un cube simplifié (ici juste 1 point avec texture ID, à remplacer par cube si besoin)
-                    this.getRenderers().getFirst().getVertices().add(new float[]{
-                            worldX, worldY, worldZ, dominant.getTextureID()
+                    this.getRenderers().getFirst().getVertices().add(new float[] {
+                            worldX, worldY, worldZ,
+                            baseMat.getTextureID(),
+                            xM, yM, zM
                     });
                     this.getRenderers().getFirst().setIndice(
-                            this.getRenderers().getFirst().getIndice() + 1
+                            this.getRenderers().getFirst().getIndice()+1
                     );
                 }
             }
         }
 
         this.setVerticesNumber(0);
-
         for (Renderer renderer : this.getRenderers()) {
             renderer.toArrays();
-            if (SHOWING_RENDERER_DATA) {
-                int length = renderer.getVertices().size();
-                this.setVerticesNumber(this.getVerticesNumber() + length);
-            }
+            if (SHOWING_RENDERER_DATA)
+                this.setVerticesNumber(this.getVerticesNumber() + renderer.getVertices().size());
         }
 
-        long end = System.currentTimeMillis();
-        GAME.debug("Finished updating full-volume LOD data in " + (end - start) + " ms");
         this.setDataReady(true);
     }
+
+
 
 
     @Override
@@ -150,7 +196,6 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
         int lod = chunk.getLODLevel(distance);
         if(this.lodLevel != lod){
-            System.out.println("new lod is " + lod);
             this.lodLevel = lod;
             this.chunk.setToUpdate(true);
         }

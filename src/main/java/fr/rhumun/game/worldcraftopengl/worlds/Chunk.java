@@ -25,13 +25,6 @@ public class Chunk extends AbstractChunk {
 
     private final Biome[][] biomesMap = new Biome[16][16];
 
-    @Setter
-    private boolean toUpdate = false;
-    private boolean toUnload = false;
-
-    @Setter
-    private boolean loaded = false;
-
     public Chunk(World world, short renderID, int X, int Z){
         super(renderID, X, Z, world);
 
@@ -67,6 +60,7 @@ public class Chunk extends AbstractChunk {
     public boolean generate() {
         if (this.isGenerated()) return true;
 
+        this.lock();
         try {
             long start = System.currentTimeMillis();
             this.getWorld().getGenerator().generate(this);
@@ -77,13 +71,16 @@ public class Chunk extends AbstractChunk {
             long end = System.currentTimeMillis();
             GAME.debug("Finished Generating " + this + " in " + (end - start) + " ms");
 
-            if(toUnload) unload();
+            this.setBlock(8, 90, 8, Material.RED_WOOL);
+
+            if(this.isToUnload()) unload();
             return true;
         } catch (Exception e) {
             GAME.errorLog("Error during generating chunk " + this.toString());
             GAME.errorLog(e.getMessage());
             GAME.errorLog(e.getStackTrace().toString());
         }
+        this.unlock();
         return false;
     }
 
@@ -198,15 +195,15 @@ public class Chunk extends AbstractChunk {
     }
 
     public void unload(){
-        if(!this.isGenerated()) {
-            this.toUnload = true;
+        if(!this.isGenerated() || this.isLocked()) {
+            this.setToUnload(true);
             return;
         }
 
         if(!this.isLoaded()) return;
 
         GAME.debug("Unloading chunk " + this.toString());
-        this.loaded = false;
+        this.setLoaded(false);
         this.getWorld().unload(this);
 
         if (this.blocks != null) {

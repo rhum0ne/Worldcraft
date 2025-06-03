@@ -85,6 +85,7 @@ public class LoadedChunksManager {
 
         for (LightChunk lightChunk : chunksToRenderLight) {
             if (!keepChunks.contains(lightChunk)) {
+                System.out.println("Unload cause of manager");
                 lightChunk.unload();
             }
         }
@@ -120,7 +121,10 @@ public class LoadedChunksManager {
                 if (chunk instanceof Chunk) {
                     builder.append("F ");
                 } else if (chunk instanceof LightChunk) {
-                    builder.append("L ");
+                    if(chunk.isGenerated()) builder.append("L ");
+                    else if(!game.getGraphicModule().getLoadedFarChunks().contains(chunk)) builder.append("I ");
+                    else if(chunk.isToUnload()) builder.append("U ");
+                    else builder.append("R ");
                 } else {
                     builder.append("\\ ");
                 }

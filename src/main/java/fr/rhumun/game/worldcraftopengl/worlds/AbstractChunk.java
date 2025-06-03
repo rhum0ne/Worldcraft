@@ -14,7 +14,15 @@ public abstract class AbstractChunk {
 
     private final World world;
     private AbstractChunkRenderer renderer;
+
     private boolean generated = false;
+    private boolean locked = false;
+    @Setter
+    private boolean toUpdate = false;
+    private boolean toUnload = false;
+
+    @Setter
+    private boolean loaded = false;
 
     protected AbstractChunk(short renderID, int x, int z, World world) {
         this.renderID = renderID;
@@ -32,6 +40,12 @@ public abstract class AbstractChunk {
     }
 
     public void unload(){
+
+        if(!this.isGenerated() || this.isLocked()) {
+            this.setToUnload(true);
+            return;
+        }
+
         if (this.renderer != null) {
             //this.renderer.cleanup();
             this.renderer = null;
@@ -43,4 +57,8 @@ public abstract class AbstractChunk {
     }
 
     public abstract boolean generate();
+
+
+    public void lock(){ this.locked = true; }
+    public void unlock(){ this.locked = false; }
 }

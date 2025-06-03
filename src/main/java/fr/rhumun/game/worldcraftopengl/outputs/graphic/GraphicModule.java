@@ -225,18 +225,26 @@ public class GraphicModule{
 
         this.world = player.getLocation().getWorld();
 
-        for(Shader shader : renderingShaders){
-            shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
-            shader.setUniform("dirLight.ambient", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
-            shader.setUniform("dirLight.diffuse", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
-            shader.setUniform("dirLight.specular", new Vector3f(0.25f, 0.2f, 0.2f));
-        }
+        setSunLight();
 
         this.guiModule.updateInventory(player);
 
         Timer timer = new Timer();
         timer.schedule(this.chunkLoader, 0, 1000);
         this.isInitialized = true;
+    }
+
+    private void setSunLight() {
+        for(Shader shader : renderingShaders)
+            setSunLight(shader);
+        setSunLight(ShaderUtils.FAR_SHADER);
+    }
+
+    private void setSunLight(Shader shader){
+        shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
+        shader.setUniform("dirLight.ambient", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
+        shader.setUniform("dirLight.diffuse", new Vector3f((float) world.getLightColor().getRed(), (float) world.getLightColor().getGreen(), (float) world.getLightColor().getBlue()));
+        shader.setUniform("dirLight.specular", new Vector3f(0.25f, 0.2f, 0.2f));
     }
 
     private void loop() {
@@ -259,9 +267,7 @@ public class GraphicModule{
             long vMEnd = System.currentTimeMillis();
 
             glUseProgram(ShaderUtils.FAR_SHADER.id);
-            glDisable(GL_CULL_FACE);
             updateFarChunks();
-            glEnable(GL_CULL_FACE);
             glUseProgram(ShaderUtils.GLOBAL_SHADERS.id);
             update();
             long rEnd = System.currentTimeMillis();
@@ -409,10 +415,7 @@ public class GraphicModule{
             }
         }
 
-        //loadOneChunk(); TOUT CHARGE MEME SANS CETTE METHODE, A VOIR POURQUOI
-
         if(loadedChunks.isEmpty()) return;
-        this.lightningsUtils.getPointLights().clear();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
