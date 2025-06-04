@@ -50,7 +50,16 @@ public class LightChunk extends AbstractChunk{
         int sizeY = materials[0].length;
         int sizeZ = materials[0][0].length;
 
-        isVisible = new boolean[sizeX][sizeY][sizeZ];
+        if (isVisible == null ||
+                isVisible.length != sizeX ||
+                isVisible[0].length != sizeY ||
+                isVisible[0][0].length != sizeZ) {
+            isVisible = new boolean[sizeX][sizeY][sizeZ];
+        } else {
+            for (int x = 0; x < sizeX; x++)
+                for (int y = 0; y < sizeY; y++)
+                    java.util.Arrays.fill(isVisible[x][y], false);
+        }
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
