@@ -16,6 +16,7 @@ Chunk files contain a sequence of material ids for all blocks of the chunk
 followed by the biome name for every column. World metadata stores the seed
 (long) and the spawn coordinates as integers.
 
-Chunk data is written on a background thread to avoid stalling the game when
-unloading chunks.
+When a chunk unloads, its data is written on a background thread and the chunk
+is deleted once the save completes. This prevents loading incomplete files while
+keeping the main loop responsive.
 

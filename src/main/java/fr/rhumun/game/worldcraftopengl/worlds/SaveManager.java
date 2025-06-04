@@ -125,7 +125,14 @@ public class SaveManager {
     }
 
     public static void saveChunk(Chunk chunk) {
-        IO_EXECUTOR.submit(() -> writeChunk(chunk));
+        saveChunk(chunk, null);
+    }
+
+    public static void saveChunk(Chunk chunk, Runnable onComplete) {
+        IO_EXECUTOR.submit(() -> {
+            writeChunk(chunk);
+            if (onComplete != null) onComplete.run();
+        });
     }
 
     public static boolean loadChunk(Chunk chunk) {

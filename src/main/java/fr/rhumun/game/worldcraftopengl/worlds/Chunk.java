@@ -200,39 +200,44 @@ public class Chunk extends AbstractChunk {
         unload(true);
     }
 
-    public synchronized void unload(boolean asyncSave){
-        if(!this.isLoaded()) return;
+    public synchronized void unload(boolean asyncSave) {
+        if (!this.isLoaded()) return;
 
-        if(!this.isGenerated()) {
+        if (!this.isGenerated()) {
             this.setToUnload(true);
             return;
         }
 
-        if(asyncSave)
-            SaveManager.saveChunk(this);
-        else
+        if (asyncSave) {
+            SaveManager.saveChunk(this, this::deleteChunk);
+        } else {
             SaveManager.saveChunkSync(this);
+            deleteChunk();
+        }
 
         GAME.debug("Unloading chunk " + this.toString());
+    }
+
+    public synchronized void deleteChunk() {
+        if (!this.isLoaded()) return;
+
         this.setLoaded(false);
         this.getWorld().unload(this);
 
         if (this.blocks != null) {
             for (int x = 0; x < blocks.length; x++)
-                for (int y = 0; y < blocks[x].length; y++) {
-                    for (int z = 0; z < blocks[x][y].length; z++) {
+                for (int y = 0; y < blocks[x].length; y++)
+                    for (int z = 0; z < blocks[x][y].length; z++)
                         this.blocks[x][y][z] = null;
-                    }
-                }
         }
 
         this.blocks = null;
-        this.visibleBlock.clear();
-        this.lightningBlocks.clear();
+        if (this.visibleBlock != null) this.visibleBlock.clear();
+        if (this.lightningBlocks != null) this.lightningBlocks.clear();
         this.visibleBlock = null;
         this.lightningBlocks = null;
 
-        for(Renderer renderer : this.getRenderer().getRenderers())
+        for (Renderer renderer : this.getRenderer().getRenderers())
             GAME.getGraphicModule().cleanup(renderer);
 
         this.cleanup();
