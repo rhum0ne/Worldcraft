@@ -20,3 +20,6 @@ When a chunk unloads, its data is written on a background thread and the chunk
 is deleted once the save completes. This prevents loading incomplete files while
 keeping the main loop responsive.
 
+When loading, the game waits for any pending write on the requested chunk file
+to finish so data is always read completely.
+

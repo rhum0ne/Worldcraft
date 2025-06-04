@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,6 +28,7 @@ public class SaveManager {
     public static final Path WORLDS_DIR;
 
     private static final Map<String, Biome> BIOME_BY_NAME = new HashMap<>();
+    private static final Set<Path> SAVING_FILES = ConcurrentHashMap.newKeySet();
     private static final ExecutorService IO_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r, "SaveManager-IO");
         t.setPriority(Thread.MIN_PRIORITY);
@@ -69,12 +72,25 @@ public class SaveManager {
         return worldDir(world.getSeed()).resolve("world.dat");
     }
 
+    private static void waitForSave(Path file) {
+        while (SAVING_FILES.contains(file)) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+    }
+
     public static boolean worldExists(Seed seed) {
         return Files.exists(worldDir(seed));
     }
 
     public static boolean chunkExists(World world, int x, int z) {
-        return Files.exists(chunkFile(world, x, z));
+        Path file = chunkFile(world, x, z);
+        waitForSave(file);
+        return Files.exists(file);
     }
 
     public static void saveWorldMeta(World world) {
@@ -121,7 +137,10 @@ public class SaveManager {
     }
 
     public static void saveChunkSync(Chunk chunk) {
+        Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        SAVING_FILES.add(file);
         writeChunk(chunk);
+        SAVING_FILES.remove(file);
     }
 
     public static void saveChunk(Chunk chunk) {
@@ -129,14 +148,18 @@ public class SaveManager {
     }
 
     public static void saveChunk(Chunk chunk, Runnable onComplete) {
+        Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        SAVING_FILES.add(file);
         IO_EXECUTOR.submit(() -> {
             writeChunk(chunk);
+            SAVING_FILES.remove(file);
             if (onComplete != null) onComplete.run();
         });
     }
 
     public static boolean loadChunk(Chunk chunk) {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        waitForSave(file);
         if (!Files.exists(file)) return false;
         try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
@@ -165,6 +188,7 @@ public class SaveManager {
 
     public static boolean loadLightChunk(LightChunk chunk) {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        waitForSave(file);
         if (!Files.exists(file)) return false;
         try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
