@@ -24,7 +24,7 @@ public abstract class Component{
     private int x;
     private int y;
     private final int width;
-    private final int heigth;
+    private final int height;
     private Texture texture;
     private Gui container;
     private GuiModule guiModule;
@@ -35,12 +35,12 @@ public abstract class Component{
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
 
-    public Component(int x, int y, int width, int heigth, Texture texture, Gui container){
+    public Component(int x, int y, int width, int height, Texture texture, Gui container){
 
         this.x = x;
         this.y = y;
         this.width = GUI_ZOOM*width;
-        this.heigth = GUI_ZOOM*heigth;
+        this.height = GUI_ZOOM*height;
         this.texture = texture;
         this.container = container;
         this.guiModule = GAME.getGraphicModule().getGuiModule();
@@ -58,7 +58,7 @@ public abstract class Component{
     public boolean isCursorIn(){
         int x = getGuiModule().getCursorX();
         int y = getGuiModule().getCursorY();
-        return x >= this.getX() && x < this.getX() + width && y >= this.getY() && y < this.getY() + heigth;
+        return x >= this.getX() && x < this.getX() + width && y >= this.getY() && y < this.getY() + height;
     }
 
     public void set2DTexture(Texture texture) {
@@ -82,8 +82,8 @@ public abstract class Component{
                 // Positions        // Coordonnées de texture
                 x,  y, 0.0f,   0.0f, 1.0f, texture.getId(),   // Haut gauche
                 x + width,  y, 0.0f,   1.0f, 1.0f, texture.getId(),    // Haut droit
-                x, y + heigth, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
-                x + width, y + heigth, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
+                x, y + height, 0.0f,   0.0f, 0.0f, texture.getId(),     // Bas gauche
+                x + width, y + height, 0.0f,   1.0f, 0.0f, texture.getId(),    // Bas droit
         };
         indices =  new int[]{
                 0, 2, 1,   // Premier triangle

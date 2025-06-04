@@ -92,7 +92,7 @@ public class Slot extends Button {
 
             // Position du sommet
             float vx = (verticesBuffer.get(vertexIndex * 3)+0.5f)*this.getWidth() + this.getX();
-            float vy = (verticesBuffer.get(vertexIndex * 3 + 1))*this.getHeigth()+this.getY();
+            float vy = (verticesBuffer.get(vertexIndex * 3 + 1))*this.getHeight()+this.getY();
             float vz = (verticesBuffer.get(vertexIndex * 3 + 2));
 
             // Coordonnées de texture
