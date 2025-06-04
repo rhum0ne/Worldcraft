@@ -31,7 +31,7 @@ public class LoadedChunksManager {
     }
 
     public void updateChunksGradually() {
-        if(!game.isPlaying() || game.isPaused) return;
+        if(!game.isPlaying() || game.isPaused()) return;
 
         World world = player.getLocation().getWorld();
         int centerX = player.getLocation().getChunk().getX();

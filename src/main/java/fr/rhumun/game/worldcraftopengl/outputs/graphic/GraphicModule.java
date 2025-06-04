@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
+import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
@@ -318,6 +319,7 @@ public class GraphicModule {
     }
 
     private void update() {
+        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
@@ -344,6 +346,7 @@ public class GraphicModule {
     }
 
     private void updateFarChunks() {
+        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());

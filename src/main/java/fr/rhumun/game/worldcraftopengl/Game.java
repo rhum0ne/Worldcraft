@@ -47,13 +47,12 @@ public class Game {
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
 
-    final GraphicModule graphicModule;
+    GraphicModule graphicModule;
     final AudioManager audioManager;
     final Data data;
-    final GameLoop gameLoop;
+    GameLoop gameLoop;
 
-    boolean isPaused = false;
-    boolean isPlaying = true;
+    GameState gameState = GameState.TITLE;
     boolean isShowingTriangles = false;
     World world;
     Player player;
@@ -62,7 +61,9 @@ public class Game {
 
     List<Material> materials;
     public static void main(String[] args) {
-        new Game();
+        Game game = new Game();
+        game.getGraphicModule().getGuiModule().openGUI(new fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui());
+        game.getGraphicModule().run();
     }
 
     public Game(){
@@ -77,16 +78,39 @@ public class Game {
         audioManager = new AudioManager(this);
         audioManager.init();
 
-
-        this.player = new Player(this);
         this.world = new World();
+        this.player = new Player(this);
+
+        graphicModule = new GraphicModule(this);
+    }
+
+    public void setPaused(boolean b) {
+        this.gameState = b ? GameState.PAUSED : GameState.RUNNING;
+    }
+
+    public void closeGame(){
+        this.gameState = null;
+        SaveManager.shutdown();
+    }
+
+    public void setPlaying(boolean b){
+        if(!b) this.gameState = null;
+    }
+
+    public boolean isPaused(){
+        return this.gameState != GameState.RUNNING;
+    }
+
+    public boolean isPlaying(){
+        return this.gameState != null;
+    }
+
+    public void startGame(){
         this.world.load();
 
         while(!world.isLoaded()){ }
 
         this.world.spawnPlayer(player);
-
-        //Timer timer = new Timer();
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
@@ -104,20 +128,10 @@ public class Game {
 
         player.playSound(Sound.STONE1);
 
-        //timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
         gameLoop = new GameLoop(this, player);
         gameLoop.start();
-        graphicModule = new GraphicModule(this);
-        graphicModule.run();
-    }
 
-    public void setPaused(boolean b) {
-        this.isPaused = b;
-    }
-
-    public void closeGame(){
-        this.isPlaying = false;
-        SaveManager.shutdown();
+        this.gameState = GameState.RUNNING;
     }
 
     public void sendMessage(Player player, String message){
