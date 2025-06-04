@@ -8,6 +8,8 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 public class HeightCalculation {
 
@@ -67,8 +69,8 @@ public class HeightCalculation {
 
 //        System.out.println(continentalValue + "(" + cH + ") "  + " - " + erosionValue  + "(" + eH + ") = " + base);
 
-        if(base>256) System.out.println(cH + " " + eH + " " + pavEffect + " ( " + continentalValue +" " + pavLargeScale + " )");
+        if(base>worldGenerator.getWorld().getHeigth()) GAME.warn("Generation exceded world height : " + cH + " " + eH + " " + pavEffect + " ( " + continentalValue +" " + pavLargeScale + " )");
 
-        return Math.max(0, Math.min(worldGenerator.getWorld().getHeigth(), base));
+        return Math.max(0, Math.min(worldGenerator.getWorld().getHeigth()-1, base));
     }
 }

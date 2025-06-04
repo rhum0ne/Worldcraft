@@ -25,11 +25,11 @@ public abstract class Control {
     public Control(){ this(false, false); }
 
     public void testOnKeyPressed(Player player){
-        if(game.getGameState() == GameState.RUNNING || (canExecuteInPause && game.getGameState() == GameState.PAUSED))
+        if(game.getGameState() == GameState.RUNNING || canExecuteInPause && game.isPaused())
             onKeyPressed(player);
     }
     public void testOnKeyReleased(Player player){
-        if(game.getGameState() == GameState.RUNNING || (canExecuteInPause && game.getGameState() == GameState.PAUSED))
+        if(game.getGameState() == GameState.RUNNING || (canExecuteInPause && game.getGameState() != GameState.PAUSED))
             onKeyReleased(player);
     }
 

@@ -98,7 +98,6 @@ public class GraphicModule {
     }
 
     public void run() {
-        init();
         try {
             loop();
         } catch (Exception e) {
@@ -110,7 +109,7 @@ public class GraphicModule {
         System.exit(0);
     }
 
-    private void init() {
+    public void init() {
         initGLFW();
         createWindow();
         setupOpenGL();
@@ -271,7 +270,7 @@ public class GraphicModule {
 
         Matrix4f viewMatrix = new Matrix4f().lookAt(camera.getPos(), camera.getLookPoint(), camera.getUp());
 
-        if (UPDATE_FRUSTRUM) {
+        if (UPDATE_FRUSTRUM && UPDATE_WORLD_RENDER) {
             Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
             frustumIntersection = new FrustumIntersection(combinedMatrix);
         }
@@ -295,7 +294,7 @@ public class GraphicModule {
             if (game.isPaused() != isPaused) setPaused(game.isPaused());
             if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
 
-            updateWaterTime();
+            //updateWaterTime();
             updateViewMatrix();
 
             glUseProgram(ShaderManager.FAR_SHADER.id);
@@ -320,7 +319,7 @@ public class GraphicModule {
 
     private void update() {
         if (game.getGameState() != GameState.RUNNING) return;
-        if (!areChunksUpdated) {
+        if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
             areChunksUpdated = true;
@@ -347,7 +346,7 @@ public class GraphicModule {
 
     private void updateFarChunks() {
         if (game.getGameState() != GameState.RUNNING) return;
-        if (!areChunksUpdated) {
+        if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
             areChunksUpdated = true;

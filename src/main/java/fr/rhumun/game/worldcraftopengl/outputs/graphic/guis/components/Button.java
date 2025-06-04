@@ -9,8 +9,10 @@ import lombok.Setter;
 public abstract class Button extends Component {
     private boolean hovered = false;
     private boolean clicked = false;
+
     public Button(int x, int y, int width, int height, Texture texture, Gui container) {
         super(x, y, width, height, texture, container);
+
     }
 
     public abstract void onClick(Player player) ;

@@ -182,7 +182,10 @@ public class GuiModule {
     }
 
     public void leftClick(Player player) {
+        System.out.println("LEFT CLICK");
+
         if(!hasGUIOpened()) return;
+        System.out.println("LEFT CLICK 2");
 
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {

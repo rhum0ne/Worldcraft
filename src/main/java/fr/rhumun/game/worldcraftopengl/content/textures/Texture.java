@@ -1,9 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.content.textures;
 
 import fr.rhumun.game.worldcraftopengl.Game;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ButtonTextureMaker;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,6 +94,8 @@ public class Texture {
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
     public static Texture BUTTON;
+    public static Texture PLAY_BUTTON;
+    public static Texture QUIT_BUTTON;
 
 
     public static Texture OTTER;
@@ -176,6 +180,8 @@ public class Texture {
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
         BUTTON = new Texture(TextureTypes.GUIS,"hud\\button.png");
+        PLAY_BUTTON = new Texture(ButtonTextureMaker.create(200, 40), "play_button", 200, 40);
+        QUIT_BUTTON = new Texture(ButtonTextureMaker.create(200, 40), "quit_button", 200, 40);
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
     }
@@ -187,10 +193,22 @@ public class Texture {
     }
 
 
-    private final String path;
+    private String path;
     private final String name;
     private final int id;
 
+    private ByteBuffer buffer;
+    private int width;
+    private int height;
+
+    public Texture(ByteBuffer buffer, String name, int width, int height) {
+        this.buffer = buffer;
+        this.name = name;
+        this.width = width;
+        this.height = height;
+        this.id = textures.size();
+        textureByName.put(this.name, this);
+    }
     public Texture(String path){ this(TextureTypes.BLOCKS, path); }
     public Texture(TextureTypes type, String path){
         this.path = path;
@@ -207,6 +225,8 @@ public class Texture {
         textureByName.put(this.name, this);
 
     }
+
+    public boolean isBuffered() { return buffer != null; }
 
     public String getPath(){ return Game.TEXTURES_PATH + this.path; }
 

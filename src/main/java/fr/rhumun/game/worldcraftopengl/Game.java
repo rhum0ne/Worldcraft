@@ -11,6 +11,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Game {
     //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
-    public static int SHOW_DISTANCE = 25;
+    public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -37,6 +38,7 @@ public class Game {
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
+    public static boolean UPDATE_WORLD_RENDER = true;
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
@@ -62,7 +64,7 @@ public class Game {
     List<Material> materials;
     public static void main(String[] args) {
         Game game = new Game();
-        game.getGraphicModule().getGuiModule().openGUI(new fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui());
+        game.getGraphicModule().getGuiModule().openGUI(new TitleMenuGui());
         game.getGraphicModule().run();
     }
 
@@ -82,6 +84,7 @@ public class Game {
         this.player = new Player(this);
 
         graphicModule = new GraphicModule(this);
+        graphicModule.init();
     }
 
     public void setPaused(boolean b) {
