@@ -103,7 +103,7 @@ public class World {
     public Chunk getChunkAt(int x, int z, boolean createIfNull, boolean generateIfNull){
         if(x < 0 && x%CHUNK_SIZE!=0) x-=CHUNK_SIZE;
         if(z < 0 && z%CHUNK_SIZE!=0) z-=CHUNK_SIZE;
-        return getChunk(x/CHUNK_SIZE, z/CHUNK_SIZE, generateIfNull);
+        return getChunk(x/CHUNK_SIZE, z/CHUNK_SIZE, createIfNull, generateIfNull);
     }
 
     public Chunk getChunkAt(int x, int z, boolean generateIfNull){ return getChunkAt(x, z, false, generateIfNull); }
