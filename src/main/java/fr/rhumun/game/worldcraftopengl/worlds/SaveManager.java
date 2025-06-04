@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Utility class handling saving/loading of world and chunk data.
@@ -24,6 +26,11 @@ public class SaveManager {
     public static final Path WORLDS_DIR;
 
     private static final Map<String, Biome> BIOME_BY_NAME = new HashMap<>();
+    private static final ExecutorService IO_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "SaveManager-IO");
+        t.setPriority(Thread.MIN_PRIORITY);
+        return t;
+    });
 
     static {
         String appdata = System.getenv("APPDATA");
@@ -95,7 +102,7 @@ public class SaveManager {
         }
     }
 
-    public static void saveChunk(Chunk chunk) {
+    private static void writeChunk(Chunk chunk) {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
         try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file))) {
             for (int x = 0; x < Game.CHUNK_SIZE; x++)
@@ -111,6 +118,14 @@ public class SaveManager {
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
+    }
+
+    public static void saveChunkSync(Chunk chunk) {
+        writeChunk(chunk);
+    }
+
+    public static void saveChunk(Chunk chunk) {
+        IO_EXECUTOR.submit(() -> writeChunk(chunk));
     }
 
     public static boolean loadChunk(Chunk chunk) {
@@ -164,5 +179,9 @@ public class SaveManager {
         chunk.updateAllBlock();
         chunk.setToUpdate(true);
         return true;
+    }
+
+    public static void shutdown() {
+        IO_EXECUTOR.shutdown();
     }
 }

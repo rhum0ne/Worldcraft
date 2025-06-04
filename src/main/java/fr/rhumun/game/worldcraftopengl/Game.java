@@ -12,6 +12,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
+import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -116,6 +117,7 @@ public class Game {
 
     public void closeGame(){
         this.isPlaying = false;
+        SaveManager.shutdown();
     }
 
     public void sendMessage(Player player, String message){
