@@ -9,9 +9,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +54,11 @@ public class SaveManager {
     }
 
     private static Path worldDir(Seed seed) {
-        Path dir = WORLDS_DIR.resolve(Long.toString(seed.getLong()));
+        return WORLDS_DIR.resolve(Long.toString(seed.getLong()));
+    }
+
+    private static Path ensureWorldDir(Seed seed) {
+        Path dir = worldDir(seed);
         try {
             Files.createDirectories(dir.resolve("chunks"));
         } catch (IOException ignored) {
@@ -65,11 +67,11 @@ public class SaveManager {
     }
 
     private static Path chunkFile(World world, int x, int z) {
-        return worldDir(world.getSeed()).resolve("chunks").resolve(x + "_" + z + ".bin");
+        return ensureWorldDir(world.getSeed()).resolve("chunks").resolve(x + "_" + z + ".bin");
     }
 
     private static Path metaFile(World world) {
-        return worldDir(world.getSeed()).resolve("world.dat");
+        return ensureWorldDir(world.getSeed()).resolve("world.dat");
     }
 
     private static void waitForSave(Path file) {
@@ -120,7 +122,8 @@ public class SaveManager {
 
     private static void writeChunk(Chunk chunk) {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
-        try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file))) {
+        Path tmp = file.resolveSibling(file.getFileName().toString() + ".tmp");
+        try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(tmp))) {
             for (int x = 0; x < Game.CHUNK_SIZE; x++)
                 for (int y = 0; y < chunk.getWorld().getHeigth(); y++)
                     for (int z = 0; z < Game.CHUNK_SIZE; z++)
@@ -131,8 +134,15 @@ public class SaveManager {
                     Biome b = chunk.getBiome(chunk.getBlocks()[x][0][z]);
                     out.writeUTF(b == null ? "" : b.getName());
                 }
+            out.flush();
+            try {
+                Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            } catch (AtomicMoveNotSupportedException e) {
+                Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING);
+            }
         } catch (IOException e) {
             Game.GAME.errorLog(e);
+            try { Files.deleteIfExists(tmp); } catch (IOException ignored) {}
         }
     }
 
@@ -214,5 +224,13 @@ public class SaveManager {
 
     public static void shutdown() {
         IO_EXECUTOR.shutdown();
+        try {
+            if (!IO_EXECUTOR.awaitTermination(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                IO_EXECUTOR.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            IO_EXECUTOR.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 }
