@@ -153,7 +153,9 @@ public class ChunksContainer {
                     light.getMaterials()[xi][y][zi] = fullChunk.getBlocks()[xi][y][zi].getMaterial();
 
         light.setToUpdate(true);
-        fullChunk.unload();
+
+        // Save synchronously before discarding data so we don't read half-written files
+        fullChunk.unload(false);
         registerChunk(key, light);
         return light;
     }

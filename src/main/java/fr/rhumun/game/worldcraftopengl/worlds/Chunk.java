@@ -196,7 +196,11 @@ public class Chunk extends AbstractChunk {
         return "Chunk : [ " + this.getX() + " : " + this.getZ() + " ]";
     }
 
-    public synchronized void unload(){
+    public synchronized void unload() {
+        unload(true);
+    }
+
+    public synchronized void unload(boolean asyncSave){
         if(!this.isLoaded()) return;
 
         if(!this.isGenerated()) {
@@ -204,7 +208,10 @@ public class Chunk extends AbstractChunk {
             return;
         }
 
-        SaveManager.saveChunk(this);
+        if(asyncSave)
+            SaveManager.saveChunk(this);
+        else
+            SaveManager.saveChunkSync(this);
 
         GAME.debug("Unloading chunk " + this.toString());
         this.setLoaded(false);
