@@ -18,6 +18,7 @@ followed by the biome name for every column. World metadata stores the seed
 
 When a chunk unloads, its data is written on a background thread using a
 temporary file which is atomically moved into place when the write finishes.
+
 Multiple IO threads are used so several chunks can be saved or loaded
 concurrently. The chunk is removed only once the save succeeds,
 preventing partial files while keeping the main loop responsive.
@@ -28,4 +29,11 @@ but loading itself no longer stalls the main loop.
 
 Chunks are loaded and unloaded in short intervals (every 100&nbsp;ms) so the
 world updates smoothly as the player moves.
+
+The chunk is removed only once the save succeeds, preventing partial files while
+keeping the main loop responsive.
+
+When loading, the game waits for any pending write on the requested chunk file
+to finish so data is always read completely.
+
 

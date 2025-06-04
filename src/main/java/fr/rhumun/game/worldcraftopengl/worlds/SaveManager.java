@@ -29,10 +29,11 @@ public class SaveManager {
     private static final Set<Path> SAVING_FILES = ConcurrentHashMap.newKeySet();
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(
             Math.max(2, Runtime.getRuntime().availableProcessors() / 2), r -> {
-        Thread t = new Thread(r, "SaveManager-IO");
-        t.setPriority(Thread.MIN_PRIORITY);
-        return t;
+            Thread t = new Thread(r, "SaveManager-IO");
+            t.setPriority(5);
+            return t;
     });
+
 
     static {
         String appdata = System.getenv("APPDATA");
@@ -229,7 +230,6 @@ public class SaveManager {
         chunk.setToUpdate(true);
         return true;
     }
-
     public static void loadChunkAsync(Chunk chunk, Runnable onComplete) {
         chunk.setLoading(true);
         IO_EXECUTOR.submit(() -> {
