@@ -235,7 +235,7 @@ public class BlockUtil {
         float z1 = 0f; // Déplacer pour utiliser le coin avant
 
         float x2 = slot.getWidth() + slot.getX(); // Déplacer pour utiliser le coin arrière-droit
-        float y2 = slot.getY() + slot.getHeigth(); // Déplacer pour utiliser le coin haut
+        float y2 = slot.getY() + slot.getHeight(); // Déplacer pour utiliser le coin haut
         float z2 = 1f; // Déplacer pour utiliser le coin arrière
 
         //Tailles du regroupement de blocks:

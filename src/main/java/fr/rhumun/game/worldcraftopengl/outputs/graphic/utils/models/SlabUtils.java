@@ -179,11 +179,11 @@ public class SlabUtils {
     public static void rasterBlockItem(Item block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
         float x1 = slot.getX(); // Déplacer pour utiliser le coin avant-gauche
-        float y1 = slot.getY() + (float) slot.getHeigth() /2; // Déplacer pour utiliser le coin bas
+        float y1 = slot.getY() + (float) slot.getHeight() /2; // Déplacer pour utiliser le coin bas
         float z1 = 0f; // Déplacer pour utiliser le coin avant
 
         float x2 = slot.getWidth() + slot.getX(); // Déplacer pour utiliser le coin arrière-droit
-        float y2 = slot.getY() + slot.getHeigth(); // Déplacer pour utiliser le coin haut
+        float y2 = slot.getY() + slot.getHeight(); // Déplacer pour utiliser le coin haut
         float z2 = 1f; // Déplacer pour utiliser le coin arrière
 
         //Tailles du regroupement de blocks:
