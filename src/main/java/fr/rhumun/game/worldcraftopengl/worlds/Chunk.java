@@ -208,6 +208,10 @@ public class Chunk extends AbstractChunk {
             return;
         }
 
+        // mark chunk as no longer loaded so further unload calls don't schedule
+        // additional saves while this one is in progress
+        this.setLoaded(false);
+
         if (asyncSave) {
             SaveManager.saveChunk(this, this::deleteChunk);
         } else {
@@ -219,8 +223,6 @@ public class Chunk extends AbstractChunk {
     }
 
     public synchronized void deleteChunk() {
-        if (!this.isLoaded()) return;
-
         this.setLoaded(false);
         this.getWorld().unload(this);
 
