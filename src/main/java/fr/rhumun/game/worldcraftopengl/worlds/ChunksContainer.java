@@ -112,6 +112,11 @@ public class ChunksContainer {
         registerChunk(toLongKey(x, z), chunk);
 
         if (SaveManager.chunkExists(world, x, z)) {
+            SaveManager.loadChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated() && generate) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
             SaveManager.loadChunk(chunk);
         } else if (generate) {
             world.getGenerator().addToGenerate(chunk);
@@ -128,6 +133,11 @@ public class ChunksContainer {
         registerChunk(toLongKey(x, z), chunk);
 
         if (SaveManager.chunkExists(world, x, z)) {
+            SaveManager.loadLightChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated()) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
             SaveManager.loadLightChunk(chunk);
         } else {
             world.getGenerator().addToGenerate(chunk);
@@ -152,6 +162,7 @@ public class ChunksContainer {
                 for (int zi = 0; zi < CHUNK_SIZE; zi++)
                     light.getMaterials()[xi][y][zi] = fullChunk.getBlocks()[xi][y][zi].getMaterial();
 
+        light.updateAllBlock();
         light.setToUpdate(true);
 
         // Save synchronously before discarding data so we don't read half-written files

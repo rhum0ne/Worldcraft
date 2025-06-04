@@ -18,6 +18,7 @@ public abstract class AbstractChunk {
     private AbstractChunkRenderer renderer;
 
     private boolean generated = false;
+    private volatile boolean loading = false;
     @Setter
     private boolean toUpdate = false;
     private boolean toUnload = false;
@@ -61,5 +62,13 @@ public abstract class AbstractChunk {
 
     public synchronized void render() {
         this.getRenderer().render();
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
     }
 }

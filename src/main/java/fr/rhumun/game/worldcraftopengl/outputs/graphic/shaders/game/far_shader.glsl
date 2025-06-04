@@ -34,23 +34,24 @@ vec3(0, 0, 0), vec3(1, 0, 0), vec3(0, 0, 1),
 vec3(0, 0, 1), vec3(1, 0, 0), vec3(1, 0, 1)
 );
 
-const vec2 uvMap[6] = vec2[](
-vec2(0.0, 0.0), vec2(1.0, 1.0), vec2(1.0, 0.0),
-vec2(0.0, 0.0), vec2(0.0, 1.0), vec2(1.0, 1.0)
-);
 
 void main() {
     int face = gl_VertexID / 6;
-    vec2 baseUV = uvMap[gl_VertexID % 6];
-
     vec3 localVertex = cubeVertices[gl_VertexID] * scale;
     vec3 vertexPos = instancePosition + localVertex;
     FragPos = vertexPos;
 
-    // UV scaling by face
-    if (face == 0 || face == 1)       TexCoord = baseUV * vec2(scale.x, scale.y); // Front/Back
-    else if (face == 2 || face == 3)  TexCoord = baseUV * vec2(scale.z, scale.y); // Left/Right
-    else                              TexCoord = baseUV * vec2(scale.x, scale.z); // Top/Bottom
+    // Compute tiling UVs from the vertex position so textures repeat on
+    // faces merged by greedy meshing.
+    if (face == 0 || face == 1) {
+        TexCoord = (cubeVertices[gl_VertexID].xy * vec2(scale.x, scale.y));
+    } else if (face == 2 || face == 3) {
+        TexCoord = (vec2(cubeVertices[gl_VertexID].z, cubeVertices[gl_VertexID].y)
+                    * vec2(scale.z, scale.y));
+    } else {
+        TexCoord = (vec2(cubeVertices[gl_VertexID].x, cubeVertices[gl_VertexID].z)
+                    * vec2(scale.x, scale.z));
+    }
 
     TextureID = texID;
 

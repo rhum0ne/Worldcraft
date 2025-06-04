@@ -230,7 +230,7 @@ public class GraphicModule {
 
     private void startChunkLoader() {
         Timer timer = new Timer();
-        timer.schedule(chunkLoader, 0, 1000);
+        timer.schedule(chunkLoader, 0, 100);
     }
 
     public void changeLoadedBlocks() {
