@@ -62,60 +62,60 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
         boolean[][][] used = new boolean[size][height][size];
 
-        for (int x = 0; x < size; x += lod) {
-            for (int z = 0; z < size; z += lod) {
-                for (int y = height - 1; y >= 0; y -= lod) {
+        for (int y = 0; y < height; y += lod) {
+            for (int x = 0; x < size; x += lod) {
+                for (int z = 0; z < size; z += lod) {
 
                     if (used[x][y][z] || !chunk.getIsVisible()[x][y][z]) continue;
 
                     Material baseMat = chunk.getMaterials()[x][y][z];
                     if (baseMat == null) continue;
 
-                    int xM = lod, yM = lod, zM = lod;
+                    int width = lod;
+                    int depth = lod;
 
-                    // Expansion en Y d'abord
-                    outerY:
-                    for (int yTest = height -1 -lod; yTest >= 0; yTest -= lod) {
-                        for (int dx = 0; dx < xM; dx += lod) {
-                            for (int dz = 0; dz < zM; dz += lod) {
-                                if (used[x + dx][yTest][z + dz]) break outerY;
-                                Material m = chunk.getMaterials()[x + dx][yTest][z + dz];
-                                if (m == null || !m.equals(baseMat)) break outerY;
-                            }
-                        }
-                        yM += lod;
-                    }
-
-                    // Expansion en X
+                    // Greedy expansion in X
                     outerX:
-                    for (int xTest = x + lod; xTest < size; xTest += lod) {
-                        for (int dy = 0; dy < yM; dy += lod) {
-                            for (int dz = 0; dz < zM; dz += lod) {
-                                if (used[xTest][y + dy][z + dz]) break outerX;
-                                Material m = chunk.getMaterials()[xTest][y + dy][z + dz];
-                                if (m == null || !m.equals(baseMat)) break outerX;
-                            }
+                    while (x + width < size) {
+                        for (int dz = 0; dz < depth; dz += lod) {
+                            if (used[x + width][y][z + dz]) break outerX;
+                            Material m = chunk.getMaterials()[x + width][y][z + dz];
+                            if (m == null || !m.equals(baseMat) || !chunk.getIsVisible()[x + width][y][z + dz])
+                                break outerX;
                         }
-                        xM += lod;
+                        width += lod;
                     }
 
-                    // Expansion en Z
+                    // Greedy expansion in Z
                     outerZ:
-                    for (int zTest = z + lod; zTest < size; zTest += lod) {
-                        for (int dx = 0; dx < xM; dx += lod) {
-                            for (int dy = 0; dy < yM; dy += lod) {
-                                if (used[x + dx][y + dy][zTest]) break outerZ;
-                                Material m = chunk.getMaterials()[x + dx][y + dy][zTest];
-                                if (m == null || !m.equals(baseMat)) break outerZ;
-                            }
+                    while (z + depth < size) {
+                        for (int dx = 0; dx < width; dx += lod) {
+                            if (used[x + dx][y][z + depth]) break outerZ;
+                            Material m = chunk.getMaterials()[x + dx][y][z + depth];
+                            if (m == null || !m.equals(baseMat) || !chunk.getIsVisible()[x + dx][y][z + depth])
+                                break outerZ;
                         }
-                        zM += lod;
+                        depth += lod;
                     }
 
-                    // Marque tout le bloc comme utilisé
-                    for (int dx = 0; dx < xM; dx += lod) {
-                        for (int dy = 0; dy < yM; dy += lod) {
-                            for (int dz = 0; dz < zM; dz += lod) {
+                    int heightM = lod;
+                    // Optional vertical expansion
+                    outerY:
+                    while (y + heightM < height) {
+                        for (int dx = 0; dx < width; dx += lod) {
+                            for (int dz = 0; dz < depth; dz += lod) {
+                                if (used[x + dx][y + heightM][z + dz]) break outerY;
+                                Material m = chunk.getMaterials()[x + dx][y + heightM][z + dz];
+                                if (m == null || !m.equals(baseMat) || !chunk.getIsVisible()[x + dx][y + heightM][z + dz])
+                                    break outerY;
+                            }
+                        }
+                        heightM += lod;
+                    }
+
+                    for (int dx = 0; dx < width; dx += lod) {
+                        for (int dy = 0; dy < heightM; dy += lod) {
+                            for (int dz = 0; dz < depth; dz += lod) {
                                 used[x + dx][y + dy][z + dz] = true;
                             }
                         }
@@ -126,12 +126,12 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
                     float worldZ = chunk.getZ() * CHUNK_SIZE + z;
 
                     this.getRenderers().getFirst().getVertices().add(new float[] {
-                            worldX- 0.5f, worldY-1f, worldZ- 0.5f,
+                            worldX - 0.5f, worldY - 1f, worldZ - 0.5f,
                             baseMat.getTextureID(),
-                            xM, yM, zM
+                            width, heightM, depth
                     });
                     this.getRenderers().getFirst().setIndice(
-                            this.getRenderers().getFirst().getIndice()+1
+                            this.getRenderers().getFirst().getIndice() + 1
                     );
                 }
             }
