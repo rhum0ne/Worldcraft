@@ -68,7 +68,9 @@ public class LoadedChunksManager {
         }
 
         for(AbstractChunk chunk : keepChunks) {
-            if(chunk instanceof Chunk chunkF && !chunkF.isGenerated()) world.getGenerator().addToGenerate(chunkF);
+            if(chunk instanceof Chunk chunkF && !chunkF.isGenerated() && !chunkF.isLoading()) {
+                world.getGenerator().addToGenerate(chunkF);
+            }
         }
 
         // Déchargement de tout ce qui est hors zone

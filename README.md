@@ -21,6 +21,7 @@ temporary file which is atomically moved into place when the write finishes.
 The chunk is removed only once the save succeeds, preventing partial files while
 keeping the main loop responsive.
 
-When loading, the game waits for any pending write on the requested chunk file
-to finish so data is always read completely.
+When loading, chunk data is read on a background thread. The game waits for any
+pending write on the requested file before reading so data is always complete,
+but loading itself no longer stalls the main loop.
 

@@ -112,7 +112,11 @@ public class ChunksContainer {
         registerChunk(toLongKey(x, z), chunk);
 
         if (SaveManager.chunkExists(world, x, z)) {
-            SaveManager.loadChunk(chunk);
+            SaveManager.loadChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated() && generate) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
         } else if (generate) {
             world.getGenerator().addToGenerate(chunk);
         }
@@ -128,7 +132,11 @@ public class ChunksContainer {
         registerChunk(toLongKey(x, z), chunk);
 
         if (SaveManager.chunkExists(world, x, z)) {
-            SaveManager.loadLightChunk(chunk);
+            SaveManager.loadLightChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated()) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
         } else {
             world.getGenerator().addToGenerate(chunk);
         }

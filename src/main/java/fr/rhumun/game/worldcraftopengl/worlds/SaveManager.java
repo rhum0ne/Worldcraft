@@ -229,6 +229,30 @@ public class SaveManager {
         return true;
     }
 
+    public static void loadChunkAsync(Chunk chunk, Runnable onComplete) {
+        chunk.setLoading(true);
+        IO_EXECUTOR.submit(() -> {
+            try {
+                loadChunk(chunk);
+            } finally {
+                chunk.setLoading(false);
+                if (onComplete != null) onComplete.run();
+            }
+        });
+    }
+
+    public static void loadLightChunkAsync(LightChunk chunk, Runnable onComplete) {
+        chunk.setLoading(true);
+        IO_EXECUTOR.submit(() -> {
+            try {
+                loadLightChunk(chunk);
+            } finally {
+                chunk.setLoading(false);
+                if (onComplete != null) onComplete.run();
+            }
+        });
+    }
+
     public static void shutdown() {
         IO_EXECUTOR.shutdown();
         try {
