@@ -85,8 +85,35 @@ public class LightChunk extends AbstractChunk{
         }
     }
 
+    private Material getMaterialAt(int x, int y, int z) {
+        if (y < 0 || y >= getWorld().getHeigth()) return null;
+
+        int cX = this.getX();
+        int cZ = this.getZ();
+
+        while (x < 0) { x += Game.CHUNK_SIZE; cX--; }
+        while (x >= Game.CHUNK_SIZE) { x -= Game.CHUNK_SIZE; cX++; }
+        while (z < 0) { z += Game.CHUNK_SIZE; cZ--; }
+        while (z >= Game.CHUNK_SIZE) { z -= Game.CHUNK_SIZE; cZ++; }
+
+        if (cX == this.getX() && cZ == this.getZ()) {
+            return materials[x][y][z];
+        }
+
+        AbstractChunk neighbor = getWorld().getChunks().getAbstractChunk(cX, cZ);
+        if (neighbor instanceof LightChunk l) {
+            if (l.materials == null) return null;
+            return l.materials[x][y][z];
+        } else if (neighbor instanceof Chunk c) {
+            if (c.blocks == null) return null;
+            return c.blocks[x][y][z].getMaterial();
+        }
+
+        return null;
+    }
+
     private boolean isMaterialTransparent(int x, int y, int z){
-        Material material = materials[x][y][z];
+        Material material = getMaterialAt(x, y, z);
         return material == null || material.getOpacity() != OpacityType.OPAQUE;
     }
 
