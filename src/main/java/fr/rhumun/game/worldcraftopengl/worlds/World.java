@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
+import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import org.joml.Vector3f;
@@ -39,6 +40,11 @@ public class World {
 
     private boolean isLoaded = false;
 
+    public void setSpawnPosition(int x, int z) {
+        this.xSpawn = x;
+        this.zSpawn = z;
+    }
+
     public World(){
         //this.seed = Seed.create("1408502280");
         this.seed = Seed.random();
@@ -53,8 +59,15 @@ public class World {
     }
 
     public void load(){
+        if(SaveManager.worldExists(this.seed)) {
+            SaveManager.loadWorldMeta(this);
+        } else {
+            SaveManager.saveWorldMeta(this);
+        }
+
         spawnChunk = this.getChunkAt(xSpawn, zSpawn, true);
-        this.generator.forceGenerate(spawnChunk);
+        if(!spawnChunk.isGenerated())
+            this.generator.forceGenerate(spawnChunk);
 
         while(isLoading()){
             try {

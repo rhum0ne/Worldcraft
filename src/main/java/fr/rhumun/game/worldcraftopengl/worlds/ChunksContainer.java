@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 
 public class ChunksContainer {
 
@@ -110,7 +111,16 @@ public class ChunksContainer {
         Chunk chunk = new Chunk(world, id, x, z);
         registerChunk(toLongKey(x, z), chunk);
 
-        if (generate) world.getGenerator().addToGenerate(chunk);
+        if (SaveManager.chunkExists(world, x, z)) {
+            SaveManager.loadChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated() && generate) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
+        } else if (generate) {
+            world.getGenerator().addToGenerate(chunk);
+        }
+
         return chunk;
     }
 
@@ -119,10 +129,19 @@ public class ChunksContainer {
         if (id == null) return null;
 
         LightChunk chunk = new LightChunk(id, x, z, world);
-        world.getGenerator().addToGenerate(chunk);
+        registerChunk(toLongKey(x, z), chunk);
+
+        if (SaveManager.chunkExists(world, x, z)) {
+            SaveManager.loadLightChunkAsync(chunk, () -> {
+                if (!chunk.isGenerated()) {
+                    world.getGenerator().addToGenerate(chunk);
+                }
+            });
+        } else {
+            world.getGenerator().addToGenerate(chunk);
+        }
         chunk.setToUpdate(true);
 
-        registerChunk(toLongKey(x, z), chunk);
         return chunk;
     }
 
@@ -142,7 +161,9 @@ public class ChunksContainer {
                     light.getMaterials()[xi][y][zi] = fullChunk.getBlocks()[xi][y][zi].getMaterial();
 
         light.setToUpdate(true);
-        fullChunk.unload();
+
+        // Save synchronously before discarding data so we don't read half-written files
+        fullChunk.unload(false);
         registerChunk(key, light);
         return light;
     }

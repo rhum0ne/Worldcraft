@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
+import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,7 +40,7 @@ public class Chunk extends AbstractChunk {
         this.setLoaded(true);
     }
 
-    private void updateAllBlock(){
+    void updateAllBlock(){
         for (Block[][] value : blocks)
             for (Block[] item : value) {
                 for (Block block : item) {
@@ -195,34 +196,50 @@ public class Chunk extends AbstractChunk {
         return "Chunk : [ " + this.getX() + " : " + this.getZ() + " ]";
     }
 
-    public synchronized void unload(){
-        if(!this.isLoaded()) return;
+    public synchronized void unload() {
+        unload(true);
+    }
 
-        if(!this.isGenerated()) {
+    public synchronized void unload(boolean asyncSave) {
+        if (!this.isLoaded()) return;
+
+        if (!this.isGenerated()) {
             this.setToUnload(true);
             return;
         }
 
+        // mark chunk as no longer loaded so further unload calls don't schedule
+        // additional saves while this one is in progress
+        this.setLoaded(false);
+
+        if (asyncSave) {
+            SaveManager.saveChunk(this, this::deleteChunk);
+        } else {
+            SaveManager.saveChunkSync(this);
+            deleteChunk();
+        }
+
         GAME.debug("Unloading chunk " + this.toString());
+    }
+
+    public synchronized void deleteChunk() {
         this.setLoaded(false);
         this.getWorld().unload(this);
 
         if (this.blocks != null) {
             for (int x = 0; x < blocks.length; x++)
-                for (int y = 0; y < blocks[x].length; y++) {
-                    for (int z = 0; z < blocks[x][y].length; z++) {
+                for (int y = 0; y < blocks[x].length; y++)
+                    for (int z = 0; z < blocks[x][y].length; z++)
                         this.blocks[x][y][z] = null;
-                    }
-                }
         }
 
         this.blocks = null;
-        this.visibleBlock.clear();
-        this.lightningBlocks.clear();
+        if (this.visibleBlock != null) this.visibleBlock.clear();
+        if (this.lightningBlocks != null) this.lightningBlocks.clear();
         this.visibleBlock = null;
         this.lightningBlocks = null;
 
-        for(Renderer renderer : this.getRenderer().getRenderers())
+        for (Renderer renderer : this.getRenderer().getRenderers())
             GAME.getGraphicModule().cleanup(renderer);
 
         this.cleanup();
