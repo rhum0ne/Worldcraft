@@ -108,15 +108,15 @@ public class ChunksContainer {
         Short id = nextAvailableId();
         if (id == null) return null;
 
-        Chunk chunk;
+        Chunk chunk = new Chunk(world, id, x, z);
+        registerChunk(toLongKey(x, z), chunk);
+
         if (SaveManager.chunkExists(world, x, z)) {
-            chunk = SaveManager.loadChunk(world, id, x, z);
-        } else {
-            chunk = new Chunk(world, id, x, z);
-            if (generate) world.getGenerator().addToGenerate(chunk);
+            SaveManager.loadChunk(chunk);
+        } else if (generate) {
+            world.getGenerator().addToGenerate(chunk);
         }
 
-        registerChunk(toLongKey(x, z), chunk);
         return chunk;
     }
 
@@ -124,16 +124,16 @@ public class ChunksContainer {
         Short id = nextAvailableId();
         if (id == null) return null;
 
-        LightChunk chunk;
+        LightChunk chunk = new LightChunk(id, x, z, world);
+        registerChunk(toLongKey(x, z), chunk);
+
         if (SaveManager.chunkExists(world, x, z)) {
-            chunk = SaveManager.loadLightChunk(world, id, x, z);
+            SaveManager.loadLightChunk(chunk);
         } else {
-            chunk = new LightChunk(id, x, z, world);
             world.getGenerator().addToGenerate(chunk);
         }
         chunk.setToUpdate(true);
 
-        registerChunk(toLongKey(x, z), chunk);
         return chunk;
     }
 

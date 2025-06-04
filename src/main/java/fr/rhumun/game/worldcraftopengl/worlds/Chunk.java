@@ -40,7 +40,7 @@ public class Chunk extends AbstractChunk {
         this.setLoaded(true);
     }
 
-    private void updateAllBlock(){
+    void updateAllBlock(){
         for (Block[][] value : blocks)
             for (Block[] item : value) {
                 for (Block block : item) {

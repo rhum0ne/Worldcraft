@@ -113,16 +113,16 @@ public class SaveManager {
         }
     }
 
-    public static Chunk loadChunk(World world, short id, int x, int z) {
-        Path file = chunkFile(world, x, z);
-        if (!Files.exists(file)) return null;
-        Chunk chunk = new Chunk(world, id, x, z);
+    public static boolean loadChunk(Chunk chunk) {
+        Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        if (!Files.exists(file)) return false;
         try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
-                for (int y = 0; y < world.getHeigth(); y++)
+                for (int y = 0; y < chunk.getWorld().getHeigth(); y++)
                     for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
                         short mat = in.readShort();
-                        if (mat >= 0) chunk.getBlocks()[xi][y][zi].setMaterial(Material.getById(mat));
+                        if (mat >= 0)
+                            chunk.getBlocks()[xi][y][zi].setMaterial(Material.getById(mat));
                     }
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
                 for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
@@ -133,20 +133,20 @@ public class SaveManager {
                 }
         } catch (IOException e) {
             Game.GAME.errorLog(e);
+            return false;
         }
         chunk.setGenerated(true);
         chunk.updateAllBlock();
         chunk.setToUpdate(true);
-        return chunk;
+        return true;
     }
 
-    public static LightChunk loadLightChunk(World world, short id, int x, int z) {
-        Path file = chunkFile(world, x, z);
-        if (!Files.exists(file)) return null;
-        LightChunk chunk = new LightChunk(id, x, z, world);
+    public static boolean loadLightChunk(LightChunk chunk) {
+        Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
+        if (!Files.exists(file)) return false;
         try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
-                for (int y = 0; y < world.getHeigth(); y++)
+                for (int y = 0; y < chunk.getWorld().getHeigth(); y++)
                     for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
                         short mat = in.readShort();
                         if (mat >= 0)
@@ -158,10 +158,11 @@ public class SaveManager {
                 }
         } catch (IOException e) {
             Game.GAME.errorLog(e);
+            return false;
         }
         chunk.setGenerated(true);
         chunk.updateAllBlock();
         chunk.setToUpdate(true);
-        return chunk;
+        return true;
     }
 }
