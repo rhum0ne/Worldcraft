@@ -120,7 +120,7 @@ public class SaveManager {
         }
     }
 
-    private static void writeChunk(Chunk chunk) {
+    private static void writeChunk(Chunk chunk) throws IOException {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
         Path tmp = file.resolveSibling(file.getFileName().toString() + ".tmp");
         try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(tmp))) {
@@ -134,23 +134,25 @@ public class SaveManager {
                     Biome b = chunk.getBiome(chunk.getBlocks()[x][0][z]);
                     out.writeUTF(b == null ? "" : b.getName());
                 }
-            out.flush();
-            try {
-                Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
-            } catch (AtomicMoveNotSupportedException e) {
-                Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING);
-            }
-        } catch (IOException e) {
-            Game.GAME.errorLog(e);
-            try { Files.deleteIfExists(tmp); } catch (IOException ignored) {}
+        }
+
+        try {
+            Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        } catch (AtomicMoveNotSupportedException e) {
+            Files.move(tmp, file, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 
     public static void saveChunkSync(Chunk chunk) {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
         SAVING_FILES.add(file);
-        writeChunk(chunk);
-        SAVING_FILES.remove(file);
+        try {
+            writeChunk(chunk);
+        } catch (Exception e) {
+            Game.GAME.errorLog(e);
+        } finally {
+            SAVING_FILES.remove(file);
+        }
     }
 
     public static void saveChunk(Chunk chunk) {
@@ -161,9 +163,14 @@ public class SaveManager {
         Path file = chunkFile(chunk.getWorld(), chunk.getX(), chunk.getZ());
         SAVING_FILES.add(file);
         IO_EXECUTOR.submit(() -> {
-            writeChunk(chunk);
-            SAVING_FILES.remove(file);
-            if (onComplete != null) onComplete.run();
+            try {
+                writeChunk(chunk);
+            } catch (Exception e) {
+                Game.GAME.errorLog(e);
+            } finally {
+                SAVING_FILES.remove(file);
+                if (onComplete != null) onComplete.run();
+            }
         });
     }
 
