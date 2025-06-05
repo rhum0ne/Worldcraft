@@ -20,13 +20,13 @@ public class TextComponent extends Component {
     private final float[] rgba = new float[4];
     private int height =32;
 
-    public TextComponent(int x, int y, String text, Gui container) {
+    public TextComponent(int x, int y, String text, Component container) {
         this(x, y, text, 255, 255, 255, 255, container);
     }
-    public TextComponent(int x, int y, String text, int r, int g, int b, Gui container) {
+    public TextComponent(int x, int y, String text, int r, int g, int b, Component container) {
         this(x, y, text, r, g, b, 255, container);
     }
-    public TextComponent(int x, int y, String text, int r, int g, int b, int a, Gui container) {
+    public TextComponent(int x, int y, String text, int r, int g, int b, int a, Component container) {
         super(x, y, 0, 0, null, container);
         this.text = text;
         this.setRGBA(r, g, b, a);

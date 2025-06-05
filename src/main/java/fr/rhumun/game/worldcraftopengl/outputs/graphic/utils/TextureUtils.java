@@ -50,6 +50,7 @@ public class TextureUtils {
             i++;
         }
 
+        GAME.debug(i + " guis textures loaded.");
         ShaderManager.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
         ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
 
@@ -138,6 +139,7 @@ public class TextureUtils {
 
     private static int createTexture(ByteBuffer image, int width, int height) {
         int textureID = glGenTextures();
+
         glActiveTexture(GL_TEXTURE0 + textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 

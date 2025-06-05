@@ -10,11 +10,10 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class PlayButton extends Button {
 
-    private final TextComponent label;
 
     public PlayButton(int x, int y, Gui container) {
         super(x, y, 200, 40, Texture.PLAY_BUTTON, container);
-        this.label = container.addText(x + 35, y + 6, "Jouer");
+        this.addComponent(new TextComponent(35, 6, "Jouer", this));
     }
 
     @Override

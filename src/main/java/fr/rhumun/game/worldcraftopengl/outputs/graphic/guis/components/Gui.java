@@ -16,10 +16,6 @@ import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 @Getter @Setter
 public class Gui extends Component {
 
-    //private final GuiRenderer renderer;
-    private final GuiModule guiModule;
-
-    private final List<Component> components = new ArrayList<>();
     private List<Slot> slots = new ArrayList<>();
     @Setter
     private ItemContainer itemContainer;
@@ -28,17 +24,10 @@ public class Gui extends Component {
 
     public Gui(int x, int y, int width, int height, Texture texture, Gui container){
         super(x, y, width, height, texture, container);
-        //this.renderer = new GuiRenderer(x, y, x+width, y+height, texture);
-        this.guiModule = GAME.getGraphicModule().getGuiModule();
     }
 
     public Gui(int x, int y, int width, int height, Texture texture){
         this(x, y, width, height, texture, null);
-    }
-
-    public void render(){
-        super.render();
-        for(Component component : this.components) component.render();
     }
 
     @Override
@@ -46,38 +35,30 @@ public class Gui extends Component {
 
     }
 
-    public List<Component> getComponents(){
-        List<Component> components = new ArrayList<>(this.components);
-        for(Component component : this.components)
-            if(component instanceof Gui gui) components.addAll(gui.getComponents());
-
-        return components;
-    }
-
     public Image createImage(int x, int y, int width, int height, Texture texture){
         Image image = new Image(x, y, width, height, texture, this);
 
-        this.components.add(image);
+        this.addComponent(image);
         return image;
     }
 
     public TextComponent addText(int x, int y, String text) {
         TextComponent textC = new TextComponent(x, y, text, this);
 
-        this.components.add(textC);
+        this.addComponent(textC);
         return textC;
     }
 
 
     public void addButton(Button button) {
-        this.components.add(button);
+        this.addComponent(button);
     }
 
     public Slot createSlot(int x, int y, int size){
         Slot slot = new Slot(x, y, size, slots.size(), this);
 
         this.slots.add(slot);
-        this.components.add(slot);
+        this.addComponent(slot);
         return slot;
     }
 
@@ -85,7 +66,7 @@ public class Gui extends Component {
         Slot slot = new Slot(x, y, slots.size(), this);
 
         this.slots.add(slot);
-        this.components.add(slot);
+        this.addComponent(slot);
         return slot;
     }
 
@@ -94,7 +75,7 @@ public class Gui extends Component {
         ClickableSlot slot = new ClickableSlot(x, y, size, slots.size(), this);
 
         this.slots.add(slot);
-        this.components.add(slot);
+        this.addComponent(slot);
         return slot;
     }
 
@@ -102,7 +83,7 @@ public class Gui extends Component {
         CreativeSlot slot = new CreativeSlot(x, y, size, slots.size(), this);
 
         this.slots.add(slot);
-        this.components.add(slot);
+        this.addComponent(slot);
         return slot;
     }
 
@@ -112,7 +93,7 @@ public class Gui extends Component {
     public InventoryGUI addInventory(int x, int y, float ratio){
         InventoryGUI gui = new InventoryGUI(GUI_ZOOM*x, GUI_ZOOM*y, ratio, this);
 
-        this.components.add(gui);
+        this.addComponent(gui);
         return gui;
     }
 

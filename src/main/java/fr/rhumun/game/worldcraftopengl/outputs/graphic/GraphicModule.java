@@ -116,9 +116,16 @@ public class GraphicModule {
         configureShaders();
         loadResources();
         configureUI();
+        initWorldGraphics();
+        isInitialized = true;
+    }
+
+    public void initWorldGraphics() {
+        this.world = game.getWorld();
+        if(game.getWorld() == null) return;
+
         configureLighting();
         startChunkLoader();
-        isInitialized = true;
     }
 
     private void initGLFW() {
@@ -143,8 +150,6 @@ public class GraphicModule {
         glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
         glfwSetKeyCallback(window, new KeyEvent(game, player));
         glfwSetCursorPosCallback(window, cursorEvent);
-
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1);
@@ -204,7 +209,6 @@ public class GraphicModule {
     }
 
     private void configureLighting() {
-        this.world = player.getLocation().getWorld();
         for (Shader shader : renderingShaders) setSunLight(shader);
         setSunLight(ShaderManager.FAR_SHADER);
         this.guiModule.updateInventory(player);
@@ -287,26 +291,11 @@ public class GraphicModule {
 
     private void loop() {
         while (!glfwWindowShouldClose(window) && game.isPlaying()) {
-            long start = System.currentTimeMillis();
-            glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
-            cleaner.clean();
-
-            if (game.isPaused() != isPaused) setPaused(game.isPaused());
-            if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
-
-            //updateWaterTime();
-            updateViewMatrix();
-
-            glUseProgram(ShaderManager.FAR_SHADER.id);
-            updateFarChunks();
-
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-            update();
-
-            glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
-            blockSelector.render();
-
-            guiModule.render();
+            switch(game.getGameState()) {
+                case GameState.RUNNING -> this.renderGame();
+                case GameState.PAUSED -> this.renderGame();
+                case GameState.TITLE -> this.renderGuiOnly();
+            }
 
             glUseProgram(0);
             if (SHOWING_FPS) debugUtils.calculateFPS();
@@ -315,6 +304,36 @@ public class GraphicModule {
             glfwPollEvents();
         }
         debugUtils.checkGLError();
+    }
+
+    private void renderGuiOnly() {
+        glClearColor(0, 0, 0, 1.0f);
+        cleaner.clean();
+
+        if (isShowingTriangles) setShowingTriangles(false);
+        this.guiModule.render();
+    }
+
+    private void renderGame() {
+        glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+        cleaner.clean();
+
+        if (game.isPaused() != isPaused) setPaused(game.isPaused());
+        if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
+
+        //updateWaterTime();
+        updateViewMatrix();
+
+        glUseProgram(ShaderManager.FAR_SHADER.id);
+        updateFarChunks();
+
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        update();
+
+        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
+        blockSelector.render();
+
+        guiModule.render();
     }
 
     private void update() {

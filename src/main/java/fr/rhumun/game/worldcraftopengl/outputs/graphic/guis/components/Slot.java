@@ -35,11 +35,11 @@ public class Slot extends Button {
     }
 
     public Item getItem(){
-        return this.getContainer().getItemContainer().getItems()[id];
+        return ((Gui)this.getContainer()).getItemContainer().getItems()[id];
     }
 
     public void setItem(Item item){
-        this.getContainer().getItemContainer().setItem(id, item);
+        ((Gui)this.getContainer()).getItemContainer().setItem(id, item);
     }
 
     @Override

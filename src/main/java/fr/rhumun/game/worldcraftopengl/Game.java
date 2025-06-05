@@ -42,7 +42,7 @@ public class Game {
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static int LOD = 4;
     public static final long LAG_SPIKE_LIMIT = 100;
 
@@ -80,7 +80,6 @@ public class Game {
         audioManager = new AudioManager(this);
         audioManager.init();
 
-        this.world = new World();
         this.player = new Player(this);
 
         graphicModule = new GraphicModule(this);
@@ -109,7 +108,11 @@ public class Game {
     }
 
     public void startGame(){
+        this.getGraphicModule().getGuiModule().closeGUI();
+
+        this.world = new World();
         this.world.load();
+        this.graphicModule.initWorldGraphics();
 
         while(!world.isLoaded()){ }
 

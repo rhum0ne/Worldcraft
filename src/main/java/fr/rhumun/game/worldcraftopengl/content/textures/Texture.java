@@ -2,8 +2,10 @@ package fr.rhumun.game.worldcraftopengl.content.textures;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ButtonTextureMaker;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.w3c.dom.Text;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -88,14 +90,14 @@ public class Texture {
     public static Texture CALCITE_BRICK;
 
 
+    public static Texture PLAY_BUTTON;
+    public static Texture QUIT_BUTTON;
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
     public static Texture BUTTON;
-    public static Texture PLAY_BUTTON;
-    public static Texture QUIT_BUTTON;
 
 
     public static Texture OTTER;
@@ -174,15 +176,14 @@ public class Texture {
         JACK_O_LANTERN = new Texture("jack_o_lantern.png");
         SNOWY_GRASS = new Texture("snowy_grass.png");
 
+        PLAY_BUTTON = new Texture(TextureTypes.GUIS, ButtonTextureMaker.create(200, 40), "play_button", 200, 40);
+        QUIT_BUTTON = new Texture(TextureTypes.GUIS, ButtonTextureMaker.create(200, 40), "quit_button", 200, 40);
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
         BUTTON = new Texture(TextureTypes.GUIS,"hud\\button.png");
-        PLAY_BUTTON = new Texture(ButtonTextureMaker.create(200, 40), "play_button", 200, 40);
-        QUIT_BUTTON = new Texture(ButtonTextureMaker.create(200, 40), "quit_button", 200, 40);
-
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
     }
 
@@ -201,13 +202,14 @@ public class Texture {
     private int width;
     private int height;
 
-    public Texture(ByteBuffer buffer, String name, int width, int height) {
+    public Texture(TextureTypes type, ByteBuffer buffer, String name, int width, int height) {
         this.buffer = buffer;
         this.name = name;
         this.width = width;
         this.height = height;
         this.id = textures.size();
         textureByName.put(this.name, this);
+        type.add(this);
     }
     public Texture(String path){ this(TextureTypes.BLOCKS, path); }
     public Texture(TextureTypes type, String path){

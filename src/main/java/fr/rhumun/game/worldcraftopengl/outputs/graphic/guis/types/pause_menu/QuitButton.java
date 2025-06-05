@@ -10,11 +10,9 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class QuitButton extends Button {
 
-    private final TextComponent label;
-
     public QuitButton(int x, int y, Gui container) {
         super(x, y, 200, 40, Texture.QUIT_BUTTON, container);
-        this.label = container.addText(x + 30, y + 6, "Quitter");
+        this.addComponent(new TextComponent(30, 6, "Quitter", this));
     }
 
     @Override
