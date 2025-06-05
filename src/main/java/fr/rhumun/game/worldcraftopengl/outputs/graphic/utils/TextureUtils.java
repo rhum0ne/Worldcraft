@@ -34,7 +34,7 @@ public class TextureUtils {
         for (Texture texture : TextureTypes.GUIS.get()) {
 
             int textureID = texture.isBuffered() ?
-                    loadTexture(texture.getBuffer(), texture.getWidth(), texture.getHeight(), texture.getPath()) : loadTexture(texture.getPath());
+                    createTexture(texture.getBuffer(), texture.getWidth(), texture.getHeight()) : loadTexture(texture.getPath());
 
             glActiveTexture(textureID); // Active l'unité de texture correspondante
             glBindTexture(GL_TEXTURE_2D, textureID);
@@ -113,16 +113,20 @@ public class TextureUtils {
         GAME.debug("Done!");
     }
 
-    private static int loadTexture(ByteBuffer image, int width, int height, String path) {
+    private static int loadTexture(String path) {
         int textureID = glGenTextures();
-
         glActiveTexture(GL_TEXTURE0 + textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         GAME.debug(path + " -> " + textureID );
 
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer comp = BufferUtils.createIntBuffer(1);
+        ByteBuffer image = STBImage.stbi_load(path, width, height, comp, 4);
+
         if (image != null) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(), height.get(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
             glGenerateMipmap(GL_TEXTURE_2D);
             STBImage.stbi_image_free(image);
         } else {
@@ -132,14 +136,15 @@ public class TextureUtils {
         return textureID;
     }
 
-    private static int loadTexture(String path) {
+    private static int createTexture(ByteBuffer image, int width, int height) {
+        int textureID = glGenTextures();
+        glActiveTexture(GL_TEXTURE0 + textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
 
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        IntBuffer comp = BufferUtils.createIntBuffer(1);
-        ByteBuffer image = STBImage.stbi_load(path, width, height, comp, 4);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-        return loadTexture(image, width.get(), height.get(), path);
+        return textureID;
     }
 
     private static int initBlocksTextures() {

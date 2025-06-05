@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import org.lwjgl.BufferUtils;
 
 import java.nio.ByteBuffer;
@@ -22,6 +23,8 @@ public final class ButtonTextureMaker {
      * @return buffer containing RGBA pixels
      */
     public static ByteBuffer create(int width, int height) {
+        Game.GAME.debug("Creating one button texture...");
+
         ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
         Random random = new Random();
         for (int y = 0; y < height; y++) {

@@ -26,8 +26,8 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
     public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
@@ -42,7 +42,7 @@ public class Game {
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static int LOD = 4;
     public static final long LAG_SPIKE_LIMIT = 100;
 
