@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.worlds_menu.CreateWorldGui;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
@@ -27,6 +28,18 @@ public class KeyEvent implements GLFWKeyCallbackI {
             ChatGui chat = game.getGraphicModule().getGuiModule().getChat();
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
                 chat.getEnteredText().print(String.valueOf((char) key));
+                return;
+            }
+
+            if(game.getGraphicModule().getGuiModule().hasGUIOpened() &&
+                    game.getGraphicModule().getGuiModule().getGui() instanceof CreateWorldGui create){
+                if(key == 259){ // backspace
+                    create.backspace();
+                } else if(!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE)) {
+                    create.appendChar((char) key);
+                } else if(Controls.get(key) == Controls.ENTER){
+                    create.createWorld();
+                }
                 return;
             }
 

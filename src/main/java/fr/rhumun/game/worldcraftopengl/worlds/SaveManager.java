@@ -91,6 +91,38 @@ public class SaveManager {
         return Files.exists(worldDir(seed));
     }
 
+    public static java.util.List<Seed> listWorldSeeds() {
+        java.util.List<Seed> list = new java.util.ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(WORLDS_DIR)) {
+            for (Path p : stream) {
+                if (Files.isDirectory(p)) {
+                    try {
+                        long s = Long.parseLong(p.getFileName().toString());
+                        list.add(Seed.create(Long.toString(s)));
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
+            }
+        } catch (IOException ignored) {
+        }
+        return list;
+    }
+
+    public static String getWorldName(Seed seed) {
+        Path file = worldDir(seed).resolve("world.dat");
+        if (!Files.exists(file)) return seed.toString();
+        try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
+            in.readLong();
+            in.readInt();
+            in.readInt();
+            if (in.available() > 0) {
+                return in.readUTF();
+            }
+        } catch (IOException ignored) {
+        }
+        return seed.toString();
+    }
+
     public static boolean chunkExists(World world, int x, int z) {
         Path file = chunkFile(world, x, z);
         waitForSave(file);
@@ -103,6 +135,7 @@ public class SaveManager {
             out.writeLong(world.getSeed().getLong());
             out.writeInt(world.getXSpawn());
             out.writeInt(world.getZSpawn());
+            out.writeUTF(world.getName());
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
@@ -117,6 +150,9 @@ public class SaveManager {
                 Game.GAME.warn("Seed mismatch while loading world metadata");
             }
             world.setSpawnPosition(in.readInt(), in.readInt());
+            if (in.available() > 0) {
+                world.setName(in.readUTF());
+            }
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }

@@ -23,6 +23,7 @@ public class World {
 
     private final Seed seed;
     private final WorldGenerator generator;
+    private String name;
 
     //private final HashMap<Point, Chunk> chunks = new HashMap<>();
     private final ChunksContainer chunks;
@@ -46,8 +47,17 @@ public class World {
     }
 
     public World(){
+        this(Seed.random(), "World");
+    }
+
+    public World(Seed seed){
+        this(seed, "World");
+    }
+
+    public World(Seed seed, String name){
         //this.seed = Seed.create("1408502280");
-        this.seed = Seed.random();
+        this.seed = seed;
+        this.name = name;
         this.chunks = new ChunksContainer(this);
         this.generator = new NormalWorldGenerator(this);
         //this.generator = new Flat(this);

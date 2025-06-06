@@ -190,5 +190,9 @@ public class GuiModule {
                 }
             }
         }
+
+        if(this.gui instanceof fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.worlds_menu.CreateWorldGui cw) {
+            cw.handleClick();
+        }
     }
 }
