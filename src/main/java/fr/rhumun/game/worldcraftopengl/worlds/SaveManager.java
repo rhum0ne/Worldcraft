@@ -91,6 +91,27 @@ public class SaveManager {
         return Files.exists(worldDir(seed));
     }
 
+    /**
+     * Returns the list of world seeds present on disk. Each sub-directory name
+     * inside {@link #WORLDS_DIR} is interpreted as a seed value.
+     */
+    public static java.util.List<Seed> listWorldSeeds() {
+        java.util.List<Seed> seeds = new java.util.ArrayList<>();
+        try (java.nio.file.DirectoryStream<java.nio.file.Path> stream = java.nio.file.Files.newDirectoryStream(WORLDS_DIR)) {
+            for (java.nio.file.Path path : stream) {
+                if (java.nio.file.Files.isDirectory(path)) {
+                    try {
+                        seeds.add(Seed.create(path.getFileName().toString()));
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Game.GAME.errorLog(e);
+        }
+        return seeds;
+    }
+
     public static boolean chunkExists(World world, int x, int z) {
         Path file = chunkFile(world, x, z);
         waitForSave(file);
