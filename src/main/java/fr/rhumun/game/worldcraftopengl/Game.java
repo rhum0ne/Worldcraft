@@ -109,15 +109,20 @@ public class Game {
     }
 
     public void startGame(){
-        startGame(Seed.random());
+        startGame(null, Seed.random());
     }
 
     public void startGame(Seed seed){
+        startGame(null, seed);
+    }
+
+    public void startGame(String name, Seed seed){
         this.getGraphicModule().getGuiModule().closeGUI();
 
         this.gameState = GameState.RUNNING;
 
-        this.world = new World(seed);
+        if(name == null) this.world = new World(seed);
+        else this.world = new World(seed, name);
         this.world.load();
         this.graphicModule.initWorldGraphics();
 
