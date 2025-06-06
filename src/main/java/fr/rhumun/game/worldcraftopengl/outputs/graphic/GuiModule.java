@@ -171,8 +171,6 @@ public class GuiModule {
     public void rightClick(Player player) {
         if(!hasGUIOpened()) return;
 
-        System.out.println("RIGHT CLICK");
-
 //        for(Component component : this.gui.getComponents()){
 //            if(component instanceof Button button) {
 //                if(component.isCursorIn())
@@ -182,10 +180,7 @@ public class GuiModule {
     }
 
     public void leftClick(Player player) {
-        System.out.println("LEFT CLICK");
-
         if(!hasGUIOpened()) return;
-        System.out.println("LEFT CLICK 2");
 
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {

@@ -12,13 +12,7 @@ public class PlayButton extends Button {
 
 
     public PlayButton(int x, int y, Gui container) {
-        super(x, y, 200, 40, Texture.PLAY_BUTTON, container);
-        this.addComponent(new TextComponent(35, 6, "Jouer", this));
-    }
-
-    @Override
-    public void update() {
-
+        super(x, y, container, "Jouer");
     }
 
     @Override

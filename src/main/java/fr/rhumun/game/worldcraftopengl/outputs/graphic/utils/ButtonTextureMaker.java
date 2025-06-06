@@ -36,9 +36,9 @@ public final class ButtonTextureMaker {
             for (int x = 0; x < width; x++) {
                 boolean border = x < 2 || y < 2 || x >= width - 2 || y >= height - 2;
                 if (border) {
-                    buffer.put((byte) 255).put((byte) 0).put((byte) 0).put((byte) 255);
+                    buffer.put((byte) 0).put((byte) 0).put((byte) 0).put((byte) 255);
                 } else {
-                    int g = 200 + random.nextInt(30);
+                    int g = 150 + random.nextInt(30);
                     buffer.put((byte) g).put((byte) g).put((byte) g).put((byte) 255);
                 }
             }

@@ -26,8 +26,8 @@ public abstract class Component{
 
     private int x;
     private int y;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     private Texture texture;
     private Component container;
     private GuiModule guiModule;
@@ -35,6 +35,8 @@ public abstract class Component{
 
     private float[] vertices;
     private boolean isInitialized = false;
+
+    private boolean alignCenter = false;
 
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
@@ -55,9 +57,15 @@ public abstract class Component{
 
     public boolean hasContainer(){ return this.container != null; }
 
-    public int getX(){ return this.x*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getX() : 0); }
+    public int getX(){
+        return this.x*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getX() : 0)
+                + ((this.hasContainer() && this.container.alignCenter) ? this.container.width/2 - this.width/2 : 0 );
+    }
 
-    public int getY(){ return this.y*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getY() : 0); }
+    public int getY(){
+        return this.y*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getY() : 0)
+                + ((this.hasContainer() && this.container.alignCenter) ? this.container.height/2 - this.height/2 : 0 );
+    }
 
     public List<Component> getComponents(){
         if(this.components.isEmpty()) return new ArrayList<>();

@@ -11,8 +11,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class QuitButton extends Button {
 
     public QuitButton(int x, int y, Gui container) {
-        super(x, y, 200, 40, Texture.QUIT_BUTTON, container);
-        this.addComponent(new TextComponent(30, 6, "Quitter", this));
+        super(x, y, container, "Quitter");
     }
 
     @Override
@@ -20,8 +19,4 @@ public class QuitButton extends Button {
         GAME.closeGame();
     }
 
-    @Override
-    public void update() {
-
-    }
 }

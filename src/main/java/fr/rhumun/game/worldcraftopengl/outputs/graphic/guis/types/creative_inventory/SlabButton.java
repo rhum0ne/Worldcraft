@@ -10,7 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.Cre
 public class SlabButton extends Button {
 
     public SlabButton(int x, int y, Gui container) {
-        super(x, y, 48, 46, Texture.BUTTON, container);
+        super(x, y, 48, 46, Texture.SQUARE_BUTTON, container);
     }
 
     @Override

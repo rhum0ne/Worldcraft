@@ -26,8 +26,8 @@ public class Game {
 
     public static Game GAME;
 
-    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
     public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
@@ -110,6 +110,8 @@ public class Game {
     public void startGame(){
         this.getGraphicModule().getGuiModule().closeGUI();
 
+        this.gameState = GameState.RUNNING;
+
         this.world = new World();
         this.world.load();
         this.graphicModule.initWorldGraphics();
@@ -136,8 +138,6 @@ public class Game {
 
         gameLoop = new GameLoop(this, player);
         gameLoop.start();
-
-        this.gameState = GameState.RUNNING;
     }
 
     public void sendMessage(Player player, String message){

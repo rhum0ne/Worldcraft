@@ -83,7 +83,7 @@ public class GraphicModule {
 
     // == State ==
     private boolean isInitialized = false;
-    private boolean isPaused = false;
+    private boolean isPaused = true;
     public boolean isShowingTriangles = false;
 
     public GraphicModule(Game game) {
@@ -142,7 +142,7 @@ public class GraphicModule {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_SAMPLES, 3);
 
-        window = glfwCreateWindow(startWidth, startHeight, "WorldCraft OpenGL", NULL, NULL);
+        window = glfwCreateWindow(startWidth, startHeight, "WorldCraft", NULL, NULL);
         if (window == NULL) throw new RuntimeException("Failed to create GLFW window");
 
         glfwSetMouseButtonCallback(window, new MouseClickEvent(game));
