@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldInfo;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -92,16 +93,27 @@ public class SaveManager {
     }
 
     /**
-     * Returns the list of world seeds present on disk. Each sub-directory name
-     * inside {@link #WORLDS_DIR} is interpreted as a seed value.
+     * Returns the list of worlds present on disk with their name and seed.
      */
-    public static java.util.List<Seed> listWorldSeeds() {
-        java.util.List<Seed> seeds = new java.util.ArrayList<>();
+    public static java.util.List<WorldInfo> listWorldInfos() {
+        java.util.List<WorldInfo> infos = new java.util.ArrayList<>();
         try (java.nio.file.DirectoryStream<java.nio.file.Path> stream = java.nio.file.Files.newDirectoryStream(WORLDS_DIR)) {
             for (java.nio.file.Path path : stream) {
                 if (java.nio.file.Files.isDirectory(path)) {
                     try {
-                        seeds.add(Seed.create(path.getFileName().toString()));
+                        Seed seed = Seed.create(path.getFileName().toString());
+                        String name = "World " + seed.getLong();
+                        Path meta = path.resolve("world.dat");
+                        if (java.nio.file.Files.exists(meta)) {
+                            try (DataInputStream in = new DataInputStream(java.nio.file.Files.newInputStream(meta))) {
+                                in.readLong();
+                                in.readInt();
+                                in.readInt();
+                                if (in.available() > 0) name = in.readUTF();
+                            } catch (Exception ignored) {
+                            }
+                        }
+                        infos.add(new WorldInfo(seed, name));
                     } catch (Exception ignored) {
                     }
                 }
@@ -109,7 +121,7 @@ public class SaveManager {
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
-        return seeds;
+        return infos;
     }
 
     public static boolean chunkExists(World world, int x, int z) {
@@ -124,6 +136,7 @@ public class SaveManager {
             out.writeLong(world.getSeed().getLong());
             out.writeInt(world.getXSpawn());
             out.writeInt(world.getZSpawn());
+            out.writeUTF(world.getName() == null ? "" : world.getName());
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
@@ -138,6 +151,11 @@ public class SaveManager {
                 Game.GAME.warn("Seed mismatch while loading world metadata");
             }
             world.setSpawnPosition(in.readInt(), in.readInt());
+            try {
+                world.setName(in.readUTF());
+            } catch (IOException ignored) {
+                world.setName("World " + world.getSeed().getLong());
+            }
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
