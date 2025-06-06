@@ -4,33 +4,40 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TextComponent;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.InputField;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class CreateWorldGui extends CenteredGUI implements TypingGui {
-    private final TextComponent nameField;
-    private final TextComponent seedField;
-    private boolean typingSeed = false;
+    private final InputField nameField;
+    private final InputField seedField;
+    private InputField activeField;
 
     public CreateWorldGui() {
         super(500, 300, Texture.DARK_COBBLE);
 
         this.addText(0, -120, "Créer un Monde");
         this.addText(-200, -60, "Nom:");
-        nameField = this.addText(-50, -60, "");
+        nameField = new InputField(100, -60, 300, this);
+        nameField.setValue("Mon monde");
+        nameField.setOnClick(() -> activeField = nameField);
+        this.addButton(nameField);
+
         this.addText(-200, -20, "Seed:");
-        seedField = this.addText(-50, -20, "");
+        seedField = new InputField(100, -20, 300, this);
+        seedField.setOnClick(() -> activeField = seedField);
+        this.addButton(seedField);
+        activeField = nameField;
 
         this.addButton(new Button(0, 60, this, "Créer") {
             @Override
             public void onClick(Player player) {
-                String seedText = seedField.getText();
+                String seedText = seedField.getValue();
                 Seed seed = seedText == null || seedText.isEmpty() ? Seed.random() : Seed.create(seedText);
-                String name = nameField.getText();
-                if (name == null || name.isEmpty()) name = "World " + seed.getLong();
+                String name = nameField.getValue();
+                if (name == null || name.isEmpty()) name = "Mon monde";
                 GAME.startGame(name, seed);
             }
         });
@@ -47,13 +54,9 @@ public class CreateWorldGui extends CenteredGUI implements TypingGui {
     @Override
     public void typeChar(char c) {
         if (c == '\t') {
-            typingSeed = !typingSeed;
+            activeField = activeField == nameField ? seedField : nameField;
             return;
         }
-        if (typingSeed) {
-            seedField.setText(seedField.getText() + c);
-        } else {
-            nameField.setText(nameField.getText() + c);
-        }
+        activeField.setValue(activeField.getValue() + c);
     }
 }
