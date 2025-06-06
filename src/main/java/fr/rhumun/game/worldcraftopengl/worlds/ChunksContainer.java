@@ -166,7 +166,7 @@ public class ChunksContainer {
         light.setToUpdate(true);
 
         // Save synchronously before discarding data so we don't read half-written files
-        fullChunk.unload(false);
+        fullChunk.unload(true);
         registerChunk(key, light);
         return light;
     }

@@ -11,6 +11,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Game {
     //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
-    public static int SHOW_DISTANCE = 25;
+    public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -37,6 +38,7 @@ public class Game {
     public static int GUI_ZOOM = 2;
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
+    public static boolean UPDATE_WORLD_RENDER = true;
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
@@ -47,13 +49,12 @@ public class Game {
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
     public static String TEXTURES_PATH = GAME_PATH + "src\\main\\resources\\assets\\";
 
-    final GraphicModule graphicModule;
+    GraphicModule graphicModule;
     final AudioManager audioManager;
     final Data data;
-    final GameLoop gameLoop;
+    GameLoop gameLoop;
 
-    boolean isPaused = false;
-    boolean isPlaying = true;
+    GameState gameState = GameState.TITLE;
     boolean isShowingTriangles = false;
     World world;
     Player player;
@@ -62,7 +63,9 @@ public class Game {
 
     List<Material> materials;
     public static void main(String[] args) {
-        new Game();
+        Game game = new Game();
+        game.getGraphicModule().getGuiModule().openGUI(new TitleMenuGui());
+        game.getGraphicModule().run();
     }
 
     public Game(){
@@ -77,16 +80,45 @@ public class Game {
         audioManager = new AudioManager(this);
         audioManager.init();
 
-
         this.player = new Player(this);
+
+        graphicModule = new GraphicModule(this);
+        graphicModule.init();
+    }
+
+    public void setPaused(boolean b) {
+        this.gameState = b ? GameState.PAUSED : GameState.RUNNING;
+    }
+
+    public void closeGame(){
+        this.gameState = null;
+        SaveManager.shutdown();
+    }
+
+    public void setPlaying(boolean b){
+        if(!b) this.gameState = null;
+    }
+
+    public boolean isPaused(){
+        return this.gameState != GameState.RUNNING;
+    }
+
+    public boolean isPlaying(){
+        return this.gameState != null;
+    }
+
+    public void startGame(){
+        this.getGraphicModule().getGuiModule().closeGUI();
+
+        this.gameState = GameState.RUNNING;
+
         this.world = new World();
         this.world.load();
+        this.graphicModule.initWorldGraphics();
 
         while(!world.isLoaded()){ }
 
         this.world.spawnPlayer(player);
-
-        //Timer timer = new Timer();
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
@@ -104,20 +136,8 @@ public class Game {
 
         player.playSound(Sound.STONE1);
 
-        //timer.schedule(gameLoop = new GameLoop(this, player), Date.from(Instant.now()), 20);
         gameLoop = new GameLoop(this, player);
         gameLoop.start();
-        graphicModule = new GraphicModule(this);
-        graphicModule.run();
-    }
-
-    public void setPaused(boolean b) {
-        this.isPaused = b;
-    }
-
-    public void closeGame(){
-        this.isPlaying = false;
-        SaveManager.shutdown();
     }
 
     public void sendMessage(Player player, String message){

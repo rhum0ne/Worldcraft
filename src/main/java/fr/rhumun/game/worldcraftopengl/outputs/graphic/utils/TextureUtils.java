@@ -32,7 +32,10 @@ public class TextureUtils {
         int[] guiTexturesUnits = new int[TextureTypes.GUIS.get().size()];
         int i=0;
         for (Texture texture : TextureTypes.GUIS.get()) {
-            int textureID = loadTexture(texture.getPath());
+
+            int textureID = texture.isBuffered() ?
+                    createTexture(texture.getBuffer(), texture.getWidth(), texture.getHeight()) : loadTexture(texture.getPath());
+
             glActiveTexture(textureID); // Active l'unité de texture correspondante
             glBindTexture(GL_TEXTURE_2D, textureID);
             glGenerateMipmap(GL_TEXTURE_2D);
@@ -47,6 +50,7 @@ public class TextureUtils {
             i++;
         }
 
+        GAME.debug(i + " guis textures loaded.");
         ShaderManager.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
         ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
 
@@ -129,6 +133,19 @@ public class TextureUtils {
         } else {
             GAME.errorLog("Erreur lors du chargement de la texture " + path);
         }
+
+        return textureID;
+    }
+
+    private static int createTexture(ByteBuffer image, int width, int height) {
+        int textureID = glGenTextures();
+
+        glActiveTexture(GL_TEXTURE0 + textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        STBImage.stbi_image_free(image);
 
         return textureID;
     }

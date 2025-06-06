@@ -18,15 +18,15 @@ public class TextComponent extends Component {
     private String text;
     private String showedText;
     private final float[] rgba = new float[4];
-    private int height =32;
+    private int defaultHeight = 32;
 
-    public TextComponent(int x, int y, String text, Gui container) {
+    public TextComponent(int x, int y, String text, Component container) {
         this(x, y, text, 255, 255, 255, 255, container);
     }
-    public TextComponent(int x, int y, String text, int r, int g, int b, Gui container) {
+    public TextComponent(int x, int y, String text, int r, int g, int b, Component container) {
         this(x, y, text, r, g, b, 255, container);
     }
-    public TextComponent(int x, int y, String text, int r, int g, int b, int a, Gui container) {
+    public TextComponent(int x, int y, String text, int r, int g, int b, int a, Component container) {
         super(x, y, 0, 0, null, container);
         this.text = text;
         this.setRGBA(r, g, b, a);
@@ -70,6 +70,9 @@ public class TextComponent extends Component {
     public int getTextureArray(){ return FontLoader.TEXTURES_ARRAY; }
     @Override
     public void updateVertices() {
+        super.setWidth(0);
+        super.setHeight(defaultHeight);
+
         if (text == null || text.isEmpty()) return;
 
         List<Float> verticesList = new ArrayList<>();
@@ -102,7 +105,7 @@ public class TextComponent extends Component {
             float yOffset = glyph.getYOffset() * Game.GUI_ZOOM;
             float advance = glyph.getAdvance();
 
-            int startY = this.height - glyphHeight;
+            int startY = this.defaultHeight - glyphHeight;
 
             // Coordonnées de texture dans l'atlas
             float xStart = 0;//glyph.getXStart();
@@ -153,6 +156,15 @@ public class TextComponent extends Component {
             xCursor += advance/48; // Avancer le curseur horizontal
         }
 
+        if (this.hasContainer() && this.getContainer().isAlignCenter()) {
+            this.setWidth(xCursor - getX());
+            this.setHeight(Math.max(this.getHeight(), yCursor + defaultHeight - getY()));
+
+            for(int i= 0; i<verticesList.size(); i+=6){
+                verticesList.set(i, verticesList.get(i) - this.getWidth()/2);
+            }
+        }
+
         // Convertir en tableaux
         float[] verticesArray = new float[verticesList.size()];
         for (int i = 0; i < verticesArray.length; i++) verticesArray[i] = verticesList.get(i);
@@ -164,6 +176,7 @@ public class TextComponent extends Component {
 
         if (isInitialized()) updateVAO();
         this.showedText = text;
+
     }
 
 }

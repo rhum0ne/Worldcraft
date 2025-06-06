@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.*;
+import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
@@ -82,7 +83,7 @@ public class GraphicModule {
 
     // == State ==
     private boolean isInitialized = false;
-    private boolean isPaused = false;
+    private boolean isPaused = true;
     public boolean isShowingTriangles = false;
 
     public GraphicModule(Game game) {
@@ -97,7 +98,6 @@ public class GraphicModule {
     }
 
     public void run() {
-        init();
         try {
             loop();
         } catch (Exception e) {
@@ -109,16 +109,23 @@ public class GraphicModule {
         System.exit(0);
     }
 
-    private void init() {
+    public void init() {
         initGLFW();
         createWindow();
         setupOpenGL();
         configureShaders();
         loadResources();
         configureUI();
+        initWorldGraphics();
+        isInitialized = true;
+    }
+
+    public void initWorldGraphics() {
+        this.world = game.getWorld();
+        if(game.getWorld() == null) return;
+
         configureLighting();
         startChunkLoader();
-        isInitialized = true;
     }
 
     private void initGLFW() {
@@ -135,7 +142,7 @@ public class GraphicModule {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_SAMPLES, 3);
 
-        window = glfwCreateWindow(startWidth, startHeight, "WorldCraft OpenGL", NULL, NULL);
+        window = glfwCreateWindow(startWidth, startHeight, "WorldCraft", NULL, NULL);
         if (window == NULL) throw new RuntimeException("Failed to create GLFW window");
 
         glfwSetMouseButtonCallback(window, new MouseClickEvent(game));
@@ -143,8 +150,6 @@ public class GraphicModule {
         glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
         glfwSetKeyCallback(window, new KeyEvent(game, player));
         glfwSetCursorPosCallback(window, cursorEvent);
-
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         try (MemoryStack stack = stackPush()) {
             IntBuffer pWidth = stack.mallocInt(1);
@@ -204,7 +209,6 @@ public class GraphicModule {
     }
 
     private void configureLighting() {
-        this.world = player.getLocation().getWorld();
         for (Shader shader : renderingShaders) setSunLight(shader);
         setSunLight(ShaderManager.FAR_SHADER);
         this.guiModule.updateInventory(player);
@@ -270,7 +274,7 @@ public class GraphicModule {
 
         Matrix4f viewMatrix = new Matrix4f().lookAt(camera.getPos(), camera.getLookPoint(), camera.getUp());
 
-        if (UPDATE_FRUSTRUM) {
+        if (UPDATE_FRUSTRUM && UPDATE_WORLD_RENDER) {
             Matrix4f combinedMatrix = new Matrix4f().mul(projectionMatrix).mul(viewMatrix);
             frustumIntersection = new FrustumIntersection(combinedMatrix);
         }
@@ -287,26 +291,11 @@ public class GraphicModule {
 
     private void loop() {
         while (!glfwWindowShouldClose(window) && game.isPlaying()) {
-            long start = System.currentTimeMillis();
-            glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
-            cleaner.clean();
-
-            if (game.isPaused() != isPaused) setPaused(game.isPaused());
-            if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
-
-            updateWaterTime();
-            updateViewMatrix();
-
-            glUseProgram(ShaderManager.FAR_SHADER.id);
-            updateFarChunks();
-
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-            update();
-
-            glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
-            blockSelector.render();
-
-            guiModule.render();
+            switch(game.getGameState()) {
+                case GameState.RUNNING -> this.renderGame();
+                case GameState.PAUSED -> this.renderGame();
+                case GameState.TITLE -> this.renderGuiOnly();
+            }
 
             glUseProgram(0);
             if (SHOWING_FPS) debugUtils.calculateFPS();
@@ -317,8 +306,39 @@ public class GraphicModule {
         debugUtils.checkGLError();
     }
 
+    private void renderGuiOnly() {
+        glClearColor(0, 0, 0, 1.0f);
+        cleaner.clean();
+
+        if (isShowingTriangles) setShowingTriangles(false);
+        this.guiModule.render();
+    }
+
+    private void renderGame() {
+        glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+        cleaner.clean();
+
+        if (game.isPaused() != isPaused) setPaused(game.isPaused());
+        if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
+
+        //updateWaterTime();
+        updateViewMatrix();
+
+        glUseProgram(ShaderManager.FAR_SHADER.id);
+        updateFarChunks();
+
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        update();
+
+        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
+        blockSelector.render();
+
+        guiModule.render();
+    }
+
     private void update() {
-        if (!areChunksUpdated) {
+        if (game.getGameState() != GameState.RUNNING) return;
+        if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
             areChunksUpdated = true;
@@ -344,7 +364,8 @@ public class GraphicModule {
     }
 
     private void updateFarChunks() {
-        if (!areChunksUpdated) {
+        if (game.getGameState() != GameState.RUNNING) return;
+        if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
             loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
             areChunksUpdated = true;

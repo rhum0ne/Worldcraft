@@ -7,6 +7,9 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 import static org.lwjgl.opengl.GL11.*;
@@ -23,19 +26,22 @@ public abstract class Component{
 
     private int x;
     private int y;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
     private Texture texture;
-    private Gui container;
+    private Component container;
     private GuiModule guiModule;
+    private final List<Component> components = new ArrayList<>();
 
     private float[] vertices;
     private boolean isInitialized = false;
 
+    private boolean alignCenter = false;
+
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
 
-    public Component(int x, int y, int width, int height, Texture texture, Gui container){
+    public Component(int x, int y, int width, int height, Texture texture, Component container){
 
         this.x = x;
         this.y = y;
@@ -51,9 +57,29 @@ public abstract class Component{
 
     public boolean hasContainer(){ return this.container != null; }
 
-    public int getX(){ return this.x*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getX() : 0); }
+    public int getX(){
+        return this.x*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getX() : 0)
+                + ((this.hasContainer() && this.container.alignCenter) ? this.container.width/2 - this.width/2 : 0 );
+    }
 
-    public int getY(){ return this.y*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getY() : 0); }
+    public int getY(){
+        return this.y*((this instanceof Gui) ? 1 : GUI_ZOOM) + ((this.hasContainer()) ? this.container.getY() : 0)
+                + ((this.hasContainer() && this.container.alignCenter) ? this.container.height/2 - this.height/2 : 0 );
+    }
+
+    public List<Component> getComponents(){
+        if(this.components.isEmpty()) return new ArrayList<>();
+
+        List<Component> components = new ArrayList<>(this.components);
+        for(Component component : this.components)
+            if(component.containsComponents()) components.addAll(component.getComponents());
+
+        return components;
+    }
+
+    private boolean containsComponents() {
+        return !this.components.isEmpty();
+    }
 
     public boolean isCursorIn(){
         int x = getGuiModule().getCursorX();
@@ -128,17 +154,18 @@ public abstract class Component{
         if(!isInitialized) this.init();
 
         update();
-        if(indices == null || vertices == null) {
-            return;
+        if(indices != null && vertices != null) {
+            glUseProgram(this.getShader());
+            glBindVertexArray(this.getVAO());
+            glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
+
+            glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0);
         }
 
-        glUseProgram(this.getShader());
-        glBindVertexArray(this.getVAO());
-        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-
-        glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
+        if(!this.components.isEmpty())
+            for(Component component : this.getComponents()) component.render();
     }
 
     public int getShader() {
@@ -171,6 +198,10 @@ public abstract class Component{
     }
 
     public boolean hasTexture(){ return this.texture != null; }
+
+    public void addComponent(Component component){
+        this.components.add(component);
+    }
 
 
 }
