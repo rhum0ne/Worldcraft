@@ -14,6 +14,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -108,11 +109,19 @@ public class Game {
     }
 
     public void startGame(){
+        startGame(Seed.random(), "World");
+    }
+
+    public void startGame(Seed seed){
+        startGame(seed, "World");
+    }
+
+    public void startGame(Seed seed, String name){
         this.getGraphicModule().getGuiModule().closeGUI();
 
         this.gameState = GameState.RUNNING;
 
-        this.world = new World();
+        this.world = new World(seed, name);
         this.world.load();
         this.graphicModule.initWorldGraphics();
 

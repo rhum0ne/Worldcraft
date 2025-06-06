@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TextComponent;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.worlds_menu.CreateWorldGui;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
@@ -17,6 +18,6 @@ public class PlayButton extends Button {
 
     @Override
     public void onClick(Player player) {
-        GAME.startGame();
+        player.openGui(new CreateWorldGui());
     }
 }
