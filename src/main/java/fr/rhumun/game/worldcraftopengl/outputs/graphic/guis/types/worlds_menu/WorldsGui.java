@@ -10,7 +10,7 @@ import java.util.List;
 public class WorldsGui extends CenteredGUI {
 
     public WorldsGui() {
-        super(500, 500, Texture.PLANKS);
+        super(500, 500, Texture.DARK_COBBLE);
 
         this.addText(0, -200, "Liste des Mondes");
 
@@ -18,7 +18,7 @@ public class WorldsGui extends CenteredGUI {
         List<Seed> seeds = SaveManager.listWorldSeeds();
         for (Seed seed : seeds) {
             this.addButton(new LoadWorldButton(0, y, this, seed));
-            y += 60;
+            y += 50;
         }
 
         this.addButton(new CreateWorldButton(0, y, this));
