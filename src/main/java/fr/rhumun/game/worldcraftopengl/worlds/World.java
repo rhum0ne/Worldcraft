@@ -46,11 +46,13 @@ public class World {
     }
 
     public World(){
-        //this.seed = Seed.create("1408502280");
-        this.seed = Seed.random();
+        this(Seed.random());
+    }
+
+    public World(Seed seed){
+        this.seed = seed;
         this.chunks = new ChunksContainer(this);
         this.generator = new NormalWorldGenerator(this);
-        //this.generator = new Flat(this);
 
         GAME.log("Creating a new World... \nSeed: " + seed.getLong());
 
