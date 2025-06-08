@@ -109,11 +109,11 @@ public class Game {
     }
 
     public void startGame(){
-        startGame(null, Seed.random());
+        startGame("My World", Seed.random());
     }
 
     public void startGame(Seed seed){
-        startGame(null, seed);
+        startGame("My World", seed);
     }
 
     public void startGame(String name, Seed seed){

@@ -25,13 +25,13 @@ public class CreateWorldGui extends CenteredGUI implements TypingGui {
         nameField.setOnClick(() -> activeField = nameField);
         this.addButton(nameField);
 
-        this.addText(-200, -20, "Seed:");
-        seedField = new InputField(100, -20, 300, this);
+        this.addText(-200, -10, "Seed:");
+        seedField = new InputField(100, -10, 300, this);
         seedField.setOnClick(() -> activeField = seedField);
         this.addButton(seedField);
         activeField = nameField;
 
-        this.addButton(new Button(0, 60, this, "Créer") {
+        this.addButton(new Button(0, 60, this, "Creer le monde") {
             @Override
             public void onClick(Player player) {
                 String seedText = seedField.getValue();

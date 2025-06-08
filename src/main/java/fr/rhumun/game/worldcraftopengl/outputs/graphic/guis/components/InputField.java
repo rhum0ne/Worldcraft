@@ -13,7 +13,10 @@ public class InputField extends Button {
     private Runnable onClick;
 
     public InputField(int x, int y, int width, Gui container) {
-        super(x, y, width, 40, Texture.DEFAULT_BUTTON, container);
+        super(x, y, width, 40, Texture.DEFAULT_BUTTON_UNACTIVE, Texture.DEFAULT_BUTTON_UNACTIVE_SELECTED, Texture.DEFAULT_BUTTON_UNACTIVE, container);
+
+        this.setAlignCenter(false);
+        this.getText().set2DCoordinates(10, 10);
     }
 
     public void setOnClick(Runnable onClick) {
@@ -25,24 +28,12 @@ public class InputField extends Button {
         if (onClick != null) onClick.run();
     }
 
-    /**
-     * Returns the current value displayed in the field.
-     */
     public String getValue() {
         return this.getText().getText();
     }
 
-    /**
-     * Sets the value displayed in the field.
-     */
     public void setValue(String value) {
         this.getText().setText(value);
     }
 
-    @Override
-    public void update() {
-        super.update();
-        // Left align the text with a small padding
-        this.getText().set2DCoordinates(-this.getWidth() / 2 + 10, 0);
-    }
 }

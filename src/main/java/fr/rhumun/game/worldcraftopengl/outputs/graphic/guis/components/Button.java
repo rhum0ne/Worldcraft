@@ -40,8 +40,6 @@ public abstract class Button extends Component {
 
     @Override
     public void update() {
-        this.centerText();
-
         boolean isCursorIn = this.isCursorIn();
 
         if(isCursorIn && !hovered) {
@@ -53,9 +51,5 @@ public abstract class Button extends Component {
             this.setHovered(false);
         }
 
-    }
-
-    private void centerText() {
-        this.text.set2DCoordinates(0, 0);
     }
 }
