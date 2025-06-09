@@ -176,4 +176,10 @@ public class World {
     public LightChunk getLightChunk(int x, int z, boolean b) {
         return this.chunks.getLightChunkAt(x, z);
     }
+
+    public void save() {
+        for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())
+            SaveManager.saveChunk(chunk);
+        SaveManager.saveWorldMeta(this);
+    }
 }

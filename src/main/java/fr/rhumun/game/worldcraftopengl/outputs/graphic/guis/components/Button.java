@@ -18,6 +18,11 @@ public abstract class Button extends Component {
         this.text.setText(text);
     }
 
+    public Button(int x, int y, int width, int height, Gui container, String text) {
+        this(x, y, width, height, Texture.DEFAULT_BUTTON, Texture.DEFAULT_BUTTON_HOVERED, Texture.DEFAULT_BUTTON_UNACTIVE, container);
+        this.text.setText(text);
+    }
+
     public Button(int x, int y, int width, int height, Gui container) {
         this(x, y, width, height, Texture.DEFAULT_BUTTON, Texture.DEFAULT_BUTTON_HOVERED, Texture.DEFAULT_BUTTON_UNACTIVE, container);
     }
