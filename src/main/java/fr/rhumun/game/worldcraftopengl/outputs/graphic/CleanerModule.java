@@ -4,22 +4,24 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class CleanerModule {
 
     private final GraphicModule graphicModule;
-    private ArrayList<Renderer> renderers = new ArrayList<>();
+    private final ArrayList<Renderer> renderers = new ArrayList<>();
 
     public CleanerModule(GraphicModule graphicModule){
         this.graphicModule = graphicModule;
     }
 
     public void clean(){
-        ArrayList<Renderer> work = new ArrayList<>(renderers);
-        for(Renderer renderer : work){
-            if(renderer==null) continue;
-            renderer.cleanup();
-            renderers.remove(renderer);
+        for (Iterator<Renderer> it = renderers.iterator(); it.hasNext(); ) {
+            Renderer renderer = it.next();
+            if (renderer != null) {
+                renderer.cleanup();
+            }
+            it.remove();
         }
     }
 

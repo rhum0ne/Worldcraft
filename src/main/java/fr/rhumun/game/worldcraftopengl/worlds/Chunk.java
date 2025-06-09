@@ -97,81 +97,50 @@ public class Chunk extends AbstractChunk {
         return blocks[x][y][z];
     }
 
-    public Block get(int x, int y, int z){
-        if(y<0 || y>= this.getWorld().getHeigth())
+    public Block get(int x, int y, int z) {
+        if (y < 0 || y >= this.getWorld().getHeigth()) {
             return null;
+        }
+
+        int offsetX = Math.floorDiv(x, CHUNK_SIZE);
+        int offsetZ = Math.floorDiv(z, CHUNK_SIZE);
+        int localX = Math.floorMod(x, CHUNK_SIZE);
+        int localZ = Math.floorMod(z, CHUNK_SIZE);
 
         Chunk target = this;
-
-        int xO = 0;
-        int zO = 0;
-        while(x>=CHUNK_SIZE){
-            x-=CHUNK_SIZE;
-            xO++;
+        if (offsetX != 0 || offsetZ != 0) {
+            target = this.getWorld().getChunk(this.getX() + offsetX, this.getZ() + offsetZ, true, false);
+        }
+        if (target == null || target.blocks == null) {
+            return null;
         }
 
-        while(z>=CHUNK_SIZE){
-            z-=CHUNK_SIZE;
-            zO++;
-        }
-
-        while(x<0){
-            x+=CHUNK_SIZE;
-            xO--;
-        }
-
-        while(z<0){
-            z+=CHUNK_SIZE;
-            zO--;
-        }
-
-        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, true, false);
-        if(target==null) return null;
-        if(target.blocks == null) return null;
-        //System.out.println("x: "+(x)+", z: "+(z));
-        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
-        return target.blocks[x][y][z];
+        return target.blocks[localX][y][localZ];
     }
 
-    public Block getAt(int x, int y, int z){
-        if(y<0 || y>= this.getWorld().getHeigth()){
-            //System.out.println("Y too high.");
+    public Block getAt(int x, int y, int z) {
+        if (y < 0 || y >= this.getWorld().getHeigth()) {
             return null;
         }
 
-        x-=this.getX()*CHUNK_SIZE;
-        z-=this.getZ()*CHUNK_SIZE;
+        int relX = x - this.getX() * CHUNK_SIZE;
+        int relZ = z - this.getZ() * CHUNK_SIZE;
+
+        int offsetX = Math.floorDiv(relX, CHUNK_SIZE);
+        int offsetZ = Math.floorDiv(relZ, CHUNK_SIZE);
+        int localX = Math.floorMod(relX, CHUNK_SIZE);
+        int localZ = Math.floorMod(relZ, CHUNK_SIZE);
 
         Chunk target = this;
-
-        int xO = 0;
-        int zO = 0;
-        while(x>=CHUNK_SIZE){
-            x-=CHUNK_SIZE;
-            xO++;
+        if (offsetX != 0 || offsetZ != 0) {
+            target = this.getWorld().getChunk(this.getX() + offsetX, this.getZ() + offsetZ, false);
         }
 
-        while(z>=CHUNK_SIZE){
-            z-=CHUNK_SIZE;
-            zO++;
+        if (target == null || target.blocks == null) {
+            return null;
         }
 
-        while(x<0){
-            x+=CHUNK_SIZE;
-            xO--;
-        }
-
-        while(z<0){
-            z+=CHUNK_SIZE;
-            zO--;
-        }
-
-        if(xO!=0 || zO!=0) target = this.getWorld().getChunk(target.getX()+xO, target.getZ()+zO, false);
-        if(target==null) return null;
-        if(target.blocks == null) return null;
-        //System.out.println("x: "+(x)+", z: "+(z));
-        //System.out.println("X: "+(this.X*16+x)+", Z: "+(this.Z*16+z));
-        return target.blocks[x][y][z];
+        return target.blocks[localX][y][localZ];
     }
 
     public void setBlock(int x, int y, int z, Material mat, Model model){
