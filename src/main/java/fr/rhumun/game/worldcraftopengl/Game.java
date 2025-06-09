@@ -126,7 +126,9 @@ public class Game {
         this.world.load();
         this.graphicModule.initWorldGraphics();
 
-        while(!world.isLoaded()){ }
+        while(!world.isLoaded()) {
+            Thread.onSpinWait();
+        }
 
         this.world.spawnPlayer(player);
 
