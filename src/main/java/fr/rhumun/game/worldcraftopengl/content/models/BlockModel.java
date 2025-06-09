@@ -9,7 +9,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 public class BlockModel extends AbstractModel {
 
     public BlockModel() {
-        super(load("block.obj"), true);
+        super(load("block.obj"), true, true);
     }
 
     @Override

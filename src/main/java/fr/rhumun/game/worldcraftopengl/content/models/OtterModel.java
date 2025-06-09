@@ -8,7 +8,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 public class OtterModel extends AbstractModel {
 
     public OtterModel() {
-        super(load("nocsy_otter_v2.obj"), false);
+        super(load("nocsy_otter_v2.obj"), false, false);
     }
 
     @Override

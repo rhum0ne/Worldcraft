@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class SandMaterial extends AbstractMaterial {
     public SandMaterial() {
-        super(Texture.SAND);
+        super(Texture.SAND, 0.4f);
     }
 
     @Override

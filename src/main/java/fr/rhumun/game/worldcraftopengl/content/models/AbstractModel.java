@@ -10,15 +10,21 @@ public abstract class AbstractModel {
 
     private final Mesh model;
     private final boolean isOpaque;
+    private final boolean collidable;
     private final int maxChunkDistance;
 
     public AbstractModel(Mesh model, boolean isOpaque) {
-        this(model, isOpaque, -1);
+        this(model, isOpaque, true);
     }
 
-    public AbstractModel(Mesh model, boolean isOpaque, int maxChunkDistance) {
+    public AbstractModel(Mesh model, boolean isOpaque, boolean collidable) {
+        this(model, isOpaque, collidable, -1);
+    }
+
+    public AbstractModel(Mesh model, boolean isOpaque, boolean collidable, int maxChunkDistance) {
         this.model = model;
         this.isOpaque = isOpaque;
+        this.collidable = collidable;
         this.maxChunkDistance = maxChunkDistance;
     }
 

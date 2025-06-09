@@ -135,35 +135,40 @@ public class Entity {
         double targetY = this.getLocation().getY() - yLevel;
         double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
 
-        // Retourner le bloc à cette position
-        return this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
+        Block block = this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
+        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()){
+            return block;
+        }
+        return null;
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
         for(int y=0; y<this.height; y++) {
             Block block = this.getBlockInDirection(direction, y);
-            if( block != null && block.getMaterial() != null) return true;
+            if( block != null) return true;
         }
         return false;
     }
 
 
     public Block getBlockDown(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
+        Block block = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
+        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()) return block;
+        return null;
     }
 
     public boolean hasBlockDown(){
-        Block block = this.getBlockDown();
-        return block != null && block.getMaterial() != null;
+        return getBlockDown() != null;
     }
 
     public Block getBlockTop(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
+        Block block = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
+        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()) return block;
+        return null;
     }
 
     public boolean hasBlockTop(){
-        Block block = this.getBlockTop();
-        return block != null && block.getMaterial() != null;
+        return getBlockTop() != null;
     }
 
     public int getSpeed(){
