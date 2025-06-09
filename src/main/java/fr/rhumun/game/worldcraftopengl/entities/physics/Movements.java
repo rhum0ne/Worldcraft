@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.entities.physics;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
@@ -34,7 +35,8 @@ public class Movements {
         Block block = entity.getBlockDown();
         if (block != null && block.getMaterial() != null) {
             // Appliquer le frottement du matériau au sol
-            float groundFriction = block.getMaterial().getMaterial().getFriction();
+            Material material = block.getMaterial();
+            float groundFriction = material != null ? material.getMaterial().getFriction() : AIR_FRICTION;
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
             if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
