@@ -7,15 +7,12 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
-        if(entity.isInLiquid()){
-            entity.getVelocity().mul(AIR_FRICTION);
-        } else if (block != null && block.getMaterial() != null) {
-        } else if(player.isInLiquid()) {
-            float v = player.getVelocity().get(1);
-            v = Math.max(Math.min(v, 0.10f), -0.10f);
-            player.getVelocity().setComponent(1, v);
-            float divisor = entity.isInLiquid() ? 3000.0f : 750.0f;
-            entity.getVelocity().add(0, -DEFAULT_GRAVITY / divisor, 0);
+public class Movements {
+
+    private static final float DEFAULT_GRAVITY = 9.81f;
+    private static final float AIR_FRICTION = 0.98f; // Constante de frottement dans l'air
+    private static final float AIR_FRICTION_FLYING = 0.5f; // Constante de frottement dans l'air
+    private static final float GROUND_FRICTION = 0.6f; // Frottement au sol
 
     private static int tick = 0;
     private static int stepSoundFrequency = 15;
@@ -39,29 +36,32 @@ import org.joml.Vector3f;
         Block block = entity.getBlockDown();
         if (block != null && block.getMaterial() != null) {
             // Appliquer le frottement du matériau au sol
-            Material material = block.getMaterial();
-            float groundFriction = material != null ? material.getMaterial().getFriction() : AIR_FRICTION;
-            entity.getVelocity().mul(groundFriction, 1, groundFriction);
-        } else {
-            if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
-            else entity.getVelocity().mul(AIR_FRICTION);
+            if (entity.isInLiquid()) {
+                entity.getVelocity().mul(AIR_FRICTION);
+            } else if (block != null && block.getMaterial() != null) {
+                float groundFriction = block.getMaterial().getMaterial().getFriction();
+                entity.getVelocity().mul(groundFriction, 1, groundFriction);
+            } else {
+                if (entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
+                else entity.getVelocity().mul(AIR_FRICTION);
+            }
+
+            if (entity instanceof MovingEntity mEntity) {
+                // Mise à jour de la vélocité en fonction des mouvements du joueur
+                entity.getVelocity().add(
+                        mEntity.getMovements()[0] * entity.getAccelerationByTick(),
+                        mEntity.getMovements()[1] * entity.getAccelerationByTick(),
+                        mEntity.getMovements()[2] * entity.getAccelerationByTick()
+                );
+            }
+
+            // Limiter les très faibles valeurs de vélocité à zéro
+            thresholdVelocity(entity);
+
+            // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
+            normalizeVelocity(entity);
+            //System.out.println("Velocity: " + player.getVelocity());
         }
-
-        if(entity instanceof MovingEntity mEntity) {
-            // Mise à jour de la vélocité en fonction des mouvements du joueur
-            entity.getVelocity().add(
-                    mEntity.getMovements()[0] * entity.getAccelerationByTick(),
-                    mEntity.getMovements()[1] * entity.getAccelerationByTick(),
-                    mEntity.getMovements()[2] * entity.getAccelerationByTick()
-            );
-        }
-
-        // Limiter les très faibles valeurs de vélocité à zéro
-        thresholdVelocity(entity);
-
-        // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
-        normalizeVelocity(entity);
-        //System.out.println("Velocity: " + player.getVelocity());
     }
 
     private static void thresholdVelocity(Entity player) {
@@ -80,6 +80,10 @@ import org.joml.Vector3f;
         }
         if(player.isFlying()){
             player.getVelocity().setComponent(1, Math.min(player.getVelocity().get(1), 0.30f));
+        } else if(player.isInLiquid()) {
+            float v = player.getVelocity().get(1);
+            v = Math.max(Math.min(v, 0.10f), -0.10f);
+            player.getVelocity().setComponent(1, v);
         }
     }
 
@@ -90,6 +94,8 @@ import org.joml.Vector3f;
         } else {
             // Appliquer la gravité vers le bas
             entity.getVelocity().add(0, -DEFAULT_GRAVITY / 750.0f, 0);
+            float divisor = entity.isInLiquid() ? 3000.0f : 750.0f;
+            entity.getVelocity().add(0, -DEFAULT_GRAVITY / divisor, 0);
         }
     }
 
@@ -111,4 +117,5 @@ import org.joml.Vector3f;
             if (block != null && block.getMaterial() != null ) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
         }
     }
+
 }
