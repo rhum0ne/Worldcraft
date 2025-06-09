@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 
 public class ChunksContainer {
