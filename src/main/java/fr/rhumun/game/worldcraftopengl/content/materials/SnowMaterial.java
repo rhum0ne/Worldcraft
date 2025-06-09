@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class SnowMaterial extends AbstractMaterial {
     public SnowMaterial() {
-        super(Texture.SNOW, 0.3f);
+        super(Texture.SNOW);
     }
 
     @Override

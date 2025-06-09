@@ -11,7 +11,9 @@ public class FluidSimulator {
     public static void update(World world){
         Set<Chunk> chunks = GAME.getGraphicModule().getLoadedChunks();
         for(Chunk chunk : chunks){
+            if(!chunk.isToUpdate() || !chunk.isGenerated()) continue;
             simulateChunk(chunk);
+            chunk.setToUpdate(false);
         }
     }
 

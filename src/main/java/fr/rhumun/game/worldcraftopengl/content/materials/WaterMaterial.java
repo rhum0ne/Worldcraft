@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 public class WaterMaterial extends AbstractMaterial {
     public WaterMaterial() {
-        super(Texture.WATER, 0.5f);
+        super(Texture.WATER);
     }
 
     @Override

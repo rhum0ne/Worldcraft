@@ -32,18 +32,13 @@ public class Movements {
         // Appliquer le frottement de l'air
 
         Block block = entity.getBlockDown();
-        if (block != null) {
+        if (block != null && block.getMaterial() != null) {
+            // Appliquer le frottement du matériau au sol
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
             if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
             else entity.getVelocity().mul(AIR_FRICTION);
-        }
-
-        Block inside = entity.getWorld().getBlockAt(entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), false);
-        if(inside != null && inside.getMaterial() != null && inside.getMaterial().isLiquid()){
-            float liquidFriction = inside.getMaterial().getMaterial().getFriction();
-            entity.getVelocity().mul(liquidFriction);
         }
 
         if(entity instanceof MovingEntity mEntity) {

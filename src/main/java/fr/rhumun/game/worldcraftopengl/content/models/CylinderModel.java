@@ -8,7 +8,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 public class CylinderModel extends AbstractModel {
 
     public CylinderModel() {
-        super(load("cylinder.obj"), false, true);
+        super(load("cylinder.obj"), false);
     }
 
     @Override

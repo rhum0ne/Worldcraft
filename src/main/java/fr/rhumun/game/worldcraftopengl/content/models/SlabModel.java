@@ -9,7 +9,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 public class SlabModel extends AbstractModel {
 
     public SlabModel() {
-        super(load("slab.obj"), false, true);
+        super(load("slab.obj"), false);
     }
 
     @Override

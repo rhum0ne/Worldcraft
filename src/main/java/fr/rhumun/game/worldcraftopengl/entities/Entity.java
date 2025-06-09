@@ -135,40 +135,35 @@ public class Entity {
         double targetY = this.getLocation().getY() - yLevel;
         double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
 
-        Block block = this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
-        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()){
-            return block;
-        }
-        return null;
+        // Retourner le bloc à cette position
+        return this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
         for(int y=0; y<this.height; y++) {
             Block block = this.getBlockInDirection(direction, y);
-            if( block != null) return true;
+            if( block != null && block.getMaterial() != null) return true;
         }
         return false;
     }
 
 
     public Block getBlockDown(){
-        Block block = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
-        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()) return block;
-        return null;
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockDown(){
-        return getBlockDown() != null;
+        Block block = this.getBlockDown();
+        return block != null && block.getMaterial() != null;
     }
 
     public Block getBlockTop(){
-        Block block = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
-        if(block != null && block.getMaterial() != null && block.getModel().getModel().isCollidable()) return block;
-        return null;
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockTop(){
-        return getBlockTop() != null;
+        Block block = this.getBlockTop();
+        return block != null && block.getMaterial() != null;
     }
 
     public int getSpeed(){

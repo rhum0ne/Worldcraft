@@ -7,7 +7,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 
 public class CrossModel extends AbstractModel {
     public CrossModel() {
-        super(load("cross-model.obj"), false, false, 13);
+        super(load("cross-model.obj"), false, 13);
     }
 
     @Override
