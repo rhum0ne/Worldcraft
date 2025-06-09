@@ -37,6 +37,10 @@ public class Player extends Entity implements MovingEntity{
 
     }
 
+    public boolean isSwimming(){
+        return this.isInLiquid();
+    }
+
     public void setFlying(boolean state){
         if(!state) this.getMovements()[1] = 0;
         super.setFlying(state);

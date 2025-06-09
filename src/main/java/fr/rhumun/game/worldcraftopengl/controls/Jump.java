@@ -10,16 +10,16 @@ public class Jump extends Control{
 
     @Override
     public void onKeyPressed(Player player) {
-        if(player.isFlying()){
+        if(player.isFlying() || player.isSwimming()){
             player.getMovements()[1] = 1;
-            return;
+        } else {
+            player.jump();
         }
-        player.jump();
     }
 
     @Override
     public void onKeyReleased(Player player) {
-        if(player.isFlying()){
+        if(player.isFlying() || player.isSwimming()){
             player.getMovements()[1] = 0;
         }
     }

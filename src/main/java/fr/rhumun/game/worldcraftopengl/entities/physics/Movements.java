@@ -7,11 +7,15 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
-public class Movements {
-    private static final float DEFAULT_GRAVITY = 9.81f;
-    private static final float AIR_FRICTION = 0.98f; // Constante de frottement dans l'air
-    private static final float AIR_FRICTION_FLYING = 0.5f; // Constante de frottement dans l'air
-    private static final float GROUND_FRICTION = 0.6f; // Frottement au sol
+        if(entity.isInLiquid()){
+            entity.getVelocity().mul(AIR_FRICTION);
+        } else if (block != null && block.getMaterial() != null) {
+        } else if(player.isInLiquid()) {
+            float v = player.getVelocity().get(1);
+            v = Math.max(Math.min(v, 0.10f), -0.10f);
+            player.getVelocity().setComponent(1, v);
+            float divisor = entity.isInLiquid() ? 3000.0f : 750.0f;
+            entity.getVelocity().add(0, -DEFAULT_GRAVITY / divisor, 0);
 
     private static int tick = 0;
     private static int stepSoundFrequency = 15;

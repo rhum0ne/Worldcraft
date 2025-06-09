@@ -166,6 +166,22 @@ public class Entity {
         return block != null && block.getMaterial() != null;
     }
 
+    public boolean isInLiquid() {
+        Block head = this.getWorld().getBlockAt(
+                this.getLocation().getX(),
+                this.getLocation().getY(),
+                this.getLocation().getZ(),
+                false);
+        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid()) return true;
+
+        Block body = this.getWorld().getBlockAt(
+                this.getLocation().getX(),
+                this.getLocation().getY() - this.height * 0.5,
+                this.getLocation().getZ(),
+                false);
+        return body != null && body.getMaterial() != null && body.getMaterial().isLiquid();
+    }
+
     public int getSpeed(){
         if(isSneaking) return sneakSpeed;
         if(isSprinting) return sprintSpeed;
