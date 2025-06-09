@@ -109,15 +109,20 @@ public class Game {
     }
 
     public void startGame(){
-        startGame(Seed.random());
+        startGame("My World", Seed.random());
     }
 
     public void startGame(Seed seed){
+        startGame("My World", seed);
+    }
+
+    public void startGame(String name, Seed seed){
         this.getGraphicModule().getGuiModule().closeGUI();
 
         this.gameState = GameState.RUNNING;
 
-        this.world = new World(seed);
+        if(name == null) this.world = new World(seed);
+        else this.world = new World(seed, name);
         this.world.load();
         this.graphicModule.initWorldGraphics();
 
@@ -141,12 +146,25 @@ public class Game {
 
         player.playSound(Sound.STONE1);
 
+        startGameLoop();
+    }
+
+    private void startGameLoop() {
+        if(gameLoop != null) return;
         gameLoop = new GameLoop(this, player);
         gameLoop.start();
     }
 
     public void sendMessage(Player player, String message){
         this.graphicModule.getGuiModule().getChat().println(player.getName() + ": " + message);
+    }
+
+    public void quitWorld() {
+        this.world.save();
+        this.gameState = GameState.TITLE;
+        this.world.removeEntity(player);
+        this.world = null;
+        this.graphicModule.getGuiModule().openGUI(new TitleMenuGui());
     }
 
     public void processCommand(String cmd){
@@ -173,4 +191,5 @@ public class Game {
     private String getTime() {
         return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
+
 }

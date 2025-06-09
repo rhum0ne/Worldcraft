@@ -28,7 +28,7 @@ public class GameLoop extends Thread {
     public void run() {
         game.log("Starting GameLoop");
 
-        while (game.isPlaying()) {
+        while (game.isPlaying() ) {
             long nextTime = time + 1000;
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - previousUpdate;

@@ -95,6 +95,8 @@ public class Texture {
     public static Texture DEFAULT_BUTTON;
     public static Texture DEFAULT_BUTTON_HOVERED;
     public static Texture DEFAULT_BUTTON_UNACTIVE;
+    public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
+    public static Texture WALLPAPER;
 
 
     public static Texture OTTER;
@@ -178,10 +180,12 @@ public class Texture {
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
-        SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\button.png");
-        DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\buttons\\button.png");
-        DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\buttons\\hovered.png");
-        DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\buttons\\unactive.png");
+        SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
+        DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\widgets\\button.png");
+        DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");
+        DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive.png");
+        DEFAULT_BUTTON_UNACTIVE_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive_selected.png");
+        WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
     }

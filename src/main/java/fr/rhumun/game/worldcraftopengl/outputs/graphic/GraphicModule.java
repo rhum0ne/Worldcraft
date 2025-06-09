@@ -117,6 +117,7 @@ public class GraphicModule {
         loadResources();
         configureUI();
         initWorldGraphics();
+        startChunkLoader();
         isInitialized = true;
     }
 
@@ -125,7 +126,6 @@ public class GraphicModule {
         if(game.getWorld() == null) return;
 
         configureLighting();
-        startChunkLoader();
     }
 
     private void initGLFW() {
