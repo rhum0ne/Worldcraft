@@ -117,7 +117,6 @@ public class ChunksContainer {
                     world.getGenerator().addToGenerate(chunk);
                 }
             });
-            SaveManager.loadChunk(chunk);
         } else if (generate) {
             world.getGenerator().addToGenerate(chunk);
         }
@@ -138,7 +137,6 @@ public class ChunksContainer {
                     world.getGenerator().addToGenerate(chunk);
                 }
             });
-            SaveManager.loadLightChunk(chunk);
         } else {
             world.getGenerator().addToGenerate(chunk);
         }

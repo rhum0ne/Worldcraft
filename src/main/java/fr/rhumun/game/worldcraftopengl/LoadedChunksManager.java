@@ -21,6 +21,9 @@ public class LoadedChunksManager {
     private final Player player;
     private final Game game;
 
+    private int lastChunkX = Integer.MIN_VALUE;
+    private int lastChunkZ = Integer.MIN_VALUE;
+
     private LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
     private LinkedHashSet<LightChunk> chunksToRenderLight = new LinkedHashSet<>();
 
@@ -36,6 +39,12 @@ public class LoadedChunksManager {
         World world = player.getLocation().getWorld();
         int centerX = player.getLocation().getChunk().getX();
         int centerZ = player.getLocation().getChunk().getZ();
+
+        if (centerX == lastChunkX && centerZ == lastChunkZ) {
+            return;
+        }
+        lastChunkX = centerX;
+        lastChunkZ = centerZ;
 
         Set<AbstractChunk> keepChunks = new HashSet<>();
 
