@@ -93,21 +93,23 @@ public class NormalWorldGenerator extends WorldGenerator {
 
         init();
 
-        shapeTerrain(chunk);
-        fillWater(chunk);
-        paint(chunk);
-        createCaves(chunk);
+        int[][] heightMap = shapeTerrain(chunk);
+        fillWater(chunk, heightMap);
+        paint(chunk, heightMap);
+        createCaves(chunk, heightMap);
         populate(chunk);
 
         chunk.updateAllBordersChunks();
     }
 
-    private void createCaves(Chunk chunk) {
-        for(int x=0; x<CHUNK_SIZE; x++) {
+    private void createCaves(Chunk chunk, int[][] heights) {
+        int worldHeight = getWorld().getHeigth();
+        for (int x = 0; x < CHUNK_SIZE; x++) {
             double xH = (chunk.getX() * CHUNK_SIZE + x) / 400.0;
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 double zH = (chunk.getZ() * CHUNK_SIZE + z) / 400.0;
-                for (int y = 0; y < getWorld().getHeigth(); y++) {
+                int columnHeight = Math.min(heights[x][z], worldHeight);
+                for (int y = 0; y < columnHeight; y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
 
                     if (block == null || block.getMaterial() == null || block.getMaterial() == Material.DARK_COBBLE)
@@ -130,15 +132,17 @@ public class NormalWorldGenerator extends WorldGenerator {
         }
     }
 
-    private void paint(Chunk chunk) {
-        for(int x=0; x<CHUNK_SIZE; x++)
-            for(int z=0; z<CHUNK_SIZE; z++){
-                Block block = chunk.getHighestBlock(x, z, false);
-                if(block == null) {
-                    GAME.errorLog("No block found for x="+x+",z="+z);
+    private void paint(Chunk chunk, int[][] heights) {
+        int worldHeight = getWorld().getHeigth();
+        for (int x = 0; x < CHUNK_SIZE; x++)
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int top = Math.max(0, Math.min(heights[x][z] - 1, worldHeight - 1));
+                Block block = chunk.getBlockNoVerif(x, top, z);
+                if (block == null) {
+                    GAME.errorLog("No block found for x=" + x + ",z=" + z);
                     continue;
                 }
-                if(block.getMaterial() != Material.STONE) continue;
+                if (block.getMaterial() != Material.STONE) continue;
                 Biome biome = block.getBiome();
                 if(biome == null) block.setMaterial(Material.BLUE_TERRACOTTA);
                 else block.setMaterial(biome.getTop());
@@ -152,12 +156,11 @@ public class NormalWorldGenerator extends WorldGenerator {
             }
     }
 
-    private void fillWater(Chunk chunk) {
-        //System.out.println("Filling water");
-        for(int x=0; x<CHUNK_SIZE; x++)
-            for(int z=0; z<CHUNK_SIZE; z++)
-                for(int y=0; y< waterHigh; y++) {
-                    Block block = chunk.getBlockNoVerif(x,y,z);
+    private void fillWater(Chunk chunk, int[][] heights) {
+        for (int x = 0; x < CHUNK_SIZE; x++)
+            for (int z = 0; z < CHUNK_SIZE; z++)
+                for (int y = heights[x][z]; y < waterHigh; y++) {
+                    Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block.getMaterial() != null) continue;
                     block.setMaterial(Material.WATER);
                 }
@@ -167,34 +170,36 @@ public class NormalWorldGenerator extends WorldGenerator {
 
     }
 
-    private void shapeTerrain(Chunk chunk) {
+    private int[][] shapeTerrain(Chunk chunk) {
+        int worldHeight = this.getWorld().getHeigth();
+        int[][] heights = new int[CHUNK_SIZE][CHUNK_SIZE];
 
-        for(int x=0; x<CHUNK_SIZE; x++){
-            for(int z=0; z<CHUNK_SIZE; z++){
-                int xH = (chunk.getX()*CHUNK_SIZE+x);
-                int zH = (chunk.getZ()*CHUNK_SIZE+z);
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int xH = (chunk.getX() * CHUNK_SIZE + x);
+                int zH = (chunk.getZ() * CHUNK_SIZE + z);
 
-                double continentalValue = continentalness.evaluateNoise(xH/512f, zH/512f);
-                double erosionValue = erosion.evaluateNoise(xH/612f, zH/612f);
+                double continentalValue = continentalness.evaluateNoise(xH / 512f, zH / 512f);
+                double erosionValue = erosion.evaluateNoise(xH / 612f, zH / 612f);
 
                 double pavLargeScale = pav.evaluateNoise(xH / 500.0, zH / 500.0); // Relief large
                 double pavSmallScale = pav.evaluateNoise(xH / 40.0, zH / 40.0); // Détails fins
 
                 int height = heightCalculator.calcHeight(xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
+                heights[x][z] = height;
                 Biome biome = getBiome(height, xH, zH, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
-                for (int y = 0; y < this.getWorld().getHeigth(); y++) {
+                chunk.setBiome(chunk.getBlockNoVerif(x, 0, z), biome);
+                for (int y = 0; y < height && y < worldHeight; y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
-                    if (block == null) continue;
-
-                    if (y < height) {
+                    if (block != null) {
                         block.setMaterial(Material.STONE);
                     }
-                    chunk.setBiome(block, biome);
                 }
-
             }
         }
+
+        return heights;
     }
 
     private Biome getBiome(int height, double x, double z, double continentalValue, double erosionValue, double pavLargeScale, double pavSmallScale) {

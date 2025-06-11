@@ -14,7 +14,7 @@ public class GameLoop extends Thread {
 
     private long time;
     private long previousUpdate;
-    private int rate = 60;
+    private final int rate = 60;
 
     public GameLoop(Game game, Player player){
         this.game = game;
@@ -28,13 +28,19 @@ public class GameLoop extends Thread {
     public void run() {
         game.log("Starting GameLoop");
 
-        while (game.isPlaying()) {
+        while (game.isPlaying() ) {
             long nextTime = time + 1000;
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - previousUpdate;
-            if(currentTime > nextTime)
+            if(currentTime > nextTime) {
                 this.time = currentTime;
-            else if(delta < 1000/rate){
+            } else if(delta < 1000 / rate){
+                try {
+                    Thread.sleep(1000 / rate - delta);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
                 continue;
             } else if (delta > Game.LAG_SPIKE_LIMIT) {
                 game.warn("Lag Spike detected : " + delta + " ms");
@@ -58,9 +64,10 @@ public class GameLoop extends Thread {
 
             previousUpdate = currentTime;
             try {
-                Thread.sleep(1000/60);
+                Thread.sleep(1000 / rate);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+                break;
             }
         }
 

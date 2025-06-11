@@ -18,6 +18,11 @@ public abstract class Button extends Component {
         this.text.setText(text);
     }
 
+    public Button(int x, int y, int width, int height, Gui container, String text) {
+        this(x, y, width, height, Texture.DEFAULT_BUTTON, Texture.DEFAULT_BUTTON_HOVERED, Texture.DEFAULT_BUTTON_UNACTIVE, container);
+        this.text.setText(text);
+    }
+
     public Button(int x, int y, int width, int height, Gui container) {
         this(x, y, width, height, Texture.DEFAULT_BUTTON, Texture.DEFAULT_BUTTON_HOVERED, Texture.DEFAULT_BUTTON_UNACTIVE, container);
     }
@@ -40,8 +45,6 @@ public abstract class Button extends Component {
 
     @Override
     public void update() {
-        this.centerText();
-
         boolean isCursorIn = this.isCursorIn();
 
         if(isCursorIn && !hovered) {
@@ -53,9 +56,5 @@ public abstract class Button extends Component {
             this.setHovered(false);
         }
 
-    }
-
-    private void centerText() {
-        this.text.set2DCoordinates(0, 0);
     }
 }

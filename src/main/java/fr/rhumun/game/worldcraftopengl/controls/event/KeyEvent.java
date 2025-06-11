@@ -4,6 +4,8 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
@@ -24,7 +26,14 @@ public class KeyEvent implements GLFWKeyCallbackI {
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
 
-            ChatGui chat = game.getGraphicModule().getGuiModule().getChat();
+            GuiModule guiModule = game.getGraphicModule().getGuiModule();
+            if(guiModule.hasGUIOpened() && guiModule.getGui() instanceof TypingGui tg
+                    && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))) {
+                tg.typeChar((char) key);
+                return;
+            }
+
+            ChatGui chat = guiModule.getChat();
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
                 chat.getEnteredText().print(String.valueOf((char) key));
                 return;

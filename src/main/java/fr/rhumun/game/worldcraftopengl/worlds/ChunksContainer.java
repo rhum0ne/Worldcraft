@@ -117,7 +117,6 @@ public class ChunksContainer {
                     world.getGenerator().addToGenerate(chunk);
                 }
             });
-            SaveManager.loadChunk(chunk);
         } else if (generate) {
             world.getGenerator().addToGenerate(chunk);
         }
@@ -138,7 +137,6 @@ public class ChunksContainer {
                     world.getGenerator().addToGenerate(chunk);
                 }
             });
-            SaveManager.loadLightChunk(chunk);
         } else {
             world.getGenerator().addToGenerate(chunk);
         }
@@ -157,10 +155,18 @@ public class ChunksContainer {
         if (id == null) return null;
 
         LightChunk light = new LightChunk(id, x, z, world);
-        for (int xi = 0; xi < CHUNK_SIZE; xi++)
-            for (int y = 0; y < world.getHeigth(); y++)
-                for (int zi = 0; zi < CHUNK_SIZE; zi++)
-                    light.getMaterials()[xi][y][zi] = fullChunk.getBlocks()[xi][y][zi].getMaterial();
+        Material[][][] dest = light.getMaterials();
+        Block[][][] src = fullChunk.getBlocks();
+        int height = world.getHeigth();
+        for (int xi = 0; xi < CHUNK_SIZE; xi++) {
+            for (int y = 0; y < height; y++) {
+                Material[] destRow = dest[xi][y];
+                Block[] srcRow = src[xi][y];
+                for (int zi = 0; zi < CHUNK_SIZE; zi++) {
+                    destRow[zi] = srcRow[zi].getMaterial();
+                }
+            }
+        }
 
         light.updateAllBlock();
         light.setToUpdate(true);

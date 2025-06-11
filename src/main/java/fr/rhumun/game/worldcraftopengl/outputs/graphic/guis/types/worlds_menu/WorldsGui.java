@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.worlds_menu;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
-import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldInfo;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class WorldsGui extends CenteredGUI {
         this.addText(0, -200, "Liste des Mondes");
 
         int y = -100;
-        List<Seed> seeds = SaveManager.listWorldSeeds();
-        for (Seed seed : seeds) {
-            this.addButton(new LoadWorldButton(0, y, this, seed));
+        List<WorldInfo> infos = SaveManager.listWorldInfos();
+        for (WorldInfo info : infos) {
+            this.addButton(new LoadWorldButton(0, y, this, info));
             y += 50;
         }
 

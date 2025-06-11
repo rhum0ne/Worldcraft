@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import javafx.scene.paint.Color;
 import lombok.Getter;
+import lombok.Setter;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class World {
 
     private final Seed seed;
     private final WorldGenerator generator;
+
+    @Setter
+    private String name;
 
     //private final HashMap<Point, Chunk> chunks = new HashMap<>();
     private final ChunksContainer chunks;
@@ -50,7 +54,12 @@ public class World {
     }
 
     public World(Seed seed){
+        this(seed, null);
+    }
+
+    public World(Seed seed, String name){
         this.seed = seed;
+        this.name = name;
         this.chunks = new ChunksContainer(this);
         this.generator = new NormalWorldGenerator(this);
 
@@ -166,5 +175,11 @@ public class World {
 
     public LightChunk getLightChunk(int x, int z, boolean b) {
         return this.chunks.getLightChunkAt(x, z);
+    }
+
+    public void save() {
+        for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())
+            SaveManager.saveChunk(chunk);
+        SaveManager.saveWorldMeta(this);
     }
 }

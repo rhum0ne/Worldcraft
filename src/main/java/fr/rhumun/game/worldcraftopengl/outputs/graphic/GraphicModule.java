@@ -117,6 +117,7 @@ public class GraphicModule {
         loadResources();
         configureUI();
         initWorldGraphics();
+        startChunkLoader();
         isInitialized = true;
     }
 
@@ -125,7 +126,6 @@ public class GraphicModule {
         if(game.getWorld() == null) return;
 
         configureLighting();
-        startChunkLoader();
     }
 
     private void initGLFW() {
@@ -241,6 +241,12 @@ public class GraphicModule {
         this.areChunksUpdated = false;
     }
 
+    private void refreshLoadedChunks() {
+        loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
+        loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
+        areChunksUpdated = true;
+    }
+
     public void cleanup(Renderer renderer) {
         this.cleaner.add(renderer);
     }
@@ -339,9 +345,7 @@ public class GraphicModule {
     private void update() {
         if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
-            loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
-            loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
-            areChunksUpdated = true;
+            refreshLoadedChunks();
             lightningsUtils.updateLights();
             if (SHOWING_RENDERER_DATA) {
                 verticesNumber = loadedChunks.stream().mapToInt(c -> c.getRenderer().getVerticesNumber()).sum();
@@ -366,9 +370,7 @@ public class GraphicModule {
     private void updateFarChunks() {
         if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
-            loadedChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRender());
-            loadedFarChunks = new LinkedHashSet<>(player.getLoadedChunksManager().getChunksToRenderLight());
-            areChunksUpdated = true;
+            refreshLoadedChunks();
             if (SHOWING_RENDERER_DATA) {
                 verticesNumber = loadedFarChunks.stream().mapToInt(c -> c.getRenderer().getVerticesNumber()).sum();
                 game.getData().setVerticesCount(verticesNumber);

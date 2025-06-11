@@ -14,6 +14,7 @@ import org.joml.Vector3f;
 @Getter
 @Setter
 public class Entity {
+    protected static final float RAY_STEP = 0.02f;
     private final Game game;
 
     private Location location;
@@ -178,61 +179,38 @@ public class Entity {
 
 
     public Block getSelectedBlock() {
-        float stepSize = 0.02F;
-
         Vector3f direction = getRayDirection();
-        Vector3f start = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
+        Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
 
-        //System.out.println("Starting at: " + start);
-        //System.out.println("Direction: " + direction);
-
-        // Start the iteration from zero
-        for (float distance = 0; distance < this.getReach(); distance += stepSize) {
-            // Calculate the current position based on start point and direction
-            Vector3f currentPosition = new Vector3f(start).add(new Vector3f(direction).mul(distance));
-            //System.out.println("Checking position: " + currentPosition);
-
-            // Check for prop at the current position
-            Block block = this.getGame().getWorld().getBlockAt(currentPosition, true);
+        for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
+            Block block = this.getGame().getWorld().getBlockAt(pos, true);
 
             if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
-                //System.out.println("Player's pos : " + this.getLocation().getX() + " " + this.getLocation().getY() + " " + this.getLocation().getZ() + " ");
-                //System.out.println("Found prop at position: " + currentPosition);
                 return block;
             }
+
+            pos.add(direction.x * RAY_STEP, direction.y * RAY_STEP, direction.z * RAY_STEP);
         }
-        //System.out.println("No prop found within range.");
         return null;
     }
 
     public void placeBlock(final Item item){
-        // Déterminer la face du bloc où le joueur a cliqué
-
-        float stepSize = 0.02F;
-
         Vector3f direction = getRayDirection();
-        Vector3f start = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
+        Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
         Vector3f hitPosition = null;
         Block block = null;
         Block block1 = null;
-        //System.out.println("Starting at: " + start);
-        //System.out.println("Direction: " + direction);
 
-        // Start the iteration from zero
-        for (float distance = 0; distance < this.getReach(); distance += stepSize) {
-            // Calculate the current position based on start point and direction
-            Vector3f hitPosition1 = new Vector3f(start).add(new Vector3f(direction).mul(distance));
-            //System.out.println("Checking position: " + hitPosition);
-
-            block1 = this.getLocation().getWorld().getBlockAt(hitPosition1, true);
+        for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
+            block1 = this.getLocation().getWorld().getBlockAt(pos, true);
             if(block1 == null) break;
 
             if (block1.isCliquable()) {
                 break;
             }
-            // Check for prop at the current position
             block = block1;
-            hitPosition = hitPosition1;
+            hitPosition = new Vector3f(pos);
+            pos.add(direction.x * RAY_STEP, direction.y * RAY_STEP, direction.z * RAY_STEP);
         }
 
         if(block1 == null || !block1.isCliquable()) return;

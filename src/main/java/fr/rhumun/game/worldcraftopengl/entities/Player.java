@@ -19,7 +19,7 @@ public class Player extends Entity implements MovingEntity{
     private final LoadedChunksManager loadedChunksManager = new LoadedChunksManager(this);
 
     private int selectedSlot;
-    private Inventory inventory;
+    private final Inventory inventory;
 
     private final int[] movements = new int[3];
 
@@ -48,30 +48,19 @@ public class Player extends Entity implements MovingEntity{
     }
 
     public Block getBlockToPlace() {
-
-        float stepSize = 0.02F;
-
         Vector3f direction = this.getRayDirection();
-        Vector3f start = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
-        Vector3f hitPosition;
+        Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
         Block block = null;
-        //System.out.println("Starting at: " + start);
-        //System.out.println("Direction: " + direction);
 
-        // Start the iteration from zero
-        for (float distance = 0; distance < this.getReach(); distance += stepSize) {
-            // Calculate the current position based on start point and direction
-            hitPosition = new Vector3f(start).add(new Vector3f(direction).mul(distance));
-            //System.out.println("Checking position: " + hitPosition);
-
-            Block block1 = this.getGame().getWorld().getBlockAt(hitPosition, true);
+        for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
+            Block block1 = this.getGame().getWorld().getBlockAt(pos, true);
             if(block1 == null) return null;
 
             if (block1.getMaterial() != null) {
                 return block;
             }
-            // Check for prop at the current position
             block = block1;
+            pos.add(direction.x * RAY_STEP, direction.y * RAY_STEP, direction.z * RAY_STEP);
         }
         return null;
     }
