@@ -28,8 +28,8 @@ public class SlabModel extends AbstractModel {
     @Override
     public Hitbox getHitbox(Block block) {
         if(block.isOnTheFloor()) {
-            return new BoxHitbox(-0.5f, 0f, -0.5f, 0.5f, 0.5f, 0.5f);
+            return new BoxHitbox(0f, 0f, 0f, 1f, 0.5f, 1f);
         }
-        return new BoxHitbox(-0.5f, 0.5f, -0.5f, 0.5f, 1f, 0.5f);
+        return new BoxHitbox(0f, 0.5f, 0f, 1f, 1f, 1f);
     }
 }

@@ -204,54 +204,8 @@ public class Entity {
         return false;
     }
 
-
-    /**
-     * Determine whether a bounding box at the given offset from this entity
-     * would collide with any solid block.
-     */
-    private boolean wouldCollide(double offsetX, double offsetZ) {
-        AxisAlignedBB bb = getBoundingBox();
-        AxisAlignedBB moved = new AxisAlignedBB(
-                bb.minX + (float) offsetX, bb.minY, bb.minZ + (float) offsetZ,
-                bb.maxX + (float) offsetX, bb.maxY, bb.maxZ + (float) offsetZ);
-
-        int minX = (int) Math.floor(moved.minX);
-        int maxX = (int) Math.floor(moved.maxX);
-                    AxisAlignedBB blockBox = block.getHitbox().getWorldBoundingBox(block);
-        int minZ = (int) Math.floor(moved.minZ);
-        int maxZ = (int) Math.floor(moved.maxZ);
-
-        World world = this.getLocation().getWorld();
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    Block block = world.getBlockAt(x, y, z, false);
-                    if (block == null || block.getMaterial() == null) continue;
-                    AxisAlignedBB blockBox = block.getHitbox().getBoundingBox(block)
-                            .offset(new Vector3f(block.getX(), block.getY(), block.getZ()));
-                    if (blockBox.intersects(moved)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Retrieve the block at the given coordinates using floor rounding so we
-     * correctly detect neighboring blocks when near block edges.
-     */
-    private Block getBlockAtFloor(double x, double y, double z) {
-        return this.getLocation().getWorld().getBlockAt(
-                (int) Math.floor(x),
-                (int) Math.floor(y),
-                (int) Math.floor(z),
-                false);
-    }
-
     private boolean checkBlockCollision(double x, double y, double z) {
-        Block block = getBlockAtFloor(x, y, z);
+        Block block = getWorld().getBlockAt(x,y,z, false);
         return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
     }
 

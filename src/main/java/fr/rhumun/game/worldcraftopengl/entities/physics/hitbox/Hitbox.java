@@ -15,7 +15,7 @@ public interface Hitbox {
     default AxisAlignedBB getWorldBoundingBox(Block block) {
         return getBoundingBox(block).offset(new org.joml.Vector3f(
                 block.getX() - 0.5f,
-                block.getY() - 0.5f,
+                block.getY(),
                 block.getZ() - 0.5f
         ));
     }
