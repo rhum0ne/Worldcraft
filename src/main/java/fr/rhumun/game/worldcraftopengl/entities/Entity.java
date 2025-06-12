@@ -210,7 +210,7 @@ public class Entity {
 
     private boolean checkBlockCollision(double x, double y, double z) {
         Block block = getWorld().getBlockAt(x,y,z, false);
-        if(block == null || block.getMaterial() == null) return false;
+        if(block == null || block.getMaterial() == null || block.getMaterial().isLiquid()) return false;
         Model model = block.getModel();
 
         if(model == null) return false;
