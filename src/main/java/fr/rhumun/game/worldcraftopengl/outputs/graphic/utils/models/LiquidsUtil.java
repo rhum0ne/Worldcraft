@@ -15,6 +15,9 @@ public class LiquidsUtil {
     public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, LinkedHashSet<Block> blocks){
         Chunk chunk = chunkRenderer.getChunk();
 
+        if(hasFluidAbove(block) || isFullyEnclosed(block))
+            return;
+
         if(!Game.GREEDY_MESHING) {
             rasterBlockGroup(block, block, chunkRenderer);
             return;
@@ -27,7 +30,7 @@ public class LiquidsUtil {
     }
 
     private static boolean isToRender(Block block, Block counterBlock){
-        return counterBlock != null && !counterBlock.isOpaque() && block.getMaterial() != counterBlock.getMaterial();
+        return counterBlock == null;
     }
 
     private static Block loadLiquidSurface(Chunk chunk, Block corner1, int X, int Y, int Z, LinkedHashSet<Block> blocks){
@@ -48,6 +51,7 @@ public class LiquidsUtil {
             Block testBlock = chunk.getBlocks()[x][y][z];
             if (testBlock.isSurrounded()) break;
             if (blocks.contains(testBlock)) break;
+            if(hasFluidAbove(testBlock)) break;
 
             if (testBlock.getModel() == model) {
                 if (testBlock.getMaterial() == corner1.getMaterial()) {
@@ -72,6 +76,7 @@ public class LiquidsUtil {
 
             for(int xtest=X; xtest<=corner2.getChunkX(); xtest++){
                 Block testBlock = chunk.getBlocks()[xtest][y][z];
+                if(hasFluidAbove(testBlock)) { isGood = false; break; }
 
                 if (!blocks.contains(testBlock)) {
                     if (testBlock.getModel() == model) {
@@ -243,6 +248,30 @@ public class LiquidsUtil {
         // Ajouter les données au renderer correspondant
         renderer.addAllVertices(vertices);
         renderer.addAllIndices(indices);
+    }
+
+    private static boolean hasFluidAbove(Block block){
+        Block up = block.getBlockAtUp();
+        return up != null && up.getMaterial() == block.getMaterial();
+    }
+
+    private static boolean isFullyEnclosed(Block block){
+        Block matUp = block.getBlockAtUp();
+        Block matDown = block.getBlockAtDown();
+        Block matNorth = block.getBlockAtNorth();
+        Block matSouth = block.getBlockAtSouth();
+        Block matEast = block.getBlockAtEast();
+        Block matWest = block.getBlockAtWest();
+
+        if(matUp == null || matDown == null || matNorth == null || matSouth == null || matEast == null || matWest == null)
+            return false;
+
+        return matUp.getMaterial() == block.getMaterial() &&
+                matDown.getMaterial() == block.getMaterial() &&
+                matNorth.getMaterial() == block.getMaterial() &&
+                matSouth.getMaterial() == block.getMaterial() &&
+                matEast.getMaterial() == block.getMaterial() &&
+                matWest.getMaterial() == block.getMaterial();
     }
 
 }
