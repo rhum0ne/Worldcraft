@@ -18,9 +18,9 @@ public class AxisAlignedBB {
     }
 
     public boolean intersects(AxisAlignedBB other) {
-        return this.maxX > other.minX && this.minX < other.maxX &&
-               this.maxY > other.minY && this.minY < other.maxY &&
-               this.maxZ > other.minZ && this.minZ < other.maxZ;
+        return this.maxX >= other.minX && this.minX <= other.maxX &&
+               this.maxY >= other.minY && this.minY <= other.maxY &&
+               this.maxZ >= other.minZ && this.minZ <= other.maxZ;
     }
 
     public AxisAlignedBB offset(Vector3f offset) {

@@ -137,26 +137,29 @@ public class Entity {
     }
 
     public Block getBlockInDirection(Vector3f direction, int yLevel) {
-        if(yLevel > this.height){
+        int maxLevel = (int) Math.ceil(this.height);
+        if (yLevel > maxLevel) {
             this.game.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
             return null;
         }
-        // Normaliser le vecteur pour garantir qu'il a une norme de 1
-        Vector3f normalizedDirection = direction.normalize();
 
-        // Calculer les coordonnées en fonction du rayon du joueur
+        Vector3f normalizedDirection = new Vector3f(direction).normalize();
+
         double targetX = this.getLocation().getX() + normalizedDirection.get(0) * this.radius;
-        double targetY = this.getLocation().getY() - yLevel;
+        double baseY = this.getLocation().getY() - this.height;
+        double targetY = baseY + yLevel;
         double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
 
-        // Retourner le bloc à cette position
         return this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
-        for(int y=0; y<this.height; y++) {
+        int maxLevel = (int) Math.ceil(this.height);
+        for (int y = 0; y <= maxLevel; y++) {
             Block block = this.getBlockInDirection(direction, y);
-            if( block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block)) return true;
+            if (block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block)) {
+                return true;
+            }
         }
         return false;
     }
