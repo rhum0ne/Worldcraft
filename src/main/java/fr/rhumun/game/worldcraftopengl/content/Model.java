@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content;
 
 import fr.rhumun.game.worldcraftopengl.content.models.*;
+import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import lombok.Getter;
 
@@ -57,5 +58,9 @@ public enum Model {
 
     public boolean isOpaque() {
         return model.isOpaque();
+    }
+
+    public AbstractModel getModelObject() {
+        return model;
     }
 }

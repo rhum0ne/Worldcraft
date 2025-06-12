@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativeInventoryGui;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
@@ -35,6 +36,17 @@ public class Player extends Entity implements MovingEntity{
         super(game, 5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
 
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox() {
+        float minX = (float) (this.getLocation().getX() - getRadius());
+        float minY = (float) (this.getLocation().getY() - 1.6f);
+        float maxX = (float) (this.getLocation().getX() + getRadius());
+        float maxY = minY + getHeight();
+        float minZ = (float) (this.getLocation().getZ() - getRadius());
+        float maxZ = (float) (this.getLocation().getZ() + getRadius());
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public void setFlying(boolean state){

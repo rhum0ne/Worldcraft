@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,6 +80,19 @@ public class Entity {
         ).normalize();
     }
 
+    /**
+     * Compute the bounding box of the entity in world coordinates.
+     */
+    public AxisAlignedBB getBoundingBox() {
+        float minX = (float) (this.getLocation().getX() - radius);
+        float minY = (float) (this.getLocation().getY() - height);
+        float minZ = (float) (this.getLocation().getZ() - radius);
+        float maxX = (float) (this.getLocation().getX() + radius);
+        float maxY = (float) this.getLocation().getY();
+        float maxZ = (float) (this.getLocation().getZ() + radius);
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
     public void addX(double a){
         if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !this.isNoClipping)) {
             return;
@@ -142,7 +156,7 @@ public class Entity {
     public boolean hasBlockInDirection(Vector3f direction) {
         for(int y=0; y<this.height; y++) {
             Block block = this.getBlockInDirection(direction, y);
-            if( block != null && block.getMaterial() != null) return true;
+            if( block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block)) return true;
         }
         return false;
     }
@@ -154,7 +168,7 @@ public class Entity {
 
     public boolean hasBlockDown(){
         Block block = this.getBlockDown();
-        return block != null && block.getMaterial() != null;
+        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
     }
 
     public Block getBlockTop(){
@@ -163,7 +177,7 @@ public class Entity {
 
     public boolean hasBlockTop(){
         Block block = this.getBlockTop();
-        return block != null && block.getMaterial() != null;
+        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
     }
 
     public int getSpeed(){
