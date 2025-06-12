@@ -27,7 +27,8 @@ public enum Controls {
     INVENTORY(new OpenInventory()),
     ENTER(new Enter()),
     DROP_ITEM(new DropItem()),
-    WORLD_RENDER_BOOL(new WorldRendererBool());
+    WORLD_RENDER_BOOL(new WorldRendererBool()),
+    TOGGLE_HITBOXES(new ToggleHitboxes());
 
     static final HashMap<Integer, Controls> KEYS = new HashMap<>();
 
@@ -61,6 +62,7 @@ public enum Controls {
         add(GLFW_KEY_ENTER, ENTER);
         add(GLFW_KEY_Q, DROP_ITEM);
         add(GLFW_KEY_F5, WORLD_RENDER_BOOL);
+        add(GLFW_KEY_F7, TOGGLE_HITBOXES);
     }
 
     private static void add(int code, Controls control){ KEYS.put(code, control); }

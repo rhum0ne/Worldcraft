@@ -1,6 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.content.models;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.BoxHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.content.Model.BLOCK;
@@ -21,5 +23,13 @@ public class SlabModel extends AbstractModel {
             block.setModel(BLOCK);
             BLOCK.setBlockDataOnPlace(block, hitPosition, direction);
         }
+    }
+
+    @Override
+    public Hitbox getHitbox(Block block) {
+        if(block.isOnTheFloor()) {
+            return new BoxHitbox(0f, 0f, 0f, 1f, 0.5f, 1f);
+        }
+        return new BoxHitbox(0f, 0.5f, 0f, 1f, 1f, 1f);
     }
 }

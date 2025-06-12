@@ -16,13 +16,13 @@ public class CleanerModule {
     }
 
     public void clean(){
-        for (Iterator<Renderer> it = renderers.iterator(); it.hasNext(); ) {
-            Renderer renderer = it.next();
-            if (renderer != null) {
-                renderer.cleanup();
-            }
-            it.remove();
-        }
+//        for (Renderer renderer : renderers) {
+//            if (renderer != null) {
+//                renderer.cleanup();
+//            }
+//        }
+//
+//        renderers.clear();
     }
 
     public void add(Renderer renderer) {
