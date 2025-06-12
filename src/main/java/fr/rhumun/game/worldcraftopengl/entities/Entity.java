@@ -94,14 +94,16 @@ public class Entity {
     }
 
     public void addX(double a){
-        if (!this.isNoClipping && wouldCollide(a, 0)) {
+        if(a==0) return;
+        if (!this.isNoClipping && hasBlockInDirection(new Vector3f((a>0 ? 1 : -1), 0, 0))) {
             return;
         }
         this.getLocation().addX(a);
         this.onMove();
     }
     public void addZ(double a){
-        if (!this.isNoClipping && wouldCollide(0, a)) {
+        if(a==0) return;
+        if (!this.isNoClipping && hasBlockInDirection(new Vector3f(0, 0, (a>0 ? 1 : -1)))) {
             return;
         }
         this.getLocation().addZ(a);
@@ -155,7 +157,7 @@ public class Entity {
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
-        Vector3f normalizedDirection = new Vector3f(direction).normalize();
+        Vector3f normalizedDirection = direction;
         AxisAlignedBB bb = getBoundingBox();
 
         System.out.println(normalizedDirection.toString());
@@ -165,22 +167,43 @@ public class Entity {
         int maxLevel = (int) Math.ceil(this.height);
         for (int y = 0; y <= maxLevel; y++) {
             double yPos = bb.minY + y;
-            if(y==0) yPos += espY;
+            if (y == 0) yPos += espY;
 
             if (normalizedDirection.x > 0) {
-
-                boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ+radius);
-                if (middleP && (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
-                    checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
+                boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ + radius);
+                if (middleP || (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
+                        checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
+                    System.out.println("X1");
                     return true;
                 }
             } else if (normalizedDirection.x < 0) {
-                boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ+radius);
-                if (middleN && (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
-                    checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
+                boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ + radius);
+                if (middleN || (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
+                        checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
+                    System.out.println("X2");
                     return true;
                 }
             }
+
+            if (normalizedDirection.z > 0) {
+                boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.maxZ+eps);
+                if( middleP || (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
+                        checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
+                    System.out.println("Z1");
+                    return true;
+                }
+            } else if (normalizedDirection.z < 0) {
+                boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
+                if (middleN || (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
+                        checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
+                    System.out.println("Z2");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Determine whether a bounding box at the given offset from this entity
@@ -194,7 +217,7 @@ public class Entity {
 
         int minX = (int) Math.floor(moved.minX);
         int maxX = (int) Math.floor(moved.maxX);
-        int minY = (int) Math.floor(moved.minY);
+        int minY = (int) Math.floor(moved.minY+0.1f);
         int maxY = (int) Math.floor(moved.maxY);
         int minZ = (int) Math.floor(moved.minZ);
         int maxZ = (int) Math.floor(moved.maxZ);
@@ -210,23 +233,6 @@ public class Entity {
                     if (blockBox.intersects(moved)) {
                         return true;
                     }
-                }
-            }
-        }
-        return false;
-    }
-
-            if (normalizedDirection.z > 0) {
-                boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.minZ+eps);
-                if( middleP && (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
-                    checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
-                    return true;
-                }
-            } else if (normalizedDirection.z < 0) {
-                boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
-                if (middleN && (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
-                    checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
-                    return true;
                 }
             }
         }
