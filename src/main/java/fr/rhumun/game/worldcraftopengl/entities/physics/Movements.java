@@ -16,6 +16,10 @@ public class Movements {
     private static int stepSoundFrequency = 15;
 
     public static void applyMovements(Entity entity) {
+        if(entity instanceof Player p){
+            p.updateSwimmingState();
+        }
+
         if (!entity.isFlying() && !entity.isNoClipping()) {
             applyGravityFor(entity);
 
@@ -37,7 +41,8 @@ public class Movements {
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
-            if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
+            if(entity instanceof Player p && p.isSwimming()) entity.getVelocity().mul(0.8f);
+            else if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
             else entity.getVelocity().mul(AIR_FRICTION);
         }
 
@@ -72,12 +77,24 @@ public class Movements {
         if (speed > s) {
             player.getVelocity().div(speed, 1, speed).mul(s, 1, s);
         }
-        if(player.isFlying()){
+        if(player instanceof Player p && p.isSwimming()){
+            float y = Math.max(Math.min(player.getVelocity().get(1), 0.1f), -0.1f);
+            player.getVelocity().setComponent(1, y);
+        } else if(player.isFlying()){
             player.getVelocity().setComponent(1, Math.min(player.getVelocity().get(1), 0.30f));
         }
     }
 
     public static void applyGravityFor(Entity entity) {
+        if(entity instanceof Player p && p.isSwimming()){
+            if(entity.hasBlockDown() && entity.getVelocity().get(1) < 0){
+                entity.getVelocity().setComponent(1, 0);
+            }else{
+                entity.getVelocity().add(0, -DEFAULT_GRAVITY / 3000.0f, 0);
+            }
+            return;
+        }
+
         if (entity.hasBlockDown() && entity.getVelocity().get(1) < 0) {
             // Empêcher le joueur de passer à travers le sol
             entity.getVelocity().setComponent(1, 0);

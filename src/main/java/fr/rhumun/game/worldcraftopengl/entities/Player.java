@@ -24,6 +24,8 @@ public class Player extends Entity implements MovingEntity{
 
     private final int[] movements = new int[3];
 
+    private boolean swimming;
+
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
     }
@@ -139,5 +141,15 @@ public class Player extends Entity implements MovingEntity{
 
     public Block getBlockTop(){
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
+    }
+
+    public boolean isInsideWater(){
+        Block body = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-0.5f, this.getLocation().getZ(), false);
+        Block head = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
+        return (body != null && body.getMaterial() == Material.WATER) || (head != null && head.getMaterial() == Material.WATER);
+    }
+
+    public void updateSwimmingState(){
+        this.swimming = isInsideWater();
     }
 }
