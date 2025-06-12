@@ -36,6 +36,7 @@ uniform sampler2DArray textures;  // Tableau de textures
 uniform sampler2D shadowMap;  // Pour les ombres directionnelles
 uniform samplerCube depthMap; // Pour les ombres des lumières ponctuelles
 uniform float far_plane;      // Distance maximum de la lumière ponctuelle
+uniform float waterHigh;      // Niveau de l'eau pour le brouillard
 
 
 out vec4 FragColor;
@@ -135,6 +136,10 @@ void main()
     {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  // On utilise FragPos ici
     }
+
+    vec3 fogColor = vec3(0.05, 0.1, 0.2);
+    float depth = clamp((waterHigh - FragPos.y) / 20.0, 0.0, 1.0);
+    result = mix(result, fogColor, depth);
 
     FragColor = vec4(result, textureColor.a);
 }
