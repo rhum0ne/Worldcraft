@@ -14,9 +14,9 @@ import org.joml.Vector3f;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 
 /** Renderer displaying block and entity hitboxes as wireframe boxes. */
 public class HitboxRenderer extends Renderer {
@@ -50,7 +50,7 @@ public class HitboxRenderer extends Renderer {
 
     @Override
     public void render() {
-        if (!Game.GAME.isShowingHitboxes()) return;
+        if (!Game.SHOWING_HITBOXES) return;
         update();
 
         glBindVertexArray(this.getVAO());
