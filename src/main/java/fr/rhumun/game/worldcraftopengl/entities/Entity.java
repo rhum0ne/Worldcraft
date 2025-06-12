@@ -2,6 +2,10 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -206,7 +210,16 @@ public class Entity {
 
     private boolean checkBlockCollision(double x, double y, double z) {
         Block block = getWorld().getBlockAt(x,y,z, false);
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        if(block == null || block.getMaterial() == null) return false;
+        Model model = block.getModel();
+
+        if(model == null) return false;
+        if(model.getModel() instanceof ModelHitbox modelHitbox) return modelHitbox.getHitbox(block).intersects(this, block);
+        if(model.getModel() instanceof ModelMultiHitbox modelMultiHitbox)
+            for(Hitbox hitbox : modelMultiHitbox.getHitboxes(block))
+                if(hitbox.intersects(this, block)) return true;
+
+        return false;
     }
 
 

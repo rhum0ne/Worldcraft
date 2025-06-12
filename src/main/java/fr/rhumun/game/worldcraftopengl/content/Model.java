@@ -63,4 +63,5 @@ public enum Model {
     public AbstractModel getModelObject() {
         return model;
     }
+
 }
