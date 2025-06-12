@@ -128,6 +128,7 @@ public class GraphicModule {
         if(game.getWorld() == null) return;
 
         configureLighting();
+        ShaderManager.LIQUID_SHADER.setUniform("waterHigh", world.getGenerator().getWaterHigh());
     }
 
     private void initGLFW() {
