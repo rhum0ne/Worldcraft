@@ -217,8 +217,7 @@ public class Entity {
 
         int minX = (int) Math.floor(moved.minX);
         int maxX = (int) Math.floor(moved.maxX);
-        int minY = (int) Math.floor(moved.minY+0.1f);
-        int maxY = (int) Math.floor(moved.maxY);
+                    AxisAlignedBB blockBox = block.getHitbox().getWorldBoundingBox(block);
         int minZ = (int) Math.floor(moved.minZ);
         int maxZ = (int) Math.floor(moved.maxZ);
 
