@@ -72,8 +72,6 @@ public class Chunk extends AbstractChunk {
             long end = System.currentTimeMillis();
             GAME.debug("Finished Generating " + this + " in " + (end - start) + " ms");
 
-            this.setBlock(8, 90, 8, Material.RED_WOOL);
-
             if(this.isToUnload()) unload();
             return true;
 

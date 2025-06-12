@@ -158,30 +158,40 @@ public class Entity {
         Vector3f normalizedDirection = new Vector3f(direction).normalize();
         AxisAlignedBB bb = getBoundingBox();
 
+        System.out.println(normalizedDirection.toString());
+
         float eps = 0.001f;
+        float espY = 0.1f;
         int maxLevel = (int) Math.ceil(this.height);
         for (int y = 0; y <= maxLevel; y++) {
             double yPos = bb.minY + y;
+            if(y==0) yPos += espY;
+
             if (normalizedDirection.x > 0) {
-                if (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
-                    checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ)) {
+
+                boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ+radius);
+                if (middleP && (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
+                    checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
                     return true;
                 }
             } else if (normalizedDirection.x < 0) {
-                if (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
-                    checkBlockCollision(bb.minX - eps, yPos, bb.maxZ)) {
+                boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ+radius);
+                if (middleN && (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
+                    checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
                     return true;
                 }
             }
 
             if (normalizedDirection.z > 0) {
-                if (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
-                    checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps)) {
+                boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.minZ+eps);
+                if( middleP && (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
+                    checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
                     return true;
                 }
             } else if (normalizedDirection.z < 0) {
-                if (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
-                    checkBlockCollision(bb.maxX, yPos, bb.minZ - eps)) {
+                boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
+                if (middleN && (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
+                    checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
                     return true;
                 }
             }
@@ -214,7 +224,7 @@ public class Entity {
 
     public boolean hasBlockDown(){
         AxisAlignedBB bb = getBoundingBox();
-        float y = bb.minY - 0.001f;
+        float y = bb.minY;
 
         return checkBlockCollision(bb.minX + 0.001f, y, bb.minZ + 0.001f) ||
                checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
