@@ -213,8 +213,13 @@ public class Entity {
     }
 
     public boolean hasBlockDown(){
-        Block block = this.getBlockDown();
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        AxisAlignedBB bb = getBoundingBox();
+        float y = bb.minY - 0.001f;
+
+        return checkBlockCollision(bb.minX + 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
     }
 
     public Block getBlockTop(){
@@ -223,8 +228,13 @@ public class Entity {
     }
 
     public boolean hasBlockTop(){
-        Block block = this.getBlockTop();
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        AxisAlignedBB bb = getBoundingBox();
+        float y = bb.maxY + 0.001f;
+
+        return checkBlockCollision(bb.minX + 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
     }
 
     public int getSpeed(){
