@@ -94,14 +94,14 @@ public class Entity {
     }
 
     public void addX(double a){
-        if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !this.isNoClipping)) {
+        if (!this.isNoClipping && wouldCollide(a, 0)) {
             return;
         }
         this.getLocation().addX(a);
         this.onMove();
     }
     public void addZ(double a){
-        if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !this.isNoClipping)) {
+        if (!this.isNoClipping && wouldCollide(0, a)) {
             return;
         }
         this.getLocation().addZ(a);
@@ -181,6 +181,40 @@ public class Entity {
                     return true;
                 }
             }
+
+    /**
+     * Determine whether a bounding box at the given offset from this entity
+     * would collide with any solid block.
+     */
+    private boolean wouldCollide(double offsetX, double offsetZ) {
+        AxisAlignedBB bb = getBoundingBox();
+        AxisAlignedBB moved = new AxisAlignedBB(
+                bb.minX + (float) offsetX, bb.minY, bb.minZ + (float) offsetZ,
+                bb.maxX + (float) offsetX, bb.maxY, bb.maxZ + (float) offsetZ);
+
+        int minX = (int) Math.floor(moved.minX);
+        int maxX = (int) Math.floor(moved.maxX);
+        int minY = (int) Math.floor(moved.minY);
+        int maxY = (int) Math.floor(moved.maxY);
+        int minZ = (int) Math.floor(moved.minZ);
+        int maxZ = (int) Math.floor(moved.maxZ);
+
+        World world = this.getLocation().getWorld();
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Block block = world.getBlockAt(x, y, z, false);
+                    if (block == null || block.getMaterial() == null) continue;
+                    AxisAlignedBB blockBox = block.getHitbox().getBoundingBox(block)
+                            .offset(new Vector3f(block.getX(), block.getY(), block.getZ()));
+                    if (blockBox.intersects(moved)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
             if (normalizedDirection.z > 0) {
                 boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.minZ+eps);
