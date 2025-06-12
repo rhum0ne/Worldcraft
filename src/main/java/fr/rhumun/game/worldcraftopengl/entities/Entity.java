@@ -189,8 +189,20 @@ public class Entity {
         return false;
     }
 
+    /**
+     * Retrieve the block at the given coordinates using floor rounding so we
+     * correctly detect neighboring blocks when near block edges.
+     */
+    private Block getBlockAtFloor(double x, double y, double z) {
+        return this.getLocation().getWorld().getBlockAt(
+                (int) Math.floor(x),
+                (int) Math.floor(y),
+                (int) Math.floor(z),
+                false);
+    }
+
     private boolean checkBlockCollision(double x, double y, double z) {
-        Block block = this.getLocation().getWorld().getBlockAt(x, y, z, false);
+        Block block = getBlockAtFloor(x, y, z);
         return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
     }
 
