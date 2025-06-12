@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
@@ -75,6 +76,10 @@ public class Block {
 
     public Model getModel(){
         return Model.getById(this.model);
+    }
+
+    public Hitbox getHitbox() {
+        return this.getModel().getModelObject().getHitbox(this);
     }
 
     public Chunk getChunk(){

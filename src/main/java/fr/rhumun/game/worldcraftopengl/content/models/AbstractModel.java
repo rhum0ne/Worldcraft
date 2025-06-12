@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.content.models;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.BoxHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import lombok.Getter;
 import org.joml.Vector3f;
 
@@ -23,4 +25,8 @@ public abstract class AbstractModel {
     }
 
     public abstract void setBlockDataOnPlace(Block block, Vector3f hitPosition, Vector3f direction);
+
+    public Hitbox getHitbox(Block block) {
+        return BoxHitbox.fullBlock();
+    }
 }

@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -79,15 +80,30 @@ public class Entity {
         ).normalize();
     }
 
+    /**
+     * Compute the bounding box of the entity in world coordinates.
+     */
+    public AxisAlignedBB getBoundingBox() {
+        float minX = (float) (this.getLocation().getX() - radius);
+        float minY = (float) (this.getLocation().getY() - height);
+        float minZ = (float) (this.getLocation().getZ() - radius);
+        float maxX = (float) (this.getLocation().getX() + radius);
+        float maxY = (float) this.getLocation().getY();
+        float maxZ = (float) (this.getLocation().getZ() + radius);
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
     public void addX(double a){
-        if ((this.hasBlockInDirection(new Vector3f((float) a, 0, 0)) && !this.isNoClipping)) {
+        if(a==0) return;
+        if (!this.isNoClipping && hasBlockInDirection(new Vector3f((a>0 ? 1 : -1), 0, 0))) {
             return;
         }
         this.getLocation().addX(a);
         this.onMove();
     }
     public void addZ(double a){
-        if ((this.hasBlockInDirection(new Vector3f( 0, 0, (float)a)) && !this.isNoClipping)) {
+        if(a==0) return;
+        if (!this.isNoClipping && hasBlockInDirection(new Vector3f(0, 0, (a>0 ? 1 : -1)))) {
             return;
         }
         this.getLocation().addZ(a);
@@ -123,47 +139,105 @@ public class Entity {
     }
 
     public Block getBlockInDirection(Vector3f direction, int yLevel) {
-        if(yLevel > this.height){
+        int maxLevel = (int) Math.ceil(this.height);
+        if (yLevel > maxLevel) {
             this.game.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
             return null;
         }
-        // Normaliser le vecteur pour garantir qu'il a une norme de 1
-        Vector3f normalizedDirection = direction.normalize();
 
-        // Calculer les coordonnées en fonction du rayon du joueur
+        Vector3f normalizedDirection = new Vector3f(direction).normalize();
+
+        AxisAlignedBB bb = getBoundingBox();
         double targetX = this.getLocation().getX() + normalizedDirection.get(0) * this.radius;
-        double targetY = this.getLocation().getY() - yLevel;
+        double baseY = bb.minY;
+        double targetY = baseY + yLevel;
         double targetZ = this.getLocation().getZ() + normalizedDirection.get(2) * this.radius;
 
-        // Retourner le bloc à cette position
         return this.getLocation().getWorld().getBlockAt(targetX, targetY, targetZ, false);
     }
 
     public boolean hasBlockInDirection(Vector3f direction) {
-        for(int y=0; y<this.height; y++) {
-            Block block = this.getBlockInDirection(direction, y);
-            if( block != null && block.getMaterial() != null) return true;
+        Vector3f normalizedDirection = direction;
+        AxisAlignedBB bb = getBoundingBox();
+
+        System.out.println(normalizedDirection.toString());
+
+        float eps = 0.001f;
+        float espY = 0.1f;
+        int maxLevel = (int) Math.ceil(this.height);
+        for (int y = 0; y <= maxLevel; y++) {
+            double yPos = bb.minY + y;
+            if (y == 0) yPos += espY;
+
+            if (normalizedDirection.x > 0) {
+                boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ + radius);
+                if (middleP || (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
+                        checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
+                    System.out.println("X1");
+                    return true;
+                }
+            } else if (normalizedDirection.x < 0) {
+                boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ + radius);
+                if (middleN || (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
+                        checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
+                    System.out.println("X2");
+                    return true;
+                }
+            }
+
+            if (normalizedDirection.z > 0) {
+                boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.maxZ+eps);
+                if( middleP || (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
+                        checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
+                    System.out.println("Z1");
+                    return true;
+                }
+            } else if (normalizedDirection.z < 0) {
+                boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
+                if (middleN || (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
+                        checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
+                    System.out.println("Z2");
+                    return true;
+                }
+            }
         }
         return false;
     }
 
+    private boolean checkBlockCollision(double x, double y, double z) {
+        Block block = getWorld().getBlockAt(x,y,z, false);
+        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+    }
+
 
     public Block getBlockDown(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-this.height-0.2f, this.getLocation().getZ(), false);
+        AxisAlignedBB bb = getBoundingBox();
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), bb.minY - 0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockDown(){
-        Block block = this.getBlockDown();
-        return block != null && block.getMaterial() != null;
+        AxisAlignedBB bb = getBoundingBox();
+        float y = bb.minY;
+
+        return checkBlockCollision(bb.minX + 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
     }
 
     public Block getBlockTop(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
+        AxisAlignedBB bb = getBoundingBox();
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), bb.maxY + 0.2f, this.getLocation().getZ(), false);
     }
 
     public boolean hasBlockTop(){
-        Block block = this.getBlockTop();
-        return block != null && block.getMaterial() != null;
+        AxisAlignedBB bb = getBoundingBox();
+        float y = bb.maxY + 0.001f;
+
+        return checkBlockCollision(bb.minX + 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
+               checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
+               checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
     }
 
     public int getSpeed(){
