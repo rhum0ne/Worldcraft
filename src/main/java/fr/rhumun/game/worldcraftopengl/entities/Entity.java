@@ -205,14 +205,21 @@ public class Entity {
     }
 
     private boolean checkBlockCollision(double x, double y, double z) {
-        Block block = getWorld().getBlockAt(x,y,z, false);
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        Block block = getWorld().getBlockAt(x, y, z, false);
+        return block != null &&
+                block.getMaterial() != null &&
+                !block.getMaterial().isLiquid() &&
+                block.getHitbox().intersects(this, block);
     }
 
 
     public Block getBlockDown(){
         AxisAlignedBB bb = getBoundingBox();
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), bb.minY - 0.2f, this.getLocation().getZ(), false);
+        Block block = this.getLocation().getWorld()
+                .getBlockAt(this.getLocation().getX(), bb.minY - 0.2f,
+                        this.getLocation().getZ(), false);
+        return block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()
+                ? block : null;
     }
 
     public boolean hasBlockDown(){
