@@ -41,9 +41,14 @@ public class Movements {
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
-            if(entity instanceof Player p && p.isSwimming()) entity.getVelocity().mul(0.8f);
-            else if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
-            else entity.getVelocity().mul(AIR_FRICTION);
+            if(entity instanceof Player p && p.isSwimming()) {
+                float density = p.getLiquidDensity();
+                entity.getVelocity().mul(Math.max(0f, 1 - 0.2f * density));
+            } else if(entity.isFlying()) {
+                entity.getVelocity().mul(AIR_FRICTION_FLYING);
+            } else {
+                entity.getVelocity().mul(AIR_FRICTION);
+            }
         }
 
         if(entity instanceof MovingEntity mEntity) {
@@ -78,7 +83,9 @@ public class Movements {
             player.getVelocity().div(speed, 1, speed).mul(s, 1, s);
         }
         if(player instanceof Player p && p.isSwimming()){
-            float y = Math.max(Math.min(player.getVelocity().get(1), 0.1f), -0.1f);
+            float density = p.getLiquidDensity();
+            float limit = 0.1f / Math.max(0.0001f, density);
+            float y = Math.max(Math.min(player.getVelocity().get(1), limit), -limit);
             player.getVelocity().setComponent(1, y);
         } else if(player.isFlying()){
             player.getVelocity().setComponent(1, Math.min(player.getVelocity().get(1), 0.30f));
@@ -87,10 +94,11 @@ public class Movements {
 
     public static void applyGravityFor(Entity entity) {
         if(entity instanceof Player p && p.isSwimming()){
+            float density = p.getLiquidDensity();
             if(entity.hasBlockDown() && entity.getVelocity().get(1) < 0){
                 entity.getVelocity().setComponent(1, 0);
             }else{
-                entity.getVelocity().add(0, -DEFAULT_GRAVITY / 3000.0f, 0);
+                entity.getVelocity().add(0, -DEFAULT_GRAVITY / (Math.max(0.0001f, density) * 3000.0f), 0);
             }
             return;
         }

@@ -150,10 +150,31 @@ public class Player extends Entity implements MovingEntity{
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
     }
 
-    public boolean isInsideWater(){
-        Block body = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-0.5f, this.getLocation().getZ(), false);
-        Block head = this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()+0.2f, this.getLocation().getZ(), false);
-        return (body != null && body.getMaterial() == Material.WATER) || (head != null && head.getMaterial() == Material.WATER);
+    public boolean isInsideLiquid(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        return (body != null && body.getMaterial() != null && body.getMaterial().isLiquid()) ||
+               (head != null && head.getMaterial() != null && head.getMaterial().isLiquid());
+    }
+
+    public float getLiquidDensity(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
+            return body.getMaterial().getMaterial().getDensity();
+
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
+            return head.getMaterial().getMaterial().getDensity();
+
+        return 0f;
     }
 
     public void updateSwimmingState(){
