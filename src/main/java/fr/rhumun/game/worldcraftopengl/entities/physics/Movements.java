@@ -60,7 +60,7 @@ public class Movements {
 
         // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
         normalizeVelocity(entity);
-        //System.out.println("Velocity: " + player.getVelocity());
+        System.out.println("Velocity: " + entity.getVelocity());
     }
 
     private static void thresholdVelocity(Entity player) {

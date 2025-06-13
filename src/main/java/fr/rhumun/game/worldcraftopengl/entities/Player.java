@@ -158,5 +158,6 @@ public class Player extends Entity implements MovingEntity{
 
     public void updateSwimmingState(){
         this.swimming = isInsideWater();
+        if(!swimming) this.getMovements()[1] = 0;
     }
 }

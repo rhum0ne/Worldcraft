@@ -164,8 +164,6 @@ public class Entity {
         Vector3f normalizedDirection = direction;
         AxisAlignedBB bb = getBoundingBox();
 
-        System.out.println(normalizedDirection.toString());
-
         float eps = 0.001f;
         float espY = 0.1f;
         int maxLevel = (int) Math.ceil(this.height);
