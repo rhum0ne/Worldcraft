@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.player_inventory.PlayerInventoryGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativePlayerInventoryGui;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,8 @@ public class Player extends Entity implements MovingEntity{
 
     private int selectedSlot;
     private final Inventory inventory;
+    /** Whether the player has creative privileges. */
+    private boolean inCreativeMode;
 
     private final int[] movements = new int[3];
 
@@ -117,10 +120,15 @@ public class Player extends Entity implements MovingEntity{
     }
 
     /**
-     * Opens the player's survival inventory instead of the creative one.
+     * Opens the appropriate inventory depending on the player's mode.
+     * In creative mode, the inventory is combined with the give menu.
      */
     public void openInventory(){
-        this.openGui(new PlayerInventoryGui());
+        if (isInCreativeMode()) {
+            this.openGui(new CreativePlayerInventoryGui());
+        } else {
+            this.openGui(new PlayerInventoryGui());
+        }
     }
 
     public void openGui(Gui gui){
