@@ -117,11 +117,36 @@ public class Movements {
         Vector3f v = entity.getVelocity();
         if(v.x == 0 && v.y == 0 && v.z == 0) return;
 
-        float yawCos = (float) Math.cos(Math.toRadians(entity.getLocation().getYaw()));
-        float yawSin = (float) Math.sin(Math.toRadians(entity.getLocation().getYaw()));
-        entity.addX((yawCos*v.x - yawSin*v.z));
-        entity.addY(v.y);
-        entity.addZ((yawCos*v.z + yawSin*v.x));
+        if(entity instanceof Player p && p.isSwimming()) {
+            float yaw = (float) Math.toRadians(entity.getLocation().getYaw());
+            float pitch = (float) Math.toRadians(entity.getLocation().getPitch());
+
+            float cosYaw = (float) Math.cos(yaw);
+            float sinYaw = (float) Math.sin(yaw);
+            float cosPitch = (float) Math.cos(pitch);
+            float sinPitch = (float) Math.sin(pitch);
+
+            float fx = cosYaw * cosPitch;
+            float fy = sinPitch;
+            float fz = sinYaw * cosPitch;
+
+            float rx = -sinYaw;
+            float rz = cosYaw;
+
+            float moveX = fx * v.x + rx * v.z;
+            float moveY = fy * v.x + v.y;
+            float moveZ = fz * v.x + rz * v.z;
+
+            entity.addX(moveX);
+            entity.addY(moveY);
+            entity.addZ(moveZ);
+        } else {
+            float yawCos = (float) Math.cos(Math.toRadians(entity.getLocation().getYaw()));
+            float yawSin = (float) Math.sin(Math.toRadians(entity.getLocation().getYaw()));
+            entity.addX((yawCos*v.x - yawSin*v.z));
+            entity.addY(v.y);
+            entity.addZ((yawCos*v.z + yawSin*v.x));
+        }
 
         if(v.x == 0 && v.z == 0) return;
 
