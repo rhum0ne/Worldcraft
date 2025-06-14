@@ -16,9 +16,7 @@ public class Movements {
     private static int stepSoundFrequency = 15;
 
     public static void applyMovements(Entity entity) {
-        if(entity instanceof Player p){
-            p.updateSwimmingState();
-        }
+        entity.updateSwimmingState();
 
         if (!entity.isFlying() && !entity.isNoClipping()) {
             applyGravityFor(entity);
@@ -41,8 +39,8 @@ public class Movements {
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
-            if(entity instanceof Player p && p.isSwimming()) {
-                float density = p.getLiquidDensity();
+            if(entity.isSwimming()) {
+                float density = entity.getLiquidDensity();
                 entity.getVelocity().mul(Math.max(0f, 1 - 0.2f * density));
             } else if(entity.isFlying()) {
                 entity.getVelocity().mul(AIR_FRICTION_FLYING);
@@ -65,12 +63,12 @@ public class Movements {
 
         // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
         normalizeVelocity(entity);
-        System.out.println("Velocity: " + entity.getVelocity());
-    }
+        if(player.isSwimming()){
+            float density = player.getLiquidDensity();
 
-    private static void thresholdVelocity(Entity player) {
-        // Limiter les petites valeurs de vitesse pour éviter les mouvements flottants
-        if (Math.abs(player.getVelocity().get(0)) < 0.0001f) player.getVelocity().setComponent(0, 0);
+        if(entity.isSwimming()){
+            float density = entity.getLiquidDensity();
+        if(entity.isSwimming()) {
         if (Math.abs(player.getVelocity().get(1)) < 0.0001f) player.getVelocity().setComponent(1, 0);
         if (Math.abs(player.getVelocity().get(2)) < 0.0001f) player.getVelocity().setComponent(2, 0);
     }

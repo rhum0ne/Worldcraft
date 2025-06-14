@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
+    private boolean swimming = false;
 import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
@@ -234,6 +235,37 @@ public class Entity {
                checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
                checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
                checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
+    }
+
+    public boolean isInsideLiquid(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        return (body != null && body.getMaterial() != null && body.getMaterial().isLiquid()) ||
+               (head != null && head.getMaterial() != null && head.getMaterial().isLiquid());
+    }
+
+    public float getLiquidDensity(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
+            return body.getMaterial().getMaterial().getDensity();
+
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
+            return head.getMaterial().getMaterial().getDensity();
+
+        return 0f;
+    }
+
+    public void updateSwimmingState(){
+        this.swimming = isInsideLiquid();
     }
 
     public Block getBlockTop(){
