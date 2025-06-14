@@ -21,15 +21,13 @@ public class PlayerInventoryGui extends CenteredGUI {
         this.setItemContainer(GAME.getPlayer().getInventory());
 
         // Upper inventory (27 slots)
-        for (int y = 0; y < 3; y++) {
+        for (int y = 3; y >= 0; y--) {
             for (int x = 0; x < 9; x++) {
                 this.createClickableSlot(getXForSlot(x), getYForSlot(y),
                         (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
             }
         }
 
-        // Hotbar at the bottom
-        this.addInventory(0, getYForSlot(3));
         this.addText(0, -20, "Inventory");
     }
 
