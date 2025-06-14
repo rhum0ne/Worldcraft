@@ -7,7 +7,12 @@ import lombok.Getter;
 @Getter
 public class Inventory implements ItemContainer {
 
-    Item[] items = new Item[9];
+    /**
+     * Player inventory slots. The first 9 slots represent the hotbar
+     * shown at the bottom of the screen while the remaining slots
+     * store the rest of the player's items.
+     */
+    Item[] items = new Item[36];
     Player player;
 
     public Inventory(Player player) {
