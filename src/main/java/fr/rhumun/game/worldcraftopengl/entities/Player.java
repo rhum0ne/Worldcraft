@@ -7,7 +7,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativeInventoryGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.player_inventory.PlayerInventoryGui;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
@@ -116,8 +116,11 @@ public class Player extends Entity implements MovingEntity{
             this.getGame().getGraphicModule().getGuiModule().updateInventory(this);
     }
 
+    /**
+     * Opens the player's survival inventory instead of the creative one.
+     */
     public void openInventory(){
-        this.openGui(new CreativeInventoryGui());
+        this.openGui(new PlayerInventoryGui());
     }
 
     public void openGui(Gui gui){
