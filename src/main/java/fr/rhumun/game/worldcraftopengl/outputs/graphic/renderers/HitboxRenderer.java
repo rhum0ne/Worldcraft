@@ -85,6 +85,7 @@ public class HitboxRenderer extends Renderer {
                     Block block = player.getLocation().getWorld().getBlockAt(x, y, z, false);
                     if (block == null || block.getMaterial() == null) continue;
                     Hitbox hitbox = block.getHitbox();
+                    if(hitbox == null) return;
                     AxisAlignedBB bb = hitbox.getWorldBoundingBox(block);
                     addBox(bb);
                 }

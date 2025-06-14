@@ -1,12 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.content.models;
 
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.BoxHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 
-public class BlockModel extends AbstractModel {
+public class BlockModel extends AbstractModel implements ModelHitbox{
 
     public BlockModel() {
         super(load("block.obj"), true);
@@ -36,4 +38,8 @@ public class BlockModel extends AbstractModel {
         block.setState(state);
     }
 
+    @Override
+    public Hitbox getHitbox(Block block) {
+        return BoxHitbox.fullBlock();
+    }
 }

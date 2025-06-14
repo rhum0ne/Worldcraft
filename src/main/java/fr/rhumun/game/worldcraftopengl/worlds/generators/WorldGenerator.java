@@ -18,6 +18,8 @@ public abstract class WorldGenerator {
     private final ConcurrentLinkedDeque<AbstractChunk> toGenerate = new ConcurrentLinkedDeque<>();
     private final int maxConcurrentGenerations = Math.max(2, Runtime.getRuntime().availableProcessors() / 2);
 
+    private final int waterHigh = 70;
+
     public WorldGenerator(World world) {
         this.world = world;
 

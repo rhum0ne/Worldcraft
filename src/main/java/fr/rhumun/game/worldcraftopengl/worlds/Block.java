@@ -2,6 +2,9 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -79,7 +82,15 @@ public class Block {
     }
 
     public Hitbox getHitbox() {
-        return this.getModel().getModelObject().getHitbox(this);
+        AbstractModel model = this.getModel().getModel();
+        if(model instanceof ModelHitbox modelHitbox) return modelHitbox.getHitbox(this);
+        return null;
+    }
+
+    public Hitbox[] getHitboxes() {
+        AbstractModel model = this.getModel().getModel();
+        if(model instanceof ModelMultiHitbox modelHitbox) return modelHitbox.getHitboxes(this);
+        return null;
     }
 
     public Chunk getChunk(){
@@ -284,4 +295,5 @@ public class Block {
     public short getMaterialID() {
         return this.material;
     }
+
 }

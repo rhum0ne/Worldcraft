@@ -24,6 +24,7 @@ public class Player extends Entity implements MovingEntity{
 
     private final int[] movements = new int[3];
 
+
     public Player(Game game){
         this(game, 0, 0, 0, 0, 0);
     }
@@ -134,10 +135,20 @@ public class Player extends Entity implements MovingEntity{
     }
 
     public Block getBlockDown(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);
+        Block block = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(),
+                this.getLocation().getY() - 1.6f,
+                this.getLocation().getZ(),
+                false
+        );
+        return block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()
+                ? block : null;
     }
 
     public Block getBlockTop(){
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
+    }
+
+        this.swimming = swimming;
     }
 }

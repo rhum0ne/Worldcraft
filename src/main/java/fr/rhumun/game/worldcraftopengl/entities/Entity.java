@@ -2,6 +2,11 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
+    private boolean swimming = false;
+import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -160,8 +165,6 @@ public class Entity {
         Vector3f normalizedDirection = direction;
         AxisAlignedBB bb = getBoundingBox();
 
-        System.out.println(normalizedDirection.toString());
-
         float eps = 0.001f;
         float espY = 0.1f;
         int maxLevel = (int) Math.ceil(this.height);
@@ -206,7 +209,16 @@ public class Entity {
 
     private boolean checkBlockCollision(double x, double y, double z) {
         Block block = getWorld().getBlockAt(x,y,z, false);
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        if(block == null || block.getMaterial() == null || block.getMaterial().isLiquid()) return false;
+        Model model = block.getModel();
+
+        if(model == null) return false;
+        if(model.getModel() instanceof ModelHitbox modelHitbox) return modelHitbox.getHitbox(block).intersects(this, block);
+        if(model.getModel() instanceof ModelMultiHitbox modelMultiHitbox)
+            for(Hitbox hitbox : modelMultiHitbox.getHitboxes(block))
+                if(hitbox.intersects(this, block)) return true;
+
+        return false;
     }
 
 
@@ -223,6 +235,37 @@ public class Entity {
                checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
                checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
                checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
+    }
+
+    public boolean isInsideLiquid(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        return (body != null && body.getMaterial() != null && body.getMaterial().isLiquid()) ||
+               (head != null && head.getMaterial() != null && head.getMaterial().isLiquid());
+    }
+
+    public float getLiquidDensity(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
+            return body.getMaterial().getMaterial().getDensity();
+
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
+            return head.getMaterial().getMaterial().getDensity();
+
+        return 0f;
+    }
+
+    public void updateSwimmingState(){
+        this.swimming = isInsideLiquid();
     }
 
     public Block getBlockTop(){
