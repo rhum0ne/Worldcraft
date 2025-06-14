@@ -35,7 +35,6 @@ public class NormalWorldGenerator extends WorldGenerator {
     private HeightCalculation heightCalculator;
 
     private final Seed seed;
-    private final int waterHigh = 70;
 
 
     public NormalWorldGenerator(World world) {
@@ -159,7 +158,7 @@ public class NormalWorldGenerator extends WorldGenerator {
     private void fillWater(Chunk chunk, int[][] heights) {
         for (int x = 0; x < CHUNK_SIZE; x++)
             for (int z = 0; z < CHUNK_SIZE; z++)
-                for (int y = heights[x][z]; y < waterHigh; y++) {
+                for (int y = heights[x][z]; y < getWaterHigh(); y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block.getMaterial() != null) continue;
                     block.setMaterial(Material.WATER);
@@ -209,8 +208,8 @@ public class NormalWorldGenerator extends WorldGenerator {
 
 
         // Logique de sélection des biomes
-        if (height<waterHigh-3) return Biomes.OCEAN;
-        else if (height<waterHigh && erosionValue > 0) return Biomes.BEACH;
+        if (height<getWaterHigh()-3) return Biomes.OCEAN;
+        else if (height<getWaterHigh() && erosionValue > 0) return Biomes.BEACH;
 
         if (temperatureValue > 0.6 && humidityValue < 0.4)  return Biomes.DESERT;
 
@@ -265,14 +264,14 @@ public class NormalWorldGenerator extends WorldGenerator {
                     chunk.getMaterials()[x][y][z] = Material.STONE;
                 }
 
-                if (height < waterHigh) {
-                    for (int y = height; y < waterHigh; y++) {
+                if (height < getWaterHigh()) {
+                    for (int y = height; y < getWaterHigh(); y++) {
                         chunk.getMaterials()[x][y][z] = Material.WATER;
                     }
                 }
 
                 // Petite coloration simple
-                if (height > waterHigh && height < this.getWorld().getHeigth()) {
+                if (height > getWaterHigh() && height < this.getWorld().getHeigth()) {
                     chunk.getMaterials()[x][height][z] = Material.GRASS_BLOCK;
                 }
             }

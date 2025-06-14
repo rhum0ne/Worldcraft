@@ -92,7 +92,7 @@ public class Gui extends Component {
      * created. This allows subclasses to create custom {@link Slot}
      * implementations while keeping the ordering consistent.
      */
-    protected int nextSlotId() {
+    public int nextSlotId() {
         return slots.size();
     }
 
@@ -100,7 +100,7 @@ public class Gui extends Component {
      * Adds an externally created slot to this GUI and registers it so the GUI
      * can manage its lifecycle.
      */
-    protected void registerSlot(Slot slot) {
+    public void registerSlot(Slot slot) {
         this.slots.add(slot);
         this.addComponent(slot);
     }
