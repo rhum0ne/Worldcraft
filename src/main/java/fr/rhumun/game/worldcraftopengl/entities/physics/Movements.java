@@ -63,12 +63,11 @@ public class Movements {
 
         // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
         normalizeVelocity(entity);
-        if(player.isSwimming()){
-            float density = player.getLiquidDensity();
+    }
 
-        if(entity.isSwimming()){
-            float density = entity.getLiquidDensity();
-        if(entity.isSwimming()) {
+    private static void thresholdVelocity(Entity player) {
+        // Limiter les petites valeurs de vitesse pour éviter les mouvements flottants
+        if (Math.abs(player.getVelocity().get(0)) < 0.0001f) player.getVelocity().setComponent(0, 0);
         if (Math.abs(player.getVelocity().get(1)) < 0.0001f) player.getVelocity().setComponent(1, 0);
         if (Math.abs(player.getVelocity().get(2)) < 0.0001f) player.getVelocity().setComponent(2, 0);
     }
@@ -96,7 +95,7 @@ public class Movements {
             if(entity.hasBlockDown() && entity.getVelocity().get(1) < 0){
                 entity.getVelocity().setComponent(1, 0);
             }else{
-                entity.getVelocity().add(0, -DEFAULT_GRAVITY / (Math.max(0.0001f, density) * 3000.0f), 0);
+                entity.getVelocity().add(0, -DEFAULT_GRAVITY / (Math.max(0.0001f, density) * 2000.0f), 0);
             }
             return;
         }

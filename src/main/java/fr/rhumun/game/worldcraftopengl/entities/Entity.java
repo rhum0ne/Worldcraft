@@ -2,7 +2,6 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
-    private boolean swimming = false;
 import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
@@ -31,6 +30,7 @@ public class Entity {
     private boolean isNoClipping = false;
     private boolean isSneaking = false;
     private boolean isSprinting = false;
+    private boolean swimming = false;
 
     private final int jumpForce;
 
@@ -265,7 +265,11 @@ public class Entity {
     }
 
     public void updateSwimmingState(){
-        this.swimming = isInsideLiquid();
+        boolean swimming = isInsideLiquid();
+        if(!swimming && this.swimming && !this.isFlying) {
+            this.velocity.y = 0;
+        }
+        this.swimming = swimming;
     }
 
     public Block getBlockTop(){
