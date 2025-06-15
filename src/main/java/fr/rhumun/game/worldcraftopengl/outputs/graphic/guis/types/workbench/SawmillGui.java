@@ -1,0 +1,51 @@
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench;
+
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
+
+/**
+ * GUI showing the sawmill workbench next to the player's inventory.
+ */
+public class SawmillGui extends CenteredGUI {
+
+    private static final float ratio = 1f;
+    private static final int SAWMILL_WIDTH = 176;
+    private static final int SAWMILL_HEIGHT = 100;
+    private static final int INVENTORY_WIDTH = 356;
+    private static final int INVENTORY_HEIGHT = 166;
+    private static final int GAP = 20;
+
+    public SawmillGui() {
+        super(SAWMILL_WIDTH + GAP + INVENTORY_WIDTH, INVENTORY_HEIGHT, null);
+
+        int sawmillY = (INVENTORY_HEIGHT - SAWMILL_HEIGHT) * GUI_ZOOM;
+        Sawmill sawmill = new Sawmill(0, sawmillY, this);
+        this.addComponent(sawmill);
+
+        int invX = (SAWMILL_WIDTH + GAP) * GUI_ZOOM;
+        Gui inventory = new Gui(invX, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, Texture.INVENTORY, this);
+        inventory.setItemContainer(GAME.getPlayer().getInventory());
+
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
+                inventory.createClickableSlot(getInvX(x), getInvY(y), (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
+            }
+        }
+        inventory.addInventory(0, getInvY(3));
+        inventory.addText(0, -20, "Inventory");
+        this.addComponent(inventory);
+    }
+
+    private int getInvX(int slot) {
+        return 3 + (int) Math.ceil(slot * 40 * ratio);
+    }
+
+    private int getInvY(int row) {
+        return 3 + (int) Math.ceil(row * 40 * ratio);
+    }
+}
