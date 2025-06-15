@@ -6,16 +6,21 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 
 /**
  * Simple sawmill converting logs into planks or slabs.
  */
 public class Sawmill extends Workbench {
 
-    public Sawmill() {
-        super(176, 100, Texture.DARK_COBBLE);
+    public Sawmill(int x, int y, Gui container) {
+        super(x, y, 176, 100, Texture.DARK_COBBLE, container);
         new ResultSlot(100, 40, Slot.DEFAULT_SIZE, new Item(Material.PLANKS), 4, this);
         new ResultSlot(140, 40, Slot.DEFAULT_SIZE, new Item(Material.PLANKS, Model.SLAB), 8, this);
+    }
+
+    public Sawmill() {
+        this(0, 0, null);
     }
 
     @Override

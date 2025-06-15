@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMater
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.Sawmill;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.SawmillGui;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
@@ -39,6 +39,6 @@ public class SawmillMaterial extends AbstractMaterial implements InteractableMat
 
     @Override
     public void interact(Player player, Block block) {
-        GAME.getGraphicModule().getGuiModule().openGUI(new Sawmill());
+        GAME.getGraphicModule().getGuiModule().openGUI(new SawmillGui());
     }
 }
