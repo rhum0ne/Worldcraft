@@ -13,22 +13,8 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 public class Sawmill extends Workbench {
 
     public Sawmill() {
-        super(176, 100, Texture.DARK_COBBLE);
-        new ResultSlot(100, 40, Slot.DEFAULT_SIZE, new Item(Material.PLANKS), 4, this);
-        new ResultSlot(140, 40, Slot.DEFAULT_SIZE, new Item(Material.PLANKS, Model.SLAB), 8, this);
-    }
-
-    @Override
-    protected void craft(Player player, Item result, int amount) {
-        Item input = getInput();
-        if (input == null) return;
-        Material mat = input.getMaterial();
-        if (mat != Material.LOG && mat != Material.BIRCH_LOG) return;
-
-        clearInput();
-        for (int i = 0; i < amount; i++) {
-            player.addItem(new Item(result.getMaterial(), result.getModel()));
-        }
-        inputSlot.update();
+        super("Sawmill");
+        this.addResults(new Item(Material.LOG), new Item[]{ new Item(Material.PLANKS, Model.SLAB), new Item(Material.PLANKS, Model.CYLINDER) });
+        this.addResults(new Item(Material.BIRCH_LOG), new Item[]{ new Item(Material.BIRCH_PLANKS, Model.SLAB), new Item(Material.BIRCH_PLANKS, Model.CYLINDER) });
     }
 }

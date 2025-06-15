@@ -5,11 +5,13 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMateri
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class Item {
 
-    private Material material;
-    private Model model;
+    private final Material material;
+    private final Model model;
 
     public Item(Material material) {
         this(material, (material.getMaterial() instanceof ForcedModelMaterial fmm) ? fmm.getModel() : Model.BLOCK);
@@ -18,5 +20,25 @@ public class Item {
     public Item(Material material, Model model){
         this.material = material;
         this.model = model;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return Objects.equals(material, item.material) &&
+                Objects.equals(model, item.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(material, model);
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" + "material=" + material + ", model=" + model + '}';
     }
 }

@@ -36,4 +36,8 @@ public class Inventory implements ItemContainer {
     public void setItem(int slot, Item item) {
         this.items[slot] = item;
     }
+
+    public void addItem(Item result) {
+        this.setFreeSlot(result);
+    }
 }

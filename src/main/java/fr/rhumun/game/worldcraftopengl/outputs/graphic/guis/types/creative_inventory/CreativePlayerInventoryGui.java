@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.Cre
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.IntegrablePlayerInventory.*;
 
 /**
  * Combined inventory GUI used in creative mode.
@@ -17,9 +18,7 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
 
     private static final float ratio = 1f;
     private static final int CREATIVE_WIDTH = 528;
-    private static final int INVENTORY_WIDTH = 356;
-    private static final int INVENTORY_HEIGHT = 166;
-    private static final int GAP = 20;
+    private static final int GAP = 10;
 
     public CreativePlayerInventoryGui() {
         super(CREATIVE_WIDTH + GAP + INVENTORY_WIDTH, CREATIVE_WIDTH, null);
@@ -41,17 +40,12 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
 
         // Player inventory on the right
         int invX = (CREATIVE_WIDTH + GAP) * GUI_ZOOM;
-        int invY = (CREATIVE_WIDTH - INVENTORY_HEIGHT) * GUI_ZOOM;
+        int invY = CREATIVE_WIDTH * GUI_ZOOM / 2;
         Gui inventory = new Gui(invX, invY, INVENTORY_WIDTH, INVENTORY_HEIGHT, Texture.INVENTORY, this);
         inventory.setItemContainer(GAME.getPlayer().getInventory());
 
-        for (int y = 3; y >= 0; y--) {
-            for (int x = 0; x < 9; x++) {
-                inventory.createClickableSlot(getInvX(x), getInvY(y),
-                        (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
-            }
-        }
-        inventory.addText(0, -20, "Inventory");
+        addInventoryComponentsTo( inventory);
+
         this.addComponent(inventory);
     }
 
@@ -61,13 +55,5 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
 
     private int getCreativeY(int slot) {
         return (int) (34 * ratio + Math.ceil(slot / 9 * 39 * ratio));
-    }
-
-    private int getInvX(int slot) {
-        return 3 + (int) Math.ceil(slot * 40 * ratio);
-    }
-
-    private int getInvY(int row) {
-        return 3 + (int) Math.ceil(row * 40 * ratio);
     }
 }
