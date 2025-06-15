@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
+import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.content.items.Item;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
@@ -144,6 +145,8 @@ public class GuiModule {
 
     public void openGUI(Gui gui) {
         this.gui = gui;
+        if(graphicModule.getGame().getGameState() == GameState.RUNNING)
+            graphicModule.getGame().setPaused(true);
     }
 
     public void closeGUI(){

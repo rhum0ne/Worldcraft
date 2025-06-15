@@ -87,6 +87,24 @@ public class Gui extends Component {
         return slot;
     }
 
+    /**
+     * Returns the identifier that should be used for the next slot to be
+     * created. This allows subclasses to create custom {@link Slot}
+     * implementations while keeping the ordering consistent.
+     */
+    public int nextSlotId() {
+        return slots.size();
+    }
+
+    /**
+     * Adds an externally created slot to this GUI and registers it so the GUI
+     * can manage its lifecycle.
+     */
+    public void registerSlot(Slot slot) {
+        this.slots.add(slot);
+        this.addComponent(slot);
+    }
+
     public InventoryGUI addInventory(int x, int y){
         return this.addInventory(x, y, 1);
     }
