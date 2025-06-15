@@ -151,4 +151,8 @@ public class Player extends Entity implements MovingEntity{
     public Block getBlockTop(){
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
     }
+
+    public boolean isInCreativeMode(){
+        return true;
+    }
 }

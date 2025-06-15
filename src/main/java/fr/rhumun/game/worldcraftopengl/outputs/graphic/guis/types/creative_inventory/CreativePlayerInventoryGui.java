@@ -39,18 +39,17 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
         this.addComponent(creative);
 
         // Player inventory on the right
-        int invX = CREATIVE_WIDTH + GAP;
+        int invX = CREATIVE_WIDTH + GAP + 400;
         int invY = CREATIVE_WIDTH - INVENTORY_HEIGHT;
         Gui inventory = new Gui(invX, invY, INVENTORY_WIDTH, INVENTORY_HEIGHT, Texture.INVENTORY, this);
         inventory.setItemContainer(GAME.getPlayer().getInventory());
 
-        for (int y = 0; y < 3; y++) {
+        for (int y = 3; y >= 0; y--) {
             for (int x = 0; x < 9; x++) {
                 inventory.createClickableSlot(getInvX(x), getInvY(y),
                         (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
             }
         }
-        inventory.addInventory(0, getInvY(3));
         inventory.addText(0, -20, "Inventory");
         this.addComponent(inventory);
     }
