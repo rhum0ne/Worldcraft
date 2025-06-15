@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.CreativeItems;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 
 /**
  * Combined inventory GUI used in creative mode.
@@ -39,8 +40,8 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
         this.addComponent(creative);
 
         // Player inventory on the right
-        int invX = CREATIVE_WIDTH + GAP + 400;
-        int invY = CREATIVE_WIDTH - INVENTORY_HEIGHT;
+        int invX = (CREATIVE_WIDTH + GAP) * GUI_ZOOM;
+        int invY = (CREATIVE_WIDTH - INVENTORY_HEIGHT) * GUI_ZOOM;
         Gui inventory = new Gui(invX, invY, INVENTORY_WIDTH, INVENTORY_HEIGHT, Texture.INVENTORY, this);
         inventory.setItemContainer(GAME.getPlayer().getInventory());
 
