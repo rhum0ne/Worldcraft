@@ -51,47 +51,52 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
         if(chunk.isToUpdate()) update();
 
-        //System.out.println("Rendering chunk " + chunk);
-
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-        //glBindTexture(GL_TEXTURE_2D, TextureUtils.ATLAS);
-
         glEnable(GL_DEPTH_TEST);
-        //boolean isFar = OpacityType.TRANSPARENT.getMaxChunkDistance() < distanceFromPlayer;
 
-        this.getRenderers().get(OpacityType.OPAQUE.getPriority()).render();
-        //if(isFar) this.renderers.get(OpacityType.TRANSPARENT.getPriority()).render();
+        renderOpaque();
 
         if(this.getRenderers().get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
-            //glDepthMask(false);
-
             glUseProgram(ShaderManager.LIQUID_SHADER.id);
-            this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
-
-            //glDepthMask(true);
+            renderLiquids();
             glDisable(GL_BLEND);
         }
-        if(/*!isFar &&*/ this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+
+        if(this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
-            //glDepthMask(false);
-
             glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-            this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
-
-            //glDepthMask(true);
+            renderTransparent();
             glDisable(GL_BLEND);
         }
-        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > this.getDistanceFromPlayer() && this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
+
+        if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > this.getDistanceFromPlayer()
+                && this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
             glEnable(GL_BLEND);
-            //glDepthMask(false);
-
             glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-            this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
-
-            //glDepthMask(true);
+            renderCloseTransparent();
             glDisable(GL_BLEND);
         }
+    }
+
+    public synchronized void renderOpaque(){
+        if(chunk.isToUpdate()) update();
+        this.getRenderers().get(OpacityType.OPAQUE.getPriority()).render();
+    }
+
+    public synchronized void renderLiquids(){
+        if(chunk.isToUpdate()) update();
+        this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
+    }
+
+    public synchronized void renderTransparent(){
+        if(chunk.isToUpdate()) update();
+        this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
+    }
+
+    public synchronized void renderCloseTransparent(){
+        if(chunk.isToUpdate()) update();
+        this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
     }
     public synchronized void update() {
         if (!chunk.isGenerated()) return;
