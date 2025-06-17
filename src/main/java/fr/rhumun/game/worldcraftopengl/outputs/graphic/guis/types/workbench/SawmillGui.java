@@ -23,22 +23,8 @@ public class SawmillGui extends CenteredGUI {
     public SawmillGui() {
         super(SAWMILL_WIDTH + GAP + INVENTORY_WIDTH, INVENTORY_HEIGHT, null);
 
-        int sawmillY = (INVENTORY_HEIGHT - SAWMILL_HEIGHT) * GUI_ZOOM;
-        Sawmill sawmill = new Sawmill(0, sawmillY, this);
+        Sawmill sawmill = new Sawmill();
         this.addComponent(sawmill);
-
-        int invX = (SAWMILL_WIDTH + GAP) * GUI_ZOOM;
-        Gui inventory = new Gui(invX, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, Texture.INVENTORY, this);
-        inventory.setItemContainer(GAME.getPlayer().getInventory());
-
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 9; x++) {
-                inventory.createClickableSlot(getInvX(x), getInvY(y), (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
-            }
-        }
-        inventory.addInventory(0, getInvY(3));
-        inventory.addText(0, -20, "Inventory");
-        this.addComponent(inventory);
     }
 
     private int getInvX(int slot) {

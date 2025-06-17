@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -268,7 +268,7 @@ public class Entity {
         return null;
     }
 
-    public void placeBlock(final Item item){
+    public void placeBlock(final ItemStack item){
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
         Vector3f hitPosition = null;
@@ -291,7 +291,7 @@ public class Entity {
         placeBlockAt(item, block, hitPosition, direction);
     }
 
-    protected void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
+    protected void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
         if (block == null) {
             System.out.println("Impossible de déterminer la face du bloc.");
             return;

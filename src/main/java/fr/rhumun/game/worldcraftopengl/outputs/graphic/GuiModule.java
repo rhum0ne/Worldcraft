@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.GameState;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
@@ -40,7 +40,7 @@ public class GuiModule {
     private final ChatGui chat;
     private final HotBarGui hotbar;
     private Gui gui;
-    private Item selectedItem;
+    private ItemStack selectedItem;
 
 
     private Matrix4f uiProjectionMatrix;

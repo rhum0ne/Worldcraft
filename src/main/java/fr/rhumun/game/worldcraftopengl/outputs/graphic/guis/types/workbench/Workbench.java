@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
@@ -10,7 +10,6 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -24,9 +23,9 @@ import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.In
 @Getter
 public abstract class Workbench extends CenteredGUI implements ItemContainer {
 
-    private Item input;
+    private ItemStack input;
     protected final ClickableSlot inputSlot;
-    private HashMap<Item, Item[]> crafts = new HashMap<>();
+    private HashMap<ItemStack, ItemStack[]> crafts = new HashMap<>();
     private ResultSlot[] resultSlots = new ResultSlot[9];
 
     protected Workbench(String name) {
@@ -56,21 +55,22 @@ public abstract class Workbench extends CenteredGUI implements ItemContainer {
 
     protected void clearInput() {
         input = null;
+        updateResults();
     }
 
-    public Item[] getOutputs() {
+    public ItemStack[] getOutputs() {
         return input != null ? crafts.get(input) : null;
     }
 
     @Override
-    public void setItem(int slot, Item item) {
+    public void setItem(int slot, ItemStack item) {
         input = item;
         this.updateResults();
     }
 
     @Override
-    public Item[] getItems() {
-        return new Item[]{input};
+    public ItemStack[] getItems() {
+        return new ItemStack[]{input};
     }
 
     public void updateResults(){
@@ -80,7 +80,7 @@ public abstract class Workbench extends CenteredGUI implements ItemContainer {
         System.out.println("input: " + input.toString());
 
         for(int i=0; i<resultSlots.length; i++){
-            Item result = i<crafts.get(input).length ? crafts.get(input)[i] : null;
+            ItemStack result = i<crafts.get(input).length ? crafts.get(input)[i] : null;
             resultSlots[i].setItem(result);
             if(result == null) continue;
             System.out.println("result " + i + ": " + result.toString());
@@ -95,12 +95,12 @@ public abstract class Workbench extends CenteredGUI implements ItemContainer {
      * Called when a result slot is clicked. Subclasses should perform the
      * actual crafting logic here.
      */
-    public void craft(Player player, Item result){
+    public void craft(Player player, ItemStack result){
         player.getInventory().addItem(result);
         this.clearInput();
     }
 
-    protected void addResults(Item item, Item[] items) {
+    protected void addResults(ItemStack item, ItemStack[] items) {
         crafts.put(item, items);
     }
 }

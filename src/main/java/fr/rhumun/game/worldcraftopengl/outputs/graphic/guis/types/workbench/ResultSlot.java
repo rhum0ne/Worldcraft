@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 public class ResultSlot extends Slot {
 
-    private Item result;
+    private ItemStack result;
     private final Workbench workbench;
 
     public ResultSlot(int x, int y, int size, Workbench workbench) {
@@ -23,11 +23,11 @@ public class ResultSlot extends Slot {
     }
 
     @Override
-    public Item getItem(){
+    public ItemStack getItem(){
         return this.result;
     }
 
-    public void setItem(Item result){
+    public void setItem(ItemStack result){
         this.result = result;
     }
 

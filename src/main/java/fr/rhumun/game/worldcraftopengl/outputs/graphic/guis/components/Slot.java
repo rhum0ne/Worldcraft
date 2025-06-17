@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
@@ -23,7 +23,7 @@ public class Slot extends Button {
 
     private final int id;
 
-    private Item showedItem;
+    private ItemStack showedItem;
 
     public Slot(int x, int y, int size, int id, Gui gui) {
         super(x, y, size, size, null, gui);
@@ -34,30 +34,34 @@ public class Slot extends Button {
         this(x, y, DEFAULT_SIZE, id, gui);
     }
 
-    public Item getItem(){
+    public ItemStack getItem(){
         return ((Gui)this.getContainer()).getItemContainer().getItems()[id];
     }
 
-    public void setItem(Item item){
+    public void setItem(ItemStack item){
         ((Gui)this.getContainer()).getItemContainer().setItem(id, item);
     }
 
     @Override
     public void update(){
-        Item item = getItem();
+        ItemStack item = getItem();
         if(showedItem==item) return;
 
         if(item==null){
             this.setTexture(null);
+            this.getText().setText("");
         }else{
             this.setTexture(item.getMaterial().getMaterial().getTexture());
+
+            if(item.getQuantity() == 1) this.getText().setText("");
+            else this.getText().setText(String.valueOf(item.getQuantity()));
         }
         this.updateVertices(item);
 
         this.showedItem = item;
     }
 
-    private void updateVertices(Item item) {
+    private void updateVertices(ItemStack item) {
         this.getVerticesList().clear();
         this.getIndicesList().clear();
 

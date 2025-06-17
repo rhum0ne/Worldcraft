@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
@@ -81,7 +81,7 @@ public class Player extends Entity implements MovingEntity{
     }
 
     @Override
-    public void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
+    public void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
         super.placeBlockAt(item, block, hitPosition, direction);
         this.playSound(item.getMaterial().getPlaceSound());
     }
@@ -105,11 +105,11 @@ public class Player extends Entity implements MovingEntity{
         this.getGame().getGraphicModule().getGuiModule().setSelectedSlot(slot);
     }
 
-    public Item getSelectedItem(){
+    public ItemStack getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }
 
-    public void addItem(Item item){
+    public void addItem(ItemStack item){
         this.getInventory().setFreeSlot(item);
         updateInventory();
     }
