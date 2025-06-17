@@ -1,8 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.entities.Entity;
-import fr.rhumun.game.worldcraftopengl.entities.Location;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.entities.*;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
@@ -181,5 +180,9 @@ public class World {
         for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())
             SaveManager.saveChunk(chunk);
         SaveManager.saveWorldMeta(this);
+    }
+
+    public void spawnItem(ItemStack selectedItem, Location location) {
+        EntityFactory.createItemEntity(location, selectedItem);
     }
 }

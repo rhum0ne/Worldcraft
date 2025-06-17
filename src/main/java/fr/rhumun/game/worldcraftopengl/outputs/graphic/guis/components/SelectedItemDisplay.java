@@ -1,7 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 
@@ -32,8 +34,9 @@ public class SelectedItemDisplay extends Slot {
 
     @Override
     public void update() {
-        int x = (getGuiModule().getCursorX() - getWidth() / 2) / GUI_ZOOM;
-        int y = (getGuiModule().getCursorY() - getHeight() / 2) / GUI_ZOOM;
+        GuiModule guiModule = Game.GAME.getGraphicModule().getGuiModule();
+        int x = (guiModule.getCursorX() - getWidth() / 2) / GUI_ZOOM;
+        int y = (guiModule.getCursorY() - getHeight() / 2) / GUI_ZOOM;
         set2DCoordinates(x, y);
 
         if (item != displayedItem || x != lastX || y != lastY) {

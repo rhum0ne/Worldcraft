@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
@@ -165,6 +166,12 @@ public class GuiModule {
     public void closeGUI(){
         this.gui.close();
         this.graphicModule.getGame().setPaused(false);
+
+        if(selectedItem != null){
+            Game.GAME.getWorld().spawnItem(selectedItem, graphicModule.getPlayer().getLocation());
+            selectedItem = null;
+            this.selectedItemDisplay.setItem(null);
+        }
     }
 
     public boolean hasGUIOpened() {
