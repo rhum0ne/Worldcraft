@@ -75,7 +75,8 @@ public enum Material {
     JACKOLANTERN(new JackOLanternMaterial()),
     DARK_STONE(new DarkStoneMaterial()),
     DARK_COBBLE(new DarkCobbleMaterial()),
-    DARK_STONE_BRICK(new DarkStoneBrickMaterial());
+    DARK_STONE_BRICK(new DarkStoneBrickMaterial()),
+    SAWMILL(new SawmillMaterial());
 
     static int maxID = 0;
 

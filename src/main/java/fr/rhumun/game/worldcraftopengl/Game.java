@@ -1,11 +1,10 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.OtterEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
@@ -82,7 +81,7 @@ public class Game {
         audioManager = new AudioManager(this);
         audioManager.init();
 
-        this.player = new Player(this);
+        this.player = new Player();
 
         graphicModule = new GraphicModule(this);
         graphicModule.init();
@@ -135,15 +134,15 @@ public class Game {
 
         materials = new ArrayList<>(Arrays.asList(Material.values()));
 
-        player.addItem(new Item(Material.SAND));
-        player.addItem(new Item(Material.COBBLE));
-        player.addItem(new Item(Material.SAPLING));
-        player.addItem(new Item(Material.PLANKS));
-        player.addItem(new Item(Material.PURPLE_LAMP));
-        player.addItem(new Item(Material.CYAN_LAMP));
-        player.addItem(new Item(Material.LAMP));
-        player.addItem(new Item(Material.LANTERN));
-        player.addItem(new Item(Material.STONE_BRICK));
+        player.addItem(new ItemStack(Material.SAND));
+        player.addItem(new ItemStack(Material.COBBLE));
+        player.addItem(new ItemStack(Material.SAPLING));
+        player.addItem(new ItemStack(Material.PLANKS));
+        player.addItem(new ItemStack(Material.PURPLE_LAMP));
+        player.addItem(new ItemStack(Material.CYAN_LAMP));
+        player.addItem(new ItemStack(Material.LAMP));
+        player.addItem(new ItemStack(Material.LANTERN));
+        player.addItem(new ItemStack(Material.STONE_BRICK));
 
         player.updateInventory();
 
@@ -172,7 +171,7 @@ public class Game {
 
     public void processCommand(String cmd){
         log("processing command " + cmd);
-        world.addEntity(new OtterEntity(this, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
+        world.addEntity(new OtterEntity(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
     }
 
     public void errorLog(String log){

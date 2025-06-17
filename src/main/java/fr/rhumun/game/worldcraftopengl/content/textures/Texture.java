@@ -91,6 +91,7 @@ public class Texture {
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+    public static Texture WORKBENCH;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;
     public static Texture DEFAULT_BUTTON_HOVERED;
@@ -180,6 +181,7 @@ public class Texture {
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
+        WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
         SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
         DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\widgets\\button.png");
         DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");

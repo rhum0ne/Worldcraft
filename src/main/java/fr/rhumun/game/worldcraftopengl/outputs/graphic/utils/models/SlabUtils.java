@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
@@ -176,7 +176,7 @@ public class SlabUtils {
         renderer.addAllIndices(indices);
     }
 
-    public static void rasterBlockItem(Item block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
+    public static void rasterBlockItem(ItemStack block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
         float x1 = slot.getX(); // Déplacer pour utiliser le coin avant-gauche
         float y1 = slot.getY() + (float) slot.getHeight() /2; // Déplacer pour utiliser le coin bas
