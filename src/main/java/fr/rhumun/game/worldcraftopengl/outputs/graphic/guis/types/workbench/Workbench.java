@@ -21,7 +21,7 @@ import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.In
  * items internally so subclasses only need to register result slots.
  */
 @Getter
-public abstract class Workbench extends CenteredGUI implements ItemContainer {
+public class Workbench extends CenteredGUI implements ItemContainer {
 
     private ItemStack input;
     protected final ClickableSlot inputSlot;
@@ -74,16 +74,12 @@ public abstract class Workbench extends CenteredGUI implements ItemContainer {
     }
 
     public void updateResults(){
-        System.out.println("update results");
         clearResults();
         if(input == null || !crafts.containsKey(input)) return;
-        System.out.println("input: " + input.toString());
 
         for(int i=0; i<resultSlots.length; i++){
             ItemStack result = i<crafts.get(input).length ? crafts.get(input)[i] : null;
             resultSlots[i].setItem(result);
-            if(result == null) continue;
-            System.out.println("result " + i + ": " + result.toString());
         }
     }
 
@@ -96,6 +92,7 @@ public abstract class Workbench extends CenteredGUI implements ItemContainer {
      * actual crafting logic here.
      */
     public void craft(Player player, ItemStack result){
+        if(result == null) return;
         player.getInventory().addItem(result);
         this.clearInput();
     }

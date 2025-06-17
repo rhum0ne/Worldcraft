@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
@@ -11,6 +12,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.SelectedItemDisplay;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,6 +41,7 @@ public class GuiModule {
     private final DebugMenu debugMenu;
     private final ChatGui chat;
     private final HotBarGui hotbar;
+    private final SelectedItemDisplay selectedItemDisplay;
     private Gui gui;
     private ItemStack selectedItem;
 
@@ -63,6 +66,7 @@ public class GuiModule {
 
         this.hud.add(new Crossair());
         this.hud.add(this.hotbar = new HotBarGui());
+        this.selectedItemDisplay = new SelectedItemDisplay();
     }
 
     public void init(){
@@ -70,6 +74,8 @@ public class GuiModule {
 
         for(Gui gui : hud)
             gui.init();
+
+        this.selectedItemDisplay.init();
 
 
         if(gui != null)
@@ -116,7 +122,13 @@ public class GuiModule {
                 gui.cleanup();
                 this.gui = null;
 
-            } else gui.render();
+            } else {
+                gui.render();
+                if(selectedItem != null) {
+                    selectedItemDisplay.setItem(selectedItem);
+                    selectedItemDisplay.render();
+                }
+            }
         }else{
             for(Gui gui : hud)
                 gui.render();
@@ -133,6 +145,8 @@ public class GuiModule {
 
         if(gui != null)
             gui.cleanup();
+
+        selectedItemDisplay.cleanup();
     }
 
     public void updateInventory(Player player){
@@ -152,6 +166,12 @@ public class GuiModule {
     public void closeGUI(){
         this.gui.close();
         this.graphicModule.getGame().setPaused(false);
+
+        if(selectedItem != null){
+            Game.GAME.getWorld().spawnItem(selectedItem, graphicModule.getPlayer().getLocation());
+            selectedItem = null;
+            this.selectedItemDisplay.setItem(null);
+        }
     }
 
     public boolean hasGUIOpened() {

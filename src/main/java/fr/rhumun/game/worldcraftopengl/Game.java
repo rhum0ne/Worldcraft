@@ -81,7 +81,7 @@ public class Game {
         audioManager = new AudioManager(this);
         audioManager.init();
 
-        this.player = new Player(this);
+        this.player = new Player();
 
         graphicModule = new GraphicModule(this);
         graphicModule.init();
@@ -171,7 +171,7 @@ public class Game {
 
     public void processCommand(String cmd){
         log("processing command " + cmd);
-        world.addEntity(new OtterEntity(this, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
+        world.addEntity(new OtterEntity(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
     }
 
     public void errorLog(String log){

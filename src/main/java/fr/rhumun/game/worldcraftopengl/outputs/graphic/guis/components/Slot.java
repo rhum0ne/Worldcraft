@@ -61,7 +61,7 @@ public class Slot extends Button {
         this.showedItem = item;
     }
 
-    private void updateVertices(ItemStack item) {
+    protected void updateVertices(ItemStack item) {
         this.getVerticesList().clear();
         this.getIndicesList().clear();
 
@@ -109,7 +109,7 @@ public class Slot extends Button {
         updateVAO();
     }
 
-    private void addVertex(float[] vertexData) {
+    protected void addVertex(float[] vertexData) {
         this.getVerticesList().add(vertexData);
         this.indicesList.add(indicesList.isEmpty() ? 0 : indicesList.getLast()+1);
     }
