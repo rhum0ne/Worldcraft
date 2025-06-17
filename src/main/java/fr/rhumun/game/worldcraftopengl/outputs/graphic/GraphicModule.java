@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
@@ -362,14 +363,61 @@ public class GraphicModule {
         if (loadedChunks.isEmpty()) return;
         lightningsUtils.getPointLights().clear();
 
+        glEnable(GL_DEPTH_TEST);
+
         float h = world.getHeigth();
+
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
             if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                chunk.render();
+                if(chunk.isToUpdate())
+                    ((ChunkRenderer)chunk.getRenderer()).update();
             }
         }
+
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderOpaque();
+            }
+        }
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.LIQUID_SHADER.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderLiquids();
+            }
+        }
+        glDisable(GL_BLEND);
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderTransparent();
+            }
+        }
+        glDisable(GL_BLEND);
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderCloseTransparent();
+            }
+        }
+        glDisable(GL_BLEND);
+
         entitiesRenderer.render();
     }
 
