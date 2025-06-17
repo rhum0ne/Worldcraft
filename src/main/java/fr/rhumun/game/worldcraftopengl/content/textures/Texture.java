@@ -101,6 +101,8 @@ public class Texture {
 
 
     public static Texture OTTER;
+    public static Texture ROCKY;
+    public static Texture NINJA_SKELETON;
 
     public static void init(){
         COBBLE = new Texture("cobble.png");
@@ -190,6 +192,8 @@ public class Texture {
         WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
+        ROCKY = new Texture(TextureTypes.ENTITIES,"entities\\Rocky.png");
+        NINJA_SKELETON = new Texture(TextureTypes.ENTITIES,"entities\\ninja_skeleton.png");
     }
 
     public static ArrayList<Texture> textures = new ArrayList<>();

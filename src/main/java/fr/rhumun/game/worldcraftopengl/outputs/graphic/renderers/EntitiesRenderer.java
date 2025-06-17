@@ -78,6 +78,10 @@ public class EntitiesRenderer extends GlobalRenderer{
 
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
+        float anim = 0f;
+        if(entity instanceof fr.rhumun.game.worldcraftopengl.entities.MobEntity m) {
+            anim = (float) Math.sin(m.getAnimationStep()) * 0.1f;
+        }
         double z = entity.getLocation().getZ();
 
         while (indicesBuffer.hasRemaining()) {
@@ -90,7 +94,7 @@ public class EntitiesRenderer extends GlobalRenderer{
 
             // Position du sommet
             float vx = (float) (x + verticesBuffer.get(vertexIndex * 3));
-            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
+            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1) + anim);
             float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
 
             int texture = entity.getTextureID();

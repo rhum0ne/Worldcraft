@@ -6,6 +6,8 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.OtterEntity;
+import fr.rhumun.game.worldcraftopengl.entities.NinjaSkeletonEntity;
+import fr.rhumun.game.worldcraftopengl.entities.RockyEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
@@ -171,7 +173,12 @@ public class Game {
 
     public void processCommand(String cmd){
         log("processing command " + cmd);
-        world.addEntity(new OtterEntity(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), 0, 0));
+        double x = player.getLocation().getX();
+        double y = player.getLocation().getY();
+        double z = player.getLocation().getZ();
+        world.addEntity(new OtterEntity(x, y, z, 0, 0));
+        world.addEntity(new NinjaSkeletonEntity(x + 1, y, z, 0, 0));
+        world.addEntity(new RockyEntity(x - 1, y, z, 0, 0));
     }
 
     public void errorLog(String log){
