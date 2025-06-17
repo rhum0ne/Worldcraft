@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 
 public class ClickableSlot extends Slot {
@@ -14,8 +14,25 @@ public class ClickableSlot extends Slot {
 
     @Override
     public void onClick(Player player){
-        Item clickedItem = this.getItem();
-        this.setItem(getGuiModule().getSelectedItem());
-        getGuiModule().setSelectedItem(clickedItem);
+        ItemStack clickedItem = this.getItem();
+        ItemStack selectedItem = getGuiModule().getSelectedItem();
+
+        if(selectedItem == null || clickedItem == null || !clickedItem.isSame(selectedItem)){
+            this.setItem(selectedItem);
+            getGuiModule().setSelectedItem(clickedItem);
+            return;
+        }
+
+        if(clickedItem.isSame(selectedItem)){
+            int canAdd = clickedItem.getMaxStackSize() - clickedItem.getQuantity();
+            if(canAdd <= 0) return;
+
+            int toAdd = Math.min(canAdd, selectedItem.getQuantity());
+            int rest = selectedItem.getQuantity() - toAdd;
+
+            clickedItem.add(toAdd);
+            if(rest == 0) getGuiModule().setSelectedItem(null);
+            else selectedItem.setQuantity(rest);
+        }
     }
 }

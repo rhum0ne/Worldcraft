@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -12,12 +12,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 @Setter
 public class Entity {
     protected static final float RAY_STEP = 0.02f;
-    private final Game game;
-
     private Location location;
 
     private final int reach;
@@ -43,9 +43,8 @@ public class Entity {
     private short textureID;
 
 
-    public Entity(Game game, Model model, short textureID, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
-        this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
-        this.game = game;
+    public Entity(Model model, short textureID, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+        this.location = new Location(GAME.getWorld(),x, y, z, yaw, pitch);
         this.model = model;
         this.height = height;
         this.radius = radius;
@@ -62,8 +61,8 @@ public class Entity {
         Movements.applyMovements(this);
     }
 
-    public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
-        this(game, null, (short) 0, reach, radius, height, walkSpeed, sneakSpeed, sprintSpeed, accelerationByTick, jumpForce, x, y, z, yaw, pitch);
+    public Entity(int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+        this(null, (short) 0, reach, radius, height, walkSpeed, sneakSpeed, sprintSpeed, accelerationByTick, jumpForce, x, y, z, yaw, pitch);
     }
 
     public void setLocation(Location loc){
@@ -141,7 +140,7 @@ public class Entity {
     public Block getBlockInDirection(Vector3f direction, int yLevel) {
         int maxLevel = (int) Math.ceil(this.height);
         if (yLevel > maxLevel) {
-            this.game.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
+            GAME.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
             return null;
         }
 
@@ -257,7 +256,7 @@ public class Entity {
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
 
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
-            Block block = this.getGame().getWorld().getBlockAt(pos, true);
+            Block block = GAME.getWorld().getBlockAt(pos, true);
 
             if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
                 return block;
@@ -268,7 +267,7 @@ public class Entity {
         return null;
     }
 
-    public void placeBlock(final Item item){
+    public void placeBlock(final ItemStack item){
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
         Vector3f hitPosition = null;
@@ -291,7 +290,7 @@ public class Entity {
         placeBlockAt(item, block, hitPosition, direction);
     }
 
-    protected void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
+    protected void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
         if (block == null) {
             System.out.println("Impossible de déterminer la face du bloc.");
             return;

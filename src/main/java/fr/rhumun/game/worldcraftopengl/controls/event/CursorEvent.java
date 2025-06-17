@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static org.lwjgl.glfw.GLFW.*;
 
 @Setter
@@ -21,7 +22,7 @@ public class CursorEvent implements GLFWCursorPosCallbackI {
 
     public CursorEvent(Camera cam){
         this.camera = cam;
-        this.game = camera.getPlayer().getGame();
+        this.game = GAME;
     }
 
     @Override

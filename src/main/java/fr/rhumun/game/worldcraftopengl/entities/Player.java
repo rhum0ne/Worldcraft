@@ -1,17 +1,20 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativeInventoryGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.player_inventory.PlayerInventoryGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativePlayerInventoryGui;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 @Setter
@@ -21,19 +24,21 @@ public class Player extends Entity implements MovingEntity{
 
     private int selectedSlot;
     private final Inventory inventory;
+    /** Whether the player has creative privileges. */
+    private boolean inCreativeMode;
 
     private final int[] movements = new int[3];
 
-    public Player(Game game){
-        this(game, 0, 0, 0, 0, 0);
+    public Player(){
+        this(0, 0, 0, 0, 0);
     }
 
-    public Player(Game game, double x, double y, double z){
-        this(game, x, y, z, 0, 0);
+    public Player(double x, double y, double z){
+        this(x, y, z, 0, 0);
     }
 
-    public Player(Game game, double x, double y, double z, float yaw, float pitch){
-        super(game, 5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
+    public Player(double x, double y, double z, float yaw, float pitch){
+        super(5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
 
     }
@@ -56,7 +61,7 @@ public class Player extends Entity implements MovingEntity{
 
     @Override
     protected void onMove(){
-        getGame().getData().setPlayerPos(this.getLocation());
+        GAME.getData().setPlayerPos(this.getLocation());
     }
 
     public Block getBlockToPlace() {
@@ -65,7 +70,7 @@ public class Player extends Entity implements MovingEntity{
         Block block = null;
 
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
-            Block block1 = this.getGame().getWorld().getBlockAt(pos, true);
+            Block block1 = GAME.getWorld().getBlockAt(pos, true);
             if(block1 == null) return null;
 
             if (block1.getMaterial() != null) {
@@ -78,7 +83,7 @@ public class Player extends Entity implements MovingEntity{
     }
 
     @Override
-    public void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
+    public void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
         super.placeBlockAt(item, block, hitPosition, direction);
         this.playSound(item.getMaterial().getPlaceSound());
     }
@@ -92,45 +97,53 @@ public class Player extends Entity implements MovingEntity{
     }
 
     public void playSound(final Sound sound){
-        this.getGame().getAudioManager().playSound(sound);
+        GAME.getAudioManager().playSound(sound);
     }
 
-    public void playSound(final Sound sound, final float pitch){ this.getGame().getAudioManager().playSound(sound, pitch);}
+    public void playSound(final Sound sound, final float pitch){ GAME.getAudioManager().playSound(sound, pitch);}
 
     public void setSelectedSlot(int slot){
         this.selectedSlot=slot;
-        this.getGame().getGraphicModule().getGuiModule().setSelectedSlot(slot);
+        GAME.getGraphicModule().getGuiModule().setSelectedSlot(slot);
     }
 
-    public Item getSelectedItem(){
+    public ItemStack getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }
 
-    public void addItem(Item item){
+    public void addItem(ItemStack item){
         this.getInventory().setFreeSlot(item);
         updateInventory();
     }
 
     public void updateInventory(){
-        if(this.getGame().getGraphicModule() != null)
-            this.getGame().getGraphicModule().getGuiModule().updateInventory(this);
+        if(GAME.getGraphicModule() != null)
+            GAME.getGraphicModule().getGuiModule().updateInventory(this);
     }
 
+    /**
+     * Opens the appropriate inventory depending on the player's mode.
+     * In creative mode, the inventory is combined with the give menu.
+     */
     public void openInventory(){
-        this.openGui(new CreativeInventoryGui());
+        if (isInCreativeMode()) {
+            this.openGui(new CreativePlayerInventoryGui());
+        } else {
+            this.openGui(new PlayerInventoryGui());
+        }
     }
 
     public void openGui(Gui gui){
-        getGame().setPaused(true);
-        getGame().getGraphicModule().getGuiModule().openGUI(gui);
+        GAME.setPaused(true);
+        GAME.getGraphicModule().getGuiModule().openGUI(gui);
     }
 
     public boolean hasOpenedInventory(){
-        return getGame().getGraphicModule().getGuiModule().hasGUIOpened();
+        return GAME.getGraphicModule().getGuiModule().hasGUIOpened();
     }
 
     public void closeInventory() {
-        getGame().getGraphicModule().getGuiModule().closeGUI();
+        GAME.getGraphicModule().getGuiModule().closeGUI();
     }
 
     public Block getBlockDown(){
@@ -139,5 +152,9 @@ public class Player extends Entity implements MovingEntity{
 
     public Block getBlockTop(){
         return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
+    }
+
+    public boolean isInCreativeMode(){
+        return true;
     }
 }

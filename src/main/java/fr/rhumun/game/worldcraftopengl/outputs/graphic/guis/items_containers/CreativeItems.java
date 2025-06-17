@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class CreativeItems implements ItemContainer {
 
-    private Item[] items = new Item[11*9];
+    private ItemStack[] items = new ItemStack[11*9];
     private Model showedModel = null;
 
     public CreativeItems(){
@@ -26,7 +26,7 @@ public class CreativeItems implements ItemContainer {
         int id=0;
         for(Material material : Material.values()){
             if(material.getMaterial() instanceof ForcedModelMaterial f && f.getModel() != model) continue;
-            this.items[id] = new Item(material, model);
+            this.items[id] = new ItemStack(material, model);
             id++;
         }
         setEmpty(id);
@@ -36,7 +36,7 @@ public class CreativeItems implements ItemContainer {
     public void reset(){
         int id=0;
         for(Material material : Material.values()){
-            this.items[id] = new Item(material);
+            this.items[id] = new ItemStack(material);
             id++;
         }
         setEmpty(id);
@@ -44,12 +44,12 @@ public class CreativeItems implements ItemContainer {
     }
 
     @Override
-    public Item[] getItems() {
+    public ItemStack[] getItems() {
         return items;
     }
 
     @Override
-    public void setItem(int Slot, Item item) {
+    public void setItem(int Slot, ItemStack item) {
         items[Slot] = item;
     }
 

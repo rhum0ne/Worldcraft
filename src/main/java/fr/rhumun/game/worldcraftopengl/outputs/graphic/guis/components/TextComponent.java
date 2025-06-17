@@ -73,7 +73,10 @@ public class TextComponent extends Component {
         super.setWidth(0);
         super.setHeight(defaultHeight);
 
-        if (text == null || text.isEmpty()) return;
+        if (text == null || text.isEmpty()){
+            clear();
+            return;
+        }
 
         List<Float> verticesList = new ArrayList<>();
         List<Integer> indicesList = new ArrayList<>();
@@ -177,6 +180,14 @@ public class TextComponent extends Component {
         if (isInitialized()) updateVAO();
         this.showedText = text;
 
+    }
+
+    private void clear() {
+        this.setVertices(new float[0]);
+        this.setIndices(new int[0]);
+        this.setWidth(0);
+        this.setHeight(0);
+        this.showedText = "";
     }
 
 }

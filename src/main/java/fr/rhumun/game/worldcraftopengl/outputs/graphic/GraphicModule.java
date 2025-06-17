@@ -303,8 +303,7 @@ public class GraphicModule {
     private void loop() {
         while (!glfwWindowShouldClose(window) && game.isPlaying()) {
             switch(game.getGameState()) {
-                case GameState.RUNNING -> this.renderGame();
-                case GameState.PAUSED -> this.renderGame();
+                case GameState.RUNNING, GameState.PAUSED -> this.renderGame();
                 case GameState.TITLE -> this.renderGuiOnly();
             }
 
@@ -319,6 +318,7 @@ public class GraphicModule {
 
     private void renderGuiOnly() {
         glClearColor(0, 0, 0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
 
         if (isShowingTriangles) setShowingTriangles(false);
@@ -327,6 +327,7 @@ public class GraphicModule {
 
     private void renderGame() {
         glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
 
         if (game.isPaused() != isPaused) setPaused(game.isPaused());
@@ -349,7 +350,6 @@ public class GraphicModule {
     }
 
     private void update() {
-        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             refreshLoadedChunks();
             lightningsUtils.updateLights();
@@ -374,7 +374,6 @@ public class GraphicModule {
     }
 
     private void updateFarChunks() {
-        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             refreshLoadedChunks();
             if (SHOWING_RENDERER_DATA) {
