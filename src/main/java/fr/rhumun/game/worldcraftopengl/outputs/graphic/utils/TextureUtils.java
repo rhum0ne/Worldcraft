@@ -52,7 +52,8 @@ public class TextureUtils {
 
         GAME.debug(i + " guis textures loaded.");
         ShaderManager.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
-        ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
+        int baseTextures = TextureTypes.BLOCKS.get().size() + TextureTypes.GUIS.get().size();
+        ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", baseTextures);
 
         GAME.debug("Done!");
         return guiTexturesUnits.length;
