@@ -14,13 +14,19 @@ public abstract class AbstractMaterial {
 
     final int id;
     private final float friction;
+    private final float density;
     private final Texture[] textures = new Texture[6];
 
-    public AbstractMaterial(Texture texture) {this(texture, 0.1f);}
+    public AbstractMaterial(Texture texture) {this(texture, 0.1f, 1f);}
 
     public AbstractMaterial(Texture texture, float friction) {
+        this(texture, friction, 1f);
+    }
+
+    public AbstractMaterial(Texture texture, float friction, float density) {
         this.id = Material.createID();
         this.friction = friction;
+        this.density = density;
         Arrays.fill(textures, texture);
 
         GAME.debug("Created material " + id + " with texture " + texture.getName());

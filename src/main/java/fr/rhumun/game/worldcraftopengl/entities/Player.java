@@ -18,7 +18,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 @Setter
-public class Player extends Entity implements MovingEntity{
+public class Player extends Entity implements MovingEntity {
 
     private final LoadedChunksManager loadedChunksManager = new LoadedChunksManager(this);
 
@@ -54,8 +54,8 @@ public class Player extends Entity implements MovingEntity{
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    public void setFlying(boolean state){
-        if(!state) this.getMovements()[1] = 0;
+    public void setFlying(boolean state) {
+        if (!state) this.getMovements()[1] = 0;
         super.setFlying(state);
     }
 
@@ -89,13 +89,13 @@ public class Player extends Entity implements MovingEntity{
     }
 
     @Override
-    public Material breakBlock(){
+    public Material breakBlock() {
         Material mat = super.breakBlock();
-        if(mat==null) return null;
+        if (mat == null) return null;
         this.playSound(mat.getMaterial().getBreakSound());
         return mat;
     }
-
+  
     public void playSound(final Sound sound){
         GAME.getAudioManager().playSound(sound);
     }
@@ -115,7 +115,7 @@ public class Player extends Entity implements MovingEntity{
         this.getInventory().setFreeSlot(item);
         updateInventory();
     }
-
+  
     public void updateInventory(){
         if(GAME.getGraphicModule() != null)
             GAME.getGraphicModule().getGuiModule().updateInventory(this);
@@ -146,12 +146,28 @@ public class Player extends Entity implements MovingEntity{
         GAME.getGraphicModule().getGuiModule().closeGUI();
     }
 
-    public Block getBlockDown(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f, this.getLocation().getZ(), false);
+    public Block getBlockDown() {
+        Block block = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(),
+                this.getLocation().getY() - 1.6f,
+                this.getLocation().getZ(),
+                false
+        );
+        return block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()
+                ? block : null;
     }
 
-    public Block getBlockTop(){
-        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY()-1.6f+this.getHeight(), this.getLocation().getZ(), false);
+    public Block getBlockTop() {
+        return this.getLocation().getWorld().getBlockAt(this.getLocation().getX(), this.getLocation().getY() - 1.6f + this.getHeight(), this.getLocation().getZ(), false);
+    }
+
+    @Override
+    public void updateSwimmingState(){
+        boolean swimming = isInsideLiquid();
+        if(!swimming && this.isSwimming() && !this.isFlying()) {
+            this.movements[1] = 0;
+        }
+        this.setSwimming(swimming);
     }
 
     public boolean isInCreativeMode(){

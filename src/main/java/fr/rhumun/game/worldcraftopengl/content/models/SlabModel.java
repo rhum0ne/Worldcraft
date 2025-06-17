@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 import static fr.rhumun.game.worldcraftopengl.content.Model.BLOCK;
 import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 
-public class SlabModel extends AbstractModel {
+public class SlabModel extends AbstractModel implements ModelHitbox {
 
     public SlabModel() {
         super(load("slab.obj"), false);
@@ -25,7 +25,6 @@ public class SlabModel extends AbstractModel {
         }
     }
 
-    @Override
     public Hitbox getHitbox(Block block) {
         if(block.isOnTheFloor()) {
             return new BoxHitbox(0f, 0f, 0f, 1f, 0.5f, 1f);

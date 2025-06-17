@@ -99,6 +99,7 @@ public enum Material {
     public int getId(){ return this.material.getId(); }
     public int getTextureID(){ return this.material.getTexture().getId(); }
     public OpacityType getOpacity(){ return this.material.getOpacity(); }
+    public float getDensity(){ return this.material.getDensity(); }
 
     public static int createID(){
         return maxID++;
