@@ -76,7 +76,16 @@ public enum Material {
     DARK_STONE(new DarkStoneMaterial()),
     DARK_COBBLE(new DarkCobbleMaterial()),
     DARK_STONE_BRICK(new DarkStoneBrickMaterial()),
-    SAWMILL(new SawmillMaterial());
+    SAWMILL(new SawmillMaterial()),
+    BLACKSTONE(new BlackstoneMaterial()),
+    CRACKED_STONE_BRICK(new CrackedStoneBrickMaterial()),
+    DARK_PLANKS(new DarkPlanksMaterial()),
+    GRASS_BLOCK_SIDE_OVERLAY(new GrassBlockSideOverlayMaterial()),
+    MUD_BRICKS(new MudBricksMaterial()),
+    POLISHED_BLACKSTONE_BRICKS(new PolishedBlackstoneBricksMaterial()),
+    REDSTONE_LAMP_ON(new RedstoneLampMaterial()),
+    STONE_DIORITE(new StoneDioriteMaterial()),
+    TORCH(new TorchMaterial());
 
     static int maxID = 0;
 

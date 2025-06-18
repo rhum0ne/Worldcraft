@@ -86,6 +86,15 @@ public class Texture {
     public static Texture SNOWY_GRASS;
     public static Texture CALCITE_BRICK;
 
+    public static Texture BLACKSTONE;
+    public static Texture CRACKED_STONE_BRICK;
+    public static Texture DARK_PLANKS;
+    public static Texture GRASS_BLOCK_SIDE_OVERLAY;
+    public static Texture MUD_BRICKS;
+    public static Texture POLISHED_BLACKSTONE_BRICKS;
+    public static Texture REDSTONE_LAMP_ON;
+    public static Texture STONE_DIORITE1;
+    public static Texture TORCH;
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
     public static Texture SELECTED_SLOT;
@@ -175,6 +184,15 @@ public class Texture {
         PUMPKIN_TOP = new Texture("pumpkin_top.png");
         JACK_O_LANTERN = new Texture("jack_o_lantern.png");
         SNOWY_GRASS = new Texture("snowy_grass.png");
+        BLACKSTONE = new Texture("blackstone.png");
+        CRACKED_STONE_BRICK = new Texture("cracked_stone_brick.png");
+        DARK_PLANKS = new Texture("dark_planks.png");
+        GRASS_BLOCK_SIDE_OVERLAY = new Texture("grass_block_side_overlay.png");
+        MUD_BRICKS = new Texture("mud_bricks.png");
+        POLISHED_BLACKSTONE_BRICKS = new Texture("polished_blackstone_bricks.png");
+        REDSTONE_LAMP_ON = new Texture("redstone_lamp_on.png");
+        STONE_DIORITE1 = new Texture("stone_diorite1.png");
+        TORCH = new Texture("torch.png");
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
