@@ -55,25 +55,21 @@ public class EntitiesRenderer extends GlobalRenderer{
         glBindVertexArray(0);
     }
 
-            anim = m.getAnimationOffset()/16f;
+    public void update(){
         this.getVertices().clear();
         this.getIndices().clear();
         Iterator<Entity> it = player.getLocation().getWorld().getEntities().iterator();
-
         Entity e;
         while(it.hasNext()){
             e = it.next();
             if(e == player) continue;
-
             Model model = e.getModel();
             if(model == null) continue;
-
             if(e instanceof ItemEntity i)
                 if(model==Model.BLOCK) BlockUtil.rasterDroppedBlockItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
                 else raster(e, model);
             else raster(e, model);
         }
-
         this.toArrays();
     }
 

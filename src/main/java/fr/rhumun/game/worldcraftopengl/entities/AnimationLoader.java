@@ -8,11 +8,14 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 public class AnimationLoader {
 
     public record WalkAnimation(float[] times, float[] yValues, float length) {}
 
     public static WalkAnimation loadWalk(String fileName, String... boneNames) {
+        GAME.log("Loading animation " + fileName);
         Path path = Path.of(Game.TEXTURES_PATH + "entities/" + fileName);
         try {
             String json = Files.readString(path);
@@ -35,7 +38,10 @@ public class AnimationLoader {
                     break;
                 }
             }
-            if (bone == null) return null;
+            if (bone == null) {
+                GAME.log("No bone found in animation " + fileName);
+                return null;
+            }
 
             List<Float> times = new ArrayList<>();
             List<Float> ys = new ArrayList<>();
@@ -58,6 +64,7 @@ public class AnimationLoader {
             }
             return new WalkAnimation(tArr, yArr, length);
         } catch (IOException e) {
+            GAME.errorLog("Error while loading animation " + fileName);
             return null;
         }
     }
