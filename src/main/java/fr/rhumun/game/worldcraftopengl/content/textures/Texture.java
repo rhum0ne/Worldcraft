@@ -37,6 +37,13 @@ public class Texture {
     public static Texture BIRCH_PLANKS;
     public static Texture BIRCH_LEAVES;
     public static Texture BIRCH_SAPLING;
+    public static Texture ACACIA_LOG;
+    public static Texture ACACIA_LOG_TOP;
+    public static Texture ACACIA_PLANKS;
+    public static Texture ACACIA_LEAVES;
+    public static Texture ACACIA_SAPLING;
+    public static Texture ACACIA_DOOR;
+    public static Texture ACACIA_TRAPDOOR;
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
     public static Texture BOOKSHELF;
@@ -111,6 +118,13 @@ public class Texture {
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+        ACACIA_LOG = new Texture("acacia_log.png");
+        ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
+        ACACIA_PLANKS = new Texture("acacia_planks.png");
+        ACACIA_LEAVES = new Texture("acacia_leaves.png");
+        ACACIA_SAPLING = new Texture("acacia_sapling.png");
+        ACACIA_DOOR = new Texture("acacia_door.png");
+        ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
     public static Texture WORKBENCH;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;

@@ -349,6 +349,10 @@ public class Entity {
         block.setModel(model).setMaterial(material);
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
+
+        if (material.getMaterial() instanceof fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock multi) {
+            multi.onPlace(block);
+        }
     }
 
     public Material breakBlock(){
