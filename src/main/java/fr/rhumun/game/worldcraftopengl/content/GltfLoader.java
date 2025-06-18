@@ -1,13 +1,15 @@
 package fr.rhumun.game.worldcraftopengl.content;
 
-import de.javagl.jgltf.model.GltfModel;
-import de.javagl.jgltf.model.io.GltfModelReader;
+import de.javagl.obj.ObjData;
+import de.javagl.obj.ObjReader;
+import de.javagl.obj.ObjUtils;
 import fr.rhumun.game.worldcraftopengl.Game;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.file.Path;
+import org.lwjgl.BufferUtils;
 
 /**
  * Utility class responsible for loading glTF files and converting them into
@@ -18,26 +20,26 @@ import java.nio.file.Path;
 public class GltfLoader {
 
     public static AnimatedMesh loadAnimatedMesh(String fileName) {
-        Path path = Path.of(Game.TEXTURES_PATH + "models/" + fileName);
+        // Until proper glTF parsing is implemented we fall back to the OBJ
+        // counterpart so meshes continue to load without crashing.
+        String objName = fileName.replace(".gltf", ".obj");
+
         try {
-            GltfModelReader reader = new GltfModelReader();
-            GltfModel model = reader.read(path.toFile().toURI());
+            var obj = ObjUtils.convertToRenderable(
+                    ObjReader.read(new FileInputStream(Game.TEXTURES_PATH +
+                            "models/" + objName)));
 
-            // TODO Extract buffers from the glTF model (positions, normals,
-            //  texCoords, bone indices and weights, indices) and build the
-            //  AnimatedMesh instance. This will also require parsing skins and
-            //  animations to retrieve the bone hierarchy.
-            FloatBuffer vertices = null;
-            FloatBuffer normals = null;
-            FloatBuffer texCoords = null;
-            IntBuffer indices = null;
-            FloatBuffer boneIndices = null;
-            FloatBuffer boneWeights = null;
-            int boneCount = 0;
+            FloatBuffer vertices = ObjData.getVertices(obj).duplicate();
+            FloatBuffer normals = ObjData.getNormals(obj).duplicate();
+            FloatBuffer texCoords = ObjData.getTexCoords(obj, 2).duplicate();
+            IntBuffer indices = ObjData.getFaceVertexIndices(obj).duplicate();
 
-            // Placeholder until proper extraction is implemented
+            int vertexCount = vertices.capacity() / 3;
+            FloatBuffer boneIndices = BufferUtils.createFloatBuffer(vertexCount * 4);
+            FloatBuffer boneWeights = BufferUtils.createFloatBuffer(vertexCount * 4);
+
             return new AnimatedMesh(vertices, normals, texCoords, indices,
-                    boneIndices, boneWeights, boneCount);
+                    boneIndices, boneWeights, 0);
         } catch (IOException e) {
             Game.GAME.errorLog(e);
             return null;

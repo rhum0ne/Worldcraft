@@ -24,8 +24,10 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class EntitiesRenderer extends BonesEntityRenderer{
 
-    private boolean useSkinning = false;
-
+            float[] mats = new float[16 * 64];
+            for(int i=0;i<64;i++){
+                new org.joml.Matrix4f().identity().get(mats, i*16);
+            }
     public boolean isUseSkinning() {
         return useSkinning;
     }
