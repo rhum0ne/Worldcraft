@@ -19,9 +19,17 @@ public class Mesh {
     private final IntBuffer indicesBuffer;
 
     public Mesh(final Obj obj){
-        this.verticesBuffer = ObjData.getVertices(obj);
-        this.normalsBuffer = ObjData.getNormals(obj);
-        this.texCoordsBuffer = ObjData.getTexCoords(obj, 2);
-        this.indicesBuffer = ObjData.getFaceVertexIndices(obj);
+        this(ObjData.getVertices(obj),
+             ObjData.getNormals(obj),
+             ObjData.getTexCoords(obj, 2),
+             ObjData.getFaceVertexIndices(obj));
+    }
+
+    public Mesh(FloatBuffer verticesBuffer, FloatBuffer normalsBuffer,
+                FloatBuffer texCoordsBuffer, IntBuffer indicesBuffer){
+        this.verticesBuffer = verticesBuffer;
+        this.normalsBuffer = normalsBuffer;
+        this.texCoordsBuffer = texCoordsBuffer;
+        this.indicesBuffer = indicesBuffer;
     }
 }

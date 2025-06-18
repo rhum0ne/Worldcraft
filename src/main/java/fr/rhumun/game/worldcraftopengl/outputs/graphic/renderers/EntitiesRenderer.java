@@ -22,6 +22,12 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class EntitiesRenderer extends GlobalRenderer{
 
+    private boolean useSkinning = false;
+
+    public boolean isUseSkinning() {
+        return useSkinning;
+    }
+
     private final Player player;
 
     public EntitiesRenderer(GraphicModule graphicModule, Player player) {
@@ -42,6 +48,12 @@ public class EntitiesRenderer extends GlobalRenderer{
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
 
+        if(useSkinning){
+            float[] mats = new float[16];
+            new org.joml.Matrix4f().identity().get(mats);
+            ShaderManager.SKINNED_ENTITY_SHADER.setUniformMatrix("boneMatrices", mats);
+        }
+
 
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 
@@ -58,6 +70,7 @@ public class EntitiesRenderer extends GlobalRenderer{
     public void update(){
         this.getVertices().clear();
         this.getIndices().clear();
+        this.useSkinning = false;
         Iterator<Entity> it = player.getLocation().getWorld().getEntities().iterator();
         Entity e;
         while(it.hasNext()){
@@ -65,6 +78,9 @@ public class EntitiesRenderer extends GlobalRenderer{
             if(e == player) continue;
             Model model = e.getModel();
             if(model == null) continue;
+            if(model.getModelObject() instanceof AnimatedModel) {
+                useSkinning = true;
+            }
             if(e instanceof ItemEntity i)
                 if(model==Model.BLOCK) BlockUtil.rasterDroppedBlockItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
                 else raster(e, model);
@@ -81,6 +97,13 @@ public class EntitiesRenderer extends GlobalRenderer{
         FloatBuffer normalsBuffer = obj.getNormalsBuffer().duplicate();
         FloatBuffer texCoordsBuffer = obj.getTexCoordsBuffer().duplicate();
         IntBuffer indicesBuffer = obj.getIndicesBuffer().duplicate();
+
+        FloatBuffer boneIndices = null;
+        FloatBuffer boneWeights = null;
+        if (obj instanceof AnimatedMesh am) {
+            boneIndices = am.getBoneIndicesBuffer().duplicate();
+            boneWeights = am.getBoneWeightsBuffer().duplicate();
+        }
 
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
@@ -110,7 +133,23 @@ public class EntitiesRenderer extends GlobalRenderer{
 
             // Ajoute le sommet dans le renderer approprié
 
-            float[] vertexData = new float[]{vx, vy, vz, u, v, texture, nx, ny, nz};
+            float[] vertexData = new float[17];
+            vertexData[0] = vx;
+            vertexData[1] = vy;
+            vertexData[2] = vz;
+            vertexData[3] = u;
+            vertexData[4] = v;
+            vertexData[5] = texture;
+            vertexData[6] = nx;
+            vertexData[7] = ny;
+            vertexData[8] = nz;
+
+            if(boneIndices != null && boneWeights != null){
+                for(int j=0;j<4;j++){
+                    vertexData[9+j] = boneIndices.get(vertexIndex*4+j);
+                    vertexData[13+j] = boneWeights.get(vertexIndex*4+j);
+                }
+            }
             this.addVertex(vertexData);
         }
     }

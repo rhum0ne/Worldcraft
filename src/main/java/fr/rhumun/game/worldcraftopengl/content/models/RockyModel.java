@@ -3,11 +3,11 @@ package fr.rhumun.game.worldcraftopengl.content.models;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
-import static fr.rhumun.game.worldcraftopengl.content.Model.load;
+import static fr.rhumun.game.worldcraftopengl.content.Model.loadGltf;
 
-public class RockyModel extends AbstractModel {
+public class RockyModel extends AnimatedModel {
     public RockyModel() {
-        super(load("Rocky.obj"), false);
+        super(loadGltf("Rocky.gltf"));
     }
 
     @Override

@@ -22,6 +22,7 @@ public class ShaderManager {
 
     public static Shader SELECTED_BLOCK_SHADER;
     public static Shader ENTITY_SHADER;
+    public static Shader SKINNED_ENTITY_SHADER;
     public static Shader GLOBAL_SHADERS;
     public static Shader PLAN_SHADERS;
     public static Shader LIQUID_SHADER;
@@ -35,6 +36,10 @@ public class ShaderManager {
         LIQUID_SHADER = new LiquidShader();
         SELECTED_BLOCK_SHADER = new SelectedBlockShader();
         ENTITY_SHADER = new EntityShader();
+        SKINNED_ENTITY_SHADER = new Shader(loadShader("game/skinned_entity_shader.glsl", "game/entity_frag_shader.glsl")) {
+            @Override
+            public void init() {}
+        };
         FAR_SHADER = new FarShader();
     }
 
