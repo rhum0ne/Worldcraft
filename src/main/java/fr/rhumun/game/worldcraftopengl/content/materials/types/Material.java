@@ -69,6 +69,7 @@ public enum Material {
     ACACIA_LEAVES(new AcaciaLeavesMaterial()),
     ACACIA_SAPLING(new AcaciaSaplingMaterial()),
     ACACIA_DOOR(new AcaciaDoorMaterial()),
+    ACACIA_DOOR_TOP(new AcaciaDoorTopMaterial()),
     ACACIA_TRAPDOOR(new AcaciaTrapdoorMaterial()),
     BRICKS(new BricksMaterial()),
     GLASS(new GlassMaterial()),
@@ -86,12 +87,12 @@ public enum Material {
     BLACKSTONE(new BlackstoneMaterial()),
     CRACKED_STONE_BRICK(new CrackedStoneBrickMaterial()),
     DARK_PLANKS(new DarkPlanksMaterial()),
-    GRASS_BLOCK_SIDE_OVERLAY(new GrassBlockSideOverlayMaterial()),
     MUD_BRICKS(new MudBricksMaterial()),
     POLISHED_BLACKSTONE_BRICKS(new PolishedBlackstoneBricksMaterial()),
     REDSTONE_LAMP_ON(new RedstoneLampMaterial()),
     STONE_DIORITE(new StoneDioriteMaterial()),
-    TORCH(new TorchMaterial());
+    TORCH(new TorchMaterial()),
+    STONE_CUTTER(new StoneCutterMaterial());
 
     static int maxID = 0;
 

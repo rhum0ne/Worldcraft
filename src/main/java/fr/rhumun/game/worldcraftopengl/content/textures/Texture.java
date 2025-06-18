@@ -43,6 +43,7 @@ public class Texture {
     public static Texture ACACIA_LEAVES;
     public static Texture ACACIA_SAPLING;
     public static Texture ACACIA_DOOR;
+    public static Texture ACACIA_DOOR_TOP;
     public static Texture ACACIA_TRAPDOOR;
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
@@ -118,13 +119,6 @@ public class Texture {
     public static Texture SELECTED_SLOT;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
-        ACACIA_LOG = new Texture("acacia_log.png");
-        ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
-        ACACIA_PLANKS = new Texture("acacia_planks.png");
-        ACACIA_LEAVES = new Texture("acacia_leaves.png");
-        ACACIA_SAPLING = new Texture("acacia_sapling.png");
-        ACACIA_DOOR = new Texture("acacia_door.png");
-        ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
     public static Texture WORKBENCH;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;
@@ -229,6 +223,14 @@ public class Texture {
         STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
         STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
         STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
+        ACACIA_LOG = new Texture("acacia_log.png");
+        ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
+        ACACIA_PLANKS = new Texture("acacia_planks.png");
+        ACACIA_LEAVES = new Texture("acacia_leaves.png");
+        ACACIA_SAPLING = new Texture("acacia_sapling.png");
+        ACACIA_DOOR_TOP = new Texture("acacia_door_top.png");
+        ACACIA_DOOR = new Texture("acacia_door_bottom.png");
+        ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");

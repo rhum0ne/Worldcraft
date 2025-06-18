@@ -175,14 +175,12 @@ public class Entity {
                 boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ + radius);
                 if (middleP || (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
                         checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
-                    System.out.println("X1");
                     return true;
                 }
             } else if (normalizedDirection.x < 0) {
                 boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ + radius);
                 if (middleN || (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
                         checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
-                    System.out.println("X2");
                     return true;
                 }
             }
@@ -191,14 +189,12 @@ public class Entity {
                 boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.maxZ+eps);
                 if( middleP || (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
                         checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
-                    System.out.println("Z1");
                     return true;
                 }
             } else if (normalizedDirection.z < 0) {
                 boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
                 if (middleN || (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
                         checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
-                    System.out.println("Z2");
                     return true;
                 }
             }
