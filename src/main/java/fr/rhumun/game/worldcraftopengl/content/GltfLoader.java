@@ -37,6 +37,12 @@ public class GltfLoader {
             int vertexCount = vertices.capacity() / 3;
             FloatBuffer boneIndices = BufferUtils.createFloatBuffer(vertexCount * 4);
             FloatBuffer boneWeights = BufferUtils.createFloatBuffer(vertexCount * 4);
+            // Populate weights so that the fallback mesh is rendered at
+            // its original position when used with the skinned shader.
+            for (int i = 0; i < vertexCount; i++) {
+                boneIndices.put(i * 4, 0f);
+                boneWeights.put(i * 4, 1f);
+            }
 
             return new AnimatedMesh(vertices, normals, texCoords, indices,
                     boneIndices, boneWeights, 0);

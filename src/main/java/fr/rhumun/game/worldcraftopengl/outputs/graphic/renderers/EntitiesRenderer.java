@@ -55,7 +55,8 @@ public class EntitiesRenderer extends BonesEntityRenderer{
         if(useSkinning){
             float[] mats = new float[16];
             new org.joml.Matrix4f().identity().get(mats);
-            ShaderManager.SKINNED_ENTITY_SHADER.setUniformMatrix("boneMatrices", mats);
+            if(model.getModelObject() instanceof AnimatedModel anim &&
+                    anim.getAnimatedMesh().getBoneCount() > 0) {
         }
 
 
