@@ -1,7 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
+import fr.rhumun.game.worldcraftopengl.content.AnimatedMesh;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.models.AnimatedModel;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.entities.MobEntity;
@@ -20,7 +22,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-public class EntitiesRenderer extends GlobalRenderer{
+public class EntitiesRenderer extends BonesEntityRenderer{
 
     private boolean useSkinning = false;
 

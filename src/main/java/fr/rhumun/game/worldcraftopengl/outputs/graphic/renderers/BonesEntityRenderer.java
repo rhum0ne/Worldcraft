@@ -17,9 +17,9 @@ import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 
 @Getter
 @Setter
-public class GlobalRenderer extends Renderer {
+public class BonesEntityRenderer extends Renderer {
 
-    public GlobalRenderer(GraphicModule graphicModule, Shader shader) {
+    public BonesEntityRenderer(GraphicModule graphicModule, Shader shader) {
         super(graphicModule, shader);
     }
 
@@ -38,21 +38,29 @@ public class GlobalRenderer extends Renderer {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
 
 // Attribut de position (3 floats)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 9 * Float.BYTES, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 17 * Float.BYTES, 0);
         glEnableVertexAttribArray(0);
 
 // Attribut de coordonnées de texture (2 floats)
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 9 * Float.BYTES, 3 * Float.BYTES);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 17 * Float.BYTES, 3 * Float.BYTES);
         glEnableVertexAttribArray(1);
 
 // Attribut de l'ID de texture (1 int)
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 9 * Float.BYTES, 5 * Float.BYTES);
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, 17 * Float.BYTES, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
 
 
 // Attribut des normales
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, 9 * Float.BYTES, 6 * Float.BYTES);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, 17 * Float.BYTES, 6 * Float.BYTES);
         glEnableVertexAttribArray(3);
+
+        // Bone indices
+        glVertexAttribPointer(4, 4, GL_FLOAT, false, 17 * Float.BYTES, 9 * Float.BYTES);
+        glEnableVertexAttribArray(4);
+
+        // Bone weights
+        glVertexAttribPointer(5, 4, GL_FLOAT, false, 17 * Float.BYTES, 13 * Float.BYTES);
+        glEnableVertexAttribArray(5);
 
         // Délier le VAO
         glBindVertexArray(0);

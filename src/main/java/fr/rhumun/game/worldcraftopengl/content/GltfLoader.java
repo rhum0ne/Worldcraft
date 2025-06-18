@@ -21,7 +21,7 @@ public class GltfLoader {
         Path path = Path.of(Game.TEXTURES_PATH + "models/" + fileName);
         try {
             GltfModelReader reader = new GltfModelReader();
-            GltfModel model = reader.read(path.toFile());
+            GltfModel model = reader.read(path.toFile().toURI());
 
             // TODO Extract buffers from the glTF model (positions, normals,
             //  texCoords, bone indices and weights, indices) and build the
