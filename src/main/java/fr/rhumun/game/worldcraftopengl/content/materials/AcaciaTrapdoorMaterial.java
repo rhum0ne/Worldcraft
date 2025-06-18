@@ -32,7 +32,7 @@ public class AcaciaTrapdoorMaterial extends AbstractMaterial implements ForcedMo
 
     @Override
     public Model getModel() {
-        return Model.SLAB;
+        return Model.TRAPDOOR;
     }
 
     @Override
