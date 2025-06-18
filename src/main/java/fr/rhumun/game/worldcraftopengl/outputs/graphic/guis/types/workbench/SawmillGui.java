@@ -13,9 +13,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
  */
 public class SawmillGui extends CenteredGUI {
 
-    private static final float ratio = 1f;
     private static final int SAWMILL_WIDTH = 176;
-    private static final int SAWMILL_HEIGHT = 100;
     private static final int INVENTORY_WIDTH = 356;
     private static final int INVENTORY_HEIGHT = 166;
     private static final int GAP = 20;
@@ -25,13 +23,5 @@ public class SawmillGui extends CenteredGUI {
 
         Sawmill sawmill = new Sawmill();
         this.addComponent(sawmill);
-    }
-
-    private int getInvX(int slot) {
-        return 3 + (int) Math.ceil(slot * 40 * ratio);
-    }
-
-    private int getInvY(int row) {
-        return 3 + (int) Math.ceil(row * 40 * ratio);
     }
 }
