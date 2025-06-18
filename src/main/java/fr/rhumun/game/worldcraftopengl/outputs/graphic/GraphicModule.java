@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CloudRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
@@ -75,6 +76,7 @@ public class GraphicModule {
     private BlockSelector blockSelector;
     private final CleanerModule cleaner;
     private EntitiesRenderer entitiesRenderer;
+    private CloudRenderer cloudRenderer;
     private HitboxRenderer hitboxRenderer;
     private final UpdateLoop updateLoop;
     private final ChunkLoader chunkLoader;
@@ -210,6 +212,7 @@ public class GraphicModule {
         this.guiModule.init();
         this.guiModule.resize(startWidth, startHeight);
         this.entitiesRenderer = new EntitiesRenderer(this, player);
+        this.cloudRenderer = new CloudRenderer(this);
         this.hitboxRenderer = new HitboxRenderer(this, player);
         this.hitboxRenderer.init();
     }
@@ -341,6 +344,7 @@ public class GraphicModule {
         updateFarChunks();
 
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        cloudRenderer.render();
         update();
 
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
@@ -444,6 +448,7 @@ public class GraphicModule {
 
     private void cleanup() {
         guiModule.cleanup();
+        cloudRenderer.cleanup();
         renderingShaders.forEach(shader -> glDeleteProgram(shader.id));
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
