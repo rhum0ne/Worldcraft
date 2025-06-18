@@ -113,7 +113,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     // Composantes ambiante, diffuse, spéculaire
     vec3 ambient = light.ambient * vec3(texture(textures, vec3(TexCoord, TextureID)));
     vec3 diffuse = light.diffuse * diff * vec3(texture(textures, vec3(TexCoord, TextureID)));
-    vec3 specular = light.specular * spec * vec3(1.0);  // Si tu as une map spéculaire, tu pourrais la remplacer ici
+    vec3 specular = light.specular * spec * vec3(1.0);
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -142,6 +142,6 @@ void main(){
     {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  // On utilise FragPos ici
     }
-
-    FragColor = vec4(result.r, result.g, result.b, textureColor.a);
+    FragColor = textureColor;
+    //FragColor = vec4(result.r, result.g, result.b, textureColor.a);
 }

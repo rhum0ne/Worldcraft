@@ -52,7 +52,9 @@ public class TextureUtils {
 
         GAME.debug(i + " guis textures loaded.");
         ShaderManager.PLAN_SHADERS.setUniform("guiTextures", guiTexturesUnits);
-        ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", BLOCKS_TEXTURES + guiTexturesUnits.length);
+        int baseTextures = TextureTypes.BLOCKS.get().size() + TextureTypes.GUIS.get().size();
+        System.out.println("baseTextures: " + baseTextures);
+        ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", baseTextures);
 
         GAME.debug("Done!");
         return guiTexturesUnits.length;
@@ -60,7 +62,7 @@ public class TextureUtils {
 
     private static void initEntitiesTextures() {
         int entitesTextureCount = TextureTypes.ENTITIES.get().size();
-        int[] entitiesTexturesUnits = new int[entitesTextureCount + 1]; // Unité de texture pour chaque texture
+        int[] entitiesTexturesUnits = new int[entitesTextureCount]; // Unité de texture pour chaque texture
 
         // Création de la texture 2D array
         int textureID = glGenTextures();
@@ -70,8 +72,8 @@ public class TextureUtils {
         GAME.debug("Texture Array ID: " + textureID);
 
         // Dimensions des textures
-        int width = 64;  // Par exemple, chaque texture fait 32x32 pixels
-        int height = 64;
+        int width = 256;  // Par exemple, chaque texture fait 32x32 pixels
+        int height = 256;
 
         // Allouer de l'espace pour la texture 2D array
         glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, entitesTextureCount);
@@ -89,7 +91,7 @@ public class TextureUtils {
             ByteBuffer image = STBImage.stbi_load(texturePath, widthBuf, heightBuf, compBuf, 4);
 
             if (image != null) {
-                GAME.debug("Loading " + texture.getName());
+                GAME.debug("Loading " + texture.getName() + " with ID " + i + " in array with ID " + textureID + "");
                 // Copier l'image dans la couche appropriée de la texture array
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, widthBuf.get(0), heightBuf.get(0), 1, GL_RGBA, GL_UNSIGNED_BYTE, image);
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY); // Générer les mipmaps
@@ -109,7 +111,7 @@ public class TextureUtils {
         entitiesTexturesUnits[0] = textureID;
 
         // Remplir le shader avec l'unité de texture et le sampler
-        ShaderManager.ENTITY_SHADER.setUniform("entitiesTextures", entitiesTexturesUnits);
+        ShaderManager.ENTITY_SHADER.setUniform("entitiesTextures", textureID);
 
         GAME.debug("Done!");
     }
