@@ -2,9 +2,22 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.entities.MobAnimations;
+import fr.rhumun.game.worldcraftopengl.Game;
+import java.util.HashMap;
+import java.util.Map;
+
+import static fr.rhumun.game.worldcraftopengl.entities.AnimationLoader.*;
 
 public abstract class MobEntity extends Entity implements MovingEntity {
+
+    private static final Map<Model, WalkAnimation> WALK_ANIMATIONS = new HashMap<>();
+
+    static {
+        WALK_ANIMATIONS.put(Model.NINJA_SKELETON,
+                AnimationLoader.loadWalk("ninja_skeleton.bbmodel", "all"));
+        WALK_ANIMATIONS.put(Model.ROCKY,
+                AnimationLoader.loadWalk("Rocky.bbmodel", "Body"));
+    }
 
     private final int[] movements = new int[3];
     private int moveCooldown = 0;
@@ -27,32 +40,22 @@ public abstract class MobEntity extends Entity implements MovingEntity {
     }
 
     public float getAnimationOffset(){
-        float[] times;
-        float[] values;
-        float length;
-        switch (this.getModel()) {
-            case NINJA_SKELETON -> {
-                times = MobAnimations.NINJA_WALK_TIMES;
-                values = MobAnimations.NINJA_WALK_Y;
-                length = MobAnimations.NINJA_WALK_LENGTH;
-            }
-            case ROCKY -> {
-                times = MobAnimations.ROCKY_WALK_TIMES;
-                values = MobAnimations.ROCKY_WALK_Y;
-                length = MobAnimations.ROCKY_WALK_LENGTH;
-            }
-            default -> { return 0f; }
-        }
+        WalkAnimation anim = WALK_ANIMATIONS.get(this.getModel());
+        if (anim == null) return 0f;
+
+        float[] times = anim.times();
+        float[] values = anim.yValues();
+        float length = anim.length();
 
         float t = animationStep % length;
-        for(int i=1;i<times.length;i++){
-            if(t < times[i]){
-                float dt = times[i] - times[i-1];
-                float prog = (t - times[i-1]) / (dt<=0?1:dt);
-                return values[i-1] + prog * (values[i]-values[i-1]);
+        for (int i = 1; i < times.length; i++) {
+            if (t < times[i]) {
+                float dt = times[i] - times[i - 1];
+                float prog = (t - times[i - 1]) / (dt <= 0 ? 1 : dt);
+                return values[i - 1] + prog * (values[i] - values[i - 1]);
             }
         }
-        return values[values.length-1];
+        return values[values.length - 1];
     }
 
     @Override
