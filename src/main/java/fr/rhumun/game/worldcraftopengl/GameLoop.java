@@ -73,4 +73,8 @@ public class GameLoop extends Thread {
 
         game.log("GameLoop Ended");
     }
+
+    public float getDeltaTime() {
+        return (System.currentTimeMillis() - previousUpdate) / 1000f;
+    }
 }

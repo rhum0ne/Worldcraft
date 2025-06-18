@@ -1,10 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.*;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.EntityShader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.FarShader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.GlobalShader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.LiquidShader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.game.*;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.HUDShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.SelectedBlockShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.TextShader;
@@ -22,6 +19,7 @@ public class ShaderManager {
 
     public static Shader SELECTED_BLOCK_SHADER;
     public static Shader ENTITY_SHADER;
+    public static Shader ANIMATED_ENTITY_SHADER;
     public static Shader GLOBAL_SHADERS;
     public static Shader PLAN_SHADERS;
     public static Shader LIQUID_SHADER;
@@ -35,6 +33,7 @@ public class ShaderManager {
         LIQUID_SHADER = new LiquidShader();
         SELECTED_BLOCK_SHADER = new SelectedBlockShader();
         ENTITY_SHADER = new EntityShader();
+        ANIMATED_ENTITY_SHADER = new AnimatedEntity();
         FAR_SHADER = new FarShader();
     }
 

@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.models;
 
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
@@ -7,7 +8,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 
 public class NinjaSkeletonModel extends AbstractModel {
     public NinjaSkeletonModel() {
-        super(load("ninja_skeleton.obj"), false);
+        super(Mesh.loadSkinnedMesh("models\\ninja_skeleton.gltf"), false);
     }
 
     @Override

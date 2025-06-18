@@ -176,7 +176,7 @@ public class Game {
         double x = player.getLocation().getX();
         double y = player.getLocation().getY();
         double z = player.getLocation().getZ();
-        world.addEntity(new OtterEntity(x, y, z, 0, 0));
+//        world.addEntity(new OtterEntity(x, y, z, 0, 0));
         world.addEntity(new NinjaSkeletonEntity(x + 1, y, z, 0, 0));
         world.addEntity(new RockyEntity(x - 1, y, z, 0, 0));
     }

@@ -361,4 +361,8 @@ public class Entity {
 
     public World getWorld() {return this.location.getWorld();}
 
+    public boolean isAnimated() {
+        return false;
+    }
+
 }
