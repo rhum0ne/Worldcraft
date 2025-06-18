@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.content;
 
 import fr.rhumun.game.worldcraftopengl.content.models.*;
 import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.GltfLoader;
+import fr.rhumun.game.worldcraftopengl.content.AnimatedMesh;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import lombok.Getter;
 
@@ -52,6 +54,10 @@ public enum Model {
             GAME.errorLog(e);
             throw new RuntimeException(e);
         }
+    }
+
+    public static AnimatedMesh loadGltf(String name) {
+        return GltfLoader.loadAnimatedMesh(name);
     }
 
     public void setBlockDataOnPlace(Block block, Vector3f hitPosition, Vector3f direction) {
