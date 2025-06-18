@@ -85,6 +85,17 @@ public class Texture {
     public static Texture JACK_O_LANTERN;;
     public static Texture SNOWY_GRASS;
     public static Texture CALCITE_BRICK;
+    public static Texture SAWMILL_TOP;
+    public static Texture SAWMILL_SIDE;
+    public static Texture SAWMILL_BOTTOM;
+    public static Texture SAWMILL_SIDE_2;
+    public static Texture SAWMILL_SIDE_3;
+    public static Texture SAWMILL_FRONT;
+    public static Texture STONE_CUTTER_TOP;
+    public static Texture STONE_CUTTER_SIDE;
+    public static Texture STONE_CUTTER_BOTTOM;
+    public static Texture STONE_CUTTER_SIDE_2;
+    public static Texture STONE_CUTTER_FRONT;
 
     public static Texture BLACKSTONE;
     public static Texture CRACKED_STONE_BRICK;
@@ -193,6 +204,17 @@ public class Texture {
         REDSTONE_LAMP_ON = new Texture("redstone_lamp_on.png");
         STONE_DIORITE1 = new Texture("stone_diorite1.png");
         TORCH = new Texture("torch.png");
+        SAWMILL_TOP = new Texture("sawmill_top.png");
+        SAWMILL_SIDE = new Texture("sawmill_side.png");
+        SAWMILL_BOTTOM = new Texture("sawmill_bottom.png");
+        SAWMILL_SIDE_2 = new Texture("sawmill_side_1.png");
+        SAWMILL_SIDE_3 = new Texture("sawmill_side_2.png");
+        SAWMILL_FRONT = new Texture("sawmill_front.png");
+        STONE_CUTTER_TOP = new Texture("stone_cutter_top.png");
+        STONE_CUTTER_SIDE = new Texture("stone_cutter_side.png");
+        STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
+        STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
+        STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
