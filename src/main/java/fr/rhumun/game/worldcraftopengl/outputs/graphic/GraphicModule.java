@@ -343,6 +343,9 @@ public class GraphicModule {
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         update();
 
+        glUseProgram(ShaderManager.ENTITY_SHADER.id);
+        entitiesRenderer.render();
+
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         blockSelector.render();
         hitboxRenderer.render();
@@ -417,8 +420,6 @@ public class GraphicModule {
             }
         }
         glDisable(GL_BLEND);
-
-        entitiesRenderer.render();
     }
 
     private void updateFarChunks() {

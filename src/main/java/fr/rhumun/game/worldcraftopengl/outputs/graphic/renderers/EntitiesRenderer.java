@@ -4,10 +4,12 @@ import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
+import fr.rhumun.game.worldcraftopengl.entities.MobEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -32,16 +34,24 @@ public class EntitiesRenderer extends GlobalRenderer{
         update();
         glBindVertexArray(this.getVAO());
 
+        GL30C.glBindVertexArray(this.getVAO());
+
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray().clone(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
+
 
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        glBindVertexArray(0);
+        this.getIndices().clear();
+        this.getVertices().clear();
+
         glBindVertexArray(0);
     }
 
@@ -79,7 +89,7 @@ public class EntitiesRenderer extends GlobalRenderer{
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
         float anim = 0f;
-        if(entity instanceof fr.rhumun.game.worldcraftopengl.entities.MobEntity m) {
+        if(entity instanceof MobEntity m) {
             anim = (float) Math.sin(m.getAnimationStep()) * 0.1f;
         }
         double z = entity.getLocation().getZ();

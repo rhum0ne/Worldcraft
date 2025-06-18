@@ -44,7 +44,7 @@ public class Game {
     public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static boolean SHOWING_HITBOXES = false;
     public static int LOD = 4;
     public static final long LAG_SPIKE_LIMIT = 100;

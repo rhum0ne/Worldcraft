@@ -18,6 +18,11 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.HeightCalculation
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import lombok.Getter;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
 @Getter
@@ -84,6 +89,13 @@ public class NormalWorldGenerator extends WorldGenerator {
 
 
         this.heightCalculator = new HeightCalculation(this, continentalness, erosion, pav);
+
+
+        try {
+            ImageIO.write(generateContinentalnessMap(100, 0, 0), "png", new File("continentalness_map.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -279,5 +291,53 @@ public class NormalWorldGenerator extends WorldGenerator {
 
         chunk.setGenerated(true);
     }
+
+    public BufferedImage generateWorldMaterialMap(int[][] height, int size, int centerX, int centerZ) {
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
+        World world = getWorld();
+
+        for (int x = 0; x < size; x++) {
+            for (int z = 0; z < size; z++) {
+                int worldX = centerX - size / 2 + x;
+                int worldZ = centerZ - size / 2 + z;
+
+                Block block = world.getBlockAt(worldX, height[x][z], worldZ, true);
+                if (block == null) continue;
+                Material material = block.getMaterial();
+
+                int rgb = switch (material) {
+                    case WATER -> 0x0000FF;
+                    case GRASS_BLOCK -> 0x228B22;
+                    case SAND -> 0xFFFF00;
+                    case STONE -> 0x808080;
+                    case DIRT -> 0x8B4513;
+                    case SNOW -> 0xFFFFFF;
+                    default -> 0x000000; // noir si inconnu
+                };
+
+                image.setRGB(x, z, rgb);
+            }
+        }
+
+        return image;
+    }
+
+    public BufferedImage generateContinentalnessMap(int size, int centerX, int centerZ) {
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_BYTE_GRAY);
+        for (int x = 0; x < size; x++) {
+            for (int z = 0; z < size; z++) {
+                double worldX = centerX - size / 2 + x;
+                double worldZ = centerZ - size / 2 + z;
+
+                double value = continentalness.evaluateNoise(worldX / 512.0, worldZ / 512.0);
+                int brightness = (int) ((value + 1) / 2 * 255); // Normalisation [-1,1] -> [0,255]
+                brightness = Math.max(0, Math.min(255, brightness));
+                int rgb = (brightness << 16) | (brightness << 8) | brightness;
+                image.setRGB(x, z, rgb);
+            }
+        }
+        return image;
+    }
+
 
 }
