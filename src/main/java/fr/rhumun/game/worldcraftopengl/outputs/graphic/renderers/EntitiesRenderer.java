@@ -55,7 +55,7 @@ public class EntitiesRenderer extends GlobalRenderer{
         glBindVertexArray(0);
     }
 
-    public void update(){
+            anim = m.getAnimationOffset()/16f;
         this.getVertices().clear();
         this.getIndices().clear();
         Iterator<Entity> it = player.getLocation().getWorld().getEntities().iterator();

@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.entities.MobAnimations;
 
 public abstract class MobEntity extends Entity implements MovingEntity {
 
@@ -23,6 +24,35 @@ public abstract class MobEntity extends Entity implements MovingEntity {
 
     public float getAnimationStep() {
         return animationStep;
+    }
+
+    public float getAnimationOffset(){
+        float[] times;
+        float[] values;
+        float length;
+        switch (this.getModel()) {
+            case NINJA_SKELETON -> {
+                times = MobAnimations.NINJA_WALK_TIMES;
+                values = MobAnimations.NINJA_WALK_Y;
+                length = MobAnimations.NINJA_WALK_LENGTH;
+            }
+            case ROCKY -> {
+                times = MobAnimations.ROCKY_WALK_TIMES;
+                values = MobAnimations.ROCKY_WALK_Y;
+                length = MobAnimations.ROCKY_WALK_LENGTH;
+            }
+            default -> { return 0f; }
+        }
+
+        float t = animationStep % length;
+        for(int i=1;i<times.length;i++){
+            if(t < times[i]){
+                float dt = times[i] - times[i-1];
+                float prog = (t - times[i-1]) / (dt<=0?1:dt);
+                return values[i-1] + prog * (values[i]-values[i-1]);
+            }
+        }
+        return values[values.length-1];
     }
 
     @Override
