@@ -191,7 +191,8 @@ public class GraphicModule {
         renderingShaders.addAll(List.of(
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
-                ShaderManager.ENTITY_SHADER
+                ShaderManager.ENTITY_SHADER,
+                ShaderManager.CLOUD_SHADER
         ));
         shaders.addAll(List.of(
                 ShaderManager.SELECTED_BLOCK_SHADER,
@@ -199,7 +200,8 @@ public class GraphicModule {
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
-                ShaderManager.FAR_SHADER
+                ShaderManager.FAR_SHADER,
+                ShaderManager.CLOUD_SHADER
         ));
         Matrix4f modelMatrix = new Matrix4f().identity();
         for (Shader shader : renderingShaders) updateModelAndProjectionFor(modelMatrix, shader);

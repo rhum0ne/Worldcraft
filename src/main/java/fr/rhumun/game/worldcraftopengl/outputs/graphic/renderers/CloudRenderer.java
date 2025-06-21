@@ -1,6 +1,5 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import org.joml.Vector2f;
@@ -24,7 +23,7 @@ public class CloudRenderer extends GlobalRenderer {
     private float offset = 0f;
 
     public CloudRenderer(GraphicModule graphicModule) {
-        super(graphicModule, ShaderManager.GLOBAL_SHADERS);
+        super(graphicModule, ShaderManager.CLOUD_SHADER);
         generateClouds();
         init();
     }
@@ -42,17 +41,16 @@ public class CloudRenderer extends GlobalRenderer {
         getVertices().clear();
         getIndices().clear();
         float y = getGraphicModule().getWorld().getHeigth() + 50;
-        float tex = Texture.WHITE_WOOL.getId();
         for (Vector2f p : clouds) {
             float x1 = p.x + offset;
             float z1 = p.y;
             float x2 = x1 + CLOUD_SIZE;
             float z2 = z1 + CLOUD_SIZE;
             addAllVertices(new float[][]{
-                    {x1, y, z1, 0f, 0f, tex, 0f, -1f, 0f},
-                    {x2, y, z1, 1f, 0f, tex, 0f, -1f, 0f},
-                    {x2, y, z2, 1f, 1f, tex, 0f, -1f, 0f},
-                    {x1, y, z2, 0f, 1f, tex, 0f, -1f, 0f}
+                    {x1, y, z1, 0f, 0f, 0f, 0f, -1f, 0f},
+                    {x2, y, z1, 1f, 0f, 0f, 0f, -1f, 0f},
+                    {x2, y, z2, 1f, 1f, 0f, 0f, -1f, 0f},
+                    {x1, y, z2, 0f, 1f, 0f, 0f, -1f, 0f}
             });
             addRawIndices(new int[]{0,1,2,0,2,3});
         }
