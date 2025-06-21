@@ -38,7 +38,7 @@ public abstract class Shader {
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1i(location, value);
-        }else GAME.errorLog("Can't find uniform " + uniformName);
+        }
     }
 
     // Méthode pour envoyer un int[] au shader
@@ -48,7 +48,6 @@ public abstract class Shader {
         if (location != -1) {
             glUniform1iv(location, value);
         }
-        else System.err.println("Warning: uniform " + uniformName + " not found");
     }
 
     public abstract void init();
@@ -59,7 +58,6 @@ public abstract class Shader {
         if (location != -1) {
             glUniform4fv(location, value);
         }
-        else System.err.println("Warning: uniform " + uniformName + " not found");
     }
 
     public void setUniformMatrix(String uniformName, float[] value) {
@@ -68,6 +66,5 @@ public abstract class Shader {
         if (location != -1) {
             glUniformMatrix4fv(location, false, value);
         }
-        else System.err.println("Warning: uniform " + uniformName + " not found");
     }
 }
