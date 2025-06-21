@@ -37,6 +37,8 @@ public class Player extends Entity implements MovingEntity {
     private int saturation = 128;
     private int saturationCounter = 0;
 
+    private int starvationCounter = 0;
+
     public static int MOVE_SATURATION_COST = 1;
     public static int BREAK_SATURATION_COST = 4;
 
@@ -203,14 +205,24 @@ public class Player extends Entity implements MovingEntity {
     }
 
     private void updateFood() {
-        if (food < maxFood) {
-            foodCounter++;
-            if (foodCounter >= 100) {
-                food++;
+        if (food > 0) {
+            starvationCounter = 0;
+            if (food < maxFood) {
+                foodCounter++;
+                if (foodCounter >= 100) {
+                    food++;
+                    foodCounter = 0;
+                }
+            } else {
                 foodCounter = 0;
             }
-        } else {
+        } else { // starving
             foodCounter = 0;
+            starvationCounter++;
+            if (starvationCounter >= 40) {
+                damage(2);
+                starvationCounter = 0;
+            }
         }
     }
 
