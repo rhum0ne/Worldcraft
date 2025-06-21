@@ -1,43 +1,69 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
+import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
-import org.joml.Vector2f;
+import fr.rhumun.game.worldcraftopengl.worlds.World;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
-import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
-import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
+ * Renderer that generates clouds around the player using the world seed.
+ * Clouds are white quads at a fixed altitude and slowly move along the X axis.
+    private static final float SPEED = 0.01f;
 
-/**
- * Simple renderer generating a layer of moving clouds.
- */
-public class CloudRenderer extends Renderer {
-    private static final float CLOUD_SIZE = 32f;
-    private static final int CLOUD_COUNT = 40;
+    private final Player player;
+    private final long seed;
+        this.player = graphicModule.getPlayer();
+        World world = graphicModule.getWorld();
+        this.seed = world.getSeed().getLong();
+    /**
+     * Procedurally builds cloud vertices around the player based on the world seed.
+     */
 
-    private final List<Vector2f> clouds = new ArrayList<>();
-    private final Random random = new Random();
-    private float offset = 0f;
+        World world = getGraphicModule().getWorld();
+        float y = world.getHeigth() + 50;
 
-    public CloudRenderer(GraphicModule graphicModule) {
-        super(graphicModule, ShaderManager.CLOUD_SHADER);
-        generateClouds();
-        init();
+        int centerX = player.getLocation().getChunk().getX();
+        int centerZ = player.getLocation().getChunk().getZ();
+
+        for (int cx = centerX - SHOW_DISTANCE; cx <= centerX + SHOW_DISTANCE; cx++) {
+            for (int cz = centerZ - SHOW_DISTANCE; cz <= centerZ + SHOW_DISTANCE; cz++) {
+                Random rand = new Random(seed + cx * 341873128712L + cz * 132897987541L);
+                if (rand.nextFloat() > 0.3f) continue; // Only spawn a cloud sometimes
+
+                float baseX = cx * CHUNK_SIZE + rand.nextFloat() * (CHUNK_SIZE - CLOUD_SIZE);
+                float baseZ = cz * CHUNK_SIZE + rand.nextFloat() * (CHUNK_SIZE - CLOUD_SIZE);
+
+                float x1 = baseX + offset;
+                float z1 = baseZ;
+                float x2 = x1 + CLOUD_SIZE;
+                float z2 = z1 + CLOUD_SIZE;
+
+                addAllVertices(new float[][]{
+                        {x1, y, z1, 0f, 0f, 0f, 0f, -1f, 0f},
+                        {x2, y, z1, 1f, 0f, 0f, 0f, -1f, 0f},
+                        {x2, y, z2, 1f, 1f, 0f, 0f, -1f, 0f},
+                        {x1, y, z2, 0f, 1f, 0f, 0f, -1f, 0f}
+                });
+                addRawIndices(new int[]{0, 1, 2, 0, 2, 3});
+            }
+
+    private void updateVAO() {
+        glBindVertexArray(this.getVAO());
+        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray(), GL_STATIC_DRAW);
+        glBindVertexArray(0);
     }
 
     @Override
-    public void init() {
-        super.init();
+        updateVAO();
+        glBindVertexArray(this.getVAO());
+        glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+        offset += SPEED;
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
