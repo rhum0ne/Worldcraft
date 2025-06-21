@@ -33,6 +33,17 @@ public class Player extends Entity implements MovingEntity {
     private int food = 20;
     private int foodCounter = 0;
 
+    private int maxSaturation = 128;
+    private int saturation = 128;
+    private int saturationCounter = 0;
+
+    public static int MOVE_SATURATION_COST = 1;
+    public static int BREAK_SATURATION_COST = 4;
+
+    private double lastX;
+    private double lastY;
+    private double lastZ;
+
     private final int[] movements = new int[3];
 
     public Player(){
@@ -46,6 +57,9 @@ public class Player extends Entity implements MovingEntity {
     public Player(double x, double y, double z, float yaw, float pitch){
         super(5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
+        this.lastX = x;
+        this.lastY = y;
+        this.lastZ = z;
 
     }
 
@@ -99,6 +113,7 @@ public class Player extends Entity implements MovingEntity {
         Material mat = super.breakBlock();
         if (mat == null) return null;
         this.playSound(mat.getMaterial().getBreakSound());
+        consumeSaturation(BREAK_SATURATION_COST);
         return mat;
     }
   
@@ -169,9 +184,22 @@ public class Player extends Entity implements MovingEntity {
 
     @Override
     public void update() {
+        boolean moved = this.getLocation().getX() != lastX ||
+                        this.getLocation().getY() != lastY ||
+                        this.getLocation().getZ() != lastZ;
+
+        lastX = this.getLocation().getX();
+        lastY = this.getLocation().getY();
+        lastZ = this.getLocation().getZ();
+
+        if (moved) {
+            consumeSaturation(MOVE_SATURATION_COST);
+        }
+
         updateFallDamage();
         updateHealth();
         updateFood();
+        updateSaturation();
     }
 
     private void updateFood() {
@@ -196,6 +224,28 @@ public class Player extends Entity implements MovingEntity {
     public void addFood(int amount) {
         if (amount <= 0) return;
         food = Math.min(maxFood, food + amount);
+    }
+
+    private void updateSaturation() {
+        saturationCounter++;
+        if (saturationCounter >= 20) {
+            consumeSaturation(1);
+            saturationCounter = 0;
+        }
+    }
+
+    public void consumeSaturation(int amount) {
+        if (amount <= 0) return;
+        saturation -= amount;
+        if (saturation <= 0) {
+            saturation = maxSaturation;
+            consumeFood(1);
+        }
+    }
+
+    public void addSaturation(int amount) {
+        if (amount <= 0) return;
+        saturation = Math.min(maxSaturation, saturation + amount);
     }
 
     @Override
