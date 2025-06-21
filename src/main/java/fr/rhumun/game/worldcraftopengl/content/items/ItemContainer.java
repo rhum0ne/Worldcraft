@@ -2,6 +2,6 @@ package fr.rhumun.game.worldcraftopengl.content.items;
 
 public interface ItemContainer {
 
-    Item[] getItems();
-    void setItem(int Slot, Item item);
+    ItemStack[] getItems();
+    void setItem(int Slot, ItemStack item);
 }

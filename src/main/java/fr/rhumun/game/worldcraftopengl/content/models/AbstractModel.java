@@ -25,8 +25,4 @@ public abstract class AbstractModel {
     }
 
     public abstract void setBlockDataOnPlace(Block block, Vector3f hitPosition, Vector3f direction);
-
-    public Hitbox getHitbox(Block block) {
-        return BoxHitbox.fullBlock();
-    }
 }

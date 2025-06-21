@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.entities.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
@@ -303,8 +304,7 @@ public class GraphicModule {
     private void loop() {
         while (!glfwWindowShouldClose(window) && game.isPlaying()) {
             switch(game.getGameState()) {
-                case GameState.RUNNING -> this.renderGame();
-                case GameState.PAUSED -> this.renderGame();
+                case GameState.RUNNING, GameState.PAUSED -> this.renderGame();
                 case GameState.TITLE -> this.renderGuiOnly();
             }
 
@@ -319,6 +319,7 @@ public class GraphicModule {
 
     private void renderGuiOnly() {
         glClearColor(0, 0, 0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
 
         if (isShowingTriangles) setShowingTriangles(false);
@@ -327,6 +328,7 @@ public class GraphicModule {
 
     private void renderGame() {
         glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
 
         if (game.isPaused() != isPaused) setPaused(game.isPaused());
@@ -349,7 +351,6 @@ public class GraphicModule {
     }
 
     private void update() {
-        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             refreshLoadedChunks();
             lightningsUtils.updateLights();
@@ -362,19 +363,65 @@ public class GraphicModule {
         if (loadedChunks.isEmpty()) return;
         lightningsUtils.getPointLights().clear();
 
+        glEnable(GL_DEPTH_TEST);
+
         float h = world.getHeigth();
+
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
             if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                chunk.render();
+                if(chunk.isToUpdate())
+                    ((ChunkRenderer)chunk.getRenderer()).update();
             }
         }
+
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderOpaque();
+            }
+        }
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.LIQUID_SHADER.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderLiquids();
+            }
+        }
+        glDisable(GL_BLEND);
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderTransparent();
+            }
+        }
+        glDisable(GL_BLEND);
+
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        for (Chunk chunk : loadedChunks) {
+            float x = chunk.getX() * CHUNK_SIZE;
+            float z = chunk.getZ() * CHUNK_SIZE;
+            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                ((ChunkRenderer)chunk.getRenderer()).renderCloseTransparent();
+            }
+        }
+        glDisable(GL_BLEND);
+
         entitiesRenderer.render();
     }
 
     private void updateFarChunks() {
-        if (game.getGameState() != GameState.RUNNING) return;
         if (!areChunksUpdated && UPDATE_WORLD_RENDER) {
             refreshLoadedChunks();
             if (SHOWING_RENDERER_DATA) {

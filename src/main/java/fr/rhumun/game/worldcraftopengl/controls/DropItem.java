@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.EntityFactory;
 import fr.rhumun.game.worldcraftopengl.entities.Player;
@@ -9,7 +9,7 @@ public class DropItem extends Control {
     @Override
     public void onKeyPressed(Player player) {
 
-        Item item = player.getSelectedItem();
+        ItemStack item = player.getSelectedItem();
 
         if(item==null) return;
 

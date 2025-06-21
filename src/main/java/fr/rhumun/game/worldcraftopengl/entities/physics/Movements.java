@@ -16,6 +16,8 @@ public class Movements {
     private static int stepSoundFrequency = 15;
 
     public static void applyMovements(Entity entity) {
+        entity.updateSwimmingState();
+
         if (!entity.isFlying() && !entity.isNoClipping()) {
             applyGravityFor(entity);
 
@@ -37,8 +39,14 @@ public class Movements {
             float groundFriction = block.getMaterial().getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
-            if(entity.isFlying()) entity.getVelocity().mul(AIR_FRICTION_FLYING);
-            else entity.getVelocity().mul(AIR_FRICTION);
+            if(entity.isSwimming()) {
+                float density = entity.getLiquidDensity();
+                entity.getVelocity().mul(Math.max(0f, 1 - 0.2f * density));
+            } else if(entity.isFlying()) {
+                entity.getVelocity().mul(AIR_FRICTION_FLYING);
+            } else {
+                entity.getVelocity().mul(AIR_FRICTION);
+            }
         }
 
         if(entity instanceof MovingEntity mEntity) {
@@ -55,7 +63,6 @@ public class Movements {
 
         // Normaliser la vitesse pour ne pas dépasser la vitesse maximale
         normalizeVelocity(entity);
-        //System.out.println("Velocity: " + player.getVelocity());
     }
 
     private static void thresholdVelocity(Entity player) {
@@ -72,12 +79,27 @@ public class Movements {
         if (speed > s) {
             player.getVelocity().div(speed, 1, speed).mul(s, 1, s);
         }
-        if(player.isFlying()){
+        if(player instanceof Player p && p.isSwimming()){
+            float density = p.getLiquidDensity();
+            float limit = 0.1f / Math.max(0.0001f, density);
+            float y = Math.max(Math.min(player.getVelocity().get(1), limit), -limit);
+            player.getVelocity().setComponent(1, y);
+        } else if(player.isFlying()){
             player.getVelocity().setComponent(1, Math.min(player.getVelocity().get(1), 0.30f));
         }
     }
 
     public static void applyGravityFor(Entity entity) {
+        if(entity instanceof Player p && p.isSwimming()){
+            float density = p.getLiquidDensity();
+            if(entity.hasBlockDown() && entity.getVelocity().get(1) < 0){
+                entity.getVelocity().setComponent(1, 0);
+            }else{
+                entity.getVelocity().add(0, -DEFAULT_GRAVITY / (Math.max(0.0001f, density) * 2000.0f), 0);
+            }
+            return;
+        }
+
         if (entity.hasBlockDown() && entity.getVelocity().get(1) < 0) {
             // Empêcher le joueur de passer à travers le sol
             entity.getVelocity().setComponent(1, 0);
@@ -92,11 +114,36 @@ public class Movements {
         Vector3f v = entity.getVelocity();
         if(v.x == 0 && v.y == 0 && v.z == 0) return;
 
-        float yawCos = (float) Math.cos(Math.toRadians(entity.getLocation().getYaw()));
-        float yawSin = (float) Math.sin(Math.toRadians(entity.getLocation().getYaw()));
-        entity.addX((yawCos*v.x - yawSin*v.z));
-        entity.addY(v.y);
-        entity.addZ((yawCos*v.z + yawSin*v.x));
+        if(entity instanceof Player p && p.isSwimming()) {
+            float yaw = (float) Math.toRadians(entity.getLocation().getYaw());
+            float pitch = (float) Math.toRadians(entity.getLocation().getPitch());
+
+            float cosYaw = (float) Math.cos(yaw);
+            float sinYaw = (float) Math.sin(yaw);
+            float cosPitch = (float) Math.cos(pitch);
+            float sinPitch = (float) Math.sin(pitch);
+
+            float fx = cosYaw * cosPitch;
+            float fy = sinPitch;
+            float fz = sinYaw * cosPitch;
+
+            float rx = -sinYaw;
+            float rz = cosYaw;
+
+            float moveX = fx * v.x + rx * v.z;
+            float moveY = fy * v.x + v.y;
+            float moveZ = fz * v.x + rz * v.z;
+
+            entity.addX(moveX);
+            entity.addY(moveY);
+            entity.addZ(moveZ);
+        } else {
+            float yawCos = (float) Math.cos(Math.toRadians(entity.getLocation().getYaw()));
+            float yawSin = (float) Math.sin(Math.toRadians(entity.getLocation().getYaw()));
+            entity.addX((yawCos*v.x - yawSin*v.z));
+            entity.addY(v.y);
+            entity.addZ((yawCos*v.z + yawSin*v.x));
+        }
 
         if(v.x == 0 && v.z == 0) return;
 

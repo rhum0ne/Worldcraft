@@ -21,7 +21,8 @@ public enum Model {
     SLAB(new SlabModel(), (byte) 1),
     CYLINDER(new CylinderModel(), (byte) 2),
     CROSS(new CrossModel(), (byte) 3),
-    OTTER(new OtterModel(), (byte) 4);
+    OTTER(new OtterModel(), (byte) 4),
+    TRAPDOOR(new TrapdoorModel(), (byte) 5);
 
     final AbstractModel model;
     final byte id;
@@ -63,4 +64,5 @@ public enum Model {
     public AbstractModel getModelObject() {
         return model;
     }
+
 }

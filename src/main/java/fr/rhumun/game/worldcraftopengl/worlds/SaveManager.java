@@ -29,9 +29,9 @@ public class SaveManager {
     private static final Map<String, Biome> BIOME_BY_NAME = new HashMap<>();
     private static final Set<Path> SAVING_FILES = ConcurrentHashMap.newKeySet();
     private static final ExecutorService IO_EXECUTOR = Executors.newFixedThreadPool(
-            Math.max(2, Runtime.getRuntime().availableProcessors() / 2), r -> {
+            Math.max(3, Runtime.getRuntime().availableProcessors() / 2), r -> {
             Thread t = new Thread(r, "SaveManager-IO");
-            t.setPriority(5);
+            t.setPriority(10);
             return t;
     });
 

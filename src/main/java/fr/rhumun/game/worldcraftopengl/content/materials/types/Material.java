@@ -64,6 +64,13 @@ public enum Material {
     BIRCH_PLANKS(new BirchPlanksMaterial()),
     BIRCH_LEAVES(new BirchLeavesMaterial()),
     BIRCH_SAPLING(new BirchSaplingMaterial()),
+    ACACIA_LOG(new AcaciaLogMaterial()),
+    ACACIA_PLANKS(new AcaciaPlanksMaterial()),
+    ACACIA_LEAVES(new AcaciaLeavesMaterial()),
+    ACACIA_SAPLING(new AcaciaSaplingMaterial()),
+    ACACIA_DOOR(new AcaciaDoorMaterial()),
+    ACACIA_DOOR_TOP(new AcaciaDoorTopMaterial()),
+    ACACIA_TRAPDOOR(new AcaciaTrapdoorMaterial()),
     BRICKS(new BricksMaterial()),
     GLASS(new GlassMaterial()),
     CALCITE(new CalciteMaterial()),
@@ -75,7 +82,17 @@ public enum Material {
     JACKOLANTERN(new JackOLanternMaterial()),
     DARK_STONE(new DarkStoneMaterial()),
     DARK_COBBLE(new DarkCobbleMaterial()),
-    DARK_STONE_BRICK(new DarkStoneBrickMaterial());
+    DARK_STONE_BRICK(new DarkStoneBrickMaterial()),
+    SAWMILL(new SawmillMaterial()),
+    BLACKSTONE(new BlackstoneMaterial()),
+    CRACKED_STONE_BRICK(new CrackedStoneBrickMaterial()),
+    DARK_PLANKS(new DarkPlanksMaterial()),
+    MUD_BRICKS(new MudBricksMaterial()),
+    POLISHED_BLACKSTONE_BRICKS(new PolishedBlackstoneBricksMaterial()),
+    REDSTONE_LAMP_ON(new RedstoneLampMaterial()),
+    STONE_DIORITE(new StoneDioriteMaterial()),
+    TORCH(new TorchMaterial()),
+    STONE_CUTTER(new StoneCutterMaterial());
 
     static int maxID = 0;
 
@@ -98,6 +115,7 @@ public enum Material {
     public int getId(){ return this.material.getId(); }
     public int getTextureID(){ return this.material.getTexture().getId(); }
     public OpacityType getOpacity(){ return this.material.getOpacity(); }
+    public float getDensity(){ return this.material.getDensity(); }
 
     public static int createID(){
         return maxID++;

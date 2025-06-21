@@ -1,7 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.items.Item;
+import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
+import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
+import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
@@ -12,12 +16,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
 
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
 @Setter
 public class Entity {
     protected static final float RAY_STEP = 0.02f;
-    private final Game game;
-
     private Location location;
 
     private final int reach;
@@ -26,6 +30,7 @@ public class Entity {
     private boolean isNoClipping = false;
     private boolean isSneaking = false;
     private boolean isSprinting = false;
+    private boolean swimming = false;
 
     private final int jumpForce;
 
@@ -43,9 +48,8 @@ public class Entity {
     private short textureID;
 
 
-    public Entity(Game game, Model model, short textureID, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
-        this.location = new Location(game.getWorld(),x, y, z, yaw, pitch);
-        this.game = game;
+    public Entity(Model model, short textureID, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+        this.location = new Location(GAME.getWorld(),x, y, z, yaw, pitch);
         this.model = model;
         this.height = height;
         this.radius = radius;
@@ -62,8 +66,8 @@ public class Entity {
         Movements.applyMovements(this);
     }
 
-    public Entity(Game game, int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
-        this(game, null, (short) 0, reach, radius, height, walkSpeed, sneakSpeed, sprintSpeed, accelerationByTick, jumpForce, x, y, z, yaw, pitch);
+    public Entity(int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {
+        this(null, (short) 0, reach, radius, height, walkSpeed, sneakSpeed, sprintSpeed, accelerationByTick, jumpForce, x, y, z, yaw, pitch);
     }
 
     public void setLocation(Location loc){
@@ -141,7 +145,7 @@ public class Entity {
     public Block getBlockInDirection(Vector3f direction, int yLevel) {
         int maxLevel = (int) Math.ceil(this.height);
         if (yLevel > maxLevel) {
-            this.game.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
+            GAME.errorLog("Trying to get block at yLevel for an Entity with height " + this.height + "\nreturning null...");
             return null;
         }
 
@@ -160,8 +164,6 @@ public class Entity {
         Vector3f normalizedDirection = direction;
         AxisAlignedBB bb = getBoundingBox();
 
-        System.out.println(normalizedDirection.toString());
-
         float eps = 0.001f;
         float espY = 0.1f;
         int maxLevel = (int) Math.ceil(this.height);
@@ -173,14 +175,12 @@ public class Entity {
                 boolean middleP = checkBlockCollision(bb.maxX + eps, yPos, bb.minZ + radius);
                 if (middleP || (checkBlockCollision(bb.maxX + eps, yPos, bb.minZ) ||
                         checkBlockCollision(bb.maxX + eps, yPos, bb.maxZ))) {
-                    System.out.println("X1");
                     return true;
                 }
             } else if (normalizedDirection.x < 0) {
                 boolean middleN = checkBlockCollision(bb.minX - eps, yPos, bb.minZ + radius);
                 if (middleN || (checkBlockCollision(bb.minX - eps, yPos, bb.minZ) ||
                         checkBlockCollision(bb.minX - eps, yPos, bb.maxZ))) {
-                    System.out.println("X2");
                     return true;
                 }
             }
@@ -189,14 +189,12 @@ public class Entity {
                 boolean middleP = checkBlockCollision(bb.minX + radius, yPos, bb.maxZ+eps);
                 if( middleP || (checkBlockCollision(bb.minX, yPos, bb.maxZ + eps) ||
                         checkBlockCollision(bb.maxX, yPos, bb.maxZ + eps))) {
-                    System.out.println("Z1");
                     return true;
                 }
             } else if (normalizedDirection.z < 0) {
                 boolean middleN = checkBlockCollision(bb.minX + radius, yPos, bb.minZ-eps);
                 if (middleN || (checkBlockCollision(bb.minX, yPos, bb.minZ - eps) ||
                         checkBlockCollision(bb.maxX, yPos, bb.minZ - eps))) {
-                    System.out.println("Z2");
                     return true;
                 }
             }
@@ -206,7 +204,16 @@ public class Entity {
 
     private boolean checkBlockCollision(double x, double y, double z) {
         Block block = getWorld().getBlockAt(x,y,z, false);
-        return block != null && block.getMaterial() != null && block.getHitbox().intersects(this, block);
+        if(block == null || block.getMaterial() == null || block.getMaterial().isLiquid()) return false;
+        Model model = block.getModel();
+
+        if(model == null) return false;
+        if(model.getModel() instanceof ModelHitbox modelHitbox) return modelHitbox.getHitbox(block).intersects(this, block);
+        if(model.getModel() instanceof ModelMultiHitbox modelMultiHitbox)
+            for(Hitbox hitbox : modelMultiHitbox.getHitboxes(block))
+                if(hitbox.intersects(this, block)) return true;
+
+        return false;
     }
 
 
@@ -223,6 +230,41 @@ public class Entity {
                checkBlockCollision(bb.maxX - 0.001f, y, bb.minZ + 0.001f) ||
                checkBlockCollision(bb.minX + 0.001f, y, bb.maxZ - 0.001f) ||
                checkBlockCollision(bb.maxX - 0.001f, y, bb.maxZ - 0.001f);
+    }
+
+    public boolean isInsideLiquid(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        return (body != null && body.getMaterial() != null && body.getMaterial().isLiquid()) ||
+               (head != null && head.getMaterial() != null && head.getMaterial().isLiquid());
+    }
+
+    public float getLiquidDensity(){
+        Block body = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() - 0.5f,
+                this.getLocation().getZ(), false);
+        if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
+            return body.getMaterial().getMaterial().getDensity();
+
+        Block head = this.getLocation().getWorld().getBlockAt(
+                this.getLocation().getX(), this.getLocation().getY() + 0.2f,
+                this.getLocation().getZ(), false);
+        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
+            return head.getMaterial().getMaterial().getDensity();
+
+        return 0f;
+    }
+
+    public void updateSwimmingState(){
+        boolean swimming = isInsideLiquid();
+        if(!swimming && this.swimming && !this.isFlying) {
+            this.velocity.y = 0;
+        }
+        this.swimming = swimming;
     }
 
     public Block getBlockTop(){
@@ -257,7 +299,7 @@ public class Entity {
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
 
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
-            Block block = this.getGame().getWorld().getBlockAt(pos, true);
+            Block block = GAME.getWorld().getBlockAt(pos, true);
 
             if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
                 return block;
@@ -268,7 +310,7 @@ public class Entity {
         return null;
     }
 
-    public void placeBlock(final Item item){
+    public void placeBlock(final ItemStack item){
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
         Vector3f hitPosition = null;
@@ -291,7 +333,7 @@ public class Entity {
         placeBlockAt(item, block, hitPosition, direction);
     }
 
-    protected void placeBlockAt(Item item, Block block, Vector3f hitPosition, Vector3f direction){
+    protected void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
         if (block == null) {
             System.out.println("Impossible de déterminer la face du bloc.");
             return;
@@ -303,6 +345,10 @@ public class Entity {
         block.setModel(model).setMaterial(material);
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
+
+        if (material.getMaterial() instanceof fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock multi) {
+            multi.onPlace(block);
+        }
     }
 
     public Material breakBlock(){
