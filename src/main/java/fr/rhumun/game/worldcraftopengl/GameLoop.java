@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
 import java.util.ArrayList;

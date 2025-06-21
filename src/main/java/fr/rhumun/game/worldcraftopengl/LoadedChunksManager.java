@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.LightChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;

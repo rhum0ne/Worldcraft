@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.entities.physics;
 
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 

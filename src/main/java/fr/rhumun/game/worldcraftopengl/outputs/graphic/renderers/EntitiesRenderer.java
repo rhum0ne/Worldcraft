@@ -4,7 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;

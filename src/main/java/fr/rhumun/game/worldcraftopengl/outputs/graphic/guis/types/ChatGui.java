@@ -1,13 +1,11 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TextComponent;
 import lombok.Getter;
 import lombok.Setter;
-import org.w3c.dom.Text;
 
 @Getter @Setter
 public class ChatGui extends Gui {

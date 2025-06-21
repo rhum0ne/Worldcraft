@@ -4,10 +4,9 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.SawmillGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.stone_cutter.StoneCutterGui;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 

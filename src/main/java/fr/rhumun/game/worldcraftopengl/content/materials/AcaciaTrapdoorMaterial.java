@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;

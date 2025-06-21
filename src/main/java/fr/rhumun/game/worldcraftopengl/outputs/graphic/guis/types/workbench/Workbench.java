@@ -7,7 +7,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.ClickableSlot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import lombok.Getter;
 
 import java.util.HashMap;

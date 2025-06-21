@@ -1,9 +1,11 @@
-package fr.rhumun.game.worldcraftopengl.entities;
+package fr.rhumun.game.worldcraftopengl.entities.player;
 
-import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.Inventory;
+import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
@@ -25,7 +27,7 @@ public class Player extends Entity implements MovingEntity {
     private int selectedSlot;
     private final Inventory inventory;
     /** Whether the player has creative privileges. */
-    private boolean inCreativeMode;
+    private Gamemode gamemode = Gamemode.SURVIVAL;
 
     private final int[] movements = new int[3];
 
@@ -171,6 +173,6 @@ public class Player extends Entity implements MovingEntity {
     }
 
     public boolean isInCreativeMode(){
-        return true;
+        return this.gamemode == Gamemode.CREATIVE;
     }
 }

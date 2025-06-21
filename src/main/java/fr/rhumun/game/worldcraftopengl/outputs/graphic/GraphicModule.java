@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;

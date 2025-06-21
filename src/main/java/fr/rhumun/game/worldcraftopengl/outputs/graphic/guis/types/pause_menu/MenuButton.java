@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.pause_menu;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 
