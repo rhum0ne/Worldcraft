@@ -11,6 +11,7 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Setter
 public class Entity {
     protected static final float RAY_STEP = 0.02f;
+    private static final float FALL_DAMAGE_THRESHOLD = 3f;
     private Location location;
 
     private final int reach;
@@ -40,6 +42,12 @@ public class Entity {
     private float accelerationByTick;
 
     private final Vector3f velocity = new Vector3f(0, 0, 0);
+
+    protected int maxHealth = 20;
+    protected int health = 20;
+
+    private boolean onGround = true;
+    private double fallStartY = 0;
 
     private float radius;
     private float height;
@@ -64,6 +72,42 @@ public class Entity {
 
     public void update(){
         Movements.applyMovements(this);
+        updateFallDamage();
+    }
+
+    protected void updateFallDamage() {
+        if (isFlying || swimming || isNoClipping || (this instanceof Player p && p.isInCreativeMode())) {
+            onGround = true;
+            return;
+        }
+
+        boolean ground = hasBlockDown();
+        if (ground) {
+            if (!onGround) {
+                double distance = fallStartY - this.getLocation().getY();
+                if (distance > FALL_DAMAGE_THRESHOLD) {
+                    int dmg = (int) Math.floor(distance - FALL_DAMAGE_THRESHOLD);
+                    damage(dmg);
+                }
+            }
+            onGround = true;
+        } else {
+            if (onGround) {
+                fallStartY = this.getLocation().getY();
+            }
+            onGround = false;
+        }
+    }
+
+    public void damage(int amount) {
+        if (amount <= 0) return;
+        health -= amount;
+        if (health < 0) health = 0;
+    }
+
+    public void heal(int amount) {
+        if (amount <= 0) return;
+        health = Math.min(maxHealth, health + amount);
     }
 
     public Entity(int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {

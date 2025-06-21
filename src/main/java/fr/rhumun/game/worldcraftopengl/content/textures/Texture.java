@@ -127,6 +127,14 @@ public class Texture {
     public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
     public static Texture WALLPAPER;
 
+    public static Texture HEART_CONTAINER;
+    public static Texture HEART_FULL;
+    public static Texture HEART_HALF;
+
+    public static Texture HUNGER_CONTAINER;
+    public static Texture HUNGER_FULL;
+    public static Texture HUNGER_HALF;
+
 
     public static Texture OTTER;
 
@@ -244,6 +252,14 @@ public class Texture {
         DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive.png");
         DEFAULT_BUTTON_UNACTIVE_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive_selected.png");
         WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
+
+        HEART_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\heart\\container.png");
+        HEART_FULL = new Texture(TextureTypes.GUIS, "hud\\heart\\full.png");
+        HEART_HALF = new Texture(TextureTypes.GUIS, "hud\\heart\\half.png");
+
+        HUNGER_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\food_empty.png");
+        HUNGER_FULL = new Texture(TextureTypes.GUIS, "hud\\food_full.png");
+        HUNGER_HALF = new Texture(TextureTypes.GUIS, "hud\\food_half.png");
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
     }
