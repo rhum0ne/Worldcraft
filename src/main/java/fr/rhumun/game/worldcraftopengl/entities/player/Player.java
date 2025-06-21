@@ -29,6 +29,10 @@ public class Player extends Entity implements MovingEntity {
     /** Whether the player has creative privileges. */
     private Gamemode gamemode = Gamemode.SURVIVAL;
 
+    private int maxFood = 20;
+    private int food = 20;
+    private int foodCounter = 0;
+
     private final int[] movements = new int[3];
 
     public Player(){
@@ -167,6 +171,31 @@ public class Player extends Entity implements MovingEntity {
     public void update() {
         updateFallDamage();
         updateHealth();
+        updateFood();
+    }
+
+    private void updateFood() {
+        if (food < maxFood) {
+            foodCounter++;
+            if (foodCounter >= 100) {
+                food++;
+                foodCounter = 0;
+            }
+        } else {
+            foodCounter = 0;
+        }
+    }
+
+    public void consumeFood(int amount) {
+        if (amount <= 0) return;
+        food -= amount;
+        if (food < 0) food = 0;
+        foodCounter = 0;
+    }
+
+    public void addFood(int amount) {
+        if (amount <= 0) return;
+        food = Math.min(maxFood, food + amount);
     }
 
     @Override
