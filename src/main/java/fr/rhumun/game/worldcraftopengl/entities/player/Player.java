@@ -165,6 +165,7 @@ public class Player extends Entity implements MovingEntity {
 
     @Override
     public void update() {
+        updateFallDamage();
         updateHealth();
     }
 

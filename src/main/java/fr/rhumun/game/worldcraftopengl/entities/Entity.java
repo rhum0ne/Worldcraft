@@ -11,6 +11,7 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Setter
 public class Entity {
     protected static final float RAY_STEP = 0.02f;
+    private static final float FALL_DAMAGE_THRESHOLD = 3f;
     private Location location;
 
     private final int reach;
@@ -44,6 +46,9 @@ public class Entity {
     private int maxHealth = 20;
     private int health = 20;
     private int regenCounter = 0;
+
+    private boolean onGround = true;
+    private double fallStartY = 0;
 
     private float radius;
     private float height;
@@ -68,6 +73,7 @@ public class Entity {
 
     public void update(){
         Movements.applyMovements(this);
+        updateFallDamage();
         updateHealth();
     }
 
@@ -80,6 +86,30 @@ public class Entity {
             }
         } else {
             regenCounter = 0;
+        }
+    }
+
+    protected void updateFallDamage() {
+        if (isFlying || isSwimming || isNoClipping || (this instanceof Player p && p.isInCreativeMode())) {
+            onGround = true;
+            return;
+        }
+
+        boolean ground = hasBlockDown();
+        if (ground) {
+            if (!onGround) {
+                double distance = fallStartY - this.getLocation().getY();
+                if (distance > FALL_DAMAGE_THRESHOLD) {
+                    int dmg = (int) Math.floor(distance - FALL_DAMAGE_THRESHOLD);
+                    damage(dmg);
+                }
+            }
+            onGround = true;
+        } else {
+            if (onGround) {
+                fallStartY = this.getLocation().getY();
+            }
+            onGround = false;
         }
     }
 
