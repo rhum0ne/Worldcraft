@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.InventoryGUI;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.IntegrablePlayerInventory.addInventoryComponentsTo;
 
 /**
  * Graphical interface showing the player's inventory.
@@ -20,15 +21,7 @@ public class PlayerInventoryGui extends CenteredGUI {
 
         this.setItemContainer(GAME.getPlayer().getInventory());
 
-        // Upper inventory (27 slots)
-        for (int y = 3; y >= 0; y--) {
-            for (int x = 0; x < 9; x++) {
-                this.createClickableSlot(getXForSlot(x), getYForSlot(y),
-                        (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
-            }
-        }
-
-        this.addText(0, -20, "Inventory");
+        addInventoryComponentsTo(this);
     }
 
     private int getXForSlot(int slot) {

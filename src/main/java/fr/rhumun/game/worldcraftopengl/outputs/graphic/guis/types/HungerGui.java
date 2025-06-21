@@ -9,16 +9,16 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class HungerGui extends Gui {
 
-    private static final int ICON_SIZE = 18;
+    private static final int ICON_SIZE = 24;
     private final Image[] foods = new Image[10];
 
     public HungerGui() {
-        super(10, 32, ICON_SIZE * 10, ICON_SIZE, null);
+        super(10, 64, ICON_SIZE * 10, ICON_SIZE, null);
 
         for (int i = 0; i < foods.length; i++) {
             int x = i * ICON_SIZE;
             createImage(x, 0, ICON_SIZE, ICON_SIZE, Texture.HUNGER_CONTAINER);
-            foods[i] = createImage(x, 0, ICON_SIZE, ICON_SIZE, null);
+            foods[i] = createImage(x, 0, ICON_SIZE, ICON_SIZE, Texture.HUNGER_CONTAINER);
         }
     }
 
@@ -42,7 +42,7 @@ public class HungerGui extends Gui {
             } else if (i == full && half) {
                 foods[i].set2DTexture(Texture.HUNGER_HALF);
             } else {
-                foods[i].set2DTexture(null);
+                foods[i].set2DTexture(Texture.HUNGER_CONTAINER);
             }
         }
     }

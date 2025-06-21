@@ -9,7 +9,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 public class HealthGui extends Gui {
 
-    private static final int HEART_SIZE = 18;
+    private static final int HEART_SIZE = 24;
     private final Image[] hearts = new Image[10];
 
     public HealthGui() {
@@ -42,7 +42,7 @@ public class HealthGui extends Gui {
             } else if (i == full && half) {
                 hearts[i].set2DTexture(Texture.HEART_HALF);
             } else {
-                hearts[i].set2DTexture(null);
+                hearts[i].set2DTexture(Texture.HEART_CONTAINER);
             }
         }
     }

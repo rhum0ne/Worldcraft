@@ -30,8 +30,9 @@ public class Player extends Entity implements MovingEntity {
     private Gamemode gamemode = Gamemode.SURVIVAL;
 
     private int maxFood = 20;
-    private int food = 20;
-    private int foodCounter = 0;
+    private int food = 1;
+
+    private int regenCounter = 0;
 
     private int maxSaturation = 128;
     private int saturation = 128;
@@ -41,6 +42,7 @@ public class Player extends Entity implements MovingEntity {
 
     public static int MOVE_SATURATION_COST = 1;
     public static int BREAK_SATURATION_COST = 4;
+    public static int REGEN_SATURATION_COST = 10;
 
     private double lastX;
     private double lastY;
@@ -195,7 +197,7 @@ public class Player extends Entity implements MovingEntity {
         lastZ = this.getLocation().getZ();
 
         if (moved) {
-            consumeSaturation(MOVE_SATURATION_COST);
+            updateSaturation();
         }
 
         updateFallDamage();
@@ -204,22 +206,26 @@ public class Player extends Entity implements MovingEntity {
         updateSaturation();
     }
 
+
+    protected void updateHealth() {
+        if (health < maxHealth) {
+            regenCounter++;
+            if (regenCounter >= 100) {
+                health++;
+                this.consumeSaturation(REGEN_SATURATION_COST);
+                regenCounter = 0;
+            }
+        } else {
+            regenCounter = 0;
+        }
+    }
+
     private void updateFood() {
         if (food > 0) {
             starvationCounter = 0;
-            if (food < maxFood) {
-                foodCounter++;
-                if (foodCounter >= 100) {
-                    food++;
-                    foodCounter = 0;
-                }
-            } else {
-                foodCounter = 0;
-            }
-        } else { // starving
-            foodCounter = 0;
+        } else {
             starvationCounter++;
-            if (starvationCounter >= 40) {
+            if (starvationCounter >= 100) {
                 damage(2);
                 starvationCounter = 0;
             }
@@ -230,7 +236,6 @@ public class Player extends Entity implements MovingEntity {
         if (amount <= 0) return;
         food -= amount;
         if (food < 0) food = 0;
-        foodCounter = 0;
     }
 
     public void addFood(int amount) {
@@ -240,10 +245,16 @@ public class Player extends Entity implements MovingEntity {
 
     private void updateSaturation() {
         saturationCounter++;
-        if (saturationCounter >= 20) {
+        if (saturationCounter >= 150) {
             consumeSaturation(1);
             saturationCounter = 0;
         }
+    }
+
+    @Override
+    public void damage(int amout){
+        super.damage(amout);
+        this.playSound(Sound.HURT);
     }
 
     public void consumeSaturation(int amount) {

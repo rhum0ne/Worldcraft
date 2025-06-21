@@ -57,10 +57,13 @@ public class GameLoop extends Thread {
                     game.debug("Controls Concurrent Modif");
                     continue;
                 }
-                Movements.applyMovements(player);
-                player.update();
 
-                player.getWorld().updateEntities(player, 48);
+                if(game.getGameState() == GameState.RUNNING) {
+                    Movements.applyMovements(player);
+                    player.update();
+
+                    player.getWorld().updateEntities(player, 48);
+                }
             }
 
             previousUpdate = currentTime;

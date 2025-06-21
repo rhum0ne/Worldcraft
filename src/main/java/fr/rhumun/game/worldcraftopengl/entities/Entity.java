@@ -43,9 +43,8 @@ public class Entity {
 
     private final Vector3f velocity = new Vector3f(0, 0, 0);
 
-    private int maxHealth = 20;
-    private int health = 20;
-    private int regenCounter = 0;
+    protected int maxHealth = 20;
+    protected int health = 20;
 
     private boolean onGround = true;
     private double fallStartY = 0;
@@ -74,23 +73,10 @@ public class Entity {
     public void update(){
         Movements.applyMovements(this);
         updateFallDamage();
-        updateHealth();
-    }
-
-    protected void updateHealth() {
-        if (health < maxHealth) {
-            regenCounter++;
-            if (regenCounter >= 100) {
-                health++;
-                regenCounter = 0;
-            }
-        } else {
-            regenCounter = 0;
-        }
     }
 
     protected void updateFallDamage() {
-        if (isFlying || isSwimming || isNoClipping || (this instanceof Player p && p.isInCreativeMode())) {
+        if (isFlying || swimming || isNoClipping || (this instanceof Player p && p.isInCreativeMode())) {
             onGround = true;
             return;
         }
@@ -117,7 +103,6 @@ public class Entity {
         if (amount <= 0) return;
         health -= amount;
         if (health < 0) health = 0;
-        regenCounter = 0;
     }
 
     public void heal(int amount) {
