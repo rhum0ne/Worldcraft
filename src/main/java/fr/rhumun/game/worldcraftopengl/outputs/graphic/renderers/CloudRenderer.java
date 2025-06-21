@@ -5,16 +5,23 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.SHOW_DISTANCE;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL33.glVertexAttribDivisor;
 
 /**
  * Simple renderer generating a layer of moving clouds.
  */
-public class CloudRenderer extends GlobalRenderer {
+public class CloudRenderer extends Renderer {
     private static final float CLOUD_SIZE = 32f;
     private static final int CLOUD_COUNT = 40;
 
@@ -26,6 +33,27 @@ public class CloudRenderer extends GlobalRenderer {
         super(graphicModule, ShaderManager.CLOUD_SHADER);
         generateClouds();
         init();
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        glBindVertexArray(this.getVAO());
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+// Configuration des attributs de sommet pour position, coordonnées de texture et ID de texture
+        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray(), GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
+
+// Attribut de position (3 floats)
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.BYTES, 0);
+        glEnableVertexAttribArray(0);
+
+        glBindVertexArray(0);
     }
 
     private void generateClouds() {
@@ -47,12 +75,12 @@ public class CloudRenderer extends GlobalRenderer {
             float x2 = x1 + CLOUD_SIZE;
             float z2 = z1 + CLOUD_SIZE;
             addAllVertices(new float[][]{
-                    {x1, y, z1, 0f, 0f, 0f, 0f, -1f, 0f},
-                    {x2, y, z1, 1f, 0f, 0f, 0f, -1f, 0f},
-                    {x2, y, z2, 1f, 1f, 0f, 0f, -1f, 0f},
-                    {x1, y, z2, 0f, 1f, 0f, 0f, -1f, 0f}
+                    { x1, y, z1 },
+                    { x2, y, z1 },
+                    { x2, y, z2 },
+                    { x1, y, z2 }
             });
-            addRawIndices(new int[]{0,1,2,0,2,3});
+            addRawIndices(new int[]{0,2,1,0,3,2});
         }
         toArrays();
     }
@@ -60,7 +88,16 @@ public class CloudRenderer extends GlobalRenderer {
     @Override
     public void render() {
         buildVertices();
-        super.render();
+
+        glBindVertexArray(this.getVAO());
+        glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
         offset += 0.01f;
+    }
+
+    @Override
+    public void cleanup() {
+
     }
 }
