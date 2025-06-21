@@ -131,6 +131,7 @@ public class GraphicModule {
         if(game.getWorld() == null) return;
 
         configureLighting();
+        cloudRenderer.setSeed(game.getWorld().getSeed());
         ShaderManager.LIQUID_SHADER.setUniform("waterHigh", world.getGenerator().getWaterHigh());
     }
 
