@@ -41,6 +41,10 @@ public class Entity {
 
     private final Vector3f velocity = new Vector3f(0, 0, 0);
 
+    private int maxHealth = 20;
+    private int health = 20;
+    private int regenCounter = 0;
+
     private float radius;
     private float height;
 
@@ -64,6 +68,31 @@ public class Entity {
 
     public void update(){
         Movements.applyMovements(this);
+        updateHealth();
+    }
+
+    protected void updateHealth() {
+        if (health < maxHealth) {
+            regenCounter++;
+            if (regenCounter >= 100) {
+                health++;
+                regenCounter = 0;
+            }
+        } else {
+            regenCounter = 0;
+        }
+    }
+
+    public void damage(int amount) {
+        if (amount <= 0) return;
+        health -= amount;
+        if (health < 0) health = 0;
+        regenCounter = 0;
+    }
+
+    public void heal(int amount) {
+        if (amount <= 0) return;
+        health = Math.min(maxHealth, health + amount);
     }
 
     public Entity(int reach, float radius, float height, int walkSpeed, int sneakSpeed, int sprintSpeed, float accelerationByTick, int jumpForce, double x, double y, double z, float yaw, float pitch) {

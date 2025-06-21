@@ -164,6 +164,11 @@ public class Player extends Entity implements MovingEntity {
     }
 
     @Override
+    public void update() {
+        updateHealth();
+    }
+
+    @Override
     public void updateSwimmingState(){
         boolean swimming = isInsideLiquid();
         if(!swimming && this.isSwimming() && !this.isFlying()) {

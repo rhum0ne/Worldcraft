@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.DebugMenu;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HealthGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
@@ -41,6 +42,7 @@ public class GuiModule {
     private final DebugMenu debugMenu;
     private final ChatGui chat;
     private final HotBarGui hotbar;
+    private final HealthGui health;
     private final SelectedItemDisplay selectedItemDisplay;
     private Gui gui;
     private ItemStack selectedItem;
@@ -66,6 +68,7 @@ public class GuiModule {
 
         this.hud.add(new Crossair());
         this.hud.add(this.hotbar = new HotBarGui());
+        this.hud.add(this.health = new HealthGui());
         this.selectedItemDisplay = new SelectedItemDisplay();
     }
 
