@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.*;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
@@ -75,6 +76,7 @@ public class GraphicModule {
     private BlockSelector blockSelector;
     private final CleanerModule cleaner;
     private EntitiesRenderer entitiesRenderer;
+    private MobEntitiesRenderer animatedEntitiesRenderer;
     private HitboxRenderer hitboxRenderer;
     private final UpdateLoop updateLoop;
     private final ChunkLoader chunkLoader;
@@ -189,7 +191,8 @@ public class GraphicModule {
         renderingShaders.addAll(List.of(
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
-                ShaderManager.ENTITY_SHADER
+                ShaderManager.ENTITY_SHADER,
+                ShaderManager.ANIMATED_ENTITY_SHADER
         ));
         shaders.addAll(List.of(
                 ShaderManager.SELECTED_BLOCK_SHADER,
@@ -197,6 +200,7 @@ public class GraphicModule {
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
+                ShaderManager.ANIMATED_ENTITY_SHADER,
                 ShaderManager.FAR_SHADER
         ));
         Matrix4f modelMatrix = new Matrix4f().identity();
@@ -210,6 +214,7 @@ public class GraphicModule {
         this.guiModule.init();
         this.guiModule.resize(startWidth, startHeight);
         this.entitiesRenderer = new EntitiesRenderer(this, player);
+        this.animatedEntitiesRenderer = new MobEntitiesRenderer(this, player);
         this.hitboxRenderer = new HitboxRenderer(this, player);
         this.hitboxRenderer.init();
     }
@@ -343,6 +348,12 @@ public class GraphicModule {
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         update();
 
+        glUseProgram(ShaderManager.ENTITY_SHADER.id);
+        entitiesRenderer.render();
+
+        glUseProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
+        animatedEntitiesRenderer.render();
+
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         blockSelector.render();
         hitboxRenderer.render();
@@ -417,8 +428,6 @@ public class GraphicModule {
             }
         }
         glDisable(GL_BLEND);
-
-        entitiesRenderer.render();
     }
 
     private void updateFarChunks() {
