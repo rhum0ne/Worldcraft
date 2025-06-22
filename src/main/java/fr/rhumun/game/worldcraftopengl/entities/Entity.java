@@ -89,10 +89,10 @@ public class Entity {
      */
     public AxisAlignedBB getBoundingBox() {
         float minX = (float) (this.getLocation().getX() - radius);
-        float minY = (float) (this.getLocation().getY() - height);
+        float minY = (float) (this.getLocation().getY());
         float minZ = (float) (this.getLocation().getZ() - radius);
         float maxX = (float) (this.getLocation().getX() + radius);
-        float maxY = (float) this.getLocation().getY();
+        float maxY = (float) this.getLocation().getY() + 2*height;
         float maxZ = (float) (this.getLocation().getZ() + radius);
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
@@ -365,4 +365,7 @@ public class Entity {
         return false;
     }
 
+    public boolean hasBlockInViewDirection() {
+        return hasBlockInDirection(getRayDirection());
+    }
 }

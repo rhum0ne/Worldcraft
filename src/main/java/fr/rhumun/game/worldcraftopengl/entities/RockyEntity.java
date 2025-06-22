@@ -24,7 +24,7 @@ public class RockyEntity extends MobEntity {
     }
 
     @Override
-    public void update() {
+    public void move() {
         if (getAnimator() != null) getAnimator().update(1f / 60f);
 
         var world = Game.GAME.getWorld();

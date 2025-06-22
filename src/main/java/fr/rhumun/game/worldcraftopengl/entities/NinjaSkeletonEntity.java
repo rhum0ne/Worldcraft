@@ -25,18 +25,25 @@ public class NinjaSkeletonEntity extends MobEntity {
     }
 
     @Override
-    public void update() {
+    public void move() {
         if (getAnimator() != null) getAnimator().update(1f / 60f);
 
         Player player = Game.GAME.getPlayer();
         if (player != null) {
             double dx = player.getLocation().getX() - this.getLocation().getX();
             double dz = player.getLocation().getZ() - this.getLocation().getZ();
+            if (dx*dx + dz*dz < 1.5) {
+                this.stopMove();
+                return;
+            }
+
             float yaw = (float) Math.toDegrees(Math.atan2(dz, dx));
             setYaw(yaw);
             getMovements()[0] = 1;
             getMovements()[2] = 0;
         }
+
+        if(this.hasBlockInViewDirection()) { this. jump();}
 
         Movements.applyMovements(this);
     }

@@ -84,8 +84,8 @@ public class EntitiesRenderer extends GlobalRenderer {
         IntBuffer indicesBuffer = obj.getIndicesBuffer().duplicate();
 
         float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
-        float cosYaw = (float) Math.cos(yawRad);
-        float sinYaw = (float) Math.sin(yawRad);
+        float cosYaw = (float) Math.cos(yawRad + Math.PI/2);
+        float sinYaw = (float) Math.sin(yawRad + Math.PI/2);
 
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
