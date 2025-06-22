@@ -1,9 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.models.entities.Animator;
 import fr.rhumun.game.worldcraftopengl.content.models.entities.GltfAnimationLoader;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
 public class NinjaSkeletonEntity extends MobEntity {
     public NinjaSkeletonEntity(double x, double y, double z, float yaw, float pitch) {
@@ -24,6 +27,17 @@ public class NinjaSkeletonEntity extends MobEntity {
     @Override
     public void update() {
         if (getAnimator() != null) getAnimator().update(1f / 60f);
-        super.update();
+
+        Player player = Game.GAME.getPlayer();
+        if (player != null) {
+            double dx = player.getLocation().getX() - this.getLocation().getX();
+            double dz = player.getLocation().getZ() - this.getLocation().getZ();
+            float yaw = (float) Math.toDegrees(Math.atan2(dz, dx));
+            setYaw(yaw);
+            getMovements()[0] = 1;
+            getMovements()[2] = 0;
+        }
+
+        Movements.applyMovements(this);
     }
 }
