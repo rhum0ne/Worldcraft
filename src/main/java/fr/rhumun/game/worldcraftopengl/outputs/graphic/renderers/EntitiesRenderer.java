@@ -83,6 +83,10 @@ public class EntitiesRenderer extends GlobalRenderer {
         FloatBuffer texCoordsBuffer = obj.getTexCoordsBuffer().duplicate();
         IntBuffer indicesBuffer = obj.getIndicesBuffer().duplicate();
 
+        float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
+        float cosYaw = (float) Math.cos(yawRad);
+        float sinYaw = (float) Math.sin(yawRad);
+
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
         double z = entity.getLocation().getZ();
@@ -94,15 +98,25 @@ public class EntitiesRenderer extends GlobalRenderer {
             float ny = normalsBuffer.get(vertexIndex * 3 + 1);
             float nz = normalsBuffer.get(vertexIndex * 3 + 2);
 
-            float vx = (float) (x + verticesBuffer.get(vertexIndex * 3));
-            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
-            float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
+            float relX = verticesBuffer.get(vertexIndex * 3);
+            float relY = verticesBuffer.get(vertexIndex * 3 + 1);
+            float relZ = verticesBuffer.get(vertexIndex * 3 + 2);
+
+            float rotX = cosYaw * relX - sinYaw * relZ;
+            float rotZ = sinYaw * relX + cosYaw * relZ;
+
+            float vx = (float) (x + rotX);
+            float vy = (float) (y + relY);
+            float vz = (float) (z + rotZ);
+
+            float rnx = cosYaw * nx - sinYaw * nz;
+            float rnz = sinYaw * nx + cosYaw * nz;
 
             int texture = entity.getTextureID();
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
 
-            float[] vertexData = new float[]{vx, vy, vz, u, v, texture, nx, ny, nz};
+            float[] vertexData = new float[]{vx, vy, vz, u, v, texture, rnx, ny, rnz};
             this.addVertex(vertexData);
         }
     }
