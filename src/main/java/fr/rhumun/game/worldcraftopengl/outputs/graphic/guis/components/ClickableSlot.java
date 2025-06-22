@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 
 public class ClickableSlot extends Slot {
     public ClickableSlot(int x, int y, int size, int id, Gui gui) {

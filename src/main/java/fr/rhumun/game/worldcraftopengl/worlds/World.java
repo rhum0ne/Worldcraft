@@ -2,11 +2,11 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.*;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
-import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;

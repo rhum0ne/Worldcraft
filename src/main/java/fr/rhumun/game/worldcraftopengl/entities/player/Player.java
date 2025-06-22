@@ -1,9 +1,11 @@
-package fr.rhumun.game.worldcraftopengl.entities;
+package fr.rhumun.game.worldcraftopengl.entities.player;
 
-import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.Inventory;
+import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
@@ -25,7 +27,26 @@ public class Player extends Entity implements MovingEntity {
     private int selectedSlot;
     private final Inventory inventory;
     /** Whether the player has creative privileges. */
-    private boolean inCreativeMode;
+    private Gamemode gamemode = Gamemode.SURVIVAL;
+
+    private int maxFood = 20;
+    private int food = 1;
+
+    private int regenCounter = 0;
+
+    private int maxSaturation = 128;
+    private int saturation = 128;
+    private int saturationCounter = 0;
+
+    private int starvationCounter = 0;
+
+    public static int MOVE_SATURATION_COST = 1;
+    public static int BREAK_SATURATION_COST = 4;
+    public static int REGEN_SATURATION_COST = 10;
+
+    private double lastX;
+    private double lastY;
+    private double lastZ;
 
     private final int[] movements = new int[3];
 
@@ -40,6 +61,9 @@ public class Player extends Entity implements MovingEntity {
     public Player(double x, double y, double z, float yaw, float pitch){
         super(5, 0.25f, 1.8f, 3, 1, 5, 0.2f, 2, x, y ,z, yaw, pitch);
         this.inventory = new Inventory(this);
+        this.lastX = x;
+        this.lastY = y;
+        this.lastZ = z;
 
     }
 
@@ -93,6 +117,7 @@ public class Player extends Entity implements MovingEntity {
         Material mat = super.breakBlock();
         if (mat == null) return null;
         this.playSound(mat.getMaterial().getBreakSound());
+        consumeSaturation(BREAK_SATURATION_COST);
         return mat;
     }
   
@@ -162,6 +187,91 @@ public class Player extends Entity implements MovingEntity {
     }
 
     @Override
+    public void update() {
+        boolean moved = this.getLocation().getX() != lastX ||
+                        this.getLocation().getY() != lastY ||
+                        this.getLocation().getZ() != lastZ;
+
+        lastX = this.getLocation().getX();
+        lastY = this.getLocation().getY();
+        lastZ = this.getLocation().getZ();
+
+        if (moved) {
+            updateSaturation();
+        }
+
+        updateFallDamage();
+        updateHealth();
+        updateFood();
+        updateSaturation();
+    }
+
+
+    protected void updateHealth() {
+        if (health < maxHealth) {
+            regenCounter++;
+            if (regenCounter >= 100) {
+                health++;
+                this.consumeSaturation(REGEN_SATURATION_COST);
+                regenCounter = 0;
+            }
+        } else {
+            regenCounter = 0;
+        }
+    }
+
+    private void updateFood() {
+        if (food > 0) {
+            starvationCounter = 0;
+        } else {
+            starvationCounter++;
+            if (starvationCounter >= 100) {
+                damage(2);
+                starvationCounter = 0;
+            }
+        }
+    }
+
+    public void consumeFood(int amount) {
+        if (amount <= 0) return;
+        food -= amount;
+        if (food < 0) food = 0;
+    }
+
+    public void addFood(int amount) {
+        if (amount <= 0) return;
+        food = Math.min(maxFood, food + amount);
+    }
+
+    private void updateSaturation() {
+        saturationCounter++;
+        if (saturationCounter >= 150) {
+            consumeSaturation(1);
+            saturationCounter = 0;
+        }
+    }
+
+    @Override
+    public void damage(int amout){
+        super.damage(amout);
+        this.playSound(Sound.HURT);
+    }
+
+    public void consumeSaturation(int amount) {
+        if (amount <= 0) return;
+        saturation -= amount;
+        if (saturation <= 0) {
+            saturation = maxSaturation;
+            consumeFood(1);
+        }
+    }
+
+    public void addSaturation(int amount) {
+        if (amount <= 0) return;
+        saturation = Math.min(maxSaturation, saturation + amount);
+    }
+
+    @Override
     public void updateSwimmingState(){
         boolean swimming = isInsideLiquid();
         if(!swimming && this.isSwimming() && !this.isFlying()) {
@@ -171,6 +281,6 @@ public class Player extends Entity implements MovingEntity {
     }
 
     public boolean isInCreativeMode(){
-        return true;
+        return this.gamemode == Gamemode.CREATIVE;
     }
 }

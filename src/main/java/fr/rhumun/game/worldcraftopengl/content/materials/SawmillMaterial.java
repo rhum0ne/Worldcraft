@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
@@ -19,7 +19,12 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class SawmillMaterial extends AbstractMaterial implements InteractableMaterial {
 
     public SawmillMaterial() {
-        super(Texture.BOOKSHELF); // reuse bookshelf texture for now
+        super(Texture.SAWMILL_FRONT);
+        setBackTexture(Texture.SAWMILL_SIDE_2);
+        setTopTexture(Texture.SAWMILL_TOP);
+        setBottomTexture(Texture.SAWMILL_BOTTOM);
+        setLeftTexture(Texture.SAWMILL_SIDE);
+        setRightTexture(Texture.SAWMILL_SIDE_3);
     }
 
     @Override

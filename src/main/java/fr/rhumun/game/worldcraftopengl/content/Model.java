@@ -24,6 +24,7 @@ public enum Model {
     OTTER(new OtterModel(), (byte) 4),
     ROCKY(new RockyModel(), (byte) 5),
     NINJA_SKELETON(new NinjaSkeletonModel(), (byte) 6);
+    TRAPDOOR(new TrapdoorModel(), (byte) 5);
 
     final AbstractModel model;
     final byte id;

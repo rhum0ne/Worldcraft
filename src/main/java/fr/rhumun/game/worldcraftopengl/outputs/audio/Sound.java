@@ -66,7 +66,9 @@ public enum Sound {
     WOOD3(loadSound("wood3.ogg"), SoundPack.WOOD),
     WOOD4(loadSound("wood4.ogg"), SoundPack.WOOD),
 
-
+    HURT(loadSound("classic_hurt.ogg")),
+    EAT(loadSound("eat.ogg")),
+    DRINK(loadSound("drink.ogg")),
 
     MUSIC_1(loadSound("beta-song.ogg"));
 

@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMaterial;

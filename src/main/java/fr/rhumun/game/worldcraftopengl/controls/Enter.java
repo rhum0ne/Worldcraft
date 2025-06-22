@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 
 public class Enter extends Control{

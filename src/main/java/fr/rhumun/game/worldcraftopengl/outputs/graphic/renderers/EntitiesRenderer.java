@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.entities.*;
+import fr.rhumun.game.worldcraftopengl.entities.*
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;

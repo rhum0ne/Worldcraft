@@ -2,14 +2,12 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-
-import org.joml.Vector3f;
 
 
 import static org.lwjgl.opengl.GL11.*;

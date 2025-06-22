@@ -37,6 +37,14 @@ public class Texture {
     public static Texture BIRCH_PLANKS;
     public static Texture BIRCH_LEAVES;
     public static Texture BIRCH_SAPLING;
+    public static Texture ACACIA_LOG;
+    public static Texture ACACIA_LOG_TOP;
+    public static Texture ACACIA_PLANKS;
+    public static Texture ACACIA_LEAVES;
+    public static Texture ACACIA_SAPLING;
+    public static Texture ACACIA_DOOR;
+    public static Texture ACACIA_DOOR_TOP;
+    public static Texture ACACIA_TRAPDOOR;
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
     public static Texture BOOKSHELF;
@@ -85,7 +93,27 @@ public class Texture {
     public static Texture JACK_O_LANTERN;;
     public static Texture SNOWY_GRASS;
     public static Texture CALCITE_BRICK;
+    public static Texture SAWMILL_TOP;
+    public static Texture SAWMILL_SIDE;
+    public static Texture SAWMILL_BOTTOM;
+    public static Texture SAWMILL_SIDE_2;
+    public static Texture SAWMILL_SIDE_3;
+    public static Texture SAWMILL_FRONT;
+    public static Texture STONE_CUTTER_TOP;
+    public static Texture STONE_CUTTER_SIDE;
+    public static Texture STONE_CUTTER_BOTTOM;
+    public static Texture STONE_CUTTER_SIDE_2;
+    public static Texture STONE_CUTTER_FRONT;
 
+    public static Texture BLACKSTONE;
+    public static Texture CRACKED_STONE_BRICK;
+    public static Texture DARK_PLANKS;
+    public static Texture GRASS_BLOCK_SIDE_OVERLAY;
+    public static Texture MUD_BRICKS;
+    public static Texture POLISHED_BLACKSTONE_BRICKS;
+    public static Texture REDSTONE_LAMP_ON;
+    public static Texture STONE_DIORITE1;
+    public static Texture TORCH;
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
     public static Texture SELECTED_SLOT;
@@ -98,6 +126,14 @@ public class Texture {
     public static Texture DEFAULT_BUTTON_UNACTIVE;
     public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
     public static Texture WALLPAPER;
+
+    public static Texture HEART_CONTAINER;
+    public static Texture HEART_FULL;
+    public static Texture HEART_HALF;
+
+    public static Texture HUNGER_CONTAINER;
+    public static Texture HUNGER_FULL;
+    public static Texture HUNGER_HALF;
 
 
     public static Texture OTTER;
@@ -177,6 +213,34 @@ public class Texture {
         PUMPKIN_TOP = new Texture("pumpkin_top.png");
         JACK_O_LANTERN = new Texture("jack_o_lantern.png");
         SNOWY_GRASS = new Texture("snowy_grass.png");
+        BLACKSTONE = new Texture("blackstone.png");
+        CRACKED_STONE_BRICK = new Texture("cracked_stone_brick.png");
+        DARK_PLANKS = new Texture("dark_planks.png");
+        GRASS_BLOCK_SIDE_OVERLAY = new Texture("grass_block_side_overlay.png");
+        MUD_BRICKS = new Texture("mud_bricks.png");
+        POLISHED_BLACKSTONE_BRICKS = new Texture("polished_blackstone_bricks.png");
+        REDSTONE_LAMP_ON = new Texture("redstone_lamp_on.png");
+        STONE_DIORITE1 = new Texture("stone_diorite1.png");
+        TORCH = new Texture("torch.png");
+        SAWMILL_TOP = new Texture("sawmill_top.png");
+        SAWMILL_SIDE = new Texture("sawmill_side.png");
+        SAWMILL_BOTTOM = new Texture("sawmill_bottom.png");
+        SAWMILL_SIDE_2 = new Texture("sawmill_side_1.png");
+        SAWMILL_SIDE_3 = new Texture("sawmill_side_2.png");
+        SAWMILL_FRONT = new Texture("sawmill_front.png");
+        STONE_CUTTER_TOP = new Texture("stone_cutter_top.png");
+        STONE_CUTTER_SIDE = new Texture("stone_cutter_side.png");
+        STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
+        STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
+        STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
+        ACACIA_LOG = new Texture("acacia_log.png");
+        ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
+        ACACIA_PLANKS = new Texture("acacia_planks.png");
+        ACACIA_LEAVES = new Texture("acacia_leaves.png");
+        ACACIA_SAPLING = new Texture("acacia_sapling.png");
+        ACACIA_DOOR_TOP = new Texture("acacia_door_top.png");
+        ACACIA_DOOR = new Texture("acacia_door_bottom.png");
+        ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
@@ -190,6 +254,14 @@ public class Texture {
         DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive.png");
         DEFAULT_BUTTON_UNACTIVE_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive_selected.png");
         WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
+
+        HEART_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\heart\\container.png");
+        HEART_FULL = new Texture(TextureTypes.GUIS, "hud\\heart\\full.png");
+        HEART_HALF = new Texture(TextureTypes.GUIS, "hud\\heart\\half.png");
+
+        HUNGER_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\food_empty.png");
+        HUNGER_FULL = new Texture(TextureTypes.GUIS, "hud\\food_full.png");
+        HUNGER_HALF = new Texture(TextureTypes.GUIS, "hud\\food_half.png");
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
         ROCKY = new Texture(TextureTypes.ENTITIES,"entities\\Rocky.png");

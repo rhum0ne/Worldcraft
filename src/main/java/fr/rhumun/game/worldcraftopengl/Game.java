@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.OtterEntity;
 import fr.rhumun.game.worldcraftopengl.entities.NinjaSkeletonEntity;
 import fr.rhumun.game.worldcraftopengl.entities.RockyEntity;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
@@ -28,8 +28,8 @@ public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 6;
     public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;

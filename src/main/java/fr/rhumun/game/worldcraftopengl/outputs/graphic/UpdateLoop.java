@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 
 public class UpdateLoop extends Thread {
 

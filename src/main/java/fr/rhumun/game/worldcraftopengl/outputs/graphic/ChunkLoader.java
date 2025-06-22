@@ -1,9 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.AbstractChunkRenderer;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
-import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;

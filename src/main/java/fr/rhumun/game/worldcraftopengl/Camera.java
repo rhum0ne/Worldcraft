@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl;
 
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import lombok.Getter;
 import org.joml.Vector3f;
 

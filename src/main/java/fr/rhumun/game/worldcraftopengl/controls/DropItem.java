@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl.controls;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.EntityFactory;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 
 public class DropItem extends Control {
     @Override

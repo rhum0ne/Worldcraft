@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
 import java.util.ArrayList;
@@ -57,9 +57,13 @@ public class GameLoop extends Thread {
                     game.debug("Controls Concurrent Modif");
                     continue;
                 }
-                Movements.applyMovements(player);
 
-                player.getWorld().updateEntities(player, 48);
+                if(game.getGameState() == GameState.RUNNING) {
+                    Movements.applyMovements(player);
+                    player.update();
+
+                    player.getWorld().updateEntities(player, 48);
+                }
             }
 
             previousUpdate = currentTime;

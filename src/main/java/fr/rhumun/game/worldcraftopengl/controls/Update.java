@@ -1,9 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
-
-import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 
 public class Update  extends Control{
 
