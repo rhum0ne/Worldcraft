@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
@@ -14,7 +15,7 @@ import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class LanternMaterial extends PointLight implements ForcedModelMaterial, InteractableMaterial {
+public class LanternMaterial extends PointLight implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial {
     public LanternMaterial() {
         super(Texture.LANTERN);
         // Couleurs adaptées pour imiter une lumière de feu

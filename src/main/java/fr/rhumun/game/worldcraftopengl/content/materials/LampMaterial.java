@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
@@ -12,7 +13,7 @@ import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class LampMaterial extends PointLight implements InteractableMaterial {
+public class LampMaterial extends PointLight implements PlaceableMaterial, InteractableMaterial {
 
     public LampMaterial() {
         super(Texture.LAMP);

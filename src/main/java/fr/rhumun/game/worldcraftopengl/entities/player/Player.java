@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.entities.player;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
 import fr.rhumun.game.worldcraftopengl.entities.LivingEntity;
@@ -117,7 +118,8 @@ public class Player extends LivingEntity implements MovingEntity {
     public Material breakBlock() {
         Material mat = super.breakBlock();
         if (mat == null) return null;
-        this.playSound(mat.getMaterial().getBreakSound());
+        if(mat.getMaterial() instanceof PlaceableMaterial pM)
+            this.playSound(pM.getBreakSound());
         consumeSaturation(BREAK_SATURATION_COST);
         return mat;
     }

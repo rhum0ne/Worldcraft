@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
@@ -11,7 +12,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class AcaciaTrapdoorMaterial extends AbstractMaterial implements ForcedModelMaterial, InteractableMaterial {
+public class AcaciaTrapdoorMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial {
     public AcaciaTrapdoorMaterial() {
         super(Texture.ACACIA_TRAPDOOR);
     }

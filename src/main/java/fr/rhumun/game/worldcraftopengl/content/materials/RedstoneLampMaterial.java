@@ -1,13 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
 
-public class RedstoneLampMaterial extends PointLight {
+public class RedstoneLampMaterial extends PointLight  implements PlaceableMaterial {
     public RedstoneLampMaterial() {
         super(Texture.REDSTONE_LAMP_ON);
         this.ambient = new Vector3f(0.4f, 0.3f, 0.0f);
