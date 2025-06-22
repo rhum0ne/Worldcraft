@@ -32,8 +32,13 @@ public class NinjaSkeletonEntity extends MobEntity {
         if (player != null) {
             double dx = player.getLocation().getX() - this.getLocation().getX();
             double dz = player.getLocation().getZ() - this.getLocation().getZ();
-            if (dx*dx + dz*dz < 1.5) {
+            double dist2 = dx * dx + dz * dz;
+            if (dist2 < 1.5) {
                 this.stopMove();
+                if (getAttackCooldown() == 0) {
+                    this.attack(player);
+                    setAttackCooldown(20);
+                }
                 return;
             }
 

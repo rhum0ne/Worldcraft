@@ -12,6 +12,8 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
+import fr.rhumun.game.worldcraftopengl.entities.ItemStackEntity;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -354,6 +356,31 @@ public class Entity {
         return null;
     }
 
+    /**
+     * Find the first entity in the line of sight within reach, ignoring this
+     * entity and non-living entities.
+     */
+    public Entity getTargetEntity() {
+        Vector3f direction = getRayDirection();
+        Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
+
+        for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
+            for (Entity e : this.getLocation().getWorld().getEntities()) {
+                if (e == this || e instanceof ItemEntity || e instanceof ItemStackEntity) continue;
+                AxisAlignedBB bb = e.getBoundingBox();
+                if (bb.contains(pos.x, pos.y, pos.z)) return e;
+            }
+
+            Block block = this.getLocation().getWorld().getBlockAt(pos, true);
+            if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
+                return null;
+            }
+
+            pos.add(direction.x * RAY_STEP, direction.y * RAY_STEP, direction.z * RAY_STEP);
+        }
+        return null;
+    }
+
     public void placeBlock(final ItemStack item){
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
@@ -402,6 +429,28 @@ public class Entity {
         block.setMaterial(null);
         return mat;
     }
+
+    /**
+     * Deal damage to another entity and apply a small knockback away from this
+     * entity.
+     */
+    public void attack(Entity target, int damage, float knockback) {
+        if (target == null) return;
+        target.damage(damage);
+
+        Vector3f kb = new Vector3f(
+                (float) (target.getLocation().getX() - this.getLocation().getX()),
+                0,
+                (float) (target.getLocation().getZ() - this.getLocation().getZ())
+        );
+        if (kb.lengthSquared() > 0) {
+            kb.normalize().mul(knockback);
+            target.getVelocity().add(kb);
+        }
+    }
+
+    /** Attack another entity with default damage and knockback. */
+    public void attack(Entity target) { attack(target, 1, 0.5f); }
 
     public String getName() {
         return "EntityXXX";

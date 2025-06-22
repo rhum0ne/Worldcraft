@@ -45,10 +45,19 @@ public class RockyEntity extends MobEntity {
         if (target != null) {
             double dx = target.getLocation().getX() - this.getLocation().getX();
             double dz = target.getLocation().getZ() - this.getLocation().getZ();
-            float yaw = (float) Math.toDegrees(Math.atan2(dz, dx));
-            setYaw(yaw);
-            getMovements()[0] = 1;
-            getMovements()[2] = 0;
+            double dist2 = dx * dx + dz * dz;
+            if (dist2 < 1.5) {
+                this.stopMove();
+                if (getAttackCooldown() == 0) {
+                    this.attack(target, 2, 0.7f);
+                    setAttackCooldown(20);
+                }
+            } else {
+                float yaw = (float) Math.toDegrees(Math.atan2(dz, dx));
+                setYaw(yaw);
+                getMovements()[0] = 1;
+                getMovements()[2] = 0;
+            }
         }
 
         Movements.applyMovements(this);

@@ -29,4 +29,11 @@ public class AxisAlignedBB {
                 maxX + offset.x, maxY + offset.y, maxZ + offset.z
         );
     }
+
+    /** Check if the given point is inside the bounding box. */
+    public boolean contains(float x, float y, float z) {
+        return x >= minX && x <= maxX &&
+               y >= minY && y <= maxY &&
+               z >= minZ && z <= maxZ;
+    }
 }

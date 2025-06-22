@@ -11,6 +11,7 @@ public abstract class MobEntity extends Entity implements MovingEntity {
 
     private final int[] movements = new int[3];
     private int moveCooldown = 0;
+    private int attackCooldown = 0;
     private Animator animator;
 
     public MobEntity(Model model, Texture texture, int reach, float radius, float height,
@@ -34,9 +35,8 @@ public abstract class MobEntity extends Entity implements MovingEntity {
 
     @Override
     public void update() {
+        if (attackCooldown > 0) attackCooldown--;
         this.move();
-
-
         super.update();
     }
 
