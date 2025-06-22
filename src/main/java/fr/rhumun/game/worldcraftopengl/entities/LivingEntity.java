@@ -71,11 +71,12 @@ public class LivingEntity extends Entity{
         target.damage(1);
 
         float dx = (float) (target.getLocation().getX() - this.getLocation().getX());
+        float dy = (float) (target.getLocation().getY() - this.getLocation().getY());
         float dz = (float) (target.getLocation().getZ() - this.getLocation().getZ());
-        var dir = new org.joml.Vector3f(dx, 0, dz);
+        var dir = new org.joml.Vector3f(dx, dy, dz);
         if (dir.lengthSquared() > 0) {
-            dir.normalize().mul(0.5f);
-            target.getVelocity().add(dir);
+            dir.normalize().mul(0.8f);
+            target.getVelocity().add(dir.x, 0.3f, dir.z);
         }
     }
 }
