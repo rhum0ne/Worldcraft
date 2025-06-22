@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.EntitiesRenderer;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.CloudRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
@@ -75,6 +76,7 @@ public class GraphicModule {
     private BlockSelector blockSelector;
     private final CleanerModule cleaner;
     private EntitiesRenderer entitiesRenderer;
+    private CloudRenderer cloudRenderer;
     private HitboxRenderer hitboxRenderer;
     private final UpdateLoop updateLoop;
     private final ChunkLoader chunkLoader;
@@ -129,6 +131,7 @@ public class GraphicModule {
         if(game.getWorld() == null) return;
 
         configureLighting();
+        cloudRenderer.setSeed(game.getWorld().getSeed());
         ShaderManager.LIQUID_SHADER.setUniform("waterHigh", world.getGenerator().getWaterHigh());
     }
 
@@ -189,7 +192,8 @@ public class GraphicModule {
         renderingShaders.addAll(List.of(
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
-                ShaderManager.ENTITY_SHADER
+                ShaderManager.ENTITY_SHADER,
+                ShaderManager.CLOUD_SHADER
         ));
         shaders.addAll(List.of(
                 ShaderManager.SELECTED_BLOCK_SHADER,
@@ -197,7 +201,8 @@ public class GraphicModule {
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
-                ShaderManager.FAR_SHADER
+                ShaderManager.FAR_SHADER,
+                ShaderManager.CLOUD_SHADER
         ));
         Matrix4f modelMatrix = new Matrix4f().identity();
         for (Shader shader : renderingShaders) updateModelAndProjectionFor(modelMatrix, shader);
@@ -210,6 +215,7 @@ public class GraphicModule {
         this.guiModule.init();
         this.guiModule.resize(startWidth, startHeight);
         this.entitiesRenderer = new EntitiesRenderer(this, player);
+        this.cloudRenderer = new CloudRenderer(this);
         this.hitboxRenderer = new HitboxRenderer(this, player);
         this.hitboxRenderer.init();
     }
@@ -341,6 +347,7 @@ public class GraphicModule {
         updateFarChunks();
 
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        cloudRenderer.render();
         update();
 
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
@@ -444,6 +451,7 @@ public class GraphicModule {
 
     private void cleanup() {
         guiModule.cleanup();
+        cloudRenderer.cleanup();
         renderingShaders.forEach(shader -> glDeleteProgram(shader.id));
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
