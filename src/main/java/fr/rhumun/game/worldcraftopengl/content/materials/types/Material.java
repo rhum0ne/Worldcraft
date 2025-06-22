@@ -1,7 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.types;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.*;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.ItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
 
@@ -92,7 +94,24 @@ public enum Material {
     REDSTONE_LAMP_ON(new RedstoneLampMaterial()),
     STONE_DIORITE(new StoneDioriteMaterial()),
     TORCH(new TorchMaterial()),
-    STONE_CUTTER(new StoneCutterMaterial());
+    STONE_CUTTER(new StoneCutterMaterial()),
+
+    // Non-placeable items
+    APPLE(new ItemMaterial(Texture.APPLE)),
+    BREAD(new ItemMaterial(Texture.BREAD)),
+    DIAMOND(new ItemMaterial(Texture.DIAMOND)),
+    IRON_INGOT(new ItemMaterial(Texture.IRON_INGOT)),
+    IRON_AXE(new ItemMaterial(Texture.IRON_AXE)),
+    IRON_PICKAXE(new ItemMaterial(Texture.IRON_PICKAXE)),
+    IRON_SHOVEL(new ItemMaterial(Texture.IRON_SHOVEL)),
+    IRON_SWORD(new ItemMaterial(Texture.IRON_SWORD)),
+    STICK(new ItemMaterial(Texture.STICK)),
+    WATER_BUCKET(new ItemMaterial(Texture.WATER_BUCKET)),
+    WOODEN_AXE(new ItemMaterial(Texture.WOODEN_AXE)),
+    WOODEN_HOE(new ItemMaterial(Texture.WOODEN_HOE)),
+    WOODEN_PICKAXE(new ItemMaterial(Texture.WOODEN_PICKAXE)),
+    WOODEN_SHOVEL(new ItemMaterial(Texture.WOODEN_SHOVEL)),
+    WOODEN_SWORD(new ItemMaterial(Texture.WOODEN_SWORD));
 
     static int maxID = 0;
 

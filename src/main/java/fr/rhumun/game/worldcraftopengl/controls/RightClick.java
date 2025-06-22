@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 
 public class RightClick extends Control {
 
@@ -29,7 +30,8 @@ public class RightClick extends Control {
         }
 
         ItemStack item = player.getSelectedItem();
-        if(item != null) player.placeBlock(item);
+        if(item != null && item.getMaterial().getMaterial() instanceof PlaceableMaterial)
+            player.placeBlock(item);
     }
 
     @Override
