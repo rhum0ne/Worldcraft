@@ -81,6 +81,10 @@ public class MobEntitiesRenderer extends GlobalRenderer {
         IntBuffer iBuf = obj.getIndicesBuffer().duplicate();
         IntBuffer boneBuf = obj.getBoneIDsBuffer().duplicate();
 
+        float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
+        float cosYaw = (float) Math.cos(yawRad);
+        float sinYaw = (float) Math.sin(yawRad);
+
         double x = entity.getLocation().getX();
         double y = entity.getLocation().getY();
         double z = entity.getLocation().getZ();
@@ -88,13 +92,23 @@ public class MobEntitiesRenderer extends GlobalRenderer {
         while (iBuf.hasRemaining()) {
             int idx = iBuf.get();
 
-            float vx = (float) (x + vBuf.get(idx * 3));
-            float vy = (float) (y + vBuf.get(idx * 3 + 1));
-            float vz = (float) (z + vBuf.get(idx * 3 + 2));
+            float relX = vBuf.get(idx * 3);
+            float relY = vBuf.get(idx * 3 + 1);
+            float relZ = vBuf.get(idx * 3 + 2);
+
+            float rotX = cosYaw * relX - sinYaw * relZ;
+            float rotZ = sinYaw * relX + cosYaw * relZ;
+
+            float vx = (float) (x + rotX);
+            float vy = (float) (y + relY);
+            float vz = (float) (z + rotZ);
 
             float nx = nBuf.get(idx * 3);
             float ny = nBuf.get(idx * 3 + 1);
             float nz = nBuf.get(idx * 3 + 2);
+
+            float rnx = cosYaw * nx - sinYaw * nz;
+            float rnz = sinYaw * nx + cosYaw * nz;
 
             float u = tBuf.get(idx * 2);
             float v = tBuf.get(idx * 2 + 1);
@@ -102,7 +116,7 @@ public class MobEntitiesRenderer extends GlobalRenderer {
             int boneID = boneBuf.get(idx);
             int texture = entity.getTextureID();
 
-            float[] vertex = new float[]{vx, vy, vz, u, v, texture, nx, ny, nz, boneID};
+            float[] vertex = new float[]{vx, vy, vz, u, v, texture, rnx, ny, rnz, boneID};
             this.addVertex(vertex);
         }
     }

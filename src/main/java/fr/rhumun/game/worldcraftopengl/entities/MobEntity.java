@@ -34,21 +34,28 @@ public abstract class MobEntity extends Entity implements MovingEntity {
 
     @Override
     public void update() {
-        moveCooldown--;
-        if (moveCooldown <= 0) {
-            moveCooldown = 60;
-            movements[0] = movements[2] = 0;
-            int dir = (int) (Math.random() * 4);
-            switch (dir) {
-                case 0 -> movements[0] = 1;
-                case 1 -> movements[0] = -1;
-                case 2 -> movements[2] = 1;
-                case 3 -> movements[2] = -1;
-            }
-        }
+        this.move();
 
 
         super.update();
     }
 
+    public void move(){
+        this.randomMove();
+    }
+
+    protected void randomMove() {
+        movements[0] = movements[2] = 0;
+        int dir = (int) (Math.random() * 4);
+        switch (dir) {
+            case 0 -> movements[0] = 1;
+            case 1 -> movements[0] = -1;
+            case 2 -> movements[2] = 1;
+            case 3 -> movements[2] = -1;
+        }
+    }
+
+    protected void stopMove() {
+        movements[0] = movements[2] = 0;
+    }
 }
