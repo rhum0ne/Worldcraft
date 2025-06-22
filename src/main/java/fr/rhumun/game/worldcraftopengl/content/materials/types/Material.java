@@ -110,11 +110,11 @@ public enum Material {
         return MATERIALS[id];
     }
 
-    public Sound getPlaceSound(){ return this.material.getPlaceSound(); }
-    public Sound getBreakSound(){ return this.material.getBreakSound(); }
+    public Sound getPlaceSound(){ return this.material instanceof PlaceableMaterial pM ? pM.getPlaceSound() : null; }
+    public Sound getBreakSound(){ return this.material instanceof PlaceableMaterial pM ? pM.getBreakSound() : null; }
     public int getId(){ return this.material.getId(); }
     public int getTextureID(){ return this.material.getTexture().getId(); }
-    public OpacityType getOpacity(){ return this.material.getOpacity(); }
+    public OpacityType getOpacity(){ return this.material instanceof PlaceableMaterial pM ? pM.getOpacity() : OpacityType.OPAQUE; }
     public float getDensity(){ return this.material.getDensity(); }
 
     public static int createID(){
@@ -122,6 +122,6 @@ public enum Material {
     }
 
     public boolean isLiquid() {
-        return this.material.getOpacity()==OpacityType.LIQUID;
+        return this.material instanceof PlaceableMaterial pM && pM.getOpacity() == OpacityType.LIQUID;
     }
 }
