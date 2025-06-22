@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Setter @Getter
-public abstract class MobEntity extends Entity implements MovingEntity {
+public abstract class MobEntity extends LivingEntity implements MovingEntity {
 
     private final int[] movements = new int[3];
     private int moveCooldown = 0;

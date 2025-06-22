@@ -23,8 +23,8 @@ public enum Model {
     CROSS(new CrossModel(), (byte) 3),
     OTTER(new OtterModel(), (byte) 4),
     ROCKY(new RockyModel(), (byte) 5),
-    NINJA_SKELETON(new NinjaSkeletonModel(), (byte) 6);
-    TRAPDOOR(new TrapdoorModel(), (byte) 5);
+    NINJA_SKELETON(new NinjaSkeletonModel(), (byte) 6),
+    TRAPDOOR(new TrapdoorModel(), (byte) 7);
 
     final AbstractModel model;
     final byte id;

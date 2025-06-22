@@ -5,7 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.models.entities.Animator;
 import fr.rhumun.game.worldcraftopengl.content.models.entities.GltfAnimationLoader;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.entities.Player;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 
 public class NinjaSkeletonEntity extends MobEntity {
