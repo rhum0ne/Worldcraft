@@ -4,6 +4,9 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Vector3f;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter
 @Setter
@@ -27,7 +30,7 @@ public class LivingEntity extends Entity{
     public void damage(int amount) {
         if (amount <= 0) return;
         health -= amount;
-        if (health < 0) health = 0;
+        if (health <= 0) this.kill();
     }
 
     public void heal(int amount) {
@@ -73,10 +76,15 @@ public class LivingEntity extends Entity{
         float dx = (float) (target.getLocation().getX() - this.getLocation().getX());
         float dy = (float) (target.getLocation().getY() - this.getLocation().getY());
         float dz = (float) (target.getLocation().getZ() - this.getLocation().getZ());
-        var dir = new org.joml.Vector3f(dx, dy, dz);
+        var dir = new Vector3f(dx, dy, dz).normalize();
         if (dir.lengthSquared() > 0) {
-            dir.normalize().mul(0.8f);
-            target.getVelocity().add(dir.x, 0.3f, dir.z);
+            dir.normalize().mul(5f);
+            target.getVelocity().add(dir.x, dir.y + 0.4f, dir.z);
         }
+    }
+
+    public void kill(){
+        this.getWorld().removeEntity(this);
+        GAME.sendMessage(GAME.getPlayer(),"Entity have been killed");
     }
 }

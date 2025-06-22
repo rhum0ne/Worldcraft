@@ -305,4 +305,9 @@ public class Player extends LivingEntity implements MovingEntity {
     public boolean isInCreativeMode(){
         return this.gamemode == Gamemode.CREATIVE;
     }
+
+    @Override
+    public void kill() {
+        //TO DO
+    }
 }

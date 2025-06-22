@@ -14,6 +14,10 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -29,7 +33,7 @@ public class World {
 
     //private final HashMap<Point, Chunk> chunks = new HashMap<>();
     private final ChunksContainer chunks;
-    private final List<Entity> entities = new ArrayList<>();
+    private final ConcurrentLinkedQueue<Entity> entities = new ConcurrentLinkedQueue<>();
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
