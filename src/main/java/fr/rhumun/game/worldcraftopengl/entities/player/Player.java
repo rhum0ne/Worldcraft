@@ -253,6 +253,8 @@ public class Player extends Entity implements MovingEntity {
 
     @Override
     public void damage(int amout){
+        if(this.isInCreativeMode()) return;
+
         super.damage(amout);
         this.playSound(Sound.HURT);
     }
