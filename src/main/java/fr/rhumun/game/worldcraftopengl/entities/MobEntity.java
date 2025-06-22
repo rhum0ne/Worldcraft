@@ -11,6 +11,7 @@ public abstract class MobEntity extends LivingEntity implements MovingEntity {
 
     private final int[] movements = new int[3];
     private int moveCooldown = 0;
+    private int attackCooldown = 0;
     private Animator animator;
 
     public MobEntity(Model model, Texture texture, int reach, float radius, float height,
@@ -34,8 +35,9 @@ public abstract class MobEntity extends LivingEntity implements MovingEntity {
 
     @Override
     public void update() {
-        this.move();
+        if (attackCooldown > 0) attackCooldown--;
 
+        this.move();
 
         super.update();
     }
@@ -57,5 +59,13 @@ public abstract class MobEntity extends LivingEntity implements MovingEntity {
 
     protected void stopMove() {
         movements[0] = movements[2] = 0;
+    }
+
+    protected boolean canAttack() {
+        if (attackCooldown == 0) {
+            attackCooldown = 20; // roughly every third of a second
+            return true;
+        }
+        return false;
     }
 }

@@ -121,6 +121,25 @@ public class Player extends LivingEntity implements MovingEntity {
         consumeSaturation(BREAK_SATURATION_COST);
         return mat;
     }
+
+    public LivingEntity getEntityInSight() {
+        Vector3f direction = this.getRayDirection();
+        Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
+
+        for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
+            for (Entity e : this.getWorld().getEntities()) {
+                if (e == this || !(e instanceof LivingEntity le)) continue;
+                AxisAlignedBB bb = e.getBoundingBox();
+                if (pos.x >= bb.minX && pos.x <= bb.maxX &&
+                    pos.y >= bb.minY && pos.y <= bb.maxY &&
+                    pos.z >= bb.minZ && pos.z <= bb.maxZ) {
+                    return le;
+                }
+            }
+            pos.add(direction.x * RAY_STEP, direction.y * RAY_STEP, direction.z * RAY_STEP);
+        }
+        return null;
+    }
   
     public void playSound(final Sound sound){
         GAME.getAudioManager().playSound(sound);

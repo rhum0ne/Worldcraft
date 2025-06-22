@@ -64,4 +64,18 @@ public class LivingEntity extends Entity{
         super.update();
         this.updateFallDamage();
     }
+
+    public void attack(LivingEntity target) {
+        if (target == null) return;
+
+        target.damage(1);
+
+        float dx = (float) (target.getLocation().getX() - this.getLocation().getX());
+        float dz = (float) (target.getLocation().getZ() - this.getLocation().getZ());
+        var dir = new org.joml.Vector3f(dx, 0, dz);
+        if (dir.lengthSquared() > 0) {
+            dir.normalize().mul(0.5f);
+            target.getVelocity().add(dir);
+        }
+    }
 }
