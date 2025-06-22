@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class MudBricksMaterial extends AbstractMaterial {
+public class MudBricksMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public MudBricksMaterial() {
         super(Texture.MUD_BRICKS);
     }

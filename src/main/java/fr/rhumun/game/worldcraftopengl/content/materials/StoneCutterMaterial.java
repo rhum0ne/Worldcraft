@@ -12,7 +12,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class StoneCutterMaterial extends AbstractMaterial implements InteractableMaterial {
+public class StoneCutterMaterial extends AbstractMaterial implements PlaceableMaterial, InteractableMaterial {
 
     public StoneCutterMaterial() {
         super(Texture.STONE_CUTTER_FRONT);

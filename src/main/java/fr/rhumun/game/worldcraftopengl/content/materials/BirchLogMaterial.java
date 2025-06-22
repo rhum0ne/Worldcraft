@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class BirchLogMaterial extends AbstractMaterial {
+public class BirchLogMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public BirchLogMaterial() {
         super(Texture.BIRCH_LOG);
         this.setTopAndBottomTexture(Texture.BIRCH_LOG_TOP);

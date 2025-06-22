@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class StoneBricksMaterial extends AbstractMaterial {
+public class StoneBricksMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public StoneBricksMaterial() {
         super(Texture.STONE_BRICKS);
     }

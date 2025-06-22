@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class BirchSaplingMaterial extends AbstractMaterial implements ForcedModelMaterial {
+public class BirchSaplingMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
     public BirchSaplingMaterial() {
         super(Texture.BIRCH_SAPLING);
     }

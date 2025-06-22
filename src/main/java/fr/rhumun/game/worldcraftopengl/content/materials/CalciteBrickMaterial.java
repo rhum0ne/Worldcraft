@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class CalciteBrickMaterial extends AbstractMaterial {
+public class CalciteBrickMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public CalciteBrickMaterial() {
         super(Texture.CALCITE_BRICK);
     }

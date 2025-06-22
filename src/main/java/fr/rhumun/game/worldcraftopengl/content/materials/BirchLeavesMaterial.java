@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class BirchLeavesMaterial extends AbstractMaterial {
+public class BirchLeavesMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public BirchLeavesMaterial() {
         super(Texture.BIRCH_LEAVES);
     }

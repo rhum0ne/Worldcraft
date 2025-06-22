@@ -11,7 +11,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class AcaciaTrapdoorMaterial extends AbstractMaterial implements ForcedModelMaterial, InteractableMaterial {
+public class AcaciaTrapdoorMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial {
     public AcaciaTrapdoorMaterial() {
         super(Texture.ACACIA_TRAPDOOR);
     }

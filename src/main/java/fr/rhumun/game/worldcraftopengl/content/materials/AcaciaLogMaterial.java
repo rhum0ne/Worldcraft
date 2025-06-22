@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class AcaciaLogMaterial extends AbstractMaterial {
+public class AcaciaLogMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public AcaciaLogMaterial() {
         super(Texture.ACACIA_LOG);
         this.setTopAndBottomTexture(Texture.ACACIA_LOG_TOP);

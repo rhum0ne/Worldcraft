@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class SnowyGrassMaterial extends AbstractMaterial {
+public class SnowyGrassMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public SnowyGrassMaterial() {
         super(Texture.SNOWY_GRASS);
         this.setBottomTexture(Texture.DIRT);

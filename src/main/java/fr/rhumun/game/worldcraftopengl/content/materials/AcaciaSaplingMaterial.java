@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class AcaciaSaplingMaterial extends AbstractMaterial implements ForcedModelMaterial {
+public class AcaciaSaplingMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
     public AcaciaSaplingMaterial() {
         super(Texture.ACACIA_SAPLING);
     }

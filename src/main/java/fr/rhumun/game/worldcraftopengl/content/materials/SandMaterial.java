@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class SandMaterial extends AbstractMaterial {
+public class SandMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public SandMaterial() {
         super(Texture.SAND);
     }

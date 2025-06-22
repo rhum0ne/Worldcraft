@@ -16,7 +16,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
  * Material representing a sawmill block that opens its crafting interface when
  * interacted with.
  */
-public class SawmillMaterial extends AbstractMaterial implements InteractableMaterial {
+public class SawmillMaterial extends AbstractMaterial implements PlaceableMaterial, InteractableMaterial {
 
     public SawmillMaterial() {
         super(Texture.SAWMILL_FRONT);

@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class GlassMaterial extends AbstractMaterial implements ForcedModelMaterial {
+public class GlassMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
     public GlassMaterial() {
         super(Texture.GLASS);
     }

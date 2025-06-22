@@ -10,7 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 import static fr.rhumun.game.worldcraftopengl.content.textures.Texture.BOOKSHELF_TOP;
 
-public class BookshelfMaterial extends AbstractMaterial implements ForcedModelMaterial {
+public class BookshelfMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
     public BookshelfMaterial() {
         super(Texture.BOOKSHELF);
         this.setTopTexture(BOOKSHELF_TOP);

@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class PlanksMaterial extends AbstractMaterial {
+public class PlanksMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public PlanksMaterial() {
         super(Texture.PLANKS);
     }

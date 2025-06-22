@@ -14,7 +14,7 @@ import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class LanternMaterial extends PointLight implements ForcedModelMaterial, InteractableMaterial {
+public class LanternMaterial extends PointLight implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial {
     public LanternMaterial() {
         super(Texture.LANTERN);
         // Couleurs adaptées pour imiter une lumière de feu

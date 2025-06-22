@@ -12,7 +12,7 @@ import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class LampMaterial extends PointLight implements InteractableMaterial {
+public class LampMaterial extends PointLight implements PlaceableMaterial, InteractableMaterial {
 
     public LampMaterial() {
         super(Texture.LAMP);

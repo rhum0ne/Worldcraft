@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class CrackedStoneBrickMaterial extends AbstractMaterial {
+public class CrackedStoneBrickMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public CrackedStoneBrickMaterial() {
         super(Texture.CRACKED_STONE_BRICK);
     }

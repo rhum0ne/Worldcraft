@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class TerracottaMaterial extends AbstractMaterial {
+public class TerracottaMaterial extends AbstractMaterial  implements PlaceableMaterial {
 
     public TerracottaMaterial(String name) {
         super(Texture.getByName(name + "_terracotta"));

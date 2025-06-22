@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class DarkStoneBrickMaterial extends AbstractMaterial {
+public class DarkStoneBrickMaterial extends AbstractMaterial  implements PlaceableMaterial {
 
     public DarkStoneBrickMaterial() {
         super(Texture.DARK_STONE_BRICK);

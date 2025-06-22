@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class CobbleMaterial extends AbstractMaterial {
+public class CobbleMaterial extends AbstractMaterial  implements PlaceableMaterial {
 
     public CobbleMaterial() {
         super(Texture.COBBLE);

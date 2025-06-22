@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class WoolMaterial extends AbstractMaterial {
+public class WoolMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public WoolMaterial(String name) {
         super(Texture.getByName(name + "_wool"));
     }

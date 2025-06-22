@@ -6,7 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class WaterMaterial extends AbstractMaterial {
+public class WaterMaterial extends AbstractMaterial  implements PlaceableMaterial {
     public WaterMaterial() {
         super(Texture.WATER, 0.1f, 1f);
     }

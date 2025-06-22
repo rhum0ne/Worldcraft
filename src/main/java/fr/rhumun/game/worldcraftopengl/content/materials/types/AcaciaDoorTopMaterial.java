@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
-public class AcaciaDoorTopMaterial extends AbstractMaterial implements ForcedModelMaterial, InteractableMaterial, Multiblock {
+public class AcaciaDoorTopMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock {
 
     public AcaciaDoorTopMaterial() {
         super(Texture.ACACIA_DOOR_TOP);

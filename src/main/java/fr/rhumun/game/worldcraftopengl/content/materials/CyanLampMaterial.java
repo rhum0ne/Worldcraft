@@ -12,7 +12,7 @@ import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class CyanLampMaterial extends PointLight implements InteractableMaterial {
+public class CyanLampMaterial extends PointLight implements PlaceableMaterial, InteractableMaterial {
     public CyanLampMaterial() {
         super(Texture.LAMP);
         this.ambient = new Vector3f(0.3f, 0.2f, 0.5f); // Violet pâle pour l'ambient

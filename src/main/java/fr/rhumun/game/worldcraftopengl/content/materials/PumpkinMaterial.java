@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class PumpkinMaterial extends AbstractMaterial implements ForcedModelMaterial {
+public class PumpkinMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
     public PumpkinMaterial() {
         super(Texture.PUMPKIN);
         this.setTopAndBottomTexture(Texture.PUMPKIN_TOP);
