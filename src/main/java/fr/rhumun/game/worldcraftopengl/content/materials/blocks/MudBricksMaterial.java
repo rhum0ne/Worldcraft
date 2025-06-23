@@ -12,6 +12,7 @@ public class MudBricksMaterial extends Material implements PlaceableMaterial {
     public MudBricksMaterial() {
         super(Texture.MUD_BRICKS);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

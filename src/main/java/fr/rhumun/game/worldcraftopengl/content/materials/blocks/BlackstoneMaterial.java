@@ -12,6 +12,7 @@ public class BlackstoneMaterial extends Material implements PlaceableMaterial {
     public BlackstoneMaterial() {
         super(Texture.BLACKSTONE);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

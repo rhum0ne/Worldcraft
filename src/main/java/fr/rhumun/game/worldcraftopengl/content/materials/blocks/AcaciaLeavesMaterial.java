@@ -12,6 +12,7 @@ public class AcaciaLeavesMaterial extends Material implements PlaceableMaterial 
     public AcaciaLeavesMaterial() {
         super(Texture.ACACIA_LEAVES);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(1f);
     }
 
     @Override

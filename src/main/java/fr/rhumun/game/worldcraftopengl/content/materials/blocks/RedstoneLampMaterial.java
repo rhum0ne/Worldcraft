@@ -13,6 +13,7 @@ public class RedstoneLampMaterial extends PointLight  implements PlaceableMateri
     public RedstoneLampMaterial() {
         super(Texture.REDSTONE_LAMP_ON);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
         this.ambient = new Vector3f(0.4f, 0.3f, 0.0f);
         this.diffuse = new Vector3f(0.8f, 0.6f, 0.1f);
         this.specular = new Vector3f(0.05f, 0.05f, 0.0f);

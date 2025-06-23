@@ -20,6 +20,7 @@ public class LanternMaterial extends PointLight implements PlaceableMaterial, Fo
     public LanternMaterial() {
         super(Texture.LANTERN);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
         // Couleurs adaptées pour imiter une lumière de feu
         this.ambient = new Vector3f(0.3f, 0.1f, 0.0f); // Teinte chaude et orangée pour l'ambient
         this.diffuse = new Vector3f(0.5f, 0.1f, 0.0f); // Orange intense pour le diffuse

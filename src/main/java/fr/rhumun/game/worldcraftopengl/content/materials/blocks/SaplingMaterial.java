@@ -14,6 +14,7 @@ public class SaplingMaterial extends Material implements PlaceableMaterial, Forc
     public SaplingMaterial() {
         super(Texture.SAPLING);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

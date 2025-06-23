@@ -13,6 +13,7 @@ public class DarkCobbleMaterial extends Material implements PlaceableMaterial {
     public DarkCobbleMaterial() {
         super(Texture.DARK_COBBLE);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

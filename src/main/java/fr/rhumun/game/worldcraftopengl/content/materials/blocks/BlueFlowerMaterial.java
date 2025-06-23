@@ -14,6 +14,7 @@ public class BlueFlowerMaterial extends Material implements PlaceableMaterial, F
     public BlueFlowerMaterial() {
         super(Texture.BLUE_FLOWER);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

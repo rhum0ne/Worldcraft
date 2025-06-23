@@ -12,6 +12,7 @@ public class CrackedStoneBrickMaterial extends Material implements PlaceableMate
     public CrackedStoneBrickMaterial() {
         super(Texture.CRACKED_STONE_BRICK);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

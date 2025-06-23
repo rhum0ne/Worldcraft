@@ -12,6 +12,7 @@ public class StoneDioriteMaterial extends Material implements PlaceableMaterial 
     public StoneDioriteMaterial() {
         super(Texture.STONE_DIORITE1);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(10f);
     }
 
     @Override

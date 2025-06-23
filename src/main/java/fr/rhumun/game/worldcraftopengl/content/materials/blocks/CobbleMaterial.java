@@ -13,6 +13,7 @@ public class CobbleMaterial extends Material implements PlaceableMaterial {
     public CobbleMaterial() {
         super(Texture.COBBLE);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

@@ -12,6 +12,7 @@ public class LeavesMaterial extends Material implements PlaceableMaterial {
     public LeavesMaterial() {
         super(Texture.LEAVES);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(1f);
     }
 
     @Override

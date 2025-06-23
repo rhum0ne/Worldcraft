@@ -12,6 +12,7 @@ public class CalciteMaterial extends Material implements PlaceableMaterial {
     public CalciteMaterial() {
         super(Texture.CALCITE);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(10f);
     }
 
     @Override

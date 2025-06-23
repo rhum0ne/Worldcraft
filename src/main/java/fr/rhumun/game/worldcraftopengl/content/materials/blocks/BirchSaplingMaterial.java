@@ -14,6 +14,7 @@ public class BirchSaplingMaterial extends Material implements PlaceableMaterial,
     public BirchSaplingMaterial() {
         super(Texture.BIRCH_SAPLING);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

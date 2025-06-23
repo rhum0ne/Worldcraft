@@ -14,6 +14,7 @@ public class DandelionMaterial extends Material implements PlaceableMaterial, Fo
     public DandelionMaterial() {
         super(Texture.DANDELION);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

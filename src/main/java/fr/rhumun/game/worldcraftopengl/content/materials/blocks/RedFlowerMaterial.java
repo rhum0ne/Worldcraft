@@ -14,6 +14,7 @@ public class RedFlowerMaterial extends Material implements PlaceableMaterial, Fo
     public RedFlowerMaterial() {
         super(Texture.RED_FLOWER);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

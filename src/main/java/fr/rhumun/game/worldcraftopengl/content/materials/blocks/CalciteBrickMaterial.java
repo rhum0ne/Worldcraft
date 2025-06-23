@@ -12,6 +12,7 @@ public class CalciteBrickMaterial extends Material implements PlaceableMaterial 
     public CalciteBrickMaterial() {
         super(Texture.CALCITE_BRICK);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

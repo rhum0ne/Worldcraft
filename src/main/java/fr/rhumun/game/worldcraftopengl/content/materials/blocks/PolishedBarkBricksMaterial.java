@@ -12,6 +12,7 @@ public class PolishedBarkBricksMaterial extends Material implements PlaceableMat
     public PolishedBarkBricksMaterial() {
         super(Texture.POLISHED_DARK_BRICKS);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

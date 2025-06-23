@@ -13,6 +13,7 @@ public class JackOLanternMaterial extends PointLight implements PlaceableMateria
     public JackOLanternMaterial() {
         super(Texture.PUMPKIN);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
         this.setTopAndBottomTexture(Texture.PUMPKIN_TOP);
         this.setFrontTexture(Texture.JACK_O_LANTERN);
 

@@ -14,6 +14,7 @@ public class AcaciaSaplingMaterial extends Material implements PlaceableMaterial
     public AcaciaSaplingMaterial() {
         super(Texture.ACACIA_SAPLING);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
     }
 
     @Override

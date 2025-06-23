@@ -13,10 +13,12 @@ public class TerracottaMaterial extends Material implements PlaceableMaterial {
     public TerracottaMaterial(String name) {
         super(Texture.getByName(name + "_terracotta"));
         this.addToType(GuiTypes.COLOR);
+        this.setDurability(10f);
     }
 
     public TerracottaMaterial() {
         super(Texture.TERRACOTTA);
+        this.setDurability(10f);
     }
 
     @Override

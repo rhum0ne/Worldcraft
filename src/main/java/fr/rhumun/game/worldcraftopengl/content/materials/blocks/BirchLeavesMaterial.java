@@ -12,6 +12,7 @@ public class BirchLeavesMaterial extends Material implements PlaceableMaterial {
     public BirchLeavesMaterial() {
         super(Texture.BIRCH_LEAVES);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(1f);
     }
 
     @Override

@@ -18,6 +18,7 @@ public class PurpleLampMaterial extends PointLight implements PlaceableMaterial,
     public PurpleLampMaterial() {
         super(Texture.LAMP);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
         this.ambient = new Vector3f(0.3f, 0.0f, 0.5f); // Violet pâle pour l'ambient
         this.diffuse = new Vector3f(0.5f, 0.0f, 0.8f); // Violet plus saturé pour le diffuse
         this.specular = new Vector3f(0.05f, 0.0f, 0.1f); // Speculaire légèrement doré pour des reflets

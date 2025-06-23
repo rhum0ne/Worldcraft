@@ -12,6 +12,7 @@ public class PolishedBlackstoneBricksMaterial extends Material implements Placea
     public PolishedBlackstoneBricksMaterial() {
         super(Texture.POLISHED_BLACKSTONE_BRICKS);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

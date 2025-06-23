@@ -19,6 +19,7 @@ public class StoneCutterMaterial extends Material implements PlaceableMaterial, 
     public StoneCutterMaterial() {
         super(Texture.STONE_CUTTER_FRONT);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(10f);
         this.setTopTexture(Texture.STONE_CUTTER_TOP);
         this.setBottomTexture(Texture.STONE_CUTTER_BOTTOM);
         this.setLeftTexture(Texture.STONE_CUTTER_SIDE);

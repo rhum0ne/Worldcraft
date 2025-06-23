@@ -12,6 +12,7 @@ public class BricksMaterial extends Material implements PlaceableMaterial {
     public BricksMaterial() {
         super(Texture.BRICKS);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override

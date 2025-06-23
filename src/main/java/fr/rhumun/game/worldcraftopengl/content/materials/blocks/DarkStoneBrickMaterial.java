@@ -13,6 +13,7 @@ public class DarkStoneBrickMaterial extends Material implements PlaceableMateria
     public DarkStoneBrickMaterial() {
         super(Texture.DARK_STONE_BRICK);
         this.addToType(GuiTypes.CONSTRUCTION);
+        this.setDurability(10f);
     }
 
     @Override
