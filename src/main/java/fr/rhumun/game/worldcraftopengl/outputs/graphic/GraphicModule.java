@@ -69,6 +69,10 @@ public class GraphicModule {
     // == Shaders and rendering ==
     private final List<Shader> renderingShaders = new ArrayList<>();
     private final List<Shader> shaders = new ArrayList<>();
+    private static final List<Shader> SPECIAL_SHADERS = List.of(
+            ShaderManager.SELECTED_BLOCK_SHADER,
+            ShaderManager.FAR_SHADER
+    );
     private final DebugUtils debugUtils = new DebugUtils();
     private final LightningsUtils lightningsUtils;
     private int verticesNumber;
@@ -312,7 +316,7 @@ public class GraphicModule {
             GLStateManager.useProgram(shader.id);
             glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
         }
-        for (Shader shader : List.of(ShaderManager.SELECTED_BLOCK_SHADER, ShaderManager.FAR_SHADER)) {
+        for (Shader shader : SPECIAL_SHADERS) {
             GLStateManager.useProgram(shader.id);
             glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
         }
