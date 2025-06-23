@@ -382,9 +382,11 @@ public class GraphicModule {
         animatedEntitiesRenderer.render();
         glUseProgram(0);
 
+        glEnable(GL_BLEND);
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         breakingRenderer.render();
         glUseProgram(0);
+        glDisable(GL_BLEND);
 
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         blockSelector.render();

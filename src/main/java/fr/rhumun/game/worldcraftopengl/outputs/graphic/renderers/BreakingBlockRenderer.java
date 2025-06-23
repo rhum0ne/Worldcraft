@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 import java.nio.FloatBuffer;
@@ -66,6 +67,16 @@ public class BreakingBlockRenderer extends GlobalRenderer {
     }
 
     private void raster(Block block, Texture texture) {
+        float id = texture.getId();
+        if(block.getModel() == null || block.getModel() == Model.BLOCK) {
+            float[][] vertices = BlockUtil.createVertices(block, block, new float[]{id,id,id,id,id,id});
+            int[] indices = BlockUtil.createIndices(0);
+
+            addAllVertices(vertices);
+            addAllIndices(indices);
+            return;
+        }
+
         Mesh obj = block.getModel().get();
         if (obj == null) return;
 

@@ -191,19 +191,17 @@ public class Player extends LivingEntity implements MovingEntity {
             return;
         }
 
-        breakingProgress += 1f / breakingBlock.getMaterial().getDurability();
+        breakingProgress += 1f / (breakingBlock.getMaterial().getDurability()*60f);
         if (breakingProgress >= 1f) {
             breakBlock();
             stopBreaking();
+            if(getSelectedBlock() != null) startBreaking();
         }
     }
 
-    public Block getBreakingBlock() {
-        return breakingBlock;
-    }
-
     public int getBreakingStage() {
-        return (int) (breakingProgress * 10f);
+        if( breakingBlock == null || breakingBlock.getMaterial() == null) return 0;
+        return (int) (breakingProgress * 10);
     }
 
     /**
