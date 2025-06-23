@@ -23,7 +23,7 @@ public final class DayNightCycle {
 
     public static Color getSkyColor(int ticks) {
         float angle = getAngle(ticks);
-        double factor = (Math.sin(Math.toRadians(angle - 90)) + 1) / 2.0;
+        double factor = (Math.sin(Math.toRadians(angle)) + 1) / 2.0;
         Color day = Color.rgb(77, 150, 230);
         Color night = Color.BLACK;
         return interpolate(night, day, (float) factor);

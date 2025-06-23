@@ -79,6 +79,7 @@ public class GraphicModule {
     private EntitiesRenderer entitiesRenderer;
     private MobEntitiesRenderer animatedEntitiesRenderer;
     private HitboxRenderer hitboxRenderer;
+    private CelestialRenderer celestialRenderer;
     private final UpdateLoop updateLoop;
     private final ChunkLoader chunkLoader;
 
@@ -194,7 +195,8 @@ public class GraphicModule {
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
-                ShaderManager.ANIMATED_ENTITY_SHADER
+                ShaderManager.ANIMATED_ENTITY_SHADER,
+                ShaderManager.CELESTIAL_SHADER
         ));
         shaders.addAll(List.of(
                 ShaderManager.SELECTED_BLOCK_SHADER,
@@ -203,7 +205,8 @@ public class GraphicModule {
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
                 ShaderManager.ANIMATED_ENTITY_SHADER,
-                ShaderManager.FAR_SHADER
+                ShaderManager.FAR_SHADER,
+                ShaderManager.CELESTIAL_SHADER
         ));
         Matrix4f modelMatrix = new Matrix4f().identity();
         for (Shader shader : renderingShaders) updateModelAndProjectionFor(modelMatrix, shader);
@@ -219,6 +222,8 @@ public class GraphicModule {
         this.animatedEntitiesRenderer = new MobEntitiesRenderer(this, player);
         this.hitboxRenderer = new HitboxRenderer(this, player);
         this.hitboxRenderer.init();
+        this.celestialRenderer = new CelestialRenderer(this);
+        this.celestialRenderer.init();
     }
 
     private void configureLighting() {
@@ -341,24 +346,41 @@ public class GraphicModule {
         if (game.isPaused() != isPaused) setPaused(game.isPaused());
         if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
 
+        Vector3f camPos = getCamera().getPos();
+        ShaderManager.CELESTIAL_SHADER.setUniform("camPos", camPos);
+
         //updateWaterTime();
         updateViewMatrix();
 
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glUseProgram(ShaderManager.CELESTIAL_SHADER.id);
+        ShaderManager.CELESTIAL_SHADER.setUniform("angle", world.getCelestialAngle());
+        celestialRenderer.render();
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
+        glUseProgram(0);
+
         glUseProgram(ShaderManager.FAR_SHADER.id);
         updateFarChunks();
+        glUseProgram(0);
 
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         update();
 
         glUseProgram(ShaderManager.ENTITY_SHADER.id);
         entitiesRenderer.render();
+        glUseProgram(0);
 
         glUseProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
         animatedEntitiesRenderer.render();
+        glUseProgram(0);
 
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         blockSelector.render();
         hitboxRenderer.render();
+        glUseProgram(0);
 
         guiModule.render();
     }
@@ -397,6 +419,7 @@ public class GraphicModule {
                 ((ChunkRenderer)chunk.getRenderer()).renderOpaque();
             }
         }
+        glUseProgram(0);
 
         glEnable(GL_BLEND);
         glUseProgram(ShaderManager.LIQUID_SHADER.id);
@@ -408,6 +431,7 @@ public class GraphicModule {
             }
         }
         glDisable(GL_BLEND);
+        glUseProgram(0);
 
         glEnable(GL_BLEND);
         glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
@@ -421,7 +445,6 @@ public class GraphicModule {
         glDisable(GL_BLEND);
 
         glEnable(GL_BLEND);
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
@@ -430,6 +453,7 @@ public class GraphicModule {
             }
         }
         glDisable(GL_BLEND);
+        glUseProgram(0);
     }
 
     private void updateFarChunks() {
@@ -441,7 +465,6 @@ public class GraphicModule {
             }
         }
         if (loadedChunks.isEmpty()) return;
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float h = world.getHeigth();
         for (LightChunk chunk : loadedFarChunks) {
