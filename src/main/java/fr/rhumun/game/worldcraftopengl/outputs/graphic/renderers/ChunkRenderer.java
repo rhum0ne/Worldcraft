@@ -9,6 +9,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
@@ -22,7 +23,6 @@ import java.util.LinkedHashSet;
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL20C.glUseProgram;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
@@ -51,31 +51,31 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
         if(chunk.isToUpdate()) update();
 
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-        glEnable(GL_DEPTH_TEST);
+        GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
+        GLStateManager.enable(GL_DEPTH_TEST);
 
         renderOpaque();
 
         if(this.getRenderers().get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.LIQUID_SHADER.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.LIQUID_SHADER.id);
             renderLiquids();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
 
         if(this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
             renderTransparent();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
 
         if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > this.getDistanceFromPlayer()
                 && this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
             renderCloseTransparent();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
     }
 
