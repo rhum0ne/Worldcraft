@@ -233,7 +233,7 @@ public class GraphicModule {
     }
 
     private void setSunLight(Shader shader) {
-        shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
+        shader.setUniform("dirLight.direction", world.getLightDirection());
         Vector3f color = new Vector3f(
                 (float) world.getLightColor().getRed(),
                 (float) world.getLightColor().getGreen(),
