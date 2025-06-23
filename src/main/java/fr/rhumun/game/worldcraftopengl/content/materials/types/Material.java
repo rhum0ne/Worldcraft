@@ -1,127 +1,110 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.types;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.*;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import lombok.Getter;
 
+import java.util.Arrays;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+
 @Getter
-public enum Material {
-    COBBLE(new CobbleMaterial()),
-    PLANKS(new PlanksMaterial()),
-    DIRT(new DirtMaterial()),
-    STONE(new StoneMaterial()),
-    GRASS_BLOCK(new GrassBlockMaterial()),
-    LEAVES(new LeavesMaterial()),
-    LOG(new OakLogMaterial()),
-    STONE_BRICK(new StoneBricksMaterial()),
-    LAMP(new LampMaterial()),
-    PURPLE_LAMP(new PurpleLampMaterial()),
-    CYAN_LAMP(new CyanLampMaterial()),
-    WATER(new WaterMaterial()),
-    GRASS(new GrassMaterial()),
-    RED_FLOWER(new RedFlowerMaterial()),
-    BLUE_FLOWER(new BlueFlowerMaterial()),
-    DANDELION(new DandelionMaterial()),
-    SAND(new SandMaterial()),
-    SAPLING(new SaplingMaterial()),
-    LANTERN(new LanternMaterial()),
-    WHITE_WOOL(new WoolMaterial("white")),
-    BLACK_WOOL(new WoolMaterial("black")),
-    BLUE_WOOL(new WoolMaterial("blue")),
-    BROWN_WOOL(new WoolMaterial("brown")),
-    CYAN_WOOL(new WoolMaterial("cyan")),
-    GRAY_WOOL(new WoolMaterial("gray")),
-    GREEN_WOOL(new WoolMaterial("green")),
-    LIGHT_BLUE_WOOL(new WoolMaterial("light_blue")),
-    LIGHT_GRAY_WOOL(new WoolMaterial("light_gray")),
-    LIME_WOOL(new WoolMaterial("lime")),
-    MAGENTA_WOOL(new WoolMaterial("magenta")),
-    ORANGE_WOOL(new WoolMaterial("orange")),
-    PINK_WOOL(new WoolMaterial("pink")),
-    PURPLE_WOOL(new WoolMaterial("purple")),
-    RED_WOOL(new WoolMaterial("red")),
-    YELLOW_WOOL(new WoolMaterial("yellow")),
-    WHITE_TERRACOTTA(new TerracottaMaterial("white")),
-    BLACK_TERRACOTTA(new TerracottaMaterial("black")),
-    BLUE_TERRACOTTA(new TerracottaMaterial("blue")),
-    BROWN_TERRACOTTA(new TerracottaMaterial("brown")),
-    CYAN_TERRACOTTA(new TerracottaMaterial("cyan")),
-    GRAY_TERRACOTTA(new TerracottaMaterial("gray")),
-    GREEN_TERRACOTTA(new TerracottaMaterial("green")),
-    LIGHT_BLUE_TERRACOTTA(new TerracottaMaterial("light_blue")),
-    LIGHT_GRAY_TERRACOTTA(new TerracottaMaterial("light_gray")),
-    LIME_TERRACOTTA(new TerracottaMaterial("lime")),
-    MAGENTA_TERRACOTTA(new TerracottaMaterial("magenta")),
-    ORANGE_TERRACOTTA(new TerracottaMaterial("orange")),
-    PINK_TERRACOTTA(new TerracottaMaterial("pink")),
-    PURPLE_TERRACOTTA(new TerracottaMaterial("purple")),
-    RED_TERRACOTTA(new TerracottaMaterial("red")),
-    YELLOW_TERRACOTTA(new TerracottaMaterial("yellow")),
-    TERRACOTTA(new TerracottaMaterial()),
-    BOOKSHELF(new BookshelfMaterial()),
-    BIRCH_LOG(new BirchLogMaterial()),
-    BIRCH_PLANKS(new BirchPlanksMaterial()),
-    BIRCH_LEAVES(new BirchLeavesMaterial()),
-    BIRCH_SAPLING(new BirchSaplingMaterial()),
-    ACACIA_LOG(new AcaciaLogMaterial()),
-    ACACIA_PLANKS(new AcaciaPlanksMaterial()),
-    ACACIA_LEAVES(new AcaciaLeavesMaterial()),
-    ACACIA_SAPLING(new AcaciaSaplingMaterial()),
-    ACACIA_DOOR(new AcaciaDoorMaterial()),
-    ACACIA_DOOR_TOP(new AcaciaDoorTopMaterial()),
-    ACACIA_TRAPDOOR(new AcaciaTrapdoorMaterial()),
-    BRICKS(new BricksMaterial()),
-    GLASS(new GlassMaterial()),
-    CALCITE(new CalciteMaterial()),
-    CALCITE_BRICK(new CalciteBrickMaterial()),
-    POLISHED_DARK_BRICK(new PolishedBarkBricksMaterial()),
-    SNOW(new SnowMaterial()),
-    SNOWY_GRASS(new SnowyGrassMaterial()),
-    PUMPKIN(new PumpkinMaterial()),
-    JACKOLANTERN(new JackOLanternMaterial()),
-    DARK_STONE(new DarkStoneMaterial()),
-    DARK_COBBLE(new DarkCobbleMaterial()),
-    DARK_STONE_BRICK(new DarkStoneBrickMaterial()),
-    SAWMILL(new SawmillMaterial()),
-    BLACKSTONE(new BlackstoneMaterial()),
-    CRACKED_STONE_BRICK(new CrackedStoneBrickMaterial()),
-    DARK_PLANKS(new DarkPlanksMaterial()),
-    MUD_BRICKS(new MudBricksMaterial()),
-    POLISHED_BLACKSTONE_BRICKS(new PolishedBlackstoneBricksMaterial()),
-    REDSTONE_LAMP_ON(new RedstoneLampMaterial()),
-    STONE_DIORITE(new StoneDioriteMaterial()),
-    TORCH(new TorchMaterial()),
-    STONE_CUTTER(new StoneCutterMaterial());
+public abstract class Material {
 
     static int maxID = 0;
-
-    final AbstractMaterial material;
-    static Material[] MATERIALS;
-    Material(final AbstractMaterial material) {
-        this.material = material;
-    }
-
-    public static void init(){
-        MATERIALS = Material.values().clone();
-    }
-
-    public static Material getById(short id){
-        return MATERIALS[id];
-    }
-
-    public Sound getPlaceSound(){ return this.material instanceof PlaceableMaterial pM ? pM.getPlaceSound() : null; }
-    public Sound getBreakSound(){ return this.material instanceof PlaceableMaterial pM ? pM.getBreakSound() : null; }
-    public int getId(){ return this.material.getId(); }
-    public int getTextureID(){ return this.material.getTexture().getId(); }
-    public OpacityType getOpacity(){ return this.material instanceof PlaceableMaterial pM ? pM.getOpacity() : OpacityType.OPAQUE; }
-    public float getDensity(){ return this.material.getDensity(); }
 
     public static int createID(){
         return maxID++;
     }
 
-    public boolean isLiquid() {
-        return this.material instanceof PlaceableMaterial pM && pM.getOpacity() == OpacityType.LIQUID;
+    private final int id;
+    private final float friction;
+    private final float density;
+    private final Texture[] textures = new Texture[6];
+
+    public Material(Texture texture) {this(texture, 0.1f, 1f);}
+
+    public Material(Texture texture, float friction) {
+        this(texture, friction, 1f);
     }
+
+    public Material(Texture texture, float friction, float density) {
+        this.id = createID();
+        this.friction = friction;
+        this.density = density;
+        Arrays.fill(textures, texture);
+
+        GAME.debug("Created material " + id + " with texture " + texture.getName());
+    }
+
+    public void setTopTexture(Texture texture) {
+        this.textures[4] = texture;
+    }
+
+    public void setBottomTexture(Texture texture) {
+        this.textures[5] = texture;
+    }
+
+    public void setTopAndBottomTexture(Texture texture) {
+        this.textures[4] = texture;
+        this.textures[5] = texture;
+    }
+
+    public void setLeftTexture(Texture texture) {
+        this.textures[1] = texture;
+    }
+
+    public void setRightTexture(Texture texture) {
+        this.textures[3] = texture;
+    }
+
+    public void setFrontTexture(Texture texture) {
+        this.textures[2] = texture;
+    }
+
+    public void setBackTexture(Texture texture) {
+        this.textures[0] = texture;
+    }
+
+    public Texture getTexture(int i) {
+        return textures[i];
+    }
+
+    public Texture getTopTexture() {return textures[4];}
+    public Texture getBottomTexture() {return textures[5];}
+    public Texture getLeftTexture() {return textures[1];}
+    public Texture getRightTexture() {return textures[3];}
+    public Texture getFrontTexture() {return textures[2];}
+    public Texture getBackTexture() {return textures[0];}
+
+    public Texture getTextureFromFaceWithNormal(float x, float y, float z) {
+        // Normales des 6 faces des blocs
+        //POUR LES CYLINDRE ETC VOIR SI SIMPLEMENT RETIRER LES && ... = 0 fonctionnerait pas mal
+
+        if (x == 1.0f && y == 0.0f && z == 0.0f) {
+            return textures[2]; // Face avant (positive X)
+        } else if (x == -1.0f && y == 0.0f && z == 0.0f) {
+            return textures[0]; // Face arrière (négative X)
+        } else if (x == 0.0f && y == 1.0f && z == 0.0f) {
+            return textures[4]; // Face supérieure (positive Y)
+        } else if (x == 0.0f && y == -1.0f && z == 0.0f) {
+            return textures[5]; // Face inférieure (négative Y)
+        } else if (x == 0.0f && y == 0.0f && z == 1.0f) {
+            return textures[1]; // Face droite (positive Z)
+        } else if (x == 0.0f && y == 0.0f && z == -1.0f) {
+            return textures[3]; // Face gauche (négative Z)
+        }
+        return this.getTexture(); // Si la normale ne correspond à aucune face
+    }
+
+    public Texture getTexture() {return textures[0];}
+    public OpacityType getOpacity(){ return this instanceof PlaceableMaterial pM ? pM.getOpacity() : OpacityType.OPAQUE; }
+    public boolean isLiquid() { return this instanceof PlaceableMaterial pM && pM.getOpacity() == OpacityType.LIQUID; }
+
+    protected void addToType(GuiTypes type){
+        type.add(this);
+    }
+
+    public boolean showInCreativeInventory() { return true; }
 }

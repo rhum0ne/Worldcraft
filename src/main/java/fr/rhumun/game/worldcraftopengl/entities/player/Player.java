@@ -2,9 +2,9 @@ package fr.rhumun.game.worldcraftopengl.entities.player;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.BlockItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
-import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
 import fr.rhumun.game.worldcraftopengl.entities.LivingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
@@ -110,15 +110,24 @@ public class Player extends LivingEntity implements MovingEntity {
 
     @Override
     public void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
-        super.placeBlockAt(item, block, hitPosition, direction);
-        this.playSound(item.getMaterial().getPlaceSound());
+        if(item.getMaterial() instanceof PlaceableMaterial pM){
+            super.placeBlockAt(item, block, hitPosition, direction);
+            this.playSound(pM.getPlaceSound());
+        }
+        else if(item.getMaterial() instanceof BlockItemMaterial bM){
+            super.placeBlockAt(item, block, hitPosition, direction);
+            this.playSound(bM.getPlaceSound());
+        }
+        else {
+            GAME.warn("Trying to place a non-placeable material : " + item.getMaterial() + " at " + hitPosition + " for player " + this.getLocation());
+        }
     }
 
     @Override
     public Material breakBlock() {
         Material mat = super.breakBlock();
         if (mat == null) return null;
-        if(mat.getMaterial() instanceof PlaceableMaterial pM)
+        if(mat instanceof PlaceableMaterial pM)
             this.playSound(pM.getBreakSound());
         consumeSaturation(BREAK_SATURATION_COST);
         return mat;
@@ -287,5 +296,9 @@ public class Player extends LivingEntity implements MovingEntity {
 
     public boolean isInCreativeMode(){
         return this.gamemode == Gamemode.CREATIVE;
+    }
+
+    public boolean isHungry() {
+        return !this.isInCreativeMode() && this.food < this.maxFood;
     }
 }

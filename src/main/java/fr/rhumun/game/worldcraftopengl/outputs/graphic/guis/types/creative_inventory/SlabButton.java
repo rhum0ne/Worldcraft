@@ -20,7 +20,7 @@ public class SlabButton extends Button {
 
     @Override
     public void onClick(Player player) {
-        CreativeInventoryGui gui = (CreativeInventoryGui) this.getContainer();
+        CreativeGui gui = (CreativeGui) this.getContainer();
         CreativeItems items = (CreativeItems) gui.getItemContainer();
 
         if(items.getShowedModel() != Model.SLAB)

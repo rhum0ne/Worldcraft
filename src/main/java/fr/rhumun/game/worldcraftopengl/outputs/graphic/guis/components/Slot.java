@@ -1,10 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import lombok.Getter;
@@ -51,7 +51,7 @@ public class Slot extends Button {
             this.setTexture(null);
             this.getText().setText("");
         }else{
-            this.setTexture(item.getMaterial().getMaterial().getTexture());
+            this.setTexture(item.getMaterial().getTexture());
 
             if(item.getQuantity() == 1) this.getText().setText("");
             else this.getText().setText(String.valueOf(item.getQuantity()));
@@ -103,7 +103,7 @@ public class Slot extends Button {
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = 1-texCoordsBuffer.get(vertexIndex * 2 + 1);
 
-            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTextureID()});
+            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTexture().getId()});
         }
         toArrays();
         updateVAO();

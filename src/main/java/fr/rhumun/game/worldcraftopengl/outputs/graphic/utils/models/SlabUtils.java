@@ -94,12 +94,12 @@ public class SlabUtils {
         float texScaleZ = z2-z1;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = corner1.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = corner2.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = corner1.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = corner2.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = corner1.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = corner2.getMaterial().getMaterial().getRightTexture().getId();
+        float texIDFront = corner1.getMaterial().getFrontTexture().getId();
+        float texIDBack = corner2.getMaterial().getBackTexture().getId();
+        float texIDTop = corner1.getMaterial().getTopTexture().getId();
+        float texIDBottom = corner2.getMaterial().getBottomTexture().getId();
+        float texIDLeft = corner1.getMaterial().getLeftTexture().getId();
+        float texIDRight = corner2.getMaterial().getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)
@@ -192,12 +192,12 @@ public class SlabUtils {
         float texScaleZ = 1f;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = block.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = block.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = block.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = block.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = block.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = block.getMaterial().getMaterial().getRightTexture().getId();
+        float texIDFront = block.getMaterial().getFrontTexture().getId();
+        float texIDBack = block.getMaterial().getBackTexture().getId();
+        float texIDTop = block.getMaterial().getTopTexture().getId();
+        float texIDBottom = block.getMaterial().getBottomTexture().getId();
+        float texIDLeft = block.getMaterial().getLeftTexture().getId();
+        float texIDRight = block.getMaterial().getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)

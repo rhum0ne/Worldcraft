@@ -1,10 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
-import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import lombok.Getter;
 import lombok.Setter;
 

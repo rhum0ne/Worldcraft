@@ -136,6 +136,24 @@ public class Texture {
     public static Texture HUNGER_HALF;
 
 
+    // Item textures
+    public static Texture APPLE;
+    public static Texture BREAD;
+    public static Texture DIAMOND;
+    public static Texture IRON_INGOT;
+    public static Texture IRON_AXE;
+    public static Texture IRON_PICKAXE;
+    public static Texture IRON_SHOVEL;
+    public static Texture IRON_SWORD;
+    public static Texture STICK;
+    public static Texture WATER_BUCKET;
+    public static Texture WOODEN_AXE;
+    public static Texture WOODEN_HOE;
+    public static Texture WOODEN_PICKAXE;
+    public static Texture WOODEN_SHOVEL;
+    public static Texture WOODEN_SWORD;
+    public static Texture ACACIA_DOOR_ITEM;
+
     public static Texture OTTER;
     public static Texture ROCKY;
     public static Texture NINJA_SKELETON;
@@ -241,6 +259,24 @@ public class Texture {
         ACACIA_DOOR_TOP = new Texture("acacia_door_top.png");
         ACACIA_DOOR = new Texture("acacia_door_bottom.png");
         ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
+
+        // Item textures initialization
+        APPLE = new Texture("items\\apple.png");
+        BREAD = new Texture("items\\bread.png");
+        DIAMOND = new Texture("items\\diamond.png");
+        IRON_INGOT = new Texture("items\\iron_ingot.png");
+        IRON_AXE = new Texture("items\\iron_axe.png");
+        IRON_PICKAXE = new Texture("items\\iron_pickaxe.png");
+        IRON_SHOVEL = new Texture("items\\iron_shovel.png");
+        IRON_SWORD = new Texture("items\\iron_sword.png");
+        STICK = new Texture("items\\stick.png");
+        WATER_BUCKET = new Texture("items\\water_bucket.png");
+        WOODEN_AXE = new Texture("items\\wooden_axe.png");
+        WOODEN_HOE = new Texture("items\\wooden_hoe.png");
+        WOODEN_PICKAXE = new Texture("items\\wooden_pickaxe.png");
+        WOODEN_SHOVEL = new Texture("items\\wooden_shovel.png");
+        WOODEN_SWORD = new Texture("items\\wooden_sword.png");
+        ACACIA_DOOR_ITEM = new Texture("items\\acacia_door.png");
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");

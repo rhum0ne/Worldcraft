@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.entities.physics;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
@@ -36,7 +37,7 @@ public class Movements {
         Block block = entity.getBlockDown();
         if (block != null && block.getMaterial() != null) {
             // Appliquer le frottement du matériau au sol
-            float groundFriction = block.getMaterial().getMaterial().getFriction();
+            float groundFriction = block.getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
         } else {
             if(entity.isSwimming()) {
@@ -149,7 +150,7 @@ public class Movements {
 
         if(entity instanceof Player player && tick++ % stepSoundFrequency == 0) {
             Block block = entity.getBlockDown();
-            if (block != null && block.getMaterial() != null ) player.playSound(block.getMaterial().getBreakSound(), 0.2f);
+            if (block != null && block.getMaterial() != null && block.getMaterial() instanceof PlaceableMaterial pM) player.playSound(pM.getBreakSound(), 0.2f);
         }
     }
 }

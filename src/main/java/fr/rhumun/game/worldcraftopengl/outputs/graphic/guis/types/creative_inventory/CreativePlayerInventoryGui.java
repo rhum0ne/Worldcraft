@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.CreativeItems;
+import lombok.Getter;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
@@ -14,28 +15,20 @@ import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.In
  * Combined inventory GUI used in creative mode.
  * It displays the creative give menu next to the full player inventory.
  */
+@Getter
 public class CreativePlayerInventoryGui extends CenteredGUI {
 
-    private static final float ratio = 1f;
-    private static final int CREATIVE_WIDTH = 528;
+    public static final float ratio = 1f;
+    public static final int CREATIVE_WIDTH = 528;
     private static final int GAP = 10;
+
+    private final CreativeGui creative;
 
     public CreativePlayerInventoryGui() {
         super(CREATIVE_WIDTH + GAP + INVENTORY_WIDTH, CREATIVE_WIDTH, null);
 
         // Creative menu on the left
-        Gui creative = new Gui(0, 0, CREATIVE_WIDTH, CREATIVE_WIDTH, Texture.CREATIVE_INVENTORY, this);
-        creative.setItemContainer(new CreativeItems());
-
-        for (int y = 0; y < 11; y++) {
-            for (int x = 0; x < 9; x++) {
-                int id = 9 * y + x;
-                creative.createCreativeSlot(getCreativeX(id), getCreativeY(id),
-                        (int) Math.ceil(ratio * Slot.DEFAULT_SIZE));
-            }
-        }
-        creative.addText(77, 10, "Blocks");
-        creative.addButton(new SlabButton(0, 10, creative));
+        creative = new CreativeGui(this);
         this.addComponent(creative);
 
         // Player inventory on the right
@@ -47,13 +40,5 @@ public class CreativePlayerInventoryGui extends CenteredGUI {
         addInventoryComponentsTo( inventory);
 
         this.addComponent(inventory);
-    }
-
-    private int getCreativeX(int slot) {
-        return (int) (77 * ratio + Math.ceil(slot % 9 * 40 * ratio));
-    }
-
-    private int getCreativeY(int slot) {
-        return (int) (34 * ratio + Math.ceil(slot / 9 * 39 * ratio));
     }
 }

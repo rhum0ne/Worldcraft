@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
@@ -13,7 +13,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-public class StoneCutterMaterial extends AbstractMaterial implements PlaceableMaterial, InteractableMaterial {
+public class StoneCutterMaterial extends Material implements PlaceableMaterial, InteractableMaterial {
 
     public StoneCutterMaterial() {
         super(Texture.STONE_CUTTER_FRONT);

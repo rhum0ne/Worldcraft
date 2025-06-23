@@ -8,7 +8,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
-public class AcaciaDoorTopMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock {
+public class AcaciaDoorTopMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock {
 
     public AcaciaDoorTopMaterial() {
         super(Texture.ACACIA_DOOR_TOP);
@@ -42,7 +42,12 @@ public class AcaciaDoorTopMaterial extends AbstractMaterial implements Placeable
     public void onPlace(Block block) {
         Block up = block.getBlockAtDown();
         if (up != null && up.getMaterial() == null) {
-            up.setModel(block.getModel()).setMaterial(Material.ACACIA_DOOR);
+            up.setModel(block.getModel()).setMaterial(Materials.ACACIA_DOOR);
         }
+    }
+
+    @Override
+    public boolean showInCreativeInventory() {
+        return false;
     }
 }

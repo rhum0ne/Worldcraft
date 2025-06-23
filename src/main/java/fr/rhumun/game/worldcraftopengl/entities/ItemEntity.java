@@ -1,6 +1,5 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
-import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;

@@ -127,7 +127,7 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
                     this.getRenderers().getFirst().getVertices().add(new float[] {
                             worldX - 0.5f, worldY - 1f, worldZ - 0.5f,
-                            baseMat.getTextureID(),
+                            baseMat.getTexture().getId(),
                             width, heightM, depth
                     });
                     this.getRenderers().getFirst().setIndice(

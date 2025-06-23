@@ -2,6 +2,8 @@ package fr.rhumun.game.worldcraftopengl.entities;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.ConsumableItem;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import lombok.Getter;
 
@@ -40,5 +42,22 @@ public class Inventory implements ItemContainer {
 
     public void addItem(ItemStack result) {
         this.setFreeSlot(result);
+    }
+
+    public void removeItem(Material itemMaterial){ removeItem(itemMaterial, 1); }
+
+    public void removeItem(Material itemMaterial, int amout) {
+        for(int i=0; i< items.length; i++){
+            if(items[i] != null && items[i].getMaterial() == itemMaterial){
+                if(items[i].getQuantity() > amout){
+                    items[i].setQuantity(items[i].getQuantity() - amout);
+                    return;
+                }
+                else if(items[i].getQuantity() == amout){
+                    items[i] = null;
+                    return;
+                }
+            }
+        }
     }
 }

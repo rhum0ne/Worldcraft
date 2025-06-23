@@ -2,9 +2,9 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
@@ -205,26 +205,26 @@ public class BlockUtil {
     }
 
     private static float[] getTextureIDs(Block corner1) {
-        if(corner1.getMaterial().getMaterial() instanceof RotableMaterial){
+        if(corner1.getMaterial() instanceof RotableMaterial){
             int blockState = corner1.getState();
 
             return new float[]{
-                    corner1.getMaterial().getMaterial().getTextures()[(2 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(1 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(3 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTopTexture().getId(),
-                    corner1.getMaterial().getMaterial().getBottomTexture().getId()
+                    corner1.getMaterial().getTextures()[(2 + blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(1 + blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(3 + blockState)%4].getId(),
+                    corner1.getMaterial().getTopTexture().getId(),
+                    corner1.getMaterial().getBottomTexture().getId()
             };
         }
 
         return new float[]{
-                corner1.getMaterial().getMaterial().getFrontTexture().getId(),
-                corner1.getMaterial().getMaterial().getBackTexture().getId(),
-                corner1.getMaterial().getMaterial().getLeftTexture().getId(),
-                corner1.getMaterial().getMaterial().getRightTexture().getId(),
-                corner1.getMaterial().getMaterial().getTopTexture().getId(),
-                corner1.getMaterial().getMaterial().getBottomTexture().getId()
+                corner1.getMaterial().getFrontTexture().getId(),
+                corner1.getMaterial().getBackTexture().getId(),
+                corner1.getMaterial().getLeftTexture().getId(),
+                corner1.getMaterial().getRightTexture().getId(),
+                corner1.getMaterial().getTopTexture().getId(),
+                corner1.getMaterial().getBottomTexture().getId()
         };
     }
 
@@ -244,12 +244,12 @@ public class BlockUtil {
         float texScaleZ = 1f;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = block.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = block.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = block.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = block.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = block.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = block.getMaterial().getMaterial().getRightTexture().getId();
+        float texIDFront = block.getMaterial().getFrontTexture().getId();
+        float texIDBack = block.getMaterial().getBackTexture().getId();
+        float texIDTop = block.getMaterial().getTopTexture().getId();
+        float texIDBottom = block.getMaterial().getBottomTexture().getId();
+        float texIDLeft = block.getMaterial().getLeftTexture().getId();
+        float texIDRight = block.getMaterial().getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)
@@ -348,12 +348,12 @@ public class BlockUtil {
         float texScaleZ = 1f;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = mat.getMaterial().getFrontTexture().getId();
-        float texIDBack = mat.getMaterial().getBackTexture().getId();
-        float texIDTop = mat.getMaterial().getTopTexture().getId();
-        float texIDBottom = mat.getMaterial().getBottomTexture().getId();
-        float texIDLeft = mat.getMaterial().getLeftTexture().getId();
-        float texIDRight = mat.getMaterial().getRightTexture().getId();
+        float texIDFront = mat.getFrontTexture().getId();
+        float texIDBack = mat.getBackTexture().getId();
+        float texIDTop = mat.getTopTexture().getId();
+        float texIDBottom = mat.getBottomTexture().getId();
+        float texIDLeft = mat.getLeftTexture().getId();
+        float texIDRight = mat.getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)
