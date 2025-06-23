@@ -22,18 +22,25 @@ public abstract class Material {
     private final int id;
     private final float friction;
     private final float density;
+    /** Number of ticks required to break the block. */
+    private final float durability;
     private final Texture[] textures = new Texture[6];
 
-    public Material(Texture texture) {this(texture, 0.1f, 1f);}
+    public Material(Texture texture) {this(texture, 0.1f, 1f, 10f);}
 
     public Material(Texture texture, float friction) {
-        this(texture, friction, 1f);
+        this(texture, friction, 1f, 10f);
     }
 
     public Material(Texture texture, float friction, float density) {
+        this(texture, friction, density, 10f);
+    }
+
+    public Material(Texture texture, float friction, float density, float durability) {
         this.id = createID();
         this.friction = friction;
         this.density = density;
+        this.durability = durability;
         Arrays.fill(textures, texture);
 
         GAME.debug("Created material " + id + " with texture " + texture.getName());

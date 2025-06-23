@@ -117,6 +117,7 @@ public class Texture {
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
     public static Texture SELECTED_SLOT;
+    public static Texture[] DESTROY_STAGES;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
     public static Texture WORKBENCH;
@@ -281,6 +282,10 @@ public class Texture {
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
+        DESTROY_STAGES = new Texture[10];
+        for(int i=0;i<10;i++){
+            DESTROY_STAGES[i] = new Texture(TextureTypes.GUIS,"hud\\destroy\\destroy_stage_" + i + ".png");
+        }
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
         WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
@@ -308,6 +313,12 @@ public class Texture {
     public static HashMap<String, Texture> textureByName = new HashMap<>();
     public static Texture getByName(String s) {
         return textureByName.get(s);
+    }
+
+    public static Texture getDestroyStage(int stage){
+        if(stage < 0) stage = 0;
+        if(stage > 9) stage = 9;
+        return DESTROY_STAGES[stage];
     }
 
 

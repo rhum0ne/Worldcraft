@@ -75,6 +75,7 @@ public class GraphicModule {
     // == Modules ==
     private GuiModule guiModule;
     private BlockSelector blockSelector;
+    private BreakingBlockRenderer breakingRenderer;
     private final CleanerModule cleaner;
     private EntitiesRenderer entitiesRenderer;
     private MobEntitiesRenderer animatedEntitiesRenderer;
@@ -190,6 +191,7 @@ public class GraphicModule {
         ShaderManager.initShaders();
         blockSelector = new BlockSelector(this, player);
         blockSelector.init();
+        breakingRenderer = new BreakingBlockRenderer(this, player);
 
         renderingShaders.addAll(List.of(
                 ShaderManager.GLOBAL_SHADERS,
@@ -378,6 +380,10 @@ public class GraphicModule {
 
         glUseProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
         animatedEntitiesRenderer.render();
+        glUseProgram(0);
+
+        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        breakingRenderer.render();
         glUseProgram(0);
 
         glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
