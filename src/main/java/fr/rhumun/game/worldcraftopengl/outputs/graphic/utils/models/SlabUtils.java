@@ -105,28 +105,28 @@ public class SlabUtils {
         // Sommets du rectangle englobant (2 triangles par face)
         float[][] vertices = {
                 // Face avant (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, 1.0f}, // Bas droite
-                {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, 1.0f}, // Haut gauche
+                {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f}, // Bas droite
+                {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f}, // Haut gauche
 
                 // Face arrière (2 triangles)
-                {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas gauche
-                {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, -1.0f}, // Bas droite
-                {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut droite
-                {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, -1.0f}, // Haut gauche
+                {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f}, // Bas gauche
+                {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f}, // Bas droite
+                {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f}, // Haut droite
+                {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f}, // Haut gauche
 
                 // Face gauche (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, -1.0f, 0.0f, 0.0f}, // Bas droite
-                {x1, y1, z1, 0.0f, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, -1.0f, 0.0f, 0.0f}, // Haut droite
+                {x1, y2, z1, 0.0f, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f}, // Bas droite
+                {x1, y1, z1, 0.0f, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face droite (2 triangles)
-                {x2, y2, z1, 0.0f, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x2, y2, z2, texScaleZ, 0.0f, texIDRight, 1.0f, 0.0f, 0.0f}, // Bas droite
-                {x2, y1, z1, 0.0f, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x2, y1, z2, texScaleZ, texScaleY, texIDRight, 1.0f, 0.0f, 0.0f}, // Haut droite
+                {x2, y2, z1, 0.0f, 0.0f, texIDRight, -1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x2, y2, z2, texScaleZ, 0.0f, texIDRight, -1.0f, 0.0f, 0.0f}, // Bas droite
+                {x2, y1, z1, 0.0f, texScaleY, texIDRight, -1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleZ, texScaleY, texIDRight, -1.0f, 0.0f, 0.0f}, // Haut droite
 
                 // Face supérieure (2 triangles)
                 {x1, y1, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f}, // Bas gauche
