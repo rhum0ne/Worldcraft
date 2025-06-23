@@ -59,6 +59,7 @@ public class GameLoop extends Thread {
                 }
 
                 if(game.getGameState() == GameState.RUNNING) {
+                    player.getWorld().updateTime();
                     Movements.applyMovements(player);
                     player.update();
 

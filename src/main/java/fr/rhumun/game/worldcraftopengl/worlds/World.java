@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
+import fr.rhumun.game.worldcraftopengl.worlds.utils.DayNightCycle;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,9 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Getter
 public class World {
 
+    /** Duration of a full day/night cycle in ticks. */
+    public static final int DAY_NIGHT_TICKS = 24000;
+
     private final Seed seed;
     private final WorldGenerator generator;
 
@@ -33,6 +37,8 @@ public class World {
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
+
+    private final DayNightCycle dayNightCycle = new DayNightCycle(this);
 
     private final int heigth = 256;
 
@@ -184,5 +190,13 @@ public class World {
 
     public void spawnItem(ItemStack selectedItem, Location location) {
         EntityFactory.createItemEntity(location, selectedItem);
+    }
+
+    public void updateTime() {
+        dayNightCycle.update();
+    }
+
+    public void setSkyColor(Color color) {
+        this.skyColor = color;
     }
 }
