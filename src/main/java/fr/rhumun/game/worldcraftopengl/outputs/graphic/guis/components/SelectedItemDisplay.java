@@ -44,7 +44,7 @@ public class SelectedItemDisplay extends Slot {
                 setTexture(null);
                 getText().setText("");
             } else {
-                setTexture(item.getMaterial().getMaterial().getTexture());
+                setTexture(item.getMaterial().getTexture());
                 if (item.getQuantity() == 1) getText().setText("");
                 else getText().setText(String.valueOf(item.getQuantity()));
             }

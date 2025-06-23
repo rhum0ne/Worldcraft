@@ -1,13 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
-import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
-public class WaterMaterial extends AbstractMaterial  implements PlaceableMaterial {
+public class WaterMaterial extends Material implements PlaceableMaterial {
     public WaterMaterial() {
         super(Texture.WATER, 0.1f, 1f);
     }
@@ -24,5 +23,10 @@ public class WaterMaterial extends AbstractMaterial  implements PlaceableMateria
     @Override
     public OpacityType getOpacity() {
         return OpacityType.LIQUID;
+    }
+
+    @Override
+    public boolean showInCreativeInventory() {
+        return false;
     }
 }

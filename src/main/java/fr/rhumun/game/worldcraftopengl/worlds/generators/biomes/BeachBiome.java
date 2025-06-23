@@ -1,14 +1,14 @@
 package fr.rhumun.game.worldcraftopengl.worlds.generators.biomes;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 
 public class BeachBiome extends Biome {
 
     public BeachBiome() {
-        super("Beach", 0, Material.SAND, Material.STONE);
+        super("Beach", 0, Materials.SAND, Materials.STONE);
     }
 
     @Override

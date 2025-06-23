@@ -138,12 +138,12 @@ public class LiquidsUtil {
         float texScaleZ = z2-z1;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = corner1.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = corner2.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = corner1.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = corner2.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = corner1.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = corner2.getMaterial().getMaterial().getRightTexture().getId();
+        float texIDFront = corner1.getMaterial().getFrontTexture().getId();
+        float texIDBack = corner2.getMaterial().getBackTexture().getId();
+        float texIDTop = corner1.getMaterial().getTopTexture().getId();
+        float texIDBottom = corner2.getMaterial().getBottomTexture().getId();
+        float texIDLeft = corner1.getMaterial().getLeftTexture().getId();
+        float texIDRight = corner2.getMaterial().getRightTexture().getId();
 
         float[][] vertices = new float[i*4][];
 

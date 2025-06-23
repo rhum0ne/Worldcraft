@@ -1,17 +1,16 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
-import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -251,13 +250,13 @@ public class Entity {
                 this.getLocation().getX(), this.getLocation().getY() - 0.5f,
                 this.getLocation().getZ(), false);
         if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
-            return body.getMaterial().getMaterial().getDensity();
+            return body.getMaterial().getDensity();
 
         Block head = this.getLocation().getWorld().getBlockAt(
                 this.getLocation().getX(), this.getLocation().getY() + 0.2f,
                 this.getLocation().getZ(), false);
         if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
-            return head.getMaterial().getMaterial().getDensity();
+            return head.getMaterial().getDensity();
 
         return 0f;
     }
@@ -342,14 +341,14 @@ public class Entity {
             return;
         }
 
-        Material material = item.getMaterial();
+        Material material = item.getMaterial() instanceof BlockItemMaterial bM ? bM.getMaterialToPlace() : item.getMaterial();
 
         Model model = item.getModel();
         block.setModel(model).setMaterial(material);
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
 
-        if (material.getMaterial() instanceof fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock multi) {
+        if (material instanceof Multiblock multi) {
             multi.onPlace(block);
         }
     }

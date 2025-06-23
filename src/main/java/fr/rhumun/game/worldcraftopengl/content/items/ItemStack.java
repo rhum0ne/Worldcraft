@@ -15,11 +15,9 @@ public class ItemStack {
     private final Model model;
     private int quantity;
 
-    public ItemStack(Material material) {
-        this(material, (material.getMaterial() instanceof ForcedModelMaterial fmm) ? fmm.getModel() : Model.BLOCK, 1);
-    }
-
+    public ItemStack(Material material) {this(material, (material instanceof ForcedModelMaterial fmm) ? fmm.getModel() : Model.BLOCK, 1);}
     public ItemStack(Material material, Model model){ this(material, model, 1); }
+    public ItemStack(Material material, int quantity){ this(material, Model.BLOCK, quantity); }
 
     public ItemStack(Material material, Model model, int quantity){
         this.material = material;

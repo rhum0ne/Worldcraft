@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,13 +22,6 @@ public class LightChunk extends AbstractChunk{
 
         materials = new Material[Game.CHUNK_SIZE][world.getHeigth()][Game.CHUNK_SIZE];
         isVisible = new boolean[Game.CHUNK_SIZE][world.getHeigth()][Game.CHUNK_SIZE];
-
-        if(DEBUG)
-            for (int x = 0; x < Game.CHUNK_SIZE; x++)
-                for (int z = 0; z < Game.CHUNK_SIZE; z++)
-                    materials[x][80][z] = Material.RED_WOOL;
-
-
 
         updateAllBlock();
 

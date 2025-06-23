@@ -1,11 +1,10 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
-import fr.rhumun.game.worldcraftopengl.worlds.WorldInfo;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -225,7 +224,7 @@ public class SaveManager {
                     for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
                         short mat = in.readShort();
                         if (mat >= 0)
-                            chunk.getBlocks()[xi][y][zi].setMaterial(Material.getById(mat));
+                            chunk.getBlocks()[xi][y][zi].setMaterial(Materials.getById(mat));
                     }
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
                 for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
@@ -254,7 +253,7 @@ public class SaveManager {
                     for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {
                         short mat = in.readShort();
                         if (mat >= 0)
-                            chunk.getMaterials()[xi][y][zi] = Material.getById(mat);
+                            chunk.getMaterials()[xi][y][zi] = Materials.getById(mat);
                     }
             for (int xi = 0; xi < Game.CHUNK_SIZE; xi++)
                 for (int zi = 0; zi < Game.CHUNK_SIZE; zi++) {

@@ -7,8 +7,9 @@ import de.articdive.jnoise.generators.noise_parameters.simplex_variants.Simplex3
 import de.articdive.jnoise.generators.noise_parameters.simplex_variants.Simplex4DVariant;
 import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
 import de.articdive.jnoise.pipeline.JNoise;
-import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
+import static fr.rhumun.game.worldcraftopengl.content.materials.types.Materials.*;
 
 @Getter
 public class NormalWorldGenerator extends WorldGenerator {
@@ -123,9 +125,9 @@ public class NormalWorldGenerator extends WorldGenerator {
                 for (int y = 0; y < columnHeight; y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
 
-                    if (block == null || block.getMaterial() == null || block.getMaterial() == Material.DARK_COBBLE)
+                    if (block == null || block.getMaterial() == null || block.getMaterial() == Materials.DARK_COBBLE)
                         continue;
-                    if ((block.getMaterial() != Material.STONE && block.getMaterial() != Material.DIRT && block.getMaterial() != Material.GRASS_BLOCK))
+                    if ((block.getMaterial() != STONE && block.getMaterial() != DIRT && block.getMaterial() != Materials.GRASS_BLOCK))
                         continue;
 
 
@@ -153,9 +155,9 @@ public class NormalWorldGenerator extends WorldGenerator {
                     GAME.errorLog("No block found for x=" + x + ",z=" + z);
                     continue;
                 }
-                if (block.getMaterial() != Material.STONE) continue;
+                if (block.getMaterial() != STONE) continue;
                 Biome biome = block.getBiome();
-                if(biome == null) block.setMaterial(Material.BLUE_TERRACOTTA);
+                if(biome == null) block.setMaterial(Materials.BLUE_TERRACOTTA);
                 else block.setMaterial(biome.getTop());
                 for(int i=0; i<3; i++){
                     block = block.getBlockAtDown();
@@ -163,7 +165,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                     block.setMaterial(block.getBiome().getSecondary());
                 }
 
-                chunk.setBlock(x, 0, z, Material.DARK_COBBLE);
+                chunk.setBlock(x, 0, z, Materials.DARK_COBBLE);
             }
     }
 
@@ -173,7 +175,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                 for (int y = heights[x][z]; y < getWaterHigh(); y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block.getMaterial() != null) continue;
-                    block.setMaterial(Material.WATER);
+                    block.setMaterial(Materials.WATER);
                 }
     }
 
@@ -204,7 +206,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                 for (int y = 0; y < height && y < worldHeight; y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block != null) {
-                        block.setMaterial(Material.STONE);
+                        block.setMaterial(STONE);
                     }
                 }
             }
@@ -251,7 +253,7 @@ public class NormalWorldGenerator extends WorldGenerator {
         Block block = chunk.getHighestBlock(x, z, true);
         Biome biome = chunk.getBiome(block);
 
-        if(block.getMaterial() == Material.GRASS_BLOCK){
+        if(block.getMaterial() == Materials.GRASS_BLOCK){
             biome.spawnVegetation(chunk, block, x, z, this.getWorld().getSeed());
 
         }
@@ -273,53 +275,23 @@ public class NormalWorldGenerator extends WorldGenerator {
                 int height = heightCalculator.calcHeight(worldX, worldZ, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
                 for (int y = 0; y < Math.min(height, this.getWorld().getHeigth()); y++) {
-                    chunk.getMaterials()[x][y][z] = Material.STONE;
+                    chunk.getMaterials()[x][y][z] = STONE;
                 }
 
                 if (height < getWaterHigh()) {
                     for (int y = height; y < getWaterHigh(); y++) {
-                        chunk.getMaterials()[x][y][z] = Material.WATER;
+                        chunk.getMaterials()[x][y][z] = Materials.WATER;
                     }
                 }
 
                 // Petite coloration simple
                 if (height > getWaterHigh() && height < this.getWorld().getHeigth()) {
-                    chunk.getMaterials()[x][height][z] = Material.GRASS_BLOCK;
+                    chunk.getMaterials()[x][height][z] = Materials.GRASS_BLOCK;
                 }
             }
         }
 
         chunk.setGenerated(true);
-    }
-
-    public BufferedImage generateWorldMaterialMap(int[][] height, int size, int centerX, int centerZ) {
-        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
-        World world = getWorld();
-
-        for (int x = 0; x < size; x++) {
-            for (int z = 0; z < size; z++) {
-                int worldX = centerX - size / 2 + x;
-                int worldZ = centerZ - size / 2 + z;
-
-                Block block = world.getBlockAt(worldX, height[x][z], worldZ, true);
-                if (block == null) continue;
-                Material material = block.getMaterial();
-
-                int rgb = switch (material) {
-                    case WATER -> 0x0000FF;
-                    case GRASS_BLOCK -> 0x228B22;
-                    case SAND -> 0xFFFF00;
-                    case STONE -> 0x808080;
-                    case DIRT -> 0x8B4513;
-                    case SNOW -> 0xFFFFFF;
-                    default -> 0x000000; // noir si inconnu
-                };
-
-                image.setRGB(x, z, rgb);
-            }
-        }
-
-        return image;
     }
 
     public BufferedImage generateContinentalnessMap(int size, int centerX, int centerZ) {

@@ -2,10 +2,9 @@ package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
-import fr.rhumun.game.worldcraftopengl.entities.OtterEntity;
 import fr.rhumun.game.worldcraftopengl.entities.NinjaSkeletonEntity;
 import fr.rhumun.game.worldcraftopengl.entities.RockyEntity;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
@@ -64,7 +63,6 @@ public class Game {
 
     List<Controls> pressedKeys = new ArrayList<>();
 
-    List<Material> materials;
     public static void main(String[] args) {
         Game game = new Game();
         game.getGraphicModule().getGuiModule().openGUI(new TitleMenuGui());
@@ -75,7 +73,7 @@ public class Game {
         GAME = this;
         Controls.init();
         Texture.init();
-        Material.init();
+        Materials.init();
         Model.init();
 
         this.data = new Data(this);
@@ -134,17 +132,15 @@ public class Game {
 
         this.world.spawnPlayer(player);
 
-        materials = new ArrayList<>(Arrays.asList(Material.values()));
-
-        player.addItem(new ItemStack(Material.SAND));
-        player.addItem(new ItemStack(Material.COBBLE));
-        player.addItem(new ItemStack(Material.SAPLING));
-        player.addItem(new ItemStack(Material.PLANKS));
-        player.addItem(new ItemStack(Material.PURPLE_LAMP));
-        player.addItem(new ItemStack(Material.CYAN_LAMP));
-        player.addItem(new ItemStack(Material.LAMP));
-        player.addItem(new ItemStack(Material.LANTERN));
-        player.addItem(new ItemStack(Material.STONE_BRICK));
+        player.addItem(new ItemStack(Materials.SAND));
+        player.addItem(new ItemStack(Materials.COBBLE));
+        player.addItem(new ItemStack(Materials.SAPLING));
+        player.addItem(new ItemStack(Materials.PLANKS));
+        player.addItem(new ItemStack(Materials.PURPLE_LAMP));
+        player.addItem(new ItemStack(Materials.CYAN_LAMP));
+        player.addItem(new ItemStack(Materials.LAMP));
+        player.addItem(new ItemStack(Materials.LANTERN));
+        player.addItem(new ItemStack(Materials.BREAD, 5));
 
         player.updateInventory();
 

@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 
 @Setter
 @Getter
-public abstract class PointLight extends AbstractMaterial {
+public abstract class PointLight extends Material {
 
     public Vector3f ambient;
     public Vector3f diffuse;

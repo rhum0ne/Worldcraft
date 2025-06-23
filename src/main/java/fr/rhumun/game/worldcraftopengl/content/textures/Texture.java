@@ -152,6 +152,7 @@ public class Texture {
     public static Texture WOODEN_PICKAXE;
     public static Texture WOODEN_SHOVEL;
     public static Texture WOODEN_SWORD;
+    public static Texture ACACIA_DOOR_ITEM;
 
     public static Texture OTTER;
     public static Texture ROCKY;
@@ -259,6 +260,24 @@ public class Texture {
         ACACIA_DOOR = new Texture("acacia_door_bottom.png");
         ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
 
+        // Item textures initialization
+        APPLE = new Texture("items\\apple.png");
+        BREAD = new Texture("items\\bread.png");
+        DIAMOND = new Texture("items\\diamond.png");
+        IRON_INGOT = new Texture("items\\iron_ingot.png");
+        IRON_AXE = new Texture("items\\iron_axe.png");
+        IRON_PICKAXE = new Texture("items\\iron_pickaxe.png");
+        IRON_SHOVEL = new Texture("items\\iron_shovel.png");
+        IRON_SWORD = new Texture("items\\iron_sword.png");
+        STICK = new Texture("items\\stick.png");
+        WATER_BUCKET = new Texture("items\\water_bucket.png");
+        WOODEN_AXE = new Texture("items\\wooden_axe.png");
+        WOODEN_HOE = new Texture("items\\wooden_hoe.png");
+        WOODEN_PICKAXE = new Texture("items\\wooden_pickaxe.png");
+        WOODEN_SHOVEL = new Texture("items\\wooden_shovel.png");
+        WOODEN_SWORD = new Texture("items\\wooden_sword.png");
+        ACACIA_DOOR_ITEM = new Texture("items\\acacia_door.png");
+
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
@@ -279,23 +298,6 @@ public class Texture {
         HUNGER_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\food_empty.png");
         HUNGER_FULL = new Texture(TextureTypes.GUIS, "hud\\food_full.png");
         HUNGER_HALF = new Texture(TextureTypes.GUIS, "hud\\food_half.png");
-
-        // Item textures initialization
-        APPLE = new Texture("items\\apple.png");
-        BREAD = new Texture("items\\bread.png");
-        DIAMOND = new Texture("items\\diamond.png");
-        IRON_INGOT = new Texture("items\\iron_ingot.png");
-        IRON_AXE = new Texture("items\\iron_axe.png");
-        IRON_PICKAXE = new Texture("items\\iron_pickaxe.png");
-        IRON_SHOVEL = new Texture("items\\iron_shovel.png");
-        IRON_SWORD = new Texture("items\\iron_sword.png");
-        STICK = new Texture("items\\stick.png");
-        WATER_BUCKET = new Texture("items\\water_bucket.png");
-        WOODEN_AXE = new Texture("items\\wooden_axe.png");
-        WOODEN_HOE = new Texture("items\\wooden_hoe.png");
-        WOODEN_PICKAXE = new Texture("items\\wooden_pickaxe.png");
-        WOODEN_SHOVEL = new Texture("items\\wooden_shovel.png");
-        WOODEN_SWORD = new Texture("items\\wooden_sword.png");
 
         OTTER = new Texture(TextureTypes.ENTITIES,"entities\\nocsy_otter_v2.png");
         ROCKY = new Texture(TextureTypes.ENTITIES,"entities\\Rocky.png");

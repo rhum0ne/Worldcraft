@@ -16,7 +16,7 @@ public class BlockModel extends AbstractModel implements ModelHitbox{
 
     @Override
     public void setBlockDataOnPlace(Block block, Vector3f hitPosition, Vector3f direction) {
-        if(!(block.getMaterial().getMaterial() instanceof RotableMaterial)){
+        if(!(block.getMaterial() instanceof RotableMaterial)){
             block.setState(0);
             return;
         }

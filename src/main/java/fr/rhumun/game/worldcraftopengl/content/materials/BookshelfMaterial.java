@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.AbstractMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
@@ -11,7 +11,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 
 import static fr.rhumun.game.worldcraftopengl.content.textures.Texture.BOOKSHELF_TOP;
 
-public class BookshelfMaterial extends AbstractMaterial implements PlaceableMaterial, ForcedModelMaterial {
+public class BookshelfMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial {
     public BookshelfMaterial() {
         super(Texture.BOOKSHELF);
         this.setTopTexture(BOOKSHELF_TOP);

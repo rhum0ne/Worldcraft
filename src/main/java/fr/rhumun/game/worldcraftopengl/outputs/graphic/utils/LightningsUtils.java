@@ -53,7 +53,7 @@ public class LightningsUtils {
             for (int i = 0; i < this.pointLights.size(); i++) {
 
                 Block block = this.pointLights.get(i);
-                PointLight pointLight = (PointLight) block.getMaterial().getMaterial();
+                PointLight pointLight = (PointLight) block.getMaterial();
 
                 String uniformName = "pointLights[" + i + "]";
                 shader.setUniform(uniformName + ".position", block.getLocation().getPositions());
