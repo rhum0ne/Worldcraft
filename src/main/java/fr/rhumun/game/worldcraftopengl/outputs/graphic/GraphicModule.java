@@ -233,7 +233,7 @@ public class GraphicModule {
     }
 
     private void setSunLight(Shader shader) {
-        shader.setUniform("dirLight.direction", new Vector3f(0, -1, 1));
+        shader.setUniform("dirLight.direction", world.getLightDirection());
         Vector3f color = new Vector3f(
                 (float) world.getLightColor().getRed(),
                 (float) world.getLightColor().getGreen(),
@@ -342,6 +342,9 @@ public class GraphicModule {
         glClearColor((float) world.getSkyColor().getRed(), (float) world.getSkyColor().getGreen(), (float) world.getSkyColor().getBlue(), 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
+
+        for (Shader shader : renderingShaders) setSunLight(shader);
+        setSunLight(ShaderManager.FAR_SHADER);
 
         if (game.isPaused() != isPaused) setPaused(game.isPaused());
         if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());

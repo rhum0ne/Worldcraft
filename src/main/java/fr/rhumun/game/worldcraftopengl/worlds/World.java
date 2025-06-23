@@ -37,6 +37,7 @@ public class World {
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
+    private Vector3f lightDirection = DayNightCycle.getLightDirection(0);
 
     private final int heigth = 256;
 
@@ -52,6 +53,8 @@ public class World {
     public void setWorldTime(int worldTime) {
         this.worldTime = worldTime;
         this.skyColor = DayNightCycle.getSkyColor(worldTime);
+        this.lightColor = DayNightCycle.getLightColor(worldTime);
+        this.lightDirection = DayNightCycle.getLightDirection(worldTime);
     }
 
     public float getCelestialAngle() {

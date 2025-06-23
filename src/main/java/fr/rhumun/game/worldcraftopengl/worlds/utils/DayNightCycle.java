@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.worlds.utils;
 
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import javafx.scene.paint.Color;
+import org.joml.Vector3f;
 
 public final class DayNightCycle {
     private DayNightCycle() {}
@@ -27,6 +28,31 @@ public final class DayNightCycle {
         Color day = Color.rgb(77, 150, 230);
         Color night = Color.BLACK;
         return interpolate(night, day, (float) factor);
+    }
+
+    public static Color getLightColor(int ticks) {
+        float angle = getAngle(ticks) % 360f;
+
+        double brightness = Math.max(0.0, Math.sin(Math.toRadians(angle)));
+        Color day = Color.rgb(255, 244, 232);
+        Color night = Color.rgb(20, 30, 70);
+        Color base = interpolate(night, day, (float) brightness);
+
+        float d = Math.min(Math.min(Math.abs(angle), Math.abs(angle - 180f)), Math.abs(angle - 360f));
+        float twilightFactor = Math.max(0f, 1f - d / 30f);
+        Color twilight = Color.rgb(255, 128, 40);
+
+        return interpolate(base, twilight, twilightFactor);
+    }
+
+    public static Vector3f getLightDirection(int ticks) {
+        float angle = getAngle(ticks) % 360f;
+        float rad = (float) Math.toRadians(angle);
+        if (angle >= 180f) {
+            rad += Math.PI;
+        }
+
+        return new Vector3f(0f, (float) -Math.sin(rad), (float) Math.cos(rad));
     }
 
     public static float getAngle(int ticks) {
