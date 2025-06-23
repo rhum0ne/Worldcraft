@@ -79,6 +79,7 @@ public class GraphicModule {
     private EntitiesRenderer entitiesRenderer;
     private MobEntitiesRenderer animatedEntitiesRenderer;
     private HitboxRenderer hitboxRenderer;
+    private CelestialRenderer celestialRenderer;
     private final UpdateLoop updateLoop;
     private final ChunkLoader chunkLoader;
 
@@ -194,7 +195,8 @@ public class GraphicModule {
                 ShaderManager.GLOBAL_SHADERS,
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
-                ShaderManager.ANIMATED_ENTITY_SHADER
+                ShaderManager.ANIMATED_ENTITY_SHADER,
+                ShaderManager.CELESTIAL_SHADER
         ));
         shaders.addAll(List.of(
                 ShaderManager.SELECTED_BLOCK_SHADER,
@@ -203,7 +205,8 @@ public class GraphicModule {
                 ShaderManager.LIQUID_SHADER,
                 ShaderManager.ENTITY_SHADER,
                 ShaderManager.ANIMATED_ENTITY_SHADER,
-                ShaderManager.FAR_SHADER
+                ShaderManager.FAR_SHADER,
+                ShaderManager.CELESTIAL_SHADER
         ));
         Matrix4f modelMatrix = new Matrix4f().identity();
         for (Shader shader : renderingShaders) updateModelAndProjectionFor(modelMatrix, shader);
@@ -219,6 +222,8 @@ public class GraphicModule {
         this.animatedEntitiesRenderer = new MobEntitiesRenderer(this, player);
         this.hitboxRenderer = new HitboxRenderer(this, player);
         this.hitboxRenderer.init();
+        this.celestialRenderer = new CelestialRenderer(this);
+        this.celestialRenderer.init();
     }
 
     private void configureLighting() {
@@ -343,6 +348,12 @@ public class GraphicModule {
 
         //updateWaterTime();
         updateViewMatrix();
+
+        glDisable(GL_DEPTH_TEST);
+        glUseProgram(ShaderManager.CELESTIAL_SHADER.id);
+        ShaderManager.CELESTIAL_SHADER.setUniform("angle", world.getCelestialAngle());
+        celestialRenderer.render();
+        glEnable(GL_DEPTH_TEST);
 
         glUseProgram(ShaderManager.FAR_SHADER.id);
         updateFarChunks();

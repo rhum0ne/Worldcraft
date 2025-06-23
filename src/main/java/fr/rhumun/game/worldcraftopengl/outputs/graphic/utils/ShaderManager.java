@@ -25,6 +25,7 @@ public class ShaderManager {
     public static Shader LIQUID_SHADER;
     public static Shader TEXT_SHADER;
     public static Shader FAR_SHADER;
+    public static Shader CELESTIAL_SHADER;
 
     public static void initShaders(){
         GLOBAL_SHADERS = new GlobalShader();
@@ -35,6 +36,7 @@ public class ShaderManager {
         ENTITY_SHADER = new EntityShader();
         ANIMATED_ENTITY_SHADER = new AnimatedEntity();
         FAR_SHADER = new FarShader();
+        CELESTIAL_SHADER = new CelestialShader();
     }
 
     public static int loadShader(String vertexPath, String fragmentPath){
