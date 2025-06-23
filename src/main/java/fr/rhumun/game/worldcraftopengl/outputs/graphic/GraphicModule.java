@@ -416,55 +416,44 @@ public class GraphicModule {
 
         float h = world.getHeigth();
 
+        List<Chunk> visibleChunks = new ArrayList<>();
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
             if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                if(chunk.isToUpdate())
-                    ((ChunkRenderer)chunk.getRenderer()).update();
+                visibleChunks.add(chunk);
             }
         }
 
+        for (Chunk chunk : visibleChunks) {
+            if (chunk.isToUpdate())
+                ((ChunkRenderer) chunk.getRenderer()).update();
+        }
+
         GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
-        for (Chunk chunk : loadedChunks) {
-            float x = chunk.getX() * CHUNK_SIZE;
-            float z = chunk.getZ() * CHUNK_SIZE;
-            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                ((ChunkRenderer)chunk.getRenderer()).renderOpaque();
-            }
+        for (Chunk chunk : visibleChunks) {
+            ((ChunkRenderer) chunk.getRenderer()).renderOpaque();
         }
         GLStateManager.useProgram(0);
 
         GLStateManager.enable(GL_BLEND);
         GLStateManager.useProgram(ShaderManager.LIQUID_SHADER.id);
-        for (Chunk chunk : loadedChunks) {
-            float x = chunk.getX() * CHUNK_SIZE;
-            float z = chunk.getZ() * CHUNK_SIZE;
-            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                ((ChunkRenderer)chunk.getRenderer()).renderLiquids();
-            }
+        for (Chunk chunk : visibleChunks) {
+            ((ChunkRenderer) chunk.getRenderer()).renderLiquids();
         }
         GLStateManager.disable(GL_BLEND);
         GLStateManager.useProgram(0);
 
         GLStateManager.enable(GL_BLEND);
         GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
-        for (Chunk chunk : loadedChunks) {
-            float x = chunk.getX() * CHUNK_SIZE;
-            float z = chunk.getZ() * CHUNK_SIZE;
-            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                ((ChunkRenderer)chunk.getRenderer()).renderTransparent();
-            }
+        for (Chunk chunk : visibleChunks) {
+            ((ChunkRenderer) chunk.getRenderer()).renderTransparent();
         }
         GLStateManager.disable(GL_BLEND);
 
         GLStateManager.enable(GL_BLEND);
-        for (Chunk chunk : loadedChunks) {
-            float x = chunk.getX() * CHUNK_SIZE;
-            float z = chunk.getZ() * CHUNK_SIZE;
-            if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
-                ((ChunkRenderer)chunk.getRenderer()).renderCloseTransparent();
-            }
+        for (Chunk chunk : visibleChunks) {
+            ((ChunkRenderer) chunk.getRenderer()).renderCloseTransparent();
         }
         GLStateManager.disable(GL_BLEND);
         GLStateManager.useProgram(0);
