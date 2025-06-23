@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 
 import java.util.ArrayList;

@@ -7,8 +7,7 @@ import de.articdive.jnoise.generators.noise_parameters.simplex_variants.Simplex3
 import de.articdive.jnoise.generators.noise_parameters.simplex_variants.Simplex4DVariant;
 import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
 import de.articdive.jnoise.pipeline.JNoise;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
@@ -25,7 +24,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
-import static fr.rhumun.game.worldcraftopengl.content.materials.types.Materials.*;
+import static fr.rhumun.game.worldcraftopengl.content.materials.Materials.*;
 
 @Getter
 public class NormalWorldGenerator extends WorldGenerator {

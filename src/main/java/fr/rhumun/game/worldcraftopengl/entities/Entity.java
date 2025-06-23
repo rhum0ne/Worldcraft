@@ -1,8 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.items.BlockItemMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.Multiblock;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;

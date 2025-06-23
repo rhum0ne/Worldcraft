@@ -1742,7 +1742,7 @@ Compilation events (20 events):
 Event: 11.478 Thread 0x00000229bc067a30 nmethod 3193 0x00000229abcd0890 code [0x00000229abcd0ac0, 0x00000229abcd1a58]
 Event: 11.496 Thread 0x00000229ff50f680 nmethod 3179% 0x00000229abcd2190 code [0x00000229abcd2860, 0x00000229abcd6c90]
 Event: 11.540 Thread 0x00000229ff50f680 3194       4       fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer::updateData (495 bytes)
-Event: 11.540 Thread 0x00000229bc067a30 3195       4       fr.rhumun.game.worldcraftopengl.content.materials.types.Material::isLiquid (19 bytes)
+Event: 11.540 Thread 0x00000229bc067a30 3195       4       fr.rhumun.game.worldcraftopengl.content.materials.Material::isLiquid (19 bytes)
 Event: 11.541 Thread 0x00000229bc067a30 nmethod 3195 0x00000229abcdb210 code [0x00000229abcdb3a0, 0x00000229abcdb498]
 Event: 11.645 Thread 0x00000229ff50f680 nmethod 3194 0x00000229abcdb590 code [0x00000229abcdbce0, 0x00000229abcdffa0]
 Event: 11.723 Thread 0x00000229bc06a2a0 3196       3       org.joml.Vector3f::normalize (67 bytes)

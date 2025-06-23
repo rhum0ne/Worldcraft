@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;

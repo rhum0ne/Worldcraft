@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

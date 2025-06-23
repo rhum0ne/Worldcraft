@@ -1,13 +1,13 @@
 package fr.rhumun.game.worldcraftopengl.controls;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.content.materials.items.BlockItemMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.items.UsableItem;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.UsableItem;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.InteractableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 
 public class RightClick extends Control {
 

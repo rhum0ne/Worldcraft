@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.NinjaSkeletonEntity;

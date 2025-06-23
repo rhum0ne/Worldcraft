@@ -2,7 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 
 /**
  * Simple sawmill converting logs into planks or slabs.

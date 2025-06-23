@@ -1,8 +1,8 @@
 package fr.rhumun.game.worldcraftopengl.content.items;
 
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import lombok.Getter;
 import lombok.Setter;
 

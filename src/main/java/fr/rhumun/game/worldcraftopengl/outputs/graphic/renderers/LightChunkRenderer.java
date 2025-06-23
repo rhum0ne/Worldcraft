@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import lombok.Getter;
 

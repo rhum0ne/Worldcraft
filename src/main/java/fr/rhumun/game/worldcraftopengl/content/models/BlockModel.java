@@ -3,7 +3,7 @@ package fr.rhumun.game.worldcraftopengl.content.models;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.BoxHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.RotableMaterial;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.content.Model.load;

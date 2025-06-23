@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.worlds.generators;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;

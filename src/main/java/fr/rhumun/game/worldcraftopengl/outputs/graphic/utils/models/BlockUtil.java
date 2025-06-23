@@ -2,10 +2,10 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;

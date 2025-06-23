@@ -2,9 +2,9 @@ package fr.rhumun.game.worldcraftopengl.entities.player;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
-import fr.rhumun.game.worldcraftopengl.content.materials.items.BlockItemMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
 import fr.rhumun.game.worldcraftopengl.entities.LivingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;

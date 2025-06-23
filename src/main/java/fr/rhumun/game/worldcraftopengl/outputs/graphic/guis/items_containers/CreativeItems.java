@@ -4,9 +4,9 @@ import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import lombok.Getter;
 
 @Getter

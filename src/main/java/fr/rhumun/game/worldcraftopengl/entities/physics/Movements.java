@@ -1,6 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.entities.physics;
 
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Entity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;

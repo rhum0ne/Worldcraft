@@ -2,13 +2,11 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import lombok.Getter;
 import lombok.Setter;
 
-import static fr.rhumun.game.worldcraftopengl.Game.DEBUG;
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
 @Getter @Setter

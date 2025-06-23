@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
