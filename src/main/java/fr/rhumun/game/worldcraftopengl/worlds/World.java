@@ -52,6 +52,7 @@ public class World {
     public void setWorldTime(int worldTime) {
         this.worldTime = worldTime;
         this.skyColor = DayNightCycle.getSkyColor(worldTime);
+        this.lightColor = DayNightCycle.getLightColor(worldTime);
     }
 
     public float getCelestialAngle() {

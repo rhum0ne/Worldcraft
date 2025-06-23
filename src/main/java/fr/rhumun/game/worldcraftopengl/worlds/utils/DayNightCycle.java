@@ -29,6 +29,21 @@ public final class DayNightCycle {
         return interpolate(night, day, (float) factor);
     }
 
+    public static Color getLightColor(int ticks) {
+        float angle = getAngle(ticks) % 360f;
+
+        double brightness = Math.max(0.0, Math.sin(Math.toRadians(angle)));
+        Color day = Color.rgb(255, 244, 232);
+        Color night = Color.rgb(20, 30, 70);
+        Color base = interpolate(night, day, (float) brightness);
+
+        float d = Math.min(Math.min(Math.abs(angle), Math.abs(angle - 180f)), Math.abs(angle - 360f));
+        float twilightFactor = Math.max(0f, 1f - d / 30f);
+        Color twilight = Color.rgb(255, 128, 40);
+
+        return interpolate(base, twilight, twilightFactor);
+    }
+
     public static float getAngle(int ticks) {
         int normalized = normalize(ticks);
         return (normalized / (float) World.DAY_NIGHT_TICKS) * 360f;

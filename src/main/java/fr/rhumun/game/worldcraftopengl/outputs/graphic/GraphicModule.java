@@ -343,6 +343,9 @@ public class GraphicModule {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         cleaner.clean();
 
+        for (Shader shader : renderingShaders) setSunLight(shader);
+        setSunLight(ShaderManager.FAR_SHADER);
+
         if (game.isPaused() != isPaused) setPaused(game.isPaused());
         if (game.isShowingTriangles() != isShowingTriangles) setShowingTriangles(game.isShowingTriangles());
 
