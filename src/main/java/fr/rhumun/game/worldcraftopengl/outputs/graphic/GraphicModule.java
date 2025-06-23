@@ -17,6 +17,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
@@ -177,9 +178,9 @@ public class GraphicModule {
 
     private void setupOpenGL() {
         debugUtils.setDebug(GL_DEBUG);
-        glEnable(GL_CULL_FACE);
+        GLStateManager.enable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-        if (ANTIALIASING) glEnable(GL_MULTISAMPLE);
+        if (ANTIALIASING) GLStateManager.enable(GL_MULTISAMPLE);
         projectionMatrix = new Matrix4f().perspective((float) Math.toRadians(45.0f), (float) startWidth / startHeight, 0.1f, SHOW_DISTANCE * CHUNK_SIZE);
     }
 
@@ -247,7 +248,7 @@ public class GraphicModule {
     }
 
     private void updateModelAndProjectionFor(Matrix4f modelMatrix, Shader shader) {
-        glUseProgram(shader.id);
+        GLStateManager.useProgram(shader.id);
         glUniformMatrix4fv(glGetUniformLocation(shader.id, "projection"), false, projectionMatrix.get(new float[16]));
         glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), false, modelMatrix.get(new float[16]));
     }
@@ -306,11 +307,11 @@ public class GraphicModule {
         }
 
         for (Shader shader : renderingShaders) {
-            glUseProgram(shader.id);
+            GLStateManager.useProgram(shader.id);
             glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, viewMatrix.get(new float[16]));
         }
         for (Shader shader : List.of(ShaderManager.SELECTED_BLOCK_SHADER, ShaderManager.FAR_SHADER)) {
-            glUseProgram(shader.id);
+            GLStateManager.useProgram(shader.id);
             glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, viewMatrix.get(new float[16]));
         }
     }
@@ -322,7 +323,7 @@ public class GraphicModule {
                 case GameState.TITLE -> this.renderGuiOnly();
             }
 
-            glUseProgram(0);
+            GLStateManager.useProgram(0);
             if (SHOWING_FPS) debugUtils.calculateFPS();
 
             glfwSwapBuffers(window);
@@ -357,41 +358,41 @@ public class GraphicModule {
         //updateWaterTime();
         updateViewMatrix();
 
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glUseProgram(ShaderManager.CELESTIAL_SHADER.id);
+        GLStateManager.disable(GL_DEPTH_TEST);
+        GLStateManager.disable(GL_CULL_FACE);
+        GLStateManager.enable(GL_BLEND);
+        GLStateManager.useProgram(ShaderManager.CELESTIAL_SHADER.id);
         ShaderManager.CELESTIAL_SHADER.setUniform("angle", world.getCelestialAngle());
         celestialRenderer.render();
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_BLEND);
-        glUseProgram(0);
+        GLStateManager.enable(GL_DEPTH_TEST);
+        GLStateManager.enable(GL_CULL_FACE);
+        GLStateManager.disable(GL_BLEND);
+        GLStateManager.useProgram(0);
 
-        glUseProgram(ShaderManager.FAR_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.FAR_SHADER.id);
         updateFarChunks();
-        glUseProgram(0);
+        GLStateManager.useProgram(0);
 
         update();
 
-        glUseProgram(ShaderManager.ENTITY_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.ENTITY_SHADER.id);
         entitiesRenderer.render();
-        glUseProgram(0);
+        GLStateManager.useProgram(0);
 
-        glUseProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
         animatedEntitiesRenderer.render();
-        glUseProgram(0);
+        GLStateManager.useProgram(0);
 
-        glEnable(GL_BLEND);
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        GLStateManager.enable(GL_BLEND);
+        GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
         breakingRenderer.render();
-        glUseProgram(0);
-        glDisable(GL_BLEND);
+        GLStateManager.useProgram(0);
+        GLStateManager.disable(GL_BLEND);
 
-        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         blockSelector.render();
         hitboxRenderer.render();
-        glUseProgram(0);
+        GLStateManager.useProgram(0);
 
         guiModule.render();
     }
@@ -409,7 +410,7 @@ public class GraphicModule {
         if (loadedChunks.isEmpty()) return;
         lightningsUtils.getPointLights().clear();
 
-        glEnable(GL_DEPTH_TEST);
+        GLStateManager.enable(GL_DEPTH_TEST);
 
         float h = world.getHeigth();
 
@@ -422,7 +423,7 @@ public class GraphicModule {
             }
         }
 
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
@@ -430,10 +431,10 @@ public class GraphicModule {
                 ((ChunkRenderer)chunk.getRenderer()).renderOpaque();
             }
         }
-        glUseProgram(0);
+        GLStateManager.useProgram(0);
 
-        glEnable(GL_BLEND);
-        glUseProgram(ShaderManager.LIQUID_SHADER.id);
+        GLStateManager.enable(GL_BLEND);
+        GLStateManager.useProgram(ShaderManager.LIQUID_SHADER.id);
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
@@ -441,11 +442,11 @@ public class GraphicModule {
                 ((ChunkRenderer)chunk.getRenderer()).renderLiquids();
             }
         }
-        glDisable(GL_BLEND);
-        glUseProgram(0);
+        GLStateManager.disable(GL_BLEND);
+        GLStateManager.useProgram(0);
 
-        glEnable(GL_BLEND);
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+        GLStateManager.enable(GL_BLEND);
+        GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
@@ -453,9 +454,9 @@ public class GraphicModule {
                 ((ChunkRenderer)chunk.getRenderer()).renderTransparent();
             }
         }
-        glDisable(GL_BLEND);
+        GLStateManager.disable(GL_BLEND);
 
-        glEnable(GL_BLEND);
+        GLStateManager.enable(GL_BLEND);
         for (Chunk chunk : loadedChunks) {
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
@@ -463,8 +464,8 @@ public class GraphicModule {
                 ((ChunkRenderer)chunk.getRenderer()).renderCloseTransparent();
             }
         }
-        glDisable(GL_BLEND);
-        glUseProgram(0);
+        GLStateManager.disable(GL_BLEND);
+        GLStateManager.useProgram(0);
     }
 
     private void updateFarChunks() {
