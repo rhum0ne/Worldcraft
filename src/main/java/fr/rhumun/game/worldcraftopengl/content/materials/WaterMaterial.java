@@ -10,7 +10,6 @@ import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 public class WaterMaterial extends Material implements PlaceableMaterial {
     public WaterMaterial() {
         super(Texture.WATER, 0.1f, 1f);
-        this.addToType(GuiTypes.NATURAL);
     }
 
     @Override

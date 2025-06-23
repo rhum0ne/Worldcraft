@@ -29,7 +29,7 @@ public class Player extends LivingEntity implements MovingEntity {
     private int selectedSlot;
     private final Inventory inventory;
     /** Whether the player has creative privileges. */
-    private Gamemode gamemode = Gamemode.SURVIVAL;
+    private Gamemode gamemode = Gamemode.CREATIVE;
 
     private int maxFood = 20;
     private int food = 1;
