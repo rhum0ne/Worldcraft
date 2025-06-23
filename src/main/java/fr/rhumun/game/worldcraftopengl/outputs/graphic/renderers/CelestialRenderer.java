@@ -11,8 +11,10 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13C.GL_TEXTURE1;
 
 public class CelestialRenderer extends Renderer {
 
@@ -28,38 +30,7 @@ public class CelestialRenderer extends Renderer {
     public void init() {
         super.init();
 
-        float[] vertices = {
-                // sun quad
-                -1f,  1f, 0f, 0f, 0f, 0f,
-                 1f,  1f, 0f, 1f, 0f, 0f,
-                -1f, -1f, 0f, 0f, 1f, 0f,
-                 1f, -1f, 0f, 1f, 1f, 0f,
-                // moon quad
-                -1f,  1f, 0f, 0f, 0f, 1f,
-                 1f,  1f, 0f, 1f, 0f, 1f,
-                -1f, -1f, 0f, 0f, 1f, 1f,
-                 1f, -1f, 0f, 1f, 1f, 1f
-        };
-
-        int[] indices = {
-                0,1,2, 1,3,2,
-                4,5,6, 5,7,6
-        };
-
         glBindVertexArray(this.getVAO());
-        glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * Float.BYTES, 0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, 6 * Float.BYTES, 5 * Float.BYTES);
-        glEnableVertexAttribArray(2);
-
         glBindVertexArray(0);
 
         sunTex = loadTexture(Game.TEXTURES_PATH + "world/sun.png");
@@ -81,7 +52,7 @@ public class CelestialRenderer extends Renderer {
         glBindTexture(GL_TEXTURE_2D, moonTex);
 
         glBindVertexArray(this.getVAO());
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 12);
         glBindVertexArray(0);
     }
 
