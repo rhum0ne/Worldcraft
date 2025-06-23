@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.TextureUtils;
 import lombok.Getter;
@@ -124,7 +125,7 @@ public abstract class Component{
         VBO = glGenBuffers();
         EBO = glGenBuffers();
 
-        glUseProgram(this.getShader());
+        GLStateManager.useProgram(this.getShader());
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
@@ -155,7 +156,7 @@ public abstract class Component{
 
         update();
         if(indices != null && vertices != null) {
-            glUseProgram(this.getShader());
+            GLStateManager.useProgram(this.getShader());
             glBindVertexArray(this.getVAO());
             glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
@@ -176,7 +177,7 @@ public abstract class Component{
     public abstract void update();
 
     public void updateVAO(){
-        glUseProgram(this.getShader());
+        GLStateManager.useProgram(this.getShader());
         glBindVertexArray(this.getVAO());
 
         if(vertices != null && indices != null) { // Vérifiez si le tableau vertices n'est pas nul

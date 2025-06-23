@@ -23,7 +23,6 @@ import static org.lwjgl.opengl.GL11C.*;
 import static org.lwjgl.opengl.GL12.glTexSubImage3D;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL13C.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 import static org.lwjgl.opengl.GL42C.glTexStorage3D;
 import static org.lwjgl.stb.STBTruetype.*;
@@ -56,7 +55,7 @@ public class FontLoader {
             int width = fontSize; // Largeur fixe pour chaque glyphe
             int height = fontSize; // Hauteur fixe pour chaque glyphe
 
-            glUseProgram(ShaderManager.TEXT_SHADER.id);
+            GLStateManager.useProgram(ShaderManager.TEXT_SHADER);
             // Création de la texture array
             int textureID = glGenTextures();
             glActiveTexture(GL_TEXTURE0 + textureID); // Utilisation de l'unité de texture 2 (ou une autre disponible)

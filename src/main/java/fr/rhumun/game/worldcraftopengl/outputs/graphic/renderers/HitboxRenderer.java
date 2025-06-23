@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 
@@ -29,9 +30,9 @@ public class HitboxRenderer extends Renderer {
     @Override
     public void init() {
         super.init();
-        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         glBindVertexArray(this.getVAO());
-        glEnable(GL_BLEND);
+        GLStateManager.enable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -52,11 +53,11 @@ public class HitboxRenderer extends Renderer {
         update();
 
         glBindVertexArray(this.getVAO());
-        glDisable(GL_BLEND);
+        GLStateManager.disable(GL_BLEND);
 
         glDrawElements(GL_LINES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 
-        glEnable(GL_BLEND);
+        GLStateManager.enable(GL_BLEND);
         glBindVertexArray(0);
     }
 

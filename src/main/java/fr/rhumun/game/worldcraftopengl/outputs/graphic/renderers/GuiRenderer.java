@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -42,7 +43,7 @@ public class GuiRenderer extends Renderer {
     public void init() {
         super.init();
 
-        glUseProgram(ShaderManager.PLAN_SHADERS.id);
+        GLStateManager.useProgram(ShaderManager.PLAN_SHADERS.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);

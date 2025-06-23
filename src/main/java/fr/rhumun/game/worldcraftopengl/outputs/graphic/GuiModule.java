@@ -15,10 +15,12 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.SelectedItemDisplay;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL20;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,11 +104,11 @@ public class GuiModule {
                 .scale(scaleY);                           // Applique l'échelle uniformément
 
 
-        glUseProgram(ShaderManager.PLAN_SHADERS.id);
+        GLStateManager.useProgram(ShaderManager.PLAN_SHADERS.id);
         int projection = glGetUniformLocation(ShaderManager.PLAN_SHADERS.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
 
-        glUseProgram(ShaderManager.TEXT_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.TEXT_SHADER.id);
         projection = glGetUniformLocation(ShaderManager.TEXT_SHADER.id, "projection");
         glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
     }
