@@ -4,6 +4,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.InteractableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
@@ -19,6 +20,8 @@ public class StoneCutterMaterial extends Material implements PlaceableMaterial, 
     public StoneCutterMaterial() {
         super(Texture.STONE_CUTTER_FRONT);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(10f);
+        this.setToolType(ToolType.ROCK);
         this.setTopTexture(Texture.STONE_CUTTER_TOP);
         this.setBottomTexture(Texture.STONE_CUTTER_BOTTOM);
         this.setLeftTexture(Texture.STONE_CUTTER_SIDE);

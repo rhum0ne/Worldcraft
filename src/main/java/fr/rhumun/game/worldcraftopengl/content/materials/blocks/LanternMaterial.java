@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
@@ -20,6 +21,8 @@ public class LanternMaterial extends PointLight implements PlaceableMaterial, Fo
     public LanternMaterial() {
         super(Texture.LANTERN);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
+        this.setToolType(ToolType.GLASS);
         // Couleurs adaptées pour imiter une lumière de feu
         this.ambient = new Vector3f(0.3f, 0.1f, 0.0f); // Teinte chaude et orangée pour l'ambient
         this.diffuse = new Vector3f(0.5f, 0.1f, 0.0f); // Orange intense pour le diffuse

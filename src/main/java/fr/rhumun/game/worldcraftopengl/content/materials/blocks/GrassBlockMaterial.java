@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
@@ -14,6 +15,7 @@ public class GrassBlockMaterial extends Material implements PlaceableMaterial {
         this.addToType(GuiTypes.NATURAL);
         this.setTopTexture(Texture.GRASS_TOP);
         this.setBottomTexture(Texture.DIRT);
+        this.setToolType(ToolType.DIRT);
     }
 
     @Override

@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials;
 import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,8 @@ public abstract class Material {
     private final float density;
     /** Number of ticks required to break the block. */
     private float durability;
+    /** Category used when determining breaking tools. */
+    private ToolType toolType = ToolType.NONE;
     private final Texture[] textures = new Texture[6];
 
     public Material(Texture texture) {this(texture, 0.1f, 1f, 2f);}

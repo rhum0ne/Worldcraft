@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
@@ -13,6 +14,8 @@ public class RedstoneLampMaterial extends PointLight  implements PlaceableMateri
     public RedstoneLampMaterial() {
         super(Texture.REDSTONE_LAMP_ON);
         this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
+        this.setDurability(4f);
+        this.setToolType(ToolType.GLASS);
         this.ambient = new Vector3f(0.4f, 0.3f, 0.0f);
         this.diffuse = new Vector3f(0.8f, 0.6f, 0.1f);
         this.specular = new Vector3f(0.05f, 0.05f, 0.0f);

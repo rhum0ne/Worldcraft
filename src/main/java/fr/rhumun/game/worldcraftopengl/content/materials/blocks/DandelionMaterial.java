@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
@@ -14,6 +15,8 @@ public class DandelionMaterial extends Material implements PlaceableMaterial, Fo
     public DandelionMaterial() {
         super(Texture.DANDELION);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(0f);
+        this.setToolType(ToolType.VEGETABLE);
     }
 
     @Override

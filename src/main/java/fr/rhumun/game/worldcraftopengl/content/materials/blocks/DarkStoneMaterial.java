@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
@@ -13,6 +14,8 @@ public class DarkStoneMaterial extends Material implements PlaceableMaterial {
     public DarkStoneMaterial() {
         super(Texture.DARK_STONE);
         this.addToType(GuiTypes.NATURAL);
+        this.setDurability(10f);
+        this.setToolType(ToolType.ROCK);
     }
 
     @Override

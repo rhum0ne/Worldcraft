@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.entities.player;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ToolItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
@@ -191,7 +192,14 @@ public class Player extends LivingEntity implements MovingEntity {
             return;
         }
 
-        breakingProgress += 1f / (breakingBlock.getMaterial().getDurability()*60f);
+        float increment = 1f;
+        ItemStack held = getSelectedItem();
+        if (held != null && held.getMaterial() instanceof ToolItemMaterial tool) {
+            if (tool.getType() == breakingBlock.getMaterial().getToolType()) {
+                increment = tool.getLevel();
+            }
+        }
+        breakingProgress += increment / (breakingBlock.getMaterial().getDurability()*60f);
         if (breakingProgress >= 1f) {
             breakBlock();
             stopBreaking();
