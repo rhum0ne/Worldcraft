@@ -283,8 +283,8 @@ public class Texture {
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         DESTROY_STAGES = new Texture[10];
-        for(int i=0;i<10;i++){
-            DESTROY_STAGES[i] = new Texture(TextureTypes.GUIS,"hud\\destroy\\destroy_stage_" + i + ".png");
+        for (int i = 0; i < 10; i++) {
+            DESTROY_STAGES[i] = new Texture("hud\\destroy\\destroy_stage_" + i + ".png");
         }
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
