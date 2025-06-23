@@ -38,8 +38,6 @@ public class World {
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
 
-    private final DayNightCycle dayNightCycle = new DayNightCycle(this);
-
     private final int heigth = 256;
 
     private Location spawn;
@@ -48,6 +46,21 @@ public class World {
     private int zSpawn;
 
     private boolean isLoaded = false;
+
+    private int worldTime = 0;
+
+    public void setWorldTime(int worldTime) {
+        this.worldTime = worldTime;
+        this.skyColor = DayNightCycle.getSkyColor(worldTime);
+    }
+
+    public float getCelestialAngle() {
+        return DayNightCycle.getAngle(worldTime);
+    }
+
+    public void updateTime() {
+        setWorldTime(worldTime + 1);
+    }
 
     public void setSpawnPosition(int x, int z) {
         this.xSpawn = x;
@@ -192,11 +205,4 @@ public class World {
         EntityFactory.createItemEntity(location, selectedItem);
     }
 
-    public void updateTime() {
-        dayNightCycle.update();
-    }
-
-    public void setSkyColor(Color color) {
-        this.skyColor = color;
-    }
 }
