@@ -14,11 +14,16 @@ public class LeftClick extends Control {
             return;
         }
 
-        player.breakBlock();
+        if(player.isInCreativeMode()){
+            player.breakBlock();
+        }else{
+            player.startBreaking();
+        }
     }
 
     @Override
     public void onKeyReleased(Player player) {
-
+        if(!player.isInCreativeMode())
+            player.stopBreaking();
     }
 }

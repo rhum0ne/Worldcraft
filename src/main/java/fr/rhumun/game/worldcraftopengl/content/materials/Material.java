@@ -5,12 +5,13 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
-@Getter
+@Getter @Setter
 public abstract class Material {
 
     static int maxID = 0;
@@ -22,18 +23,25 @@ public abstract class Material {
     private final int id;
     private final float friction;
     private final float density;
+    /** Number of ticks required to break the block. */
+    private float durability;
     private final Texture[] textures = new Texture[6];
 
-    public Material(Texture texture) {this(texture, 0.1f, 1f);}
+    public Material(Texture texture) {this(texture, 0.1f, 1f, 2f);}
 
     public Material(Texture texture, float friction) {
-        this(texture, friction, 1f);
+        this(texture, friction, 1f, 2f);
     }
 
     public Material(Texture texture, float friction, float density) {
+        this(texture, friction, density, 2f);
+    }
+
+    public Material(Texture texture, float friction, float density, float durability) {
         this.id = createID();
         this.friction = friction;
         this.density = density;
+        this.durability = durability;
         Arrays.fill(textures, texture);
 
         GAME.debug("Created material " + id + " with texture " + texture.getName());

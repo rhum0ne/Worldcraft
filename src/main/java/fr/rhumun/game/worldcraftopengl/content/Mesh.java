@@ -85,19 +85,19 @@ public class Mesh {
 
         // Bones
         int numBones = aiMesh.mNumBones();
-        System.out.println("Nombre de bones : " + aiMesh.mNumBones());
+        //System.out.println("Nombre de bones : " + aiMesh.mNumBones());
 
         PointerBuffer aiBones = aiMesh.mBones();
         for (int i = 0; i < numBones; i++) {
             AIBone bone = AIBone.create(aiBones.get(i));
             int boneIndex = i;
             AIVertexWeight.Buffer weights = bone.mWeights();
-            System.out.println("Bone: " + bone.mName().dataString());
+            //System.out.println("Bone: " + bone.mName().dataString());
             for (int j = 0; j < bone.mNumWeights(); j++) {
                 AIVertexWeight vw = weights.get(j);
                 int vertexId = vw.mVertexId();
                 bBuf.put(vertexId, boneIndex);
-                System.out.println("  Influences vertex: " + vw.mVertexId() + " weight: " + vw.mWeight());
+                //System.out.println("  Influences vertex: " + vw.mVertexId() + " weight: " + vw.mWeight());
             }
         }
 

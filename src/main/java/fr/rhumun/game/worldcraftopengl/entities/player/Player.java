@@ -52,6 +52,10 @@ public class Player extends LivingEntity implements MovingEntity {
 
     private final int[] movements = new int[3];
 
+    private Block breakingBlock;
+    private float breakingProgress;
+    private boolean isBreaking;
+
     public Player(){
         this(0, 0, 0, 0, 0);
     }
@@ -158,6 +162,48 @@ public class Player extends LivingEntity implements MovingEntity {
             GAME.getGraphicModule().getGuiModule().updateInventory(this);
     }
 
+    public void startBreaking() {
+        Block target = getSelectedBlock();
+        if (target == null || target.getMaterial() == null) {
+            return;
+        }
+        if (target != breakingBlock) {
+            breakingBlock = target;
+            breakingProgress = 0f;
+        }
+        isBreaking = true;
+    }
+
+    public void stopBreaking() {
+        isBreaking = false;
+        breakingProgress = 0f;
+        breakingBlock = null;
+    }
+
+    private void updateBreaking() {
+        if (!isBreaking) return;
+        if (breakingBlock == null || breakingBlock.getMaterial() == null) {
+            stopBreaking();
+            return;
+        }
+        if (getSelectedBlock() != breakingBlock) {
+            stopBreaking();
+            return;
+        }
+
+        breakingProgress += 1f / (breakingBlock.getMaterial().getDurability()*60f);
+        if (breakingProgress >= 1f) {
+            breakBlock();
+            stopBreaking();
+            if(getSelectedBlock() != null) startBreaking();
+        }
+    }
+
+    public int getBreakingStage() {
+        if( breakingBlock == null || breakingBlock.getMaterial() == null) return 0;
+        return (int) (breakingProgress * 10);
+    }
+
     /**
      * Opens the appropriate inventory depending on the player's mode.
      * In creative mode, the inventory is combined with the give menu.
@@ -216,6 +262,7 @@ public class Player extends LivingEntity implements MovingEntity {
         updateHealth();
         updateFood();
         updateSaturation();
+        updateBreaking();
     }
 
 

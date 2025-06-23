@@ -48,7 +48,7 @@ public class World {
 
     private boolean isLoaded = false;
 
-    private int worldTime = 0;
+    private int worldTime = 4000;
 
     public void setWorldTime(int worldTime) {
         this.worldTime = worldTime;
