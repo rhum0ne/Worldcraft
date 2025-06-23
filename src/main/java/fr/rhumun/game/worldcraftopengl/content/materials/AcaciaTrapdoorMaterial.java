@@ -11,10 +11,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.InteractableMater
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class AcaciaTrapdoorMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial {
     public AcaciaTrapdoorMaterial() {
         super(Texture.ACACIA_TRAPDOOR);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
     }
 
     @Override

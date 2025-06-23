@@ -6,11 +6,13 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class DarkCobbleMaterial extends Material implements PlaceableMaterial {
 
     public DarkCobbleMaterial() {
         super(Texture.DARK_COBBLE);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

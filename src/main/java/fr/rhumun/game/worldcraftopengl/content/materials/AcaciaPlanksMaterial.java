@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class AcaciaPlanksMaterial extends Material implements PlaceableMaterial {
     public AcaciaPlanksMaterial() {
         super(Texture.ACACIA_PLANKS);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

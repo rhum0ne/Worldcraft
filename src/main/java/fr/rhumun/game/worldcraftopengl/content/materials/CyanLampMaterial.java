@@ -12,10 +12,12 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class CyanLampMaterial extends PointLight implements PlaceableMaterial, InteractableMaterial {
     public CyanLampMaterial() {
         super(Texture.LAMP);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
         this.ambient = new Vector3f(0.3f, 0.2f, 0.5f); // Violet pâle pour l'ambient
         this.diffuse = new Vector3f(0.8f, 0.5f, 0.4f); // Violet plus saturé pour le diffuse
         this.specular = new Vector3f(0.05f, 0.09f, 0.07f); // Speculaire légèrement doré pour des reflets

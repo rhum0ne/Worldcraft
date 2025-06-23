@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class PolishedBlackstoneBricksMaterial extends Material implements PlaceableMaterial {
     public PolishedBlackstoneBricksMaterial() {
         super(Texture.POLISHED_BLACKSTONE_BRICKS);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

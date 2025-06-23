@@ -8,10 +8,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class PumpkinMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial {
     public PumpkinMaterial() {
         super(Texture.PUMPKIN);
+        this.addToType(GuiTypes.NATURAL);
         this.setTopAndBottomTexture(Texture.PUMPKIN_TOP);
     }
 

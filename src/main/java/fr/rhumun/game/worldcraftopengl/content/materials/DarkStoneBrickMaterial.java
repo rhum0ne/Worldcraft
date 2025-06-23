@@ -6,11 +6,13 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class DarkStoneBrickMaterial extends Material implements PlaceableMaterial {
 
     public DarkStoneBrickMaterial() {
         super(Texture.DARK_STONE_BRICK);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

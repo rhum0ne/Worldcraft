@@ -12,11 +12,13 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.ston
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class StoneCutterMaterial extends Material implements PlaceableMaterial, InteractableMaterial {
 
     public StoneCutterMaterial() {
         super(Texture.STONE_CUTTER_FRONT);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
         this.setTopTexture(Texture.STONE_CUTTER_TOP);
         this.setBottomTexture(Texture.STONE_CUTTER_BOTTOM);
         this.setLeftTexture(Texture.STONE_CUTTER_SIDE);

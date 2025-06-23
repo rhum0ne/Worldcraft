@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class OakLogMaterial extends Material implements PlaceableMaterial {
     public OakLogMaterial() {
         super(Texture.OAK_LOG);
+        this.addToType(GuiTypes.NATURAL);
         this.setTopAndBottomTexture(Texture.OAK_LOG_TOP);
     }
 

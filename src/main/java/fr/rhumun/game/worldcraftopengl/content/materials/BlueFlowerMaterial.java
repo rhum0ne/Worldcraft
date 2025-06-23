@@ -8,10 +8,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class BlueFlowerMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial {
     public BlueFlowerMaterial() {
         super(Texture.BLUE_FLOWER);
+        this.addToType(GuiTypes.NATURAL);
     }
 
     @Override
