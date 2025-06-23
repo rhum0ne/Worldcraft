@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
 
     private final GraphicModule graphicModule;
+    private final float[] matrixBuffer = new float[16];
 
     public ResizeEvent(GraphicModule graphicModule){
         this.graphicModule = graphicModule;
@@ -30,9 +31,10 @@ public class ResizeEvent implements GLFWFramebufferSizeCallbackI {
 
         // Mettre à jour la matrice de projection dans le shader
 
+        graphicModule.getProjectionMatrix().get(matrixBuffer);
         for(Shader shader : GAME.getGraphicModule().getRenderingShaders())
-            shader.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
-        ShaderManager.SELECTED_BLOCK_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
-        ShaderManager.FAR_SHADER.setUniformMatrix("projection", graphicModule.getProjectionMatrix().get(new float[16]));
+            shader.setUniformMatrix("projection", matrixBuffer);
+        ShaderManager.SELECTED_BLOCK_SHADER.setUniformMatrix("projection", matrixBuffer);
+        ShaderManager.FAR_SHADER.setUniformMatrix("projection", matrixBuffer);
     }
 }
