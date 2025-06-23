@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
 
+import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -22,6 +24,18 @@ public class KeyEvent implements GLFWKeyCallbackI {
         this.game = game;
         this.player = player;
     }
+
+    private char convertKey(int key, int scancode, int mods) {
+        String name = GLFW.glfwGetKeyName(key, scancode);
+        if(name == null || name.isEmpty()) {
+            return (char) key;
+        }
+        char c = name.charAt(0);
+        if((mods & GLFW_MOD_SHIFT) != 0) {
+            c = Character.toUpperCase(c);
+        }
+        return c;
+    }
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
@@ -29,13 +43,13 @@ public class KeyEvent implements GLFWKeyCallbackI {
             GuiModule guiModule = game.getGraphicModule().getGuiModule();
             if(guiModule.hasGUIOpened() && guiModule.getGui() instanceof TypingGui tg
                     && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))) {
-                tg.typeChar((char) key);
+                tg.typeChar(convertKey(key, scancode, mods));
                 return;
             }
 
             ChatGui chat = guiModule.getChat();
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
-                chat.getEnteredText().print(String.valueOf((char) key));
+                chat.getEnteredText().print(String.valueOf(convertKey(key, scancode, mods)));
                 return;
             }
 
