@@ -63,6 +63,7 @@ public class GraphicModule {
     // == OpenGL / Matrices ==
     private FrustumIntersection frustumIntersection;
     private Matrix4f projectionMatrix;
+    private final float[] matrixBuffer = new float[16];
 
     // == Shaders and rendering ==
     private final List<Shader> renderingShaders = new ArrayList<>();
@@ -248,8 +249,8 @@ public class GraphicModule {
 
     private void updateModelAndProjectionFor(Matrix4f modelMatrix, Shader shader) {
         glUseProgram(shader.id);
-        glUniformMatrix4fv(glGetUniformLocation(shader.id, "projection"), false, projectionMatrix.get(new float[16]));
-        glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), false, modelMatrix.get(new float[16]));
+        glUniformMatrix4fv(glGetUniformLocation(shader.id, "projection"), false, projectionMatrix.get(matrixBuffer));
+        glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), false, modelMatrix.get(matrixBuffer));
     }
 
     private void startChunkLoader() {
@@ -305,13 +306,14 @@ public class GraphicModule {
             frustumIntersection = new FrustumIntersection(combinedMatrix);
         }
 
+        viewMatrix.get(matrixBuffer);
         for (Shader shader : renderingShaders) {
             glUseProgram(shader.id);
-            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, viewMatrix.get(new float[16]));
+            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
         }
         for (Shader shader : List.of(ShaderManager.SELECTED_BLOCK_SHADER, ShaderManager.FAR_SHADER)) {
             glUseProgram(shader.id);
-            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, viewMatrix.get(new float[16]));
+            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
         }
     }
 

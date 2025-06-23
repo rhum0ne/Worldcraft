@@ -51,6 +51,7 @@ public class GuiModule {
 
 
     private Matrix4f uiProjectionMatrix;
+    private final float[] matrixBuffer = new float[16];
     private final float virtualWidth = 1920.0f;
     private final float virtualHeight = 1080.0f;
 
@@ -102,13 +103,15 @@ public class GuiModule {
                 .scale(scaleY);                           // Applique l'échelle uniformément
 
 
+        uiProjectionMatrix.get(matrixBuffer);
+
         glUseProgram(ShaderManager.PLAN_SHADERS.id);
         int projection = glGetUniformLocation(ShaderManager.PLAN_SHADERS.id, "projection");
-        glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
+        glUniformMatrix4fv(projection, false, matrixBuffer);
 
         glUseProgram(ShaderManager.TEXT_SHADER.id);
         projection = glGetUniformLocation(ShaderManager.TEXT_SHADER.id, "projection");
-        glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
+        glUniformMatrix4fv(projection, false, matrixBuffer);
     }
 
 
