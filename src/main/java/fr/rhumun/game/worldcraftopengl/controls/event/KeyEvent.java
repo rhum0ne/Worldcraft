@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GuiModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class KeyEvent implements GLFWKeyCallbackI {
         this.game = game;
         this.player = player;
     }
+
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
@@ -29,13 +31,17 @@ public class KeyEvent implements GLFWKeyCallbackI {
             GuiModule guiModule = game.getGraphicModule().getGuiModule();
             if(guiModule.hasGUIOpened() && guiModule.getGui() instanceof TypingGui tg
                     && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))) {
-                tg.typeChar((char) key);
+                if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
+                    tg.typeChar('\b');
+                }
                 return;
             }
 
             ChatGui chat = guiModule.getChat();
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
-                chat.getEnteredText().print(String.valueOf((char) key));
+                if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
+                    chat.typeChar('\b');
+                }
                 return;
             }
 

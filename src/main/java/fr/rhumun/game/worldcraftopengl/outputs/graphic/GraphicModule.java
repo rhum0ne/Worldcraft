@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.controls.*;
 import fr.rhumun.game.worldcraftopengl.controls.event.CursorEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.KeyEvent;
+import fr.rhumun.game.worldcraftopengl.controls.event.CharEvent;
 import fr.rhumun.game.worldcraftopengl.controls.event.MouseClickEvent;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.*;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
@@ -155,6 +156,7 @@ public class GraphicModule {
         glfwSetScrollCallback(window, new Scroll(game));
         glfwSetFramebufferSizeCallback(window, new ResizeEvent(this));
         glfwSetKeyCallback(window, new KeyEvent(game, player));
+        glfwSetCharCallback(window, new CharEvent(game));
         glfwSetCursorPosCallback(window, cursorEvent);
 
         try (MemoryStack stack = stackPush()) {

@@ -57,6 +57,13 @@ public class CreateWorldGui extends CenteredGUI implements TypingGui {
             activeField = activeField == nameField ? seedField : nameField;
             return;
         }
+        if(c == '\b' || c == 127) {
+            String text = activeField.getValue();
+            if(text != null && !text.isEmpty()) {
+                activeField.setValue(text.substring(0, text.length() - 1));
+            }
+            return;
+        }
         activeField.setValue(activeField.getValue() + c);
     }
 }
