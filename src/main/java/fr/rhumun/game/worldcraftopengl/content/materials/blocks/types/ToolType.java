@@ -8,5 +8,5 @@ public enum ToolType {
     ROCK,
     WOOD,
     GLASS,
-    VEGETABLE
+    DIRT, VEGETABLE
 }

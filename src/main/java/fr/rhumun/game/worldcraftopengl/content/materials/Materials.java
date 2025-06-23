@@ -107,17 +107,17 @@ public class Materials {
     public static Material BREAD = new FoodMaterial(Texture.BREAD, 4);
     public static Material DIAMOND = new ItemMaterial(Texture.DIAMOND);
     public static Material IRON_INGOT = new ItemMaterial(Texture.IRON_INGOT);
-    public static Material IRON_AXE = new ItemMaterial(Texture.IRON_AXE);
-    public static Material IRON_PICKAXE = new ToolItemMaterial(Texture.IRON_PICKAXE, 2, ToolType.ROCK);
-    public static Material IRON_SHOVEL = new ItemMaterial(Texture.IRON_SHOVEL);
+    public static Material IRON_AXE = new ToolItemMaterial(Texture.IRON_AXE, 3, ToolType.WOOD);
+    public static Material IRON_PICKAXE = new ToolItemMaterial(Texture.IRON_PICKAXE, 3, ToolType.ROCK);
+    public static Material IRON_SHOVEL = new ToolItemMaterial(Texture.IRON_SHOVEL, 3, ToolType.DIRT);
     public static Material IRON_SWORD = new ItemMaterial(Texture.IRON_SWORD);
     public static Material STICK = new ItemMaterial(Texture.STICK);
     public static Material WATER_BUCKET = new BlockItemMaterial(Texture.WATER_BUCKET, WATER);
     public static Material ACADIA_DOOR_ITEM = new BlockItemMaterial(Texture.ACACIA_DOOR_ITEM, ACACIA_DOOR);
-    public static Material WOODEN_AXE = new ItemMaterial(Texture.WOODEN_AXE);
+    public static Material WOODEN_AXE = new ToolItemMaterial(Texture.WOODEN_AXE, 2, ToolType.WOOD);
     public static Material WOODEN_HOE = new ItemMaterial(Texture.WOODEN_HOE);
-    public static Material WOODEN_PICKAXE = new ToolItemMaterial(Texture.WOODEN_PICKAXE, 1, ToolType.ROCK);
-    public static Material WOODEN_SHOVEL = new ItemMaterial(Texture.WOODEN_SHOVEL);
+    public static Material WOODEN_PICKAXE = new ToolItemMaterial(Texture.WOODEN_PICKAXE, 2, ToolType.ROCK);
+    public static Material WOODEN_SHOVEL = new ToolItemMaterial(Texture.WOODEN_SHOVEL, 2, ToolType.DIRT);
     public static Material WOODEN_SWORD = new ItemMaterial(Texture.WOODEN_SWORD);
 
 

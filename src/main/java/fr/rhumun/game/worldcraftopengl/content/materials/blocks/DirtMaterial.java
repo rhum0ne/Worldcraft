@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
@@ -12,6 +13,7 @@ public class DirtMaterial extends Material implements PlaceableMaterial {
     public DirtMaterial() {
         super(Texture.DIRT);
         this.addToType(GuiTypes.NATURAL);
+        this.setToolType(ToolType.DIRT);
     }
 
     @Override
