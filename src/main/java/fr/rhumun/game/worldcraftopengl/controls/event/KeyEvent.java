@@ -28,7 +28,7 @@ public class KeyEvent implements GLFWKeyCallbackI {
     private char convertKey(int key, int scancode, int mods) {
         String name = GLFW.glfwGetKeyName(key, scancode);
         if(name == null || name.isEmpty()) {
-            return (char) key;
+            return '\0';
         }
         char c = name.charAt(0);
         if((mods & GLFW_MOD_SHIFT) != 0) {
@@ -43,13 +43,23 @@ public class KeyEvent implements GLFWKeyCallbackI {
             GuiModule guiModule = game.getGraphicModule().getGuiModule();
             if(guiModule.hasGUIOpened() && guiModule.getGui() instanceof TypingGui tg
                     && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))) {
-                tg.typeChar(convertKey(key, scancode, mods));
+                if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
+                    tg.typeChar('\b');
+                } else {
+                    char c = convertKey(key, scancode, mods);
+                    if(c != '\0') tg.typeChar(c);
+                }
                 return;
             }
 
             ChatGui chat = guiModule.getChat();
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
-                chat.getEnteredText().print(String.valueOf(convertKey(key, scancode, mods)));
+                if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
+                    chat.typeChar('\b');
+                } else {
+                    char c = convertKey(key, scancode, mods);
+                    if(c != '\0') chat.typeChar(c);
+                }
                 return;
             }
 

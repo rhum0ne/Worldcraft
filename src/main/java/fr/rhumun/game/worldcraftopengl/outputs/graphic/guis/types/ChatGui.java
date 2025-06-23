@@ -4,11 +4,12 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TextComponent;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class ChatGui extends Gui {
+public class ChatGui extends Gui implements TypingGui {
 
     private final TextComponent enteredText;
     private final TextComponent chat;
@@ -45,5 +46,17 @@ public class ChatGui extends Gui {
         }
 
         this.enteredText.setText("");
+    }
+
+    @Override
+    public void typeChar(char c) {
+        if(c == '\b' || c == 127) {
+            String text = this.enteredText.getText();
+            if(!text.isEmpty()) {
+                this.enteredText.setText(text.substring(0, text.length() - 1));
+            }
+            return;
+        }
+        this.enteredText.print(String.valueOf(c));
     }
 }
