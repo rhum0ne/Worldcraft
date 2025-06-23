@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
@@ -14,6 +15,7 @@ public class DarkCobbleMaterial extends Material implements PlaceableMaterial {
         super(Texture.DARK_COBBLE);
         this.addToType(GuiTypes.CONSTRUCTION);
         this.setDurability(10f);
+        this.setToolType(ToolType.ROCK);
     }
 
     @Override

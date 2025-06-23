@@ -4,6 +4,8 @@ import fr.rhumun.game.worldcraftopengl.content.materials.blocks.*;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.FoodMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ToolItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 
 import java.lang.reflect.Field;
@@ -106,7 +108,7 @@ public class Materials {
     public static Material DIAMOND = new ItemMaterial(Texture.DIAMOND);
     public static Material IRON_INGOT = new ItemMaterial(Texture.IRON_INGOT);
     public static Material IRON_AXE = new ItemMaterial(Texture.IRON_AXE);
-    public static Material IRON_PICKAXE = new ItemMaterial(Texture.IRON_PICKAXE);
+    public static Material IRON_PICKAXE = new ToolItemMaterial(Texture.IRON_PICKAXE, 2, ToolType.ROCK);
     public static Material IRON_SHOVEL = new ItemMaterial(Texture.IRON_SHOVEL);
     public static Material IRON_SWORD = new ItemMaterial(Texture.IRON_SWORD);
     public static Material STICK = new ItemMaterial(Texture.STICK);
@@ -114,7 +116,7 @@ public class Materials {
     public static Material ACADIA_DOOR_ITEM = new BlockItemMaterial(Texture.ACACIA_DOOR_ITEM, ACACIA_DOOR);
     public static Material WOODEN_AXE = new ItemMaterial(Texture.WOODEN_AXE);
     public static Material WOODEN_HOE = new ItemMaterial(Texture.WOODEN_HOE);
-    public static Material WOODEN_PICKAXE = new ItemMaterial(Texture.WOODEN_PICKAXE);
+    public static Material WOODEN_PICKAXE = new ToolItemMaterial(Texture.WOODEN_PICKAXE, 1, ToolType.ROCK);
     public static Material WOODEN_SHOVEL = new ItemMaterial(Texture.WOODEN_SHOVEL);
     public static Material WOODEN_SWORD = new ItemMaterial(Texture.WOODEN_SWORD);
 
