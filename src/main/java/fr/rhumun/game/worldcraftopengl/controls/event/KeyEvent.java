@@ -11,7 +11,6 @@ import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 import java.util.List;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -25,17 +24,6 @@ public class KeyEvent implements GLFWKeyCallbackI {
         this.player = player;
     }
 
-    private char convertKey(int key, int scancode, int mods) {
-        String name = GLFW.glfwGetKeyName(key, scancode);
-        if(name == null || name.isEmpty()) {
-            return '\0';
-        }
-        char c = name.charAt(0);
-        if((mods & GLFW_MOD_SHIFT) != 0) {
-            c = Character.toUpperCase(c);
-        }
-        return c;
-    }
     @Override
     public void invoke(long window, int key, int scancode, int action, int mods) {
         if (action == GLFW_PRESS) {
@@ -45,9 +33,6 @@ public class KeyEvent implements GLFWKeyCallbackI {
                     && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))) {
                 if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
                     tg.typeChar('\b');
-                } else {
-                    char c = convertKey(key, scancode, mods);
-                    if(c != '\0') tg.typeChar(c);
                 }
                 return;
             }
@@ -56,9 +41,6 @@ public class KeyEvent implements GLFWKeyCallbackI {
             if(chat.isShowed() && (!Controls.exists(key) || (Controls.get(key) != Controls.ENTER && Controls.get(key) != Controls.ESCAPE))){
                 if(key == GLFW.GLFW_KEY_BACKSPACE || key == GLFW.GLFW_KEY_DELETE) {
                     chat.typeChar('\b');
-                } else {
-                    char c = convertKey(key, scancode, mods);
-                    if(c != '\0') chat.typeChar(c);
                 }
                 return;
             }
