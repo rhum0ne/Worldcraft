@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -20,7 +21,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un vecteur 3D (vec3) au shader
     public void setUniform(String uniformName, Vector3f vector) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform3f(location, vector.x, vector.y, vector.z);
@@ -29,7 +30,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un float au shader
     public void setUniform(String uniformName, float value) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1f(location, value);
@@ -38,7 +39,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un float au shader
     public void setUniform(String uniformName, int value) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1i(location, value);
@@ -47,7 +48,7 @@ public abstract class Shader {
 
     // Méthode pour envoyer un int[] au shader
     public void setUniform(String uniformName, int[] value) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform1iv(location, value);
@@ -57,7 +58,7 @@ public abstract class Shader {
     public abstract void init();
 
     public void setUniform(String uniformName, float[] value) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniform4fv(location, value);
@@ -65,7 +66,7 @@ public abstract class Shader {
     }
 
     public void setUniformMatrix(String uniformName, float[] value) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, uniformName);
         if (location != -1) {
             glUniformMatrix4fv(location, false, value);
@@ -73,7 +74,7 @@ public abstract class Shader {
     }
 
     public void setUniform(String name, Matrix4f matrix) {
-        glUseProgram(id);
+        GLStateManager.useProgram(id);
         int location = glGetUniformLocation(id, name);
         if (location != -1) {
             try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -84,7 +85,5 @@ public abstract class Shader {
         }
     }
 
-    public void use() {
-        glUseProgram(id);
-    }
+    public void use() {GLStateManager.useProgram(id);}
 }

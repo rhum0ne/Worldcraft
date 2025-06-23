@@ -1,6 +1,9 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
+
 import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 /**
  * Utility class to reduce redundant OpenGL state changes.
@@ -12,6 +15,8 @@ public final class GLStateManager {
     private static boolean cullFace = false;
 
     private GLStateManager() {}
+
+    public static void useProgram(Shader shader) { useProgram(shader.id); }
 
     public static void useProgram(int program) {
         if (currentProgram != program) {

@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic;
 
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
@@ -30,7 +31,7 @@ public class BlockSelector extends Renderer {
     @Override
     public void init() {
         super.init();
-        glUseProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.SELECTED_BLOCK_SHADER.id);
         glBindVertexArray(this.getVAO());
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);

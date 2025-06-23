@@ -10,8 +10,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.opengl.GL20.glUseProgram;
-
 @Getter
 public class LightningsUtils {
 
@@ -40,7 +38,7 @@ public class LightningsUtils {
     private void sendLight(){
         // Dessiner les éléments existants
         for(Shader shader : graphicModule.getRenderingShaders()){
-            glUseProgram(shader.id);
+            GLStateManager.useProgram(shader.id);
 
             // Envoie la position de la caméra
             shader.setUniform("viewPos", graphicModule.getCamera().getPos());
