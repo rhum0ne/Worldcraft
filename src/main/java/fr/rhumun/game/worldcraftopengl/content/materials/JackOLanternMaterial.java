@@ -7,10 +7,12 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import org.joml.Vector3f;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class JackOLanternMaterial extends PointLight implements PlaceableMaterial, ForcedModelMaterial, RotableMaterial {
     public JackOLanternMaterial() {
         super(Texture.PUMPKIN);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
         this.setTopAndBottomTexture(Texture.PUMPKIN_TOP);
         this.setFrontTexture(Texture.JACK_O_LANTERN);
 

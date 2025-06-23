@@ -12,6 +12,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.SawmillGui;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 /**
  * Material representing a sawmill block that opens its crafting interface when
@@ -21,6 +22,7 @@ public class SawmillMaterial extends Material implements PlaceableMaterial, Inte
 
     public SawmillMaterial() {
         super(Texture.SAWMILL_FRONT);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
         setBackTexture(Texture.SAWMILL_SIDE_2);
         setTopTexture(Texture.SAWMILL_TOP);
         setBottomTexture(Texture.SAWMILL_BOTTOM);

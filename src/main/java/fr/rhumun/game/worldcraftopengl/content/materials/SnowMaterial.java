@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class SnowMaterial extends Material implements PlaceableMaterial {
     public SnowMaterial() {
         super(Texture.SNOW);
+        this.addToType(GuiTypes.NATURAL);
     }
 
     @Override

@@ -8,10 +8,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class AcaciaDoorMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock {
     public AcaciaDoorMaterial() {
         super(Texture.ACACIA_DOOR);
+        this.addToType(GuiTypes.FUNCTIONAL_BLOCKS);
     }
 
     @Override

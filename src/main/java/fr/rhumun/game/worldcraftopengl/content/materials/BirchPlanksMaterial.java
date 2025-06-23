@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class BirchPlanksMaterial extends Material implements PlaceableMaterial {
     public BirchPlanksMaterial() {
         super(Texture.BIRCH_PLANKS);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

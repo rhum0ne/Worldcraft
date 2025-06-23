@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class CrackedStoneBrickMaterial extends Material implements PlaceableMaterial {
     public CrackedStoneBrickMaterial() {
         super(Texture.CRACKED_STONE_BRICK);
+        this.addToType(GuiTypes.CONSTRUCTION);
     }
 
     @Override

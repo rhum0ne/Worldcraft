@@ -6,10 +6,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class GrassBlockMaterial extends Material implements PlaceableMaterial {
     public GrassBlockMaterial() {
         super(Texture.GRASS_BLOCK);
+        this.addToType(GuiTypes.NATURAL);
         this.setTopTexture(Texture.GRASS_TOP);
         this.setBottomTexture(Texture.DIRT);
     }

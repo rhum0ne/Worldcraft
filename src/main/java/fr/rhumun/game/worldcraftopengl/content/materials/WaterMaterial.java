@@ -5,10 +5,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 
 public class WaterMaterial extends Material implements PlaceableMaterial {
     public WaterMaterial() {
         super(Texture.WATER, 0.1f, 1f);
+        this.addToType(GuiTypes.NATURAL);
     }
 
     @Override
