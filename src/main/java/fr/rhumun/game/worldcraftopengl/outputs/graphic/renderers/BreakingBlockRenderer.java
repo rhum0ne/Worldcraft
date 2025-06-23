@@ -37,7 +37,12 @@ public class BreakingBlockRenderer extends GlobalRenderer {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
 
+        glEnable(GL_POLYGON_OFFSET_FILL);
+        glPolygonOffset(-1f, -1f);
+        glDepthMask(false);
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
+        glDepthMask(true);
+        glDisable(GL_POLYGON_OFFSET_FILL);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -82,9 +87,10 @@ public class BreakingBlockRenderer extends GlobalRenderer {
 
             if (block.hasBlockAtFace(nx, ny, nz)) continue;
 
-            float vx = (float) (x + verticesBuffer.get(vertexIndex * 3));
-            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
-            float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
+            float offset = 0.002f;
+            float vx = (float) (x + verticesBuffer.get(vertexIndex * 3) + nx * offset);
+            float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1) + ny * offset);
+            float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2) + nz * offset);
 
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);
