@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import lombok.Getter;
@@ -135,6 +136,9 @@ public class Slot extends Button {
             this.getIndices()[i] = indicesList.get(i);
         }
     }
+
+    @Override
+    protected Sound getClickSound() { return null; }
 
     @Override
     public void onClick(Player player) {}

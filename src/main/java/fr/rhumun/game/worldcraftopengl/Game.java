@@ -125,6 +125,8 @@ public class Game {
         LoadingGui loadingGui = new LoadingGui("Chargement...");
         guiModule.openGUI(loadingGui);
 
+        player.reset();
+
         new Thread(() -> {
             if(name == null) world = new World(seed);
             else world = new World(seed, name);

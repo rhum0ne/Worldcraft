@@ -70,7 +70,8 @@ public enum Sound {
     EAT(loadSound("eat.ogg")),
     DRINK(loadSound("drink.ogg")),
 
-    MUSIC_1(loadSound("beta-song.ogg"));
+    MUSIC_1(loadSound("beta-song.ogg")),
+    CLICK(loadSound("click.ogg"));
 
     private final int id;
     private final SoundPack soundPack;

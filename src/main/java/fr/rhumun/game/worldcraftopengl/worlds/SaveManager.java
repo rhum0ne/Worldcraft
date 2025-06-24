@@ -2,7 +2,11 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
+import fr.rhumun.game.worldcraftopengl.entities.Location;
+import fr.rhumun.game.worldcraftopengl.entities.player.Gamemode;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
@@ -360,7 +364,7 @@ public class SaveManager {
         return ensureWorldDir(world.getSeed()).resolve("entities").resolve("entities.dat");
     }
 
-    public static void savePlayer(World world, fr.rhumun.game.worldcraftopengl.entities.player.Player player) {
+    public static void savePlayer(World world, Player player) {
         Path file = playerFile(world);
         try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file))) {
             var loc = player.getLocation();
@@ -388,7 +392,7 @@ public class SaveManager {
         }
     }
 
-    public static boolean loadPlayer(World world, fr.rhumun.game.worldcraftopengl.entities.player.Player player) {
+    public static boolean loadPlayer(World world, Player player) {
         Path file = playerFile(world);
         if (!Files.exists(file)) return false;
         try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
@@ -397,12 +401,12 @@ public class SaveManager {
             double z = in.readDouble();
             float yaw = in.readFloat();
             float pitch = in.readFloat();
-            player.setLocation(new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
+            player.setLocation(new Location(world, x, y, z, yaw, pitch));
             player.setSelectedSlotRaw(in.readInt());
             try {
                 byte gm = in.readByte();
-                if (gm >= 0 && gm < fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values().length) {
-                    player.setGamemode(fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values()[gm]);
+                if (gm >= 0 && gm < Gamemode.values().length) {
+                    player.setGamemode(Gamemode.values()[gm]);
                 }
             } catch (IOException ignored) {
             }
@@ -414,7 +418,7 @@ public class SaveManager {
                     short mat = in.readShort();
                     byte model = in.readByte();
                     int qty = in.readInt();
-                    items[i] = new fr.rhumun.game.worldcraftopengl.content.items.ItemStack(
+                    items[i] = new ItemStack(
                             Materials.getById(mat), Model.getById(model), qty);
                 } else {
                     items[i] = null;

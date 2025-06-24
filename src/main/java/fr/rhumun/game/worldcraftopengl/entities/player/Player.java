@@ -364,4 +364,15 @@ public class Player extends LivingEntity implements MovingEntity {
     public boolean isHungry() {
         return !this.isInCreativeMode() && this.food < this.maxFood;
     }
+
+    public void reset() {
+        this.getInventory().clear();
+        this.setHealth(this.getMaxHealth());
+        this.setFood(this.getMaxFood());
+        this.setSaturation(this.getMaxSaturation());
+        this.setGamemode(Gamemode.SURVIVAL);
+        this.setSelectedSlot(0);
+        this.setFlying(false);
+        this.setSwimming(false);
+    }
 }
