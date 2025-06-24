@@ -101,6 +101,7 @@ public class Materials {
     public static Material STONE_DIORITE = new StoneDioriteMaterial();
     public static Material TORCH = new TorchMaterial();
     public static Material STONE_CUTTER = new StoneCutterMaterial();
+    public static Material TOOL_BOX = new ToolBoxMaterial();
 
     // Non-placeable items
     public static Material APPLE = new FoodMaterial(Texture.APPLE, 3);
@@ -113,6 +114,7 @@ public class Materials {
     public static Material IRON_SWORD = new ItemMaterial(Texture.IRON_SWORD);
     public static Material STICK = new ItemMaterial(Texture.STICK);
     public static Material WATER_BUCKET = new BlockItemMaterial(Texture.WATER_BUCKET, WATER);
+    public static Material BUCKET = new ItemMaterial(Texture.BUCKET);
     public static Material ACADIA_DOOR_ITEM = new BlockItemMaterial(Texture.ACACIA_DOOR_ITEM, ACACIA_DOOR);
     public static Material WOODEN_AXE = new ToolItemMaterial(Texture.WOODEN_AXE, 2, ToolType.WOOD);
     public static Material WOODEN_HOE = new ItemMaterial(Texture.WOODEN_HOE);
