@@ -1,39 +1,21 @@
-package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
+import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
-public class LiquidsUtil {
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids.LiquidsUtil.hasFluidAbove;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids.LiquidsUtil.isToRender;
 
-    public static void loadDataFor(Block block, ChunkRenderer chunkRenderer, int X, int Y, int Z, LinkedHashSet<Block> blocks){
-        Chunk chunk = chunkRenderer.getChunk();
+public class LiquidSurfaceUtil {
 
-        if(hasFluidAbove(block) || isFullyEnclosed(block))
-            return;
 
-        if(!Game.GREEDY_MESHING) {
-            rasterBlockGroup(block, block, chunkRenderer);
-            return;
-        }
-
-        Block corner1 = block;
-        Block corner2 = loadLiquidSurface(chunk, corner1, X, Y, Z, blocks);
-
-        rasterBlockGroup(corner1, corner2, chunkRenderer);
-    }
-
-    private static boolean isToRender(Block block, Block counterBlock){
-        return counterBlock == null;
-    }
-
-    private static Block loadLiquidSurface(Chunk chunk, Block corner1, int X, int Y, int Z, LinkedHashSet<Block> blocks){
+    protected static Block loadLiquidSurface(Chunk chunk, Block corner1, int X, int Y, int Z, LinkedHashSet<Block> blocks){
         Block corner2 = corner1;
         Model model = corner1.getModel();
 
@@ -109,7 +91,7 @@ public class LiquidsUtil {
         return corner2;
     }
 
-    private static void addFace(ArrayList<float[]> vertices, ArrayList<Integer> indices, float[][] face, int offset){
+    protected static void addFace(ArrayList<float[]> vertices, ArrayList<Integer> indices, float[][] face, int offset){
         for(float[] v : face) vertices.add(v);
         indices.add(offset);
         indices.add(offset+2);
@@ -119,9 +101,9 @@ public class LiquidsUtil {
         indices.add(offset+3);
     }
 
-    private static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
+    protected static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
         float x1 = (float) corner1.getLocation().getX() - 0.5f;
-        float y1 = (float) corner1.getLocation().getY() + 1f;
+        float y1 = (float) corner1.getLocation().getY() + 1f -0.2f;
         float z1 = (float) corner1.getLocation().getZ() - 0.5f;
 
         float x2 = (float) corner2.getLocation().getX() + 0.5f;
@@ -162,10 +144,10 @@ public class LiquidsUtil {
 
         if(showDown){
             float[][] faceBottom = new float[][]{
-                    {x1, y2, z1, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f},
-                    {x2, y2, z1, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f},
-                    {x1, y2, z2, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f},
-                    {x2, y2, z2, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}
+                    {x1, y2, z2, 0.0f, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f},
+                    {x2, y2, z2, texScaleX, 0.0f, texIDBottom, 0.0f, -1.0f, 0.0f},
+                    {x1, y2, z1, 0.0f, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f},
+                    {x2, y2, z1, texScaleX, texScaleZ, texIDBottom, 0.0f, -1.0f, 0.0f}
             };
             addFace(vertices, indices, faceBottom, offset);
             offset += 4;
@@ -173,10 +155,10 @@ public class LiquidsUtil {
 
         if(showSouth){
             float[][] faceLeft = new float[][]{
-                    {x1, y2, z1, 0.0f, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
-                    {x1, y2, z2, texScaleZ, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
-                    {x1, y1, z1, 0.0f, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f},
-                    {x1, y1, z2, texScaleZ, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}
+                    {x1, y2, z2, 0.0f, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
+                    {x1, y2, z1, texScaleZ, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
+                    {x1, y1, z2, 0.0f, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f},
+                    {x1, y1, z1, texScaleZ, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}
             };
             addFace(vertices, indices, faceLeft, offset);
             offset += 4;
@@ -195,8 +177,8 @@ public class LiquidsUtil {
 
         if(showWest){
             float[][] faceBack = new float[][]{
-                    {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f},
                     {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f},
+                    {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f},
                     {x2, y1, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f},
                     {x1, y1, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f}
             };
@@ -208,8 +190,8 @@ public class LiquidsUtil {
             float[][] faceFront = new float[][]{
                     {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f},
                     {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f},
-                    {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f},
-                    {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f}
+                    {x1, y1, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f},
+                    {x2, y1, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f}
             };
             addFace(vertices, indices, faceFront, offset);
             offset += 4;
@@ -217,31 +199,6 @@ public class LiquidsUtil {
 
         renderer.addAllVertices(vertices.toArray(new float[0][]));
         renderer.addAllIndices(indices.stream().mapToInt(Integer::intValue).toArray());
-    }
-
-
-    private static boolean hasFluidAbove(Block block){
-        Block up = block.getBlockAtUp();
-        return up != null && up.getMaterial() == block.getMaterial();
-    }
-
-    private static boolean isFullyEnclosed(Block block){
-        Block matUp = block.getBlockAtUp();
-        Block matDown = block.getBlockAtDown();
-        Block matNorth = block.getBlockAtNorth();
-        Block matSouth = block.getBlockAtSouth();
-        Block matEast = block.getBlockAtEast();
-        Block matWest = block.getBlockAtWest();
-
-        if(matUp == null || matDown == null || matNorth == null || matSouth == null || matEast == null || matWest == null)
-            return false;
-
-        return matUp.getMaterial() == block.getMaterial() &&
-                matDown.getMaterial() == block.getMaterial() &&
-                matNorth.getMaterial() == block.getMaterial() &&
-                matSouth.getMaterial() == block.getMaterial() &&
-                matEast.getMaterial() == block.getMaterial() &&
-                matWest.getMaterial() == block.getMaterial();
     }
 
 }

@@ -277,7 +277,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                     chunk.getMaterials()[x][y][z] = STONE;
                 }
 
-                if (height < getWaterHigh()) {
+                if (height <= getWaterHigh()) {
                     for (int y = height; y < getWaterHigh(); y++) {
                         chunk.getMaterials()[x][y][z] = Materials.WATER;
                     }
@@ -285,7 +285,7 @@ public class NormalWorldGenerator extends WorldGenerator {
 
                 // Petite coloration simple
                 if (height > getWaterHigh() && height < this.getWorld().getHeigth()) {
-                    chunk.getMaterials()[x][height][z] = Materials.GRASS_BLOCK;
+                    chunk.getMaterials()[x][height-1][z] = Materials.GRASS_BLOCK;
                 }
             }
         }

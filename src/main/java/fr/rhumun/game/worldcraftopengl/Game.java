@@ -28,7 +28,7 @@ public class Game {
 
     //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
-    public static int SIMULATION_DISTANCE = 6;
+    public static int SIMULATION_DISTANCE = 3;
     public static int SHOW_DISTANCE = 16;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;

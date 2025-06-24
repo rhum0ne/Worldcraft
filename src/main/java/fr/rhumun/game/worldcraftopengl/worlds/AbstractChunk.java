@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import static fr.rhumun.game.worldcraftopengl.Game.CHUNK_SIZE;
+
 @Getter @Setter
 public abstract class AbstractChunk {
     private final short renderID;
@@ -64,11 +66,10 @@ public abstract class AbstractChunk {
         this.getRenderer().render();
     }
 
-    public boolean isLoading() {
-        return loading;
+    public boolean isInBounds(int x, int y, int z) {
+        return x >= 0 && x < CHUNK_SIZE &&
+                y >= 0 && y < this.getWorld().getHeigth() &&
+                z >= 0 && z < CHUNK_SIZE;
     }
 
-    public void setLoading(boolean loading) {
-        this.loading = loading;
-    }
 }

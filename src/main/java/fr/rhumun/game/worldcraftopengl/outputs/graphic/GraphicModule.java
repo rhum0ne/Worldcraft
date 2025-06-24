@@ -14,6 +14,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.HitboxRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.ui.SelectedBlockShader;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.LightningsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.DebugUtils;
@@ -69,10 +70,6 @@ public class GraphicModule {
     // == Shaders and rendering ==
     private final List<Shader> renderingShaders = new ArrayList<>();
     private final List<Shader> shaders = new ArrayList<>();
-    private static final List<Shader> SPECIAL_SHADERS = List.of(
-            ShaderManager.SELECTED_BLOCK_SHADER,
-            ShaderManager.FAR_SHADER
-    );
     private final DebugUtils debugUtils = new DebugUtils();
     private final LightningsUtils lightningsUtils;
     private int verticesNumber;
@@ -253,9 +250,8 @@ public class GraphicModule {
     }
 
     private void updateModelAndProjectionFor(Matrix4f modelMatrix, Shader shader) {
-        GLStateManager.useProgram(shader.id);
-        glUniformMatrix4fv(glGetUniformLocation(shader.id, "projection"), false, projectionMatrix.get(matrixBuffer));
-        glUniformMatrix4fv(glGetUniformLocation(shader.id, "model"), false, modelMatrix.get(matrixBuffer));
+        shader.setUniformMatrix("projection", projectionMatrix.get(matrixBuffer));
+        shader.setUniformMatrix("model", modelMatrix.get(matrixBuffer));
     }
 
     private void startChunkLoader() {
@@ -312,14 +308,12 @@ public class GraphicModule {
         }
 
         viewMatrix.get(matrixBuffer);
-        for (Shader shader : renderingShaders) {
-            GLStateManager.useProgram(shader.id);
-            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
-        }
-        for (Shader shader : SPECIAL_SHADERS) {
-            GLStateManager.useProgram(shader.id);
-            glUniformMatrix4fv(glGetUniformLocation(shader.id, "view"), false, matrixBuffer);
-        }
+        for (Shader shader : renderingShaders)
+            shader.setUniformMatrix("view", matrixBuffer);
+
+        ShaderManager.SELECTED_BLOCK_SHADER.setUniformMatrix("view", matrixBuffer);
+        ShaderManager.FAR_SHADER.setUniformMatrix("view", matrixBuffer);
+
     }
 
     private void loop() {
