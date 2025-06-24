@@ -125,6 +125,7 @@ public class Texture {
     public static Texture[] DESTROY_STAGES;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+    public static Texture PLAYER_INVENTORY;
     public static Texture WORKBENCH;
     public static Texture WORKBENCH_2;
     public static Texture SQUARE_BUTTON;
@@ -303,6 +304,7 @@ public class Texture {
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
+        PLAYER_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\player_inventory.png");
         WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
         WORKBENCH_2 = new Texture(TextureTypes.GUIS,"hud\\workbench_2.png");
         SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
@@ -370,6 +372,8 @@ public class Texture {
         }
         this.name = name.substring(0, name.length()-4);
         textureByName.put(this.name, this);
+
+        this.width = this.height = 32;
 
     }
 
