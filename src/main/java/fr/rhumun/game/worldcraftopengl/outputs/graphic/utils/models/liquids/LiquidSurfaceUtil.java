@@ -36,7 +36,7 @@ public class LiquidSurfaceUtil {
             if(hasFluidAbove(testBlock)) break;
 
             if (testBlock.getModel() == model) {
-                if (testBlock.getMaterial() == corner1.getMaterial()) {
+                if (testBlock.getMaterial() == corner1.getMaterial() && testBlock.getState() == corner1.getState()) {
 
                     if(isToRender(testBlock, testBlock.getBlockAtNorth()) != hasBlockNorth) break;
                     if(isToRender(testBlock, testBlock.getBlockAtSouth()) != hasBlockSouth) break;
@@ -62,7 +62,7 @@ public class LiquidSurfaceUtil {
 
                 if (!blocks.contains(testBlock)) {
                     if (testBlock.getModel() == model) {
-                        if (testBlock.getMaterial() == corner1.getMaterial()) {
+                        if (testBlock.getMaterial() == corner1.getMaterial() && testBlock.getState() == corner1.getState()) {
                             if (!testBlock.isSurrounded()) {
                                 if(isToRender(testBlock, testBlock.getBlockAtNorth()) != hasBlockNorth) break;
                                 if(isToRender(testBlock, testBlock.getBlockAtSouth()) != hasBlockSouth) break;
@@ -103,12 +103,17 @@ public class LiquidSurfaceUtil {
 
     protected static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
         float x1 = (float) corner1.getLocation().getX() - 0.5f;
-        float y1 = (float) corner1.getLocation().getY() + 1f -0.2f;
+        float y1 = (float) corner1.getLocation().getY() + 1f -0.1f;
         float z1 = (float) corner1.getLocation().getZ() - 0.5f;
 
         float x2 = (float) corner2.getLocation().getX() + 0.5f;
         float y2 = (float) corner2.getLocation().getY();
         float z2 = (float) corner2.getLocation().getZ() + 0.5f;
+
+        float diff = (9-(float)corner1.getState())/10f;
+        y1 = Math.max(y1-diff, 0f);
+
+        System.out.println(diff);
 
         boolean showNorth = isToRender(corner1, corner1.getBlockAtNorth());
         boolean showSouth = isToRender(corner1, corner1.getBlockAtSouth());
