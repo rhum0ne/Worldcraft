@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.content.materials.blocks;
 
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
@@ -11,6 +12,7 @@ public class WoolMaterial extends Material implements PlaceableMaterial {
     public WoolMaterial(String name) {
         super(Texture.getByName(name + "_wool"));
         this.setDurability(4f);
+        this.addToType(GuiTypes.COLOR);
     }
 
     @Override
