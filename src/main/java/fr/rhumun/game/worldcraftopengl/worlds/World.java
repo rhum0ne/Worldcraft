@@ -112,6 +112,7 @@ public class World {
         }
 
         this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), true).getLocation().getY()+10, zSpawn);
+        SaveManager.loadEntities(this);
         this.isLoaded = true;
     }
 
@@ -202,6 +203,8 @@ public class World {
     public void save() {
         for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())
             SaveManager.saveChunk(chunk);
+        SaveManager.savePlayer(this, GAME.getPlayer());
+        SaveManager.saveEntities(this);
         SaveManager.saveWorldMeta(this);
     }
 

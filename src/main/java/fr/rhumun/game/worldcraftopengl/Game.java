@@ -128,20 +128,22 @@ public class Game {
         while(!world.isLoaded()) {
             Thread.onSpinWait();
         }
+        boolean first = !SaveManager.loadPlayer(world, player);
+        if(first) {
+            this.world.spawnPlayer(player);
 
-        this.world.spawnPlayer(player);
+            player.addItem(new ItemStack(Materials.SAND));
+            player.addItem(new ItemStack(Materials.COBBLE));
+            player.addItem(new ItemStack(Materials.SAPLING));
+            player.addItem(new ItemStack(Materials.PLANKS));
+            player.addItem(new ItemStack(Materials.PURPLE_LAMP));
+            player.addItem(new ItemStack(Materials.CYAN_LAMP));
+            player.addItem(new ItemStack(Materials.LAMP));
+            player.addItem(new ItemStack(Materials.LANTERN));
+            player.addItem(new ItemStack(Materials.BREAD, 5));
 
-        player.addItem(new ItemStack(Materials.SAND));
-        player.addItem(new ItemStack(Materials.COBBLE));
-        player.addItem(new ItemStack(Materials.SAPLING));
-        player.addItem(new ItemStack(Materials.PLANKS));
-        player.addItem(new ItemStack(Materials.PURPLE_LAMP));
-        player.addItem(new ItemStack(Materials.CYAN_LAMP));
-        player.addItem(new ItemStack(Materials.LAMP));
-        player.addItem(new ItemStack(Materials.LANTERN));
-        player.addItem(new ItemStack(Materials.BREAD, 5));
-
-        player.updateInventory();
+            player.updateInventory();
+        }
 
         player.playSound(Sound.STONE1);
 
