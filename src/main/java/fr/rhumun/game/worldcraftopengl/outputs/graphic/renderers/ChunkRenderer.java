@@ -159,6 +159,8 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
                     Block block = chunk.getBlocks()[X][Y][Z];
                     if (block == null || block.getMaterial() == null) continue;
+                    // Skip blocks whose parent chunk was already unloaded
+                    if (block.getChunk() == null) continue;
 
                     Model model = block.getModel();
                     if (model == null) continue;
