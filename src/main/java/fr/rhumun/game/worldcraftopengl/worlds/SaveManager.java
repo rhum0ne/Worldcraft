@@ -4,6 +4,8 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.entities.player.Gamemode;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
@@ -471,18 +473,18 @@ public class SaveManager {
                 float yaw = in.readFloat();
                 float pitch = in.readFloat();
                 boolean isItem = in.readBoolean();
-                fr.rhumun.game.worldcraftopengl.entities.Entity entity = null;
+                Entity entity = null;
                 if (isItem) {
                     short mat = in.readShort();
                     byte model = in.readByte();
-                    entity = new fr.rhumun.game.worldcraftopengl.entities.ItemEntity(
+                    entity = new ItemEntity(
                             Model.getById(model), Materials.getById(mat),
-                            new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
+                            new Location(world, x, y, z, yaw, pitch), 1);
                 } else {
                     try {
                         Class<?> c = Class.forName(className);
                         var ctor = c.getConstructor(double.class, double.class, double.class, float.class, float.class);
-                        entity = (fr.rhumun.game.worldcraftopengl.entities.Entity) ctor.newInstance(x, y, z, yaw, pitch);
+                        entity = (Entity) ctor.newInstance(x, y, z, yaw, pitch);
                     } catch (Exception ex) {
                         Game.GAME.errorLog(ex);
                     }

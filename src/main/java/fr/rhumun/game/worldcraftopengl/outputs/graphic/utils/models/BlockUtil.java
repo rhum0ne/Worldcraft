@@ -250,10 +250,10 @@ public class BlockUtil {
         addAllIndices(createIndices(offset), indicesList);
     }
 
-    private static void addAllIndices(int[] indices, ArrayList<Integer> indicesList){
+    static void addAllIndices(int[] indices, ArrayList<Integer> indicesList){
         for(int i : indices) indicesList.add(i);
     }
-    private static void addAllVertices(float[][] vertices, ArrayList<float[]> verticesList) {
+    static void addAllVertices(float[][] vertices, ArrayList<float[]> verticesList) {
         verticesList.addAll(Arrays.asList(vertices));
     }
 

@@ -65,4 +65,8 @@ public class ItemStack {
     public void addQuantity(int i) {
         if(this.quantity < 64) this.quantity += i;
     }
+
+    public ItemStack copy() {
+        return new ItemStack(this.material, this.model, this.quantity);
+    }
 }
