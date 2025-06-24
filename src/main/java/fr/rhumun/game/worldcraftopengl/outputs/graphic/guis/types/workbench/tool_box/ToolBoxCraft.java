@@ -26,7 +26,9 @@ public class ToolBoxCraft {
         return Objects.equals(input1.getMaterial(), that.input1.getMaterial()) &&
                 Objects.equals(input1.getModel(), that.input1.getModel()) &&
                 Objects.equals(input2.getMaterial(), that.input2.getMaterial()) &&
-                Objects.equals(input2.getModel(), that.input2.getModel());
+                Objects.equals(input2.getModel(), that.input2.getModel()) &&
+                input1.getQuantity() == that.input1.getQuantity() &&
+                input2.getQuantity() == that.input2.getQuantity();
     }
 
     @Override

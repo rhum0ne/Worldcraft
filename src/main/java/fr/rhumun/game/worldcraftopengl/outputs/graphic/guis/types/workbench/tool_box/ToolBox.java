@@ -29,17 +29,20 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
     private final ToolBoxResultSlot[] resultSlots = new ToolBoxResultSlot[9];
 
     public ToolBox() {
-        super(364, 320, Texture.WORKBENCH);
+        super(364, 320, Texture.WORKBENCH_2);
         this.setItemContainer(this);
 
-        inputSlots[0] = this.createClickableSlot(167, 30, Slot.DEFAULT_SIZE);
+        inputSlots[0] = this.createClickableSlot(127, 30, Slot.DEFAULT_SIZE);
         inputSlots[1] = this.createClickableSlot(207, 30, Slot.DEFAULT_SIZE);
 
         this.addText(4, 4, "Tool Box");
 
         // Example recipe: combine a stick and a log to craft a wooden axe
-        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.LOG),
-                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE) });
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.IRON_INGOT, 3),
+                new ItemStack[]{ new ItemStack(Materials.IRON_AXE), new ItemStack(Materials.IRON_PICKAXE), new ItemStack(Materials.IRON_SHOVEL), new ItemStack(Materials.IRON_SWORD), new ItemStack(Materials.BUCKET) });
 
         for (int i = 0; i < 9; i++) {
             int x = 7 + i * 41;

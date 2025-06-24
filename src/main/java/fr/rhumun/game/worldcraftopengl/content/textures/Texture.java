@@ -110,7 +110,6 @@ public class Texture {
     public static Texture CRAFTING_TABLE_SIDE_1;
     public static Texture CRAFTING_TABLE_SIDE_2;
     public static Texture CRAFTING_TABLE_FRONT;
-
     public static Texture BLACKSTONE;
     public static Texture CRACKED_STONE_BRICK;
     public static Texture DARK_PLANKS;
@@ -127,6 +126,7 @@ public class Texture {
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
     public static Texture WORKBENCH;
+    public static Texture WORKBENCH_2;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;
     public static Texture DEFAULT_BUTTON_HOVERED;
@@ -134,6 +134,7 @@ public class Texture {
     public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
     public static Texture WALLPAPER;
     public static Texture WORLDCRAFT_TITLE;
+    public static Texture BUCKET;
 
     public static Texture HEART_CONTAINER;
     public static Texture HEART_FULL;
@@ -259,12 +260,12 @@ public class Texture {
         STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
         STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
         STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
-        CRAFTING_TABLE_TOP = new Texture("crafting_table_top.png");
-        CRAFTING_TABLE_BOTTOM = new Texture("crafting_table_bottom.png");
-        CRAFTING_TABLE_SIDE = new Texture("crafting_table_side.png");
-        CRAFTING_TABLE_SIDE_1 = new Texture("crafting_table_side_1.png");
-        CRAFTING_TABLE_SIDE_2 = new Texture("crafting_table_side_2.png");
-        CRAFTING_TABLE_FRONT = new Texture("crafting_table_front.png");
+        CRAFTING_TABLE_TOP = new Texture("stone_cutter_top.png");
+        CRAFTING_TABLE_BOTTOM = new Texture("stone_cutter_bottom.png");
+        CRAFTING_TABLE_SIDE = new Texture("stone_cutter_side.png");
+        CRAFTING_TABLE_SIDE_1 = new Texture("stone_cutter_side.png");
+        CRAFTING_TABLE_SIDE_2 = new Texture("stone_cutter_side_2.png");
+        CRAFTING_TABLE_FRONT = new Texture("stone_cutter_front.png");
         ACACIA_LOG = new Texture("acacia_log.png");
         ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
         ACACIA_PLANKS = new Texture("acacia_planks.png");
@@ -285,6 +286,7 @@ public class Texture {
         IRON_SWORD = new Texture("items\\iron_sword.png");
         STICK = new Texture("items\\stick.png");
         WATER_BUCKET = new Texture("items\\water_bucket.png");
+        BUCKET = new Texture("items\\bucket.png");
         WOODEN_AXE = new Texture("items\\wooden_axe.png");
         WOODEN_HOE = new Texture("items\\wooden_hoe.png");
         WOODEN_PICKAXE = new Texture("items\\wooden_pickaxe.png");
@@ -302,6 +304,7 @@ public class Texture {
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
         WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
+        WORKBENCH_2 = new Texture(TextureTypes.GUIS,"hud\\workbench_2.png");
         SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
         DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\widgets\\button.png");
         DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");
