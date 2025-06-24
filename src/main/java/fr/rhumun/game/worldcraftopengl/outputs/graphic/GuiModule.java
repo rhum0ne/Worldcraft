@@ -217,7 +217,7 @@ public class GuiModule {
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {
                 if(component.isCursorIn()){
-                    button.onClick(player);
+                    button.click(player);
                     break;
                 }
             }

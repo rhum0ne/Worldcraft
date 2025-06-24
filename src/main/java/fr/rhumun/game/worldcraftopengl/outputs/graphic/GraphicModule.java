@@ -318,6 +318,7 @@ public class GraphicModule {
 
     private void loop() {
         while (!glfwWindowShouldClose(window) && game.isPlaying()) {
+            game.runMainThreadTasks();
             switch(game.getGameState()) {
                 case GameState.RUNNING, GameState.PAUSED -> this.renderGame();
                 case GameState.TITLE -> this.renderGuiOnly();

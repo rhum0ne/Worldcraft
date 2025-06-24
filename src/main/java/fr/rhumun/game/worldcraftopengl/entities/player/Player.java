@@ -149,6 +149,14 @@ public class Player extends LivingEntity implements MovingEntity {
         GAME.getGraphicModule().getGuiModule().setSelectedSlot(slot);
     }
 
+    /**
+     * Sets the selected slot without updating any GUI.
+     * Used during asynchronous loading before the render thread is ready.
+     */
+    public void setSelectedSlotRaw(int slot) {
+        this.selectedSlot = slot;
+    }
+
     public ItemStack getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }
@@ -355,5 +363,16 @@ public class Player extends LivingEntity implements MovingEntity {
 
     public boolean isHungry() {
         return !this.isInCreativeMode() && this.food < this.maxFood;
+    }
+
+    public void reset() {
+        this.getInventory().clear();
+        this.setHealth(this.getMaxHealth());
+        this.setFood(this.getMaxFood());
+        this.setSaturation(this.getMaxSaturation());
+        this.setGamemode(Gamemode.SURVIVAL);
+        this.setSelectedSlot(0);
+        this.setFlying(false);
+        this.setSwimming(false);
     }
 }

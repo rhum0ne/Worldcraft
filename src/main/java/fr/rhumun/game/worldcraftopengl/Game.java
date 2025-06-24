@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.commands.Commands;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.AudioManager;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.LoadingGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
@@ -54,6 +55,7 @@ public class Game {
     final AudioManager audioManager;
     final Data data;
     GameLoop gameLoop;
+    private final java.util.concurrent.ConcurrentLinkedQueue<Runnable> mainThreadTasks = new java.util.concurrent.ConcurrentLinkedQueue<>();
 
     GameState gameState = GameState.TITLE;
     boolean isShowingTriangles = false;
@@ -61,6 +63,9 @@ public class Game {
     Player player;
 
     List<Controls> pressedKeys = new ArrayList<>();
+
+    public void queueTask(Runnable task) { mainThreadTasks.offer(task); }
+    public void runMainThreadTasks() { Runnable r; while ((r = mainThreadTasks.poll()) != null) r.run(); }
 
     public static void main(String[] args) {
         Game game = new Game();
@@ -116,38 +121,55 @@ public class Game {
     }
 
     public void startGame(String name, Seed seed){
-        this.getGraphicModule().getGuiModule().closeGUI();
+        var guiModule = this.getGraphicModule().getGuiModule();
+        LoadingGui loadingGui = new LoadingGui("Chargement...");
+        guiModule.openGUI(loadingGui);
 
-        this.gameState = GameState.RUNNING;
+        player.reset();
 
-        if(name == null) this.world = new World(seed);
-        else this.world = new World(seed, name);
-        this.world.load();
-        this.graphicModule.initWorldGraphics();
+        new Thread(() -> {
+            if(name == null) world = new World(seed);
+            else world = new World(seed, name);
+            world.load();
+            while(!world.isLoaded()) Thread.onSpinWait();
 
-        while(!world.isLoaded()) {
-            Thread.onSpinWait();
-        }
-        boolean first = !SaveManager.loadPlayer(world, player);
-        if(first) {
-            this.world.spawnPlayer(player);
+            boolean first = !SaveManager.loadPlayer(world, player);
+            if(first) {
+                world.spawnPlayer(player);
+                player.addItem(new ItemStack(Materials.SAND));
+                player.addItem(new ItemStack(Materials.COBBLE));
+                player.addItem(new ItemStack(Materials.SAPLING));
+                player.addItem(new ItemStack(Materials.PLANKS));
+                player.addItem(new ItemStack(Materials.PURPLE_LAMP));
+                player.addItem(new ItemStack(Materials.CYAN_LAMP));
+                player.addItem(new ItemStack(Materials.LAMP));
+                player.addItem(new ItemStack(Materials.LANTERN));
+                player.addItem(new ItemStack(Materials.BREAD, 5));
+            }
 
-            player.addItem(new ItemStack(Materials.SAND));
-            player.addItem(new ItemStack(Materials.COBBLE));
-            player.addItem(new ItemStack(Materials.SAPLING));
-            player.addItem(new ItemStack(Materials.PLANKS));
-            player.addItem(new ItemStack(Materials.PURPLE_LAMP));
-            player.addItem(new ItemStack(Materials.CYAN_LAMP));
-            player.addItem(new ItemStack(Materials.LAMP));
-            player.addItem(new ItemStack(Materials.LANTERN));
-            player.addItem(new ItemStack(Materials.BREAD, 5));
+            int slotToSelect = player.getSelectedSlot();
 
-            player.updateInventory();
-        }
+            queueTask(() -> {
+                graphicModule.initWorldGraphics();
+                // Load initial chunk renderers before closing the loading screen
+                player.getLoadedChunksManager().updateChunksGradually();
+                for (var chunk : player.getLoadedChunksManager().getChunksToRender()) {
+                    ((fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer) chunk.getRenderer()).update();
+                }
+                for (var light : player.getLoadedChunksManager().getChunksToRenderLight()) {
+                    light.getRenderer().update();
+                }
 
-        player.playSound(Sound.STONE1);
-
-        startGameLoop();
+                gameState = GameState.RUNNING;
+                loadingGui.close();
+                // synchronize inventory and selected slot with the GUI now that
+                // the OpenGL context is current
+                player.updateInventory();
+                player.setSelectedSlot(slotToSelect);
+                player.playSound(Sound.STONE1);
+                startGameLoop();
+            });
+        }, "WorldLoader").start();
     }
 
     private void startGameLoop() {
@@ -161,11 +183,22 @@ public class Game {
     }
 
     public void quitWorld() {
-        this.world.save();
-        this.gameState = GameState.TITLE;
-        this.world.removeEntity(player);
-        this.world = null;
-        this.graphicModule.getGuiModule().openGUI(new TitleMenuGui());
+        var guiModule = this.graphicModule.getGuiModule();
+        LoadingGui loadingGui = new LoadingGui("Sauvegarde...");
+        guiModule.openGUI(loadingGui);
+
+        World toSave = this.world;
+
+        new Thread(() -> {
+            toSave.save();
+            queueTask(() -> {
+                gameState = GameState.TITLE;
+                toSave.removeEntity(player);
+                world = null;
+                loadingGui.close();
+                guiModule.openGUI(new TitleMenuGui());
+            });
+        }, "WorldSaver").start();
     }
 
     public void processCommand(String cmd){

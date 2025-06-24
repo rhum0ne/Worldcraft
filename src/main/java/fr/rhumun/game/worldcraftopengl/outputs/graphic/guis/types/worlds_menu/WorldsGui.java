@@ -1,16 +1,16 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.worlds_menu;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.FullscreenTiledGui;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import fr.rhumun.game.worldcraftopengl.worlds.WorldInfo;
 
 import java.util.List;
 
-public class WorldsGui extends CenteredGUI {
+public class WorldsGui extends FullscreenTiledGui {
 
     public WorldsGui() {
-        super(500, 500, Texture.DARK_COBBLE);
+        super(Texture.DARK_COBBLE);
 
         this.addText(0, -200, "Liste des Mondes");
 

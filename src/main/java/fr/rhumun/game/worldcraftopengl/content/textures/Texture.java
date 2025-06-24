@@ -127,6 +127,7 @@ public class Texture {
     public static Texture DEFAULT_BUTTON_UNACTIVE;
     public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
     public static Texture WALLPAPER;
+    public static Texture WORLDCRAFT_TITLE;
 
     public static Texture HEART_CONTAINER;
     public static Texture HEART_FULL;
@@ -294,7 +295,8 @@ public class Texture {
         DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");
         DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive.png");
         DEFAULT_BUTTON_UNACTIVE_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive_selected.png");
-        WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
+        WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper_2.png");
+        WORLDCRAFT_TITLE = new Texture(TextureTypes.GUIS, "hud\\worldcraft_title.png");
 
         HEART_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\heart\\container.png");
         HEART_FULL = new Texture(TextureTypes.GUIS, "hud\\heart\\full.png");
