@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl.commands;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.commands.GamemodeCommand;
 import fr.rhumun.game.worldcraftopengl.commands.SummonCommand;
+import fr.rhumun.game.worldcraftopengl.commands.TimeCommand;
 
 import java.util.*;
 
@@ -15,6 +16,7 @@ public final class Commands {
     static {
         register("summon", new SummonCommand());
         register("gamemode", new GamemodeCommand());
+        register("time", new TimeCommand());
     }
 
     private Commands() {
