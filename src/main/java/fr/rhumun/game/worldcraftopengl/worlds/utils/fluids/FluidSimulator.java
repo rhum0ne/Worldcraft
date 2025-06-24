@@ -46,22 +46,55 @@ public class FluidSimulator {
             return; // Downward flow has priority
         }
 
-        if (level > 1) {
-            byte next = (byte) (level - 1);
-            spread(source.getBlockAtNorth(), mat, next, visited);
-            spread(source.getBlockAtSouth(), mat, next, visited);
-            spread(source.getBlockAtEast(), mat, next, visited);
-            spread(source.getBlockAtWest(), mat, next, visited);
+        spread(source.getBlockAtNorth(), mat, visited);
+        spread(source.getBlockAtSouth(), mat, visited);
+        spread(source.getBlockAtEast(), mat, visited);
+        spread(source.getBlockAtWest(), mat, visited);
+    }
+
+    private static void spread(Block target, Material material, Set<Block> visited) {
+        if (target == null) return;
+
+        byte newState = computeState(target, material);
+        if (newState <= 0) return;
+
+        Material targetMat = target.getMaterial();
+        if (targetMat == null || (targetMat.isLiquid() && target.getState() < newState)) {
+            target.setMaterial(material);
+            target.setState(newState);
+            propagateFrom(target, visited);
         }
     }
 
-    private static void spread(Block target, Material material, byte state, Set<Block> visited) {
-        if (target == null) return;
-        Material targetMat = target.getMaterial();
-        if (targetMat == null || (targetMat.isLiquid() && target.getState() < state)) {
-            target.setMaterial(material);
-            target.setState(state);
-            propagateFrom(target, visited);
+    private static byte computeState(Block target, Material material) {
+        Block above = target.getBlockAtUp();
+        if (above != null && above.getMaterial() == material) {
+            return 7;
         }
+
+        byte max = 0;
+        int count = 0;
+        Block[] sides = new Block[] {
+                target.getBlockAtNorth(),
+                target.getBlockAtSouth(),
+                target.getBlockAtEast(),
+                target.getBlockAtWest()
+        };
+
+        for (Block b : sides) {
+            if (b != null && b.getMaterial() == material) {
+                byte lvl = b.getState();
+                if (lvl > max) {
+                    max = lvl;
+                    count = 1;
+                } else if (lvl == max) {
+                    count++;
+                }
+            }
+        }
+
+        if (max == 0) return 0;
+        if (count >= 2 && max == 8) return max;
+        return (byte) (max - 1);
     }
 }
