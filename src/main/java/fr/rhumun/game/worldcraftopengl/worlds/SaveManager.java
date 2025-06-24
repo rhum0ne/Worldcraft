@@ -370,6 +370,7 @@ public class SaveManager {
             out.writeFloat(loc.getYaw());
             out.writeFloat(loc.getPitch());
             out.writeInt(player.getSelectedSlot());
+            out.writeByte(player.getGamemode().ordinal());
             var items = player.getInventory().getItems();
             out.writeInt(items.length);
             for (var it : items) {
@@ -398,6 +399,13 @@ public class SaveManager {
             float pitch = in.readFloat();
             player.setLocation(new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
             player.setSelectedSlot(in.readInt());
+            try {
+                byte gm = in.readByte();
+                if (gm >= 0 && gm < fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values().length) {
+                    player.setGamemode(fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values()[gm]);
+                }
+            } catch (IOException ignored) {
+            }
             int len = in.readInt();
             var items = player.getInventory().getItems();
             for (int i = 0; i < len && i < items.length; i++) {
