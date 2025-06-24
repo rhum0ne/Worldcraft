@@ -151,6 +151,15 @@ public class Game {
 
             queueTask(() -> {
                 graphicModule.initWorldGraphics();
+                // Load initial chunk renderers before closing the loading screen
+                player.getLoadedChunksManager().updateChunksGradually();
+                for (var chunk : player.getLoadedChunksManager().getChunksToRender()) {
+                    ((fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer) chunk.getRenderer()).update();
+                }
+                for (var light : player.getLoadedChunksManager().getChunksToRenderLight()) {
+                    light.getRenderer().update();
+                }
+
                 gameState = GameState.RUNNING;
                 loadingGui.close();
                 // synchronize inventory and selected slot with the GUI now that
