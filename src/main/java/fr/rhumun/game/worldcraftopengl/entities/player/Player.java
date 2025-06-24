@@ -126,15 +126,29 @@ public class Player extends LivingEntity implements MovingEntity {
         else {
             GAME.warn("Trying to place a non-placeable material : " + item.getMaterial() + " at " + hitPosition + " for player " + this.getLocation());
         }
+
+        if(!this.isInCreativeMode()) {
+            item.remove(1);
+            if(item.isEmpty()) {
+                this.inventory.setItem(this.selectedSlot, null);
+            }
+            updateInventory();
+        }
     }
 
     @Override
     public Material breakBlock() {
+        Block target = getSelectedBlock();
         Material mat = super.breakBlock();
         if (mat == null) return null;
         if(mat instanceof PlaceableMaterial pM)
             this.playSound(pM.getBreakSound());
         consumeSaturation(BREAK_SATURATION_COST);
+
+        if(!this.isInCreativeMode() && target != null) {
+            this.getWorld().spawnItem(new ItemStack(mat), target.getLocation());
+        }
+
         return mat;
     }
   
