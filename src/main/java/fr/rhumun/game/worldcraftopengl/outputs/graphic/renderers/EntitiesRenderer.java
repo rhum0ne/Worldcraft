@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.DoorUtils;
 import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;
@@ -79,6 +80,10 @@ public class EntitiesRenderer extends GlobalRenderer {
                 }
                 else if(model == Model.WALL) {
                     WallUtils.rasterDroppedWallItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.DOOR) {
+                    DoorUtils.rasterDroppedDoorItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
                     continue;
                 }
             }
