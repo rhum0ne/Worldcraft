@@ -24,9 +24,7 @@ public abstract class Material {
     private final int id;
     private final float friction;
     private final float density;
-    /** Number of ticks required to break the block. */
     private float durability;
-    /** Category used when determining breaking tools. */
     private ToolType toolType = ToolType.NONE;
     private final Texture[] textures = new Texture[6];
 
