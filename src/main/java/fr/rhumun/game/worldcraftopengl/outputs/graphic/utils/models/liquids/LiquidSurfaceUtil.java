@@ -183,7 +183,7 @@ public class LiquidSurfaceUtil {
                     {x1, y2, z2, 0.0f, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
                     {x1, y2, z1, texScaleZ, 0.0f, texIDLeft, 1.0f, 0.0f, 0.0f},
                     {x1, hSW, z2, 0.0f, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f},
-                    {x1, hNW, z1, texScaleZ, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}
+                    {x1, hSE, z1, texScaleZ, texScaleY, texIDLeft, 1.0f, 0.0f, 0.0f}
             };
             addFace(vertices, indices, faceLeft, offset);
             offset += 4;
@@ -194,7 +194,7 @@ public class LiquidSurfaceUtil {
                     {x2, y2, z1, 0.0f, 0.0f, texIDRight, -1.0f, 0.0f, 0.0f},
                     {x2, y2, z2, texScaleZ, 0.0f, texIDRight, -1.0f, 0.0f, 0.0f},
                     {x2, hNE, z1, 0.0f, texScaleY, texIDRight, -1.0f, 0.0f, 0.0f},
-                    {x2, hSE, z2, texScaleZ, texScaleY, texIDRight, -1.0f, 0.0f, 0.0f}
+                    {x2, hNW, z2, texScaleZ, texScaleY, texIDRight, -1.0f, 0.0f, 0.0f}
             };
             addFace(vertices, indices, faceRight, offset);
             offset += 4;
@@ -204,7 +204,7 @@ public class LiquidSurfaceUtil {
             float[][] faceBack = new float[][]{
                     {x2, y2, z2, texScaleX, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f},
                     {x1, y2, z2, 0.0f, 0.0f, texIDBack, 0.0f, 0.0f, 1.0f},
-                    {x2, hSE, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f},
+                    {x2, hNW, z2, texScaleX, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f},
                     {x1, hSW, z2, 0.0f, texScaleY, texIDBack, 0.0f, 0.0f, 1.0f}
             };
             addFace(vertices, indices, faceBack, offset);
@@ -215,7 +215,7 @@ public class LiquidSurfaceUtil {
             float[][] faceFront = new float[][]{
                     {x1, y2, z1, 0.0f, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f},
                     {x2, y2, z1, texScaleX, 0.0f, texIDFront, 0.0f, 0.0f, -1.0f},
-                    {x1, hNW, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f},
+                    {x1, hSE, z1, 0.0f, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f},
                     {x2, hNE, z1, texScaleX, texScaleY, texIDFront, 0.0f, 0.0f, -1.0f}
             };
             addFace(vertices, indices, faceFront, offset);
