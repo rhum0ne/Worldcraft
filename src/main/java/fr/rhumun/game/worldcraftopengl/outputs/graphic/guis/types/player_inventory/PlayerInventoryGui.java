@@ -17,11 +17,11 @@ public class PlayerInventoryGui extends CenteredGUI {
     private static final float ratio = 1f;
 
     public PlayerInventoryGui() {
-        super(356, 166, Texture.INVENTORY);
+        super(376, 200, Texture.PLAYER_INVENTORY);
 
         this.setItemContainer(GAME.getPlayer().getInventory());
 
-        addInventoryComponentsTo(this);
+        addInventoryComponentsTo(this,10,23);
     }
 
     private int getXForSlot(int slot) {

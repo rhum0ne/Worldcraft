@@ -61,4 +61,8 @@ public class ItemStack {
     public String toString() {
         return "Item{" + "material=" + material + ", model=" + model + ", quantity=" + quantity + '}';
     }
+
+    public void addQuantity(int i) {
+        if(this.quantity < 64) this.quantity += i;
+    }
 }
