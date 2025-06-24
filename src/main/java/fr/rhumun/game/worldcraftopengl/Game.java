@@ -143,13 +143,18 @@ public class Game {
                 player.addItem(new ItemStack(Materials.LAMP));
                 player.addItem(new ItemStack(Materials.LANTERN));
                 player.addItem(new ItemStack(Materials.BREAD, 5));
-                player.updateInventory();
             }
+
+            int slotToSelect = player.getSelectedSlot();
 
             queueTask(() -> {
                 graphicModule.initWorldGraphics();
                 gameState = GameState.RUNNING;
                 loadingGui.close();
+                // synchronize inventory and selected slot with the GUI now that
+                // the OpenGL context is current
+                player.updateInventory();
+                player.setSelectedSlot(slotToSelect);
                 player.playSound(Sound.STONE1);
                 startGameLoop();
             });

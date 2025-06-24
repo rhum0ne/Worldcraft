@@ -149,6 +149,14 @@ public class Player extends LivingEntity implements MovingEntity {
         GAME.getGraphicModule().getGuiModule().setSelectedSlot(slot);
     }
 
+    /**
+     * Sets the selected slot without updating any GUI.
+     * Used during asynchronous loading before the render thread is ready.
+     */
+    public void setSelectedSlotRaw(int slot) {
+        this.selectedSlot = slot;
+    }
+
     public ItemStack getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }

@@ -398,7 +398,7 @@ public class SaveManager {
             float yaw = in.readFloat();
             float pitch = in.readFloat();
             player.setLocation(new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
-            player.setSelectedSlot(in.readInt());
+            player.setSelectedSlotRaw(in.readInt());
             try {
                 byte gm = in.readByte();
                 if (gm >= 0 && gm < fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values().length) {
@@ -420,7 +420,8 @@ public class SaveManager {
                     items[i] = null;
                 }
             }
-            player.updateInventory();
+            // Inventory will be synchronized with the GUI on the render thread
+            // once loading is complete.
         } catch (IOException e) {
             Game.GAME.errorLog(e);
             return false;
