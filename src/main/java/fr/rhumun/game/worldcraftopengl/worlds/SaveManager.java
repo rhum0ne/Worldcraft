@@ -83,6 +83,8 @@ public class SaveManager {
         Path dir = worldDir(seed);
         try {
             Files.createDirectories(dir.resolve("chunks"));
+            Files.createDirectories(dir.resolve("player"));
+            Files.createDirectories(dir.resolve("entities"));
         } catch (IOException ignored) {
         }
         return dir;
@@ -346,6 +348,145 @@ public class SaveManager {
                 if (onComplete != null) onComplete.run();
             }
         });
+    }
+
+    /* ***************************** Player & Entities ****************************** */
+
+    private static Path playerFile(World world) {
+        return ensureWorldDir(world.getSeed()).resolve("player").resolve("player.dat");
+    }
+
+    private static Path entitiesFile(World world) {
+        return ensureWorldDir(world.getSeed()).resolve("entities").resolve("entities.dat");
+    }
+
+    public static void savePlayer(World world, fr.rhumun.game.worldcraftopengl.entities.player.Player player) {
+        Path file = playerFile(world);
+        try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file))) {
+            var loc = player.getLocation();
+            out.writeDouble(loc.getX());
+            out.writeDouble(loc.getY());
+            out.writeDouble(loc.getZ());
+            out.writeFloat(loc.getYaw());
+            out.writeFloat(loc.getPitch());
+            out.writeInt(player.getSelectedSlot());
+            out.writeByte(player.getGamemode().ordinal());
+            var items = player.getInventory().getItems();
+            out.writeInt(items.length);
+            for (var it : items) {
+                if (it == null) {
+                    out.writeBoolean(false);
+                } else {
+                    out.writeBoolean(true);
+                    out.writeShort((short) it.getMaterial().getId());
+                    out.writeByte(it.getModel().getId());
+                    out.writeInt(it.getQuantity());
+                }
+            }
+        } catch (IOException e) {
+            Game.GAME.errorLog(e);
+        }
+    }
+
+    public static boolean loadPlayer(World world, fr.rhumun.game.worldcraftopengl.entities.player.Player player) {
+        Path file = playerFile(world);
+        if (!Files.exists(file)) return false;
+        try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            double z = in.readDouble();
+            float yaw = in.readFloat();
+            float pitch = in.readFloat();
+            player.setLocation(new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
+            player.setSelectedSlot(in.readInt());
+            try {
+                byte gm = in.readByte();
+                if (gm >= 0 && gm < fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values().length) {
+                    player.setGamemode(fr.rhumun.game.worldcraftopengl.entities.player.Gamemode.values()[gm]);
+                }
+            } catch (IOException ignored) {
+            }
+            int len = in.readInt();
+            var items = player.getInventory().getItems();
+            for (int i = 0; i < len && i < items.length; i++) {
+                boolean present = in.readBoolean();
+                if (present) {
+                    short mat = in.readShort();
+                    byte model = in.readByte();
+                    int qty = in.readInt();
+                    items[i] = new fr.rhumun.game.worldcraftopengl.content.items.ItemStack(
+                            Materials.getById(mat), Model.getById(model), qty);
+                } else {
+                    items[i] = null;
+                }
+            }
+            player.updateInventory();
+        } catch (IOException e) {
+            Game.GAME.errorLog(e);
+            return false;
+        }
+        return true;
+    }
+
+    public static void saveEntities(World world) {
+        Path file = entitiesFile(world);
+        try (DataOutputStream out = new DataOutputStream(Files.newOutputStream(file))) {
+            out.writeInt(world.getEntities().size());
+            for (var e : world.getEntities()) {
+                out.writeUTF(e.getClass().getName());
+                var loc = e.getLocation();
+                out.writeDouble(loc.getX());
+                out.writeDouble(loc.getY());
+                out.writeDouble(loc.getZ());
+                out.writeFloat(loc.getYaw());
+                out.writeFloat(loc.getPitch());
+                if (e instanceof fr.rhumun.game.worldcraftopengl.entities.ItemEntity item) {
+                    out.writeBoolean(true);
+                    out.writeShort((short) item.getMaterial().getId());
+                    out.writeByte(item.getModel().getId());
+                } else {
+                    out.writeBoolean(false);
+                }
+            }
+        } catch (IOException e) {
+            Game.GAME.errorLog(e);
+        }
+    }
+
+    public static void loadEntities(World world) {
+        Path file = entitiesFile(world);
+        if (!Files.exists(file)) return;
+        try (DataInputStream in = new DataInputStream(Files.newInputStream(file))) {
+            int count = in.readInt();
+            for (int i = 0; i < count; i++) {
+                String className = in.readUTF();
+                double x = in.readDouble();
+                double y = in.readDouble();
+                double z = in.readDouble();
+                float yaw = in.readFloat();
+                float pitch = in.readFloat();
+                boolean isItem = in.readBoolean();
+                fr.rhumun.game.worldcraftopengl.entities.Entity entity = null;
+                if (isItem) {
+                    short mat = in.readShort();
+                    byte model = in.readByte();
+                    entity = new fr.rhumun.game.worldcraftopengl.entities.ItemEntity(
+                            Model.getById(model), Materials.getById(mat),
+                            new fr.rhumun.game.worldcraftopengl.entities.Location(world, x, y, z, yaw, pitch));
+                } else {
+                    try {
+                        Class<?> c = Class.forName(className);
+                        var ctor = c.getConstructor(double.class, double.class, double.class, float.class, float.class);
+                        entity = (fr.rhumun.game.worldcraftopengl.entities.Entity) ctor.newInstance(x, y, z, yaw, pitch);
+                    } catch (Exception ex) {
+                        Game.GAME.errorLog(ex);
+                    }
+                }
+                if (entity != null) world.getEntities().add(entity);
+            }
+        } catch (IOException e) {
+            Game.GAME.errorLog(e);
+        }
     }
 
     public static void shutdown() {
