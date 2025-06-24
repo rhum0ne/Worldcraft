@@ -9,6 +9,8 @@ import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableM
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
 import fr.rhumun.game.worldcraftopengl.entities.LivingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
@@ -18,6 +20,7 @@ import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
+import java.util.Iterator;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
@@ -42,6 +45,10 @@ public class Player extends LivingEntity implements MovingEntity {
     private int saturationCounter = 0;
 
     private int starvationCounter = 0;
+
+    /** Delay in ticks between each item pickup check. */
+    private static final int ITEM_PICKUP_DELAY = 120;
+    private int itemPickupCounter = 0;
 
     public static int MOVE_SATURATION_COST = 1;
     public static int BREAK_SATURATION_COST = 4;
@@ -126,15 +133,29 @@ public class Player extends LivingEntity implements MovingEntity {
         else {
             GAME.warn("Trying to place a non-placeable material : " + item.getMaterial() + " at " + hitPosition + " for player " + this.getLocation());
         }
+
+        if(!this.isInCreativeMode()) {
+            item.remove(1);
+            if(item.isEmpty()) {
+                this.inventory.setItem(this.selectedSlot, null);
+            }
+            updateInventory();
+        }
     }
 
     @Override
     public Material breakBlock() {
+        Block target = getSelectedBlock();
         Material mat = super.breakBlock();
         if (mat == null) return null;
         if(mat instanceof PlaceableMaterial pM)
             this.playSound(pM.getBreakSound());
         consumeSaturation(BREAK_SATURATION_COST);
+
+        if(!this.isInCreativeMode() && target != null) {
+            this.getWorld().spawnItem(new ItemStack(mat), target.getLocation());
+        }
+
         return mat;
     }
   
@@ -220,6 +241,26 @@ public class Player extends LivingEntity implements MovingEntity {
         return (int) (breakingProgress * 10);
     }
 
+    private void updateItemPickup() {
+        itemPickupCounter++;
+        if (itemPickupCounter < ITEM_PICKUP_DELAY) return;
+        itemPickupCounter = 0;
+
+        Iterator<Entity> it = this.getWorld().getEntities().iterator();
+        while (it.hasNext()) {
+            Entity e = it.next();
+            if (e instanceof ItemEntity item) {
+                double dx = e.getLocation().getX() - this.getLocation().getX();
+                double dy = e.getLocation().getY() - this.getLocation().getY();
+                double dz = e.getLocation().getZ() - this.getLocation().getZ();
+                if (dx * dx + dy * dy + dz * dz <= 4) { // within 2 blocks
+                    this.addItem(new ItemStack(item.getMaterial(), item.getModel()));
+                    it.remove();
+                }
+            }
+        }
+    }
+
     /**
      * Opens the appropriate inventory depending on the player's mode.
      * In creative mode, the inventory is combined with the give menu.
@@ -279,6 +320,7 @@ public class Player extends LivingEntity implements MovingEntity {
         updateFood();
         updateSaturation();
         updateBreaking();
+        updateItemPickup();
     }
 
 

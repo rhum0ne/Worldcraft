@@ -359,10 +359,10 @@ public class GraphicModule {
         //updateWaterTime();
         updateViewMatrix();
 
+        GLStateManager.useProgram(ShaderManager.CELESTIAL_SHADER.id);
         GLStateManager.disable(GL_DEPTH_TEST);
         GLStateManager.disable(GL_CULL_FACE);
         GLStateManager.enable(GL_BLEND);
-        GLStateManager.useProgram(ShaderManager.CELESTIAL_SHADER.id);
         ShaderManager.CELESTIAL_SHADER.setUniform("angle", world.getCelestialAngle());
         celestialRenderer.render();
         GLStateManager.enable(GL_DEPTH_TEST);

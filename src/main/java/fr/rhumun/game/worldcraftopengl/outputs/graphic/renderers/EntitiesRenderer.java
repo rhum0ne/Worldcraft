@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;
@@ -64,6 +65,10 @@ public class EntitiesRenderer extends GlobalRenderer {
             if (e instanceof ItemEntity i) {
                 if (model == Model.BLOCK) {
                     BlockUtil.rasterDroppedBlockItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.SLAB) {
+                    SlabUtils.rasterDroppedSlabItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
                     continue;
                 }
             }
