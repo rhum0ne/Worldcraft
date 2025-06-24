@@ -8,7 +8,6 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import fr.rhumun.game.worldcraftopengl.worlds.utils.DayNightCycle;
-import fr.rhumun.game.worldcraftopengl.worlds.utils.fluids.FluidSimulator;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
@@ -199,10 +198,6 @@ public class World {
         return this.chunks.getLightChunkAt(x, z);
     }
 
-    /** Update fluids for all currently loaded chunks. */
-    public void updateFluids() {
-        FluidSimulator.tick(GAME.getGraphicModule().getLoadedChunks());
-    }
 
     public void save() {
         for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())

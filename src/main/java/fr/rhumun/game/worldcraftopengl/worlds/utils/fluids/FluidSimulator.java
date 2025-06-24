@@ -1,67 +1,67 @@
 package fr.rhumun.game.worldcraftopengl.worlds.utils.fluids;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Simple fluid propagation simulator. Fluid blocks with a state value represent
- * their remaining strength. Sources have a state of 8 and propagate to
- * neighbours with decreasing state values until 0.
+ * Fluid propagation helper used through block update events. When a block is
+ * placed or removed, the neighbours are notified and fluids are propagated from
+ * any liquid sources found around the changed block.
  */
 public class FluidSimulator {
 
-    private record FluidUpdate(Block block, Material material, byte state) {}
+    /**
+     * Triggered whenever a block is modified. The method will look for liquid
+     * blocks touching the updated one and propagate their flow. If the updated
+     * block is itself a liquid, it will also act as a source.
+     */
+    public static void onBlockUpdate(Block block) {
+        if (block == null) return;
 
-    public static void tick(Set<Chunk> chunks) {
-        Map<Block, FluidUpdate> updates = new HashMap<>();
+        Set<Block> visited = new HashSet<>();
+        propagateFrom(block, visited);
 
-        for (Chunk chunk : chunks) {
-            Block[][][] blocks = chunk.getBlocks();
-            int height = chunk.getWorld().getHeigth();
-            for (int x = 0; x < blocks.length; x++) {
-                for (int y = 0; y < height; y++) {
-                    for (int z = 0; z < blocks[x][y].length; z++) {
-                        Block block = blocks[x][y][z];
-                        Material mat = block.getMaterial();
-                        if (mat == null || !mat.isLiquid()) continue;
-
-                        byte level = block.getState();
-                        if (level <= 0) continue;
-
-                        Block down = block.getBlockAtDown();
-                        if (down != null && (down.getMaterial() == null || (down.getMaterial().isLiquid() && down.getState() < 8))) {
-                            updates.put(down, new FluidUpdate(down, mat, (byte) 8));
-                            continue;
-                        }
-
-                        if (level > 1) {
-                            byte next = (byte) (level - 1);
-                            spread(block.getBlockAtNorth(), mat, next, updates);
-                            spread(block.getBlockAtSouth(), mat, next, updates);
-                            spread(block.getBlockAtEast(), mat, next, updates);
-                            spread(block.getBlockAtWest(), mat, next, updates);
-                        }
-                    }
-                }
-            }
-        }
-
-        for (FluidUpdate u : updates.values()) {
-            u.block.setMaterial(u.material);
-            u.block.setState(u.state);
+        for (Block side : block.getSideBlocks()) {
+            propagateFrom(side, visited);
         }
     }
 
-    private static void spread(Block target, Material material, byte state, Map<Block, FluidUpdate> updates) {
+    private static void propagateFrom(Block source, Set<Block> visited) {
+        if (source == null || !visited.add(source)) return;
+
+        Material mat = source.getMaterial();
+        if (mat == null || !mat.isLiquid()) return;
+
+        byte level = source.getState();
+        if (level <= 0) return;
+
+        Block down = source.getBlockAtDown();
+        if (down != null && (down.getMaterial() == null || (down.getMaterial().isLiquid() && down.getState() < 8))) {
+            down.setMaterial(mat);
+            down.setState(8);
+            propagateFrom(down, visited);
+            return; // Downward flow has priority
+        }
+
+        if (level > 1) {
+            byte next = (byte) (level - 1);
+            spread(source.getBlockAtNorth(), mat, next, visited);
+            spread(source.getBlockAtSouth(), mat, next, visited);
+            spread(source.getBlockAtEast(), mat, next, visited);
+            spread(source.getBlockAtWest(), mat, next, visited);
+        }
+    }
+
+    private static void spread(Block target, Material material, byte state, Set<Block> visited) {
         if (target == null) return;
         Material targetMat = target.getMaterial();
         if (targetMat == null || (targetMat.isLiquid() && target.getState() < state)) {
-            updates.put(target, new FluidUpdate(target, material, state));
+            target.setMaterial(material);
+            target.setState(state);
+            propagateFrom(target, visited);
         }
     }
 }
