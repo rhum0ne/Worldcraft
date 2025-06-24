@@ -103,6 +103,8 @@ public class LiquidSurfaceUtil {
     }
 
     protected static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
+        if(corner1.getState() == 0.0) return;
+
         float x1 = (float) corner1.getLocation().getX() - 0.5f;
         float y1 = (float) corner1.getLocation().getY() + 1f -0.1f;
         float z1 = (float) corner1.getLocation().getZ() - 0.5f;

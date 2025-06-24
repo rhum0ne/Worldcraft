@@ -24,14 +24,7 @@ public abstract class Material {
     private final int id;
     private final float friction;
     private final float density;
-    /** Number of ticks required to break the block. */
     private float durability;
-    /**
-     * Number of ticks between two propagation steps when used as a liquid.
-     * A higher value results in a slower flowing fluid.
-     */
-    private float viscosity = 1f;
-    /** Category used when determining breaking tools. */
     private ToolType toolType = ToolType.NONE;
     private final Texture[] textures = new Texture[6];
 
@@ -46,15 +39,10 @@ public abstract class Material {
     }
 
     public Material(Texture texture, float friction, float density, float durability) {
-        this(texture, friction, density, durability, 1f);
-    }
-
-    public Material(Texture texture, float friction, float density, float durability, float viscosity) {
         this.id = createID();
         this.friction = friction;
         this.density = density;
         this.durability = durability;
-        this.viscosity = viscosity;
         Arrays.fill(textures, texture);
 
         GAME.debug("Created material " + id + " with texture " + texture.getName());

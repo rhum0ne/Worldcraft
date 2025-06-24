@@ -74,7 +74,7 @@ public class Block {
         return this.getChunk().getBiome(this);
     }
 
-    public Material getMaterial(){
+    public synchronized Material getMaterial(){
         return (this.material == -1) ? null : Materials.getById(material);
     }
 
@@ -139,7 +139,8 @@ public class Block {
     }
 
     public boolean isOpaque(){
-        return this.getMaterial() != null && ( this.getModel().isOpaque() && this.getMaterial().getOpacity() == OpacityType.OPAQUE);
+        Material material = this.getMaterial();
+        return material != null && ( this.getModel().isOpaque() && material.getOpacity() == OpacityType.OPAQUE);
     }
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
@@ -153,7 +154,7 @@ public class Block {
         return face != null && !this.getMaterial().getOpacity().isVisibleWith(face) ;
     }
 
-    public Block setMaterial(Material material){
+    public synchronized Block setMaterial(Material material){
         Chunk chunk = getChunk();
         //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
         if(this.getMaterial() != null && this.getMaterial() instanceof PointLight){
@@ -226,7 +227,7 @@ public class Block {
         return sideBlocks;
     }
 
-    public Block setModel(Model model){
+    public synchronized Block setModel(Model model){
         Chunk chunk = getChunk();
         this.model = model.getId();
         Block[] sideBlocks = this.getSideBlocks();

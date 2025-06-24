@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.worlds.utils.fluids;
 
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.FluidMaterial;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 
@@ -52,14 +53,20 @@ public class FluidSimulator {
         if (source == null) return;
         Material mat = source.getMaterial();
         if (mat == null || !mat.isLiquid()) return;
+
         byte level = source.getState();
-        if (level <= 0) return;
+        if (level < 0) return;
+
+        byte newState = computeState(source, mat);
+        if(newState < level){
+            source.setState(newState);
+        }
 
         Block down = source.getBlockAtDown();
         if (down != null && (down.getMaterial() == null || (down.getMaterial().isLiquid() && down.getState() < 8))) {
             down.setMaterial(mat);
             down.setState((byte)8);
-            queue.offer(new FluidEntry(down, (int) mat.getViscosity()));
+            queue.offer(new FluidEntry(down, ((FluidMaterial) mat).getViscosity()));
             return; // Downward flow has priority
         }
 
@@ -72,17 +79,20 @@ public class FluidSimulator {
     private static void attemptSpread(Block target, Material material) {
         if (target == null) return;
         byte newState = computeState(target, material);
-        if (newState <= 0) return;
+        if (newState < 0) {
+            target.setMaterial(null);
+        }
         Material targetMat = target.getMaterial();
-        if (targetMat == null || (targetMat.isLiquid() && target.getState() < newState)) {
+        if (targetMat == null || (targetMat.isLiquid() && target.getState() != newState)) {
             target.setMaterial(material);
             target.setState(newState);
-            queue.offer(new FluidEntry(target, (int) material.getViscosity()));
+            queue.offer(new FluidEntry(target, ((FluidMaterial) material).getViscosity()));
         }
     }
 
     private static byte computeState(Block target, Material material) {
         Block above = target.getBlockAtUp();
+        if(target.getState() == 8) return 8;
         if (above != null && above.getMaterial() == material) {
             return 7;
         }
