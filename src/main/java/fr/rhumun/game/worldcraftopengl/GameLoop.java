@@ -64,6 +64,7 @@ public class GameLoop extends Thread {
                     player.update();
 
                     player.getWorld().updateEntities(player, 48);
+                    player.getWorld().updateFluids();
                 }
             }
 

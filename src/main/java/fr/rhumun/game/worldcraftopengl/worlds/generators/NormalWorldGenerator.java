@@ -175,6 +175,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                     Block block = chunk.getBlockNoVerif(x, y, z);
                     if (block.getMaterial() != null) continue;
                     block.setMaterial(Materials.WATER);
+                    block.setState(8);
                 }
     }
 

@@ -348,6 +348,9 @@ public class Entity {
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
 
+        if(material.isLiquid())
+            block.setState(8);
+
         if (material instanceof Multiblock multi) {
             multi.onPlace(block);
         }
