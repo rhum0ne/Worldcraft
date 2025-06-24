@@ -94,7 +94,7 @@ public class FluidSimulator {
         }
 
         if (max == 0) return 0;
-        if (count >= 2) return max;
+        if (count >= 2 && max == 8) return max;
         return (byte) (max - 1);
     }
 }

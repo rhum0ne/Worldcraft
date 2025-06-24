@@ -114,15 +114,26 @@ public class LiquidSurfaceUtil {
         float diff = (9 - (float) corner1.getState()) / 10f;
         y1 = Math.max(y1 - diff, 0f);
 
-        float hNorth = getAdjHeight(corner1.getBlockAtNorth(), corner1.getMaterial(), y1);
-        float hSouth = getAdjHeight(corner1.getBlockAtSouth(), corner1.getMaterial(), y1);
-        float hWest = getAdjHeight(corner1.getBlockAtWest(), corner1.getMaterial(), y1);
-        float hEast = getAdjHeight(corner1.getBlockAtEast(), corner1.getMaterial(), y1);
+        Block east = corner1.getBlockAtEast();
+        Block west = corner1.getBlockAtWest();
+        Block north = corner1.getBlockAtNorth();
+        Block south = corner1.getBlockAtSouth();
 
-        float hNW = Math.max(y1, Math.max(hNorth, hWest));
-        float hNE = Math.max(y1, Math.max(hNorth, hEast));
-        float hSW = Math.max(y1, Math.max(hSouth, hWest));
-        float hSE = Math.max(y1, Math.max(hSouth, hEast));
+        float hNorth = getAdjHeight(north, corner1.getMaterial(), y1);
+        float hSouth = getAdjHeight(south, corner1.getMaterial(), y1);
+        float hWest = getAdjHeight(west, corner1.getMaterial(), y1);
+        float hEast = getAdjHeight(east, corner1.getMaterial(), y1);
+
+        float hNWC = north == null ? 0 : Math.max(y1, getAdjHeight(corner1.getBlockAtNorth().getBlockAtWest(), corner1.getMaterial(), y1));
+        float hNEC = east == null ? 0 : Math.max(y1, getAdjHeight(corner1.getBlockAtEast().getBlockAtNorth(), corner1.getMaterial(), y1));
+        float hSWC = south == null ? 0 : Math.max(y1, getAdjHeight(corner1.getBlockAtSouth().getBlockAtWest(), corner1.getMaterial(), y1));
+        float hSEC = east == null ? 0 : Math.max(y1, getAdjHeight(corner1.getBlockAtEast().getBlockAtSouth(), corner1.getMaterial(), y1));
+
+        float hNW = Math.max(y1, Math.max(hNorth, Math.max(hWest, hNWC)));
+        float hNE = Math.max(y1, Math.max(hNorth, Math.max(hEast, hNEC)));
+        float hSW = Math.max(y1, Math.max(hSouth, Math.max(hWest, hSWC)));
+        float hSE = Math.max(y1, Math.max(hSouth, Math.max(hEast, hSEC)));
+
 
         boolean showNorth = isToRender(corner1, corner1.getBlockAtNorth());
         boolean showSouth = isToRender(corner1, corner1.getBlockAtSouth());
@@ -148,10 +159,10 @@ public class LiquidSurfaceUtil {
         ArrayList<Integer> indices = new ArrayList<>();
 
         float[][] faceTop = new float[][]{
-                {x1, hNW, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f},
+                {x1, hSE, z1, 0.0f, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f},
                 {x2, hNE, z1, texScaleX, 0.0f, texIDTop, 0.0f, 1.0f, 0.0f},
                 {x1, hSW, z2, 0.0f, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f},
-                {x2, hSE, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}
+                {x2, hNW, z2, texScaleX, texScaleZ, texIDTop, 0.0f, 1.0f, 0.0f}
         };
         addFace(vertices, indices, faceTop, offset);
         offset += 4;
