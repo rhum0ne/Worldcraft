@@ -259,9 +259,9 @@ public class BlockUtil {
 
     public static void rasterDroppedBlockItem(Location loc, Material mat, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
-        float x1 = (float) loc.getX(); // Déplacer pour utiliser le coin avant-gauche
-        float y1 = (float) loc.getY(); // Déplacer pour utiliser le coin bas
-        float z1 = (float) loc.getZ(); // Déplacer pour utiliser le coin avant
+        float x1 = (float) loc.getX()-0.2f; // Déplacer pour utiliser le coin avant-gauche
+        float y1 = (float) loc.getY()+0.4f; // Déplacer pour utiliser le coin bas
+        float z1 = (float) loc.getZ()-0.2f; // Déplacer pour utiliser le coin avant
 
         float x2 = x1+0.4f; // Déplacer pour utiliser le coin arrière-droit
         float y2 = y1-0.4f; // Déplacer pour utiliser le coin haut
