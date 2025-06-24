@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
 import lombok.Getter;
 
 import java.nio.FloatBuffer;
@@ -86,6 +87,12 @@ public class Slot extends Button {
         }
         else if(item.getModel() == Model.SLAB){
             SlabUtils.rasterBlockItem(item, this, this.getVerticesList(), this.getIndicesList());
+            toArrays();
+            updateVAO();
+            return;
+        }
+        else if(item.getModel() == Model.STAIRS){
+            StairsUtils.rasterBlockItem(item, this, this.getVerticesList(), this.getIndicesList());
             toArrays();
             updateVAO();
             return;
