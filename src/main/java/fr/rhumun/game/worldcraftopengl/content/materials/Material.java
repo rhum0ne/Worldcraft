@@ -119,4 +119,12 @@ public abstract class Material {
     }
 
     public boolean showInCreativeInventory() { return true; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Material) {
+            return this.id == ((Material) obj).id;
+        }
+        return false;
+    }
 }

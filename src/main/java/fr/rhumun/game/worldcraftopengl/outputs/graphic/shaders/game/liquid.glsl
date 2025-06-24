@@ -38,10 +38,10 @@ float noise(vec2 st) {
 void main()
 {
     // Réduction de taille autour du centre
-    vec3 scaledPosition = position * vec3(1, 0.90, 1); // Réduit la taille de 5%
-    vec3 offset = position * vec3(0, 0.097, 0);            // Recentrage pour compenser l'échelle (5% de 0.5)
+    //vec3 scaledPosition = position * vec3(1, 0.90, 1); // Réduit la taille de 5%
+    //vec3 offset = position * vec3(0, 0.097, 0);            // Recentrage pour compenser l'échelle (5% de 0.5)
 
-    vec4 worldPosition = model * vec4(scaledPosition + offset, 1.0);
+    vec4 worldPosition = model * vec4(position, 1.0);
 
     FragPos = worldPosition.xyz;          // Position en espace monde pour le fragment shader
     gl_Position = projection * view * worldPosition;
