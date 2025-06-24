@@ -4,18 +4,14 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.ClickableSlot;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.*;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.DebugMenu;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HealthGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HungerGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.SelectedItemDisplay;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
@@ -113,6 +109,10 @@ public class GuiModule {
         GLStateManager.useProgram(ShaderManager.TEXT_SHADER.id);
         projection = glGetUniformLocation(ShaderManager.TEXT_SHADER.id, "projection");
         glUniformMatrix4fv(projection, false, matrixBuffer);
+
+        if(gui instanceof Resizable guiEvent){
+            guiEvent.resize();
+        }
     }
 
 

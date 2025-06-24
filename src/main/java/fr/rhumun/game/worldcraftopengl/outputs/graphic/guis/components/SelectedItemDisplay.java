@@ -39,6 +39,7 @@ public class SelectedItemDisplay extends Slot {
         int x = (guiModule.getCursorX() - getWidth() / 2) / GUI_ZOOM;
         int y = (guiModule.getCursorY() - getHeight() / 2) / GUI_ZOOM;
         set2DCoordinates(x, y);
+        this.getText().set2DCoordinates(6,6);
 
         int quantity = (item == null) ? 0 : item.getQuantity();
         if (item != displayedItem || quantity != lastQuantity || x != lastX || y != lastY) {

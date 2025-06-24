@@ -30,6 +30,7 @@ public class Slot extends Button {
     public Slot(int x, int y, int size, int id, Gui gui) {
         super(x, y, size, size, null, gui);
         this.id = id;
+        this.getText().set2DCoordinates(6,6);
     }
 
     public Slot(int x, int y, int id, Gui gui){
