@@ -113,8 +113,6 @@ public class LiquidSurfaceUtil {
         float diff = (9-(float)corner1.getState())/10f;
         y1 = Math.max(y1-diff, 0f);
 
-        System.out.println(diff);
-
         boolean showNorth = isToRender(corner1, corner1.getBlockAtNorth());
         boolean showSouth = isToRender(corner1, corner1.getBlockAtSouth());
         boolean showWest = isToRender(corner1, corner1.getBlockAtWest());
