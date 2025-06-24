@@ -1,0 +1,107 @@
+package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.tool_box;
+
+import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
+import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.CenteredGUI;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.ClickableSlot;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
+import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
+
+import java.util.HashMap;
+
+import static fr.rhumun.game.worldcraftopengl.Game.GAME;
+import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
+import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.IntegrablePlayerInventory.*;
+
+/**
+ * Crafting interface using two input slots.
+ */
+public class ToolBox extends CenteredGUI implements ItemContainer {
+
+    private final ItemStack[] inputs = new ItemStack[2];
+    protected final ClickableSlot[] inputSlots = new ClickableSlot[2];
+    private final HashMap<String, ItemStack[]> crafts = new HashMap<>();
+    private final ToolBoxResultSlot[] resultSlots = new ToolBoxResultSlot[9];
+
+    public ToolBox() {
+        super(364, 320, Texture.WORKBENCH);
+        this.setItemContainer(this);
+
+        inputSlots[0] = this.createClickableSlot(167, 30, Slot.DEFAULT_SIZE);
+        inputSlots[1] = this.createClickableSlot(207, 30, Slot.DEFAULT_SIZE);
+
+        this.addText(4, 4, "Tool Box");
+
+        // Example recipe: combine a stick and a log to craft a wooden axe
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.LOG),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE) });
+
+        for (int i = 0; i < 9; i++) {
+            int x = 7 + i * 41;
+            int y = 69;
+            resultSlots[i] = new ToolBoxResultSlot(x, y, Slot.DEFAULT_SIZE, this);
+            this.addComponent(resultSlots[i]);
+        }
+
+        int invX = 4 * GUI_ZOOM;
+        int invY = 141 * GUI_ZOOM;
+        Gui inventory = new Gui(invX, invY, INVENTORY_WIDTH, INVENTORY_HEIGHT, null, this);
+        inventory.setItemContainer(GAME.getPlayer().getInventory());
+        addInventoryComponentsTo(inventory);
+        this.addComponent(inventory);
+    }
+
+    private String key(ItemStack a, ItemStack b) {
+        if (a == null || b == null) return null;
+        return a.getMaterial().name() + "+" + b.getMaterial().name();
+    }
+
+    protected void clearInputs() {
+        inputs[0] = null;
+        inputs[1] = null;
+        updateResults();
+    }
+
+    public ItemStack[] getOutputs() {
+        String key = key(inputs[0], inputs[1]);
+        return key != null ? crafts.get(key) : null;
+    }
+
+    @Override
+    public void setItem(int slot, ItemStack item) {
+        inputs[slot] = item;
+        updateResults();
+    }
+
+    @Override
+    public ItemStack[] getItems() {
+        return inputs;
+    }
+
+    public void updateResults() {
+        clearResults();
+        String k = key(inputs[0], inputs[1]);
+        if (k == null || !crafts.containsKey(k)) return;
+        for (int i = 0; i < resultSlots.length; i++) {
+            ItemStack result = i < crafts.get(k).length ? crafts.get(k)[i] : null;
+            resultSlots[i].setItem(result);
+        }
+    }
+
+    private void clearResults() {
+        for (ToolBoxResultSlot slot : resultSlots) slot.setItem(null);
+    }
+
+    public void craft(Player player, ItemStack result) {
+        if (result == null) return;
+        player.getInventory().addItem(result);
+        clearInputs();
+    }
+
+    protected void addResults(ItemStack in1, ItemStack in2, ItemStack[] results) {
+        crafts.put(key(in1, in2), results);
+    }
+}

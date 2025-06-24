@@ -101,6 +101,7 @@ public class Materials {
     public static Material STONE_DIORITE = new StoneDioriteMaterial();
     public static Material TORCH = new TorchMaterial();
     public static Material STONE_CUTTER = new StoneCutterMaterial();
+    public static Material TOOL_BOX = new ToolBoxMaterial();
 
     // Non-placeable items
     public static Material APPLE = new FoodMaterial(Texture.APPLE, 3);

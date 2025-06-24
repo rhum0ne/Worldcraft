@@ -104,6 +104,12 @@ public class Texture {
     public static Texture STONE_CUTTER_BOTTOM;
     public static Texture STONE_CUTTER_SIDE_2;
     public static Texture STONE_CUTTER_FRONT;
+    public static Texture CRAFTING_TABLE_TOP;
+    public static Texture CRAFTING_TABLE_BOTTOM;
+    public static Texture CRAFTING_TABLE_SIDE;
+    public static Texture CRAFTING_TABLE_SIDE_1;
+    public static Texture CRAFTING_TABLE_SIDE_2;
+    public static Texture CRAFTING_TABLE_FRONT;
 
     public static Texture BLACKSTONE;
     public static Texture CRACKED_STONE_BRICK;
@@ -253,6 +259,12 @@ public class Texture {
         STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
         STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
         STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
+        CRAFTING_TABLE_TOP = new Texture("crafting_table_top.png");
+        CRAFTING_TABLE_BOTTOM = new Texture("crafting_table_bottom.png");
+        CRAFTING_TABLE_SIDE = new Texture("crafting_table_side.png");
+        CRAFTING_TABLE_SIDE_1 = new Texture("crafting_table_side_1.png");
+        CRAFTING_TABLE_SIDE_2 = new Texture("crafting_table_side_2.png");
+        CRAFTING_TABLE_FRONT = new Texture("crafting_table_front.png");
         ACACIA_LOG = new Texture("acacia_log.png");
         ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
         ACACIA_PLANKS = new Texture("acacia_planks.png");
