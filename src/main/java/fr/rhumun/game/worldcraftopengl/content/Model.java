@@ -25,7 +25,8 @@ public enum Model {
     ROCKY(new RockyModel(), (byte) 5),
     NINJA_SKELETON(new NinjaSkeletonModel(), (byte) 6),
     STAIRS(new StairsModel(), (byte) 7),
-    TRAPDOOR(new TrapdoorModel(), (byte) 8);
+    WALL(new WallModel(), (byte) 8),
+    TRAPDOOR(new TrapdoorModel(), (byte) 9);
 
     final AbstractModel model;
     final byte id;

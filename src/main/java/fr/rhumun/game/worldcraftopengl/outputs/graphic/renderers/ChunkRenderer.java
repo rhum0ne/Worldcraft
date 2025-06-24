@@ -10,6 +10,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
@@ -177,6 +178,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
                     else if(model==Model.BLOCK) BlockUtil.loadDataFor(block, this, X, Y, Z, blocks);
                     else if(model==Model.SLAB) SlabUtils.loadDataFor(block, this, X, Y, Z, blocks);
                     else if(model==Model.STAIRS) StairsUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.WALL) WallUtils.loadDataFor(block, this, X, Y, Z, blocks);
                     else raster(block, model);
 
                 }
