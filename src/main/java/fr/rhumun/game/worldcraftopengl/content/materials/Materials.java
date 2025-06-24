@@ -138,7 +138,7 @@ public class Materials {
     }
 
     public static Material getById(short id){
-        return Registry[id];
+        return id< Registry.length ? Registry[id] : PURPLE_WOOL;
     }
 
 }

@@ -49,6 +49,20 @@ public class World {
     private boolean isLoaded = false;
 
     private int worldTime = 4000;
+    /** Whether the day/night cycle is active. */
+    private boolean dayNightCycle = true;
+
+    public int getWorldTime() {
+        return worldTime;
+    }
+
+    public boolean isDayNightCycle() {
+        return dayNightCycle;
+    }
+
+    public void setDayNightCycle(boolean dayNightCycle) {
+        this.dayNightCycle = dayNightCycle;
+    }
 
     public void setWorldTime(int worldTime) {
         this.worldTime = worldTime;
@@ -62,7 +76,9 @@ public class World {
     }
 
     public void updateTime() {
-        setWorldTime(worldTime + 1);
+        if (dayNightCycle) {
+            setWorldTime(worldTime + 1);
+        }
     }
 
     public void setSpawnPosition(int x, int z) {

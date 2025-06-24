@@ -42,7 +42,7 @@ public enum Model {
     }
 
     public static Model getById(byte id){
-        return MODELS[id];
+        return id < MODELS.length ? MODELS[id] : BLOCK;
     }
 
     public static Mesh load(final String name){
