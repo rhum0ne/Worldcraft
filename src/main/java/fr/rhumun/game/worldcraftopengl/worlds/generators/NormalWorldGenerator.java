@@ -90,13 +90,6 @@ public class NormalWorldGenerator extends WorldGenerator {
 
 
         this.heightCalculator = new HeightCalculation(this, continentalness, erosion, pav);
-
-
-        try {
-            ImageIO.write(generateContinentalnessMap(100, 0, 0), "png", new File("continentalness_map.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
