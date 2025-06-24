@@ -8,6 +8,7 @@ import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.utils.fluids.FluidSimulator;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
@@ -348,6 +349,12 @@ public class Entity {
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
 
+        if(material.isLiquid())
+            block.setState(8);
+
+        // Propagate fluids once the block is placed
+        FluidSimulator.onBlockUpdate(block);
+
         if (material instanceof Multiblock multi) {
             multi.onPlace(block);
         }
@@ -358,6 +365,7 @@ public class Entity {
         if(block == null || block.getMaterial() == null) return null;
         Material mat = block.getMaterial();
         block.setMaterial(null);
+        FluidSimulator.onBlockUpdate(block);
         return mat;
     }
 
