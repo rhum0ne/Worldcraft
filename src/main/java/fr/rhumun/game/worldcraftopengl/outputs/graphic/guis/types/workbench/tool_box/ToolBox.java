@@ -45,7 +45,7 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
                 new ItemStack[]{ new ItemStack(Materials.IRON_AXE), new ItemStack(Materials.IRON_PICKAXE), new ItemStack(Materials.IRON_SHOVEL), new ItemStack(Materials.IRON_SWORD), new ItemStack(Materials.BUCKET) });
 
         for (int i = 0; i < 9; i++) {
-            int x = 7 + i * 41;
+            int x = 7 + i * 40;
             int y = 69;
             resultSlots[i] = new ToolBoxResultSlot(x, y, Slot.DEFAULT_SIZE, this);
             this.addComponent(resultSlots[i]);

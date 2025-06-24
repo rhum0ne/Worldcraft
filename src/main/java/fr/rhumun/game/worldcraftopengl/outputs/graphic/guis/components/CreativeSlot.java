@@ -10,6 +10,17 @@ public class CreativeSlot extends Slot {
 
     @Override
     public void onClick(Player player){
+        if(this.getItem() == null) getGuiModule().setSelectedItem(null);
+
+        if(getGuiModule().getSelectedItem() != null){
+            if(getGuiModule().getSelectedItem().isSame(this.getItem()))
+                getGuiModule().getSelectedItem().addQuantity(1);
+            else getGuiModule().setSelectedItem(null);
+
+            return;
+        }
+
         getGuiModule().setSelectedItem(this.getItem());
+        getGuiModule().getSelectedItem().setQuantity(1);
     }
 }
