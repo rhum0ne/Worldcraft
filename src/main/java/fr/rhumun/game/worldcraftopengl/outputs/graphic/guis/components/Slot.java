@@ -25,6 +25,7 @@ public class Slot extends Button {
     private final int id;
 
     private ItemStack showedItem;
+    private int lastQuantity = -1;
 
     public Slot(int x, int y, int size, int id, Gui gui) {
         super(x, y, size, size, null, gui);
@@ -46,7 +47,9 @@ public class Slot extends Button {
     @Override
     public void update(){
         ItemStack item = getItem();
-        if(showedItem==item) return;
+        int quantity = (item == null) ? 0 : item.getQuantity();
+
+        if(showedItem == item && quantity == lastQuantity) return;
 
         if(item==null){
             this.setTexture(null);
@@ -60,6 +63,7 @@ public class Slot extends Button {
         this.updateVertices(item);
 
         this.showedItem = item;
+        this.lastQuantity = quantity;
     }
 
     protected void updateVertices(ItemStack item) {
