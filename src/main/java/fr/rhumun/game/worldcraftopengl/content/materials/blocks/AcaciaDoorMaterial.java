@@ -37,7 +37,12 @@ public class AcaciaDoorMaterial extends Material implements PlaceableMaterial, F
 
     @Override
     public void interact(Player player, Block block) {
-        block.setState(block.getState() ^ 4);
+        int newState = block.getState() ^ 4;
+        block.setState(newState);
+        Block up = block.getBlockAtUp();
+        if (up != null && up.getMaterial() != null) {
+            up.setState(newState);
+        }
     }
 
     @Override

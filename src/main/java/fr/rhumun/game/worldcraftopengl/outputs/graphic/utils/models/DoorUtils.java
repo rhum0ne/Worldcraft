@@ -85,7 +85,12 @@ public class DoorUtils {
     private static void rasterBlock(Block block, ChunkRenderer chunkRenderer){
         float[] tex = getTextureIDs(block);
         Renderer renderer = chunkRenderer.getRenderers().get(block.getMaterial().getOpacity().getPriority());
-        int orientation = block.getState() & 3;
+        int state = block.getState();
+        int orientation = state & 3;
+        boolean open = (state & 4) != 0;
+        if(open){
+            orientation = (orientation + 1) % 4;
+        }
 
         float bx = block.getLocation().getX();
         float by = block.getLocation().getY();
