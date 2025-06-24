@@ -3,6 +3,7 @@ package fr.rhumun.game.worldcraftopengl;
 import fr.rhumun.game.worldcraftopengl.controls.Controls;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
+import fr.rhumun.game.worldcraftopengl.worlds.utils.fluids.FluidSimulator;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -64,6 +65,7 @@ public class GameLoop extends Thread {
                     player.update();
 
                     player.getWorld().updateEntities(player, 48);
+                    FluidSimulator.tick();
                 }
             }
 
