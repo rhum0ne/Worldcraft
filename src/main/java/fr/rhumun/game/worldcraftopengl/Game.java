@@ -12,6 +12,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.LoadingGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
@@ -136,14 +137,8 @@ public class Game {
             boolean first = !SaveManager.loadPlayer(world, player);
             if(first) {
                 world.spawnPlayer(player);
-                player.addItem(new ItemStack(Materials.SAND));
-                player.addItem(new ItemStack(Materials.COBBLE));
-                player.addItem(new ItemStack(Materials.SAPLING));
-                player.addItem(new ItemStack(Materials.PLANKS));
-                player.addItem(new ItemStack(Materials.PURPLE_LAMP));
-                player.addItem(new ItemStack(Materials.CYAN_LAMP));
-                player.addItem(new ItemStack(Materials.LAMP));
-                player.addItem(new ItemStack(Materials.LANTERN));
+                player.addItem(new ItemStack(Materials.WOODEN_PICKAXE));
+                player.addItem(new ItemStack(Materials.SAWMILL));
                 player.addItem(new ItemStack(Materials.BREAD, 5));
             }
 
@@ -154,7 +149,7 @@ public class Game {
                 // Load initial chunk renderers before closing the loading screen
                 player.getLoadedChunksManager().updateChunksGradually();
                 for (var chunk : player.getLoadedChunksManager().getChunksToRender()) {
-                    ((fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer) chunk.getRenderer()).update();
+                    ((ChunkRenderer) chunk.getRenderer()).update();
                 }
                 for (var light : player.getLoadedChunksManager().getChunksToRenderLight()) {
                     light.getRenderer().update();
@@ -166,7 +161,6 @@ public class Game {
                 // the OpenGL context is current
                 player.updateInventory();
                 player.setSelectedSlot(slotToSelect);
-                player.playSound(Sound.STONE1);
                 startGameLoop();
             });
         }, "WorldLoader").start();
