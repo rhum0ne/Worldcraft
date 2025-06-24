@@ -100,14 +100,13 @@ public class DoorUtils {
         float x2 = bx + 0.5f;
         float z1 = bz - 0.5f;
         float z2 = bz + 0.5f;
-        float half = 0.0625f;
+        float thick = 0.125f;
 
-        if(orientation % 2 == 0){
-            z1 = bz - half;
-            z2 = bz + half;
-        }else{
-            x1 = bx - half;
-            x2 = bx + half;
+        switch (orientation) {
+            case 0 -> x2 = x1 + thick;
+            case 1 -> z2 = z1 + thick;
+            case 2 -> x1 = x2 - thick;
+            case 3 -> z1 = z2 - thick;
         }
 
         rasterBox(x1, by +1f, z1, x2, by, z2, tex, renderer);

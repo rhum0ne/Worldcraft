@@ -31,17 +31,19 @@ public class DoorModel extends AbstractModel implements ModelHitbox {
     @Override
     public Hitbox getHitbox(Block block) {
         int state = block.getState();
-        boolean open = (state & 4) != 0;
-        if(open){
+        if((state & 4) != 0){
             // disable collisions when the door is opened
             return new BoxHitbox(2f, 2f, 2f, 2f, 2f, 2f);
         }
 
         int orientation = state & 3;
-        float half = 0.0625f; // 2px thickness
-        if(orientation % 2 == 0) {
-            return new BoxHitbox(0f, 0f, 0.5f - half, 1f, 1f, 0.5f + half);
-        }
-        return new BoxHitbox(0.5f - half, 0f, 0f, 0.5f + half, 1f, 1f);
+        float thick = 0.125f; // 2px
+        return switch (orientation) {
+            case 0 -> new BoxHitbox(0f, 0f, 0f, thick, 1f, 1f);
+            case 1 -> new BoxHitbox(0f, 0f, 0f, 1f, 1f, thick);
+            case 2 -> new BoxHitbox(1f - thick, 0f, 0f, 1f, 1f, 1f);
+            case 3 -> new BoxHitbox(0f, 0f, 1f - thick, 1f, 1f, 1f);
+            default -> BoxHitbox.fullBlock();
+        };
     }
 }
