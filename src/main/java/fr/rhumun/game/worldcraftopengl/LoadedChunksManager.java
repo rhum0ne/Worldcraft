@@ -43,6 +43,8 @@ public class LoadedChunksManager {
         if(!game.isPlaying() || game.isPaused() || !UPDATE_WORLD_RENDER) return;
 
         World world = player.getLocation().getWorld();
+
+        if(player.getLocation().getChunk() == null) return;
         int centerX = player.getLocation().getChunk().getX();
         int centerZ = player.getLocation().getChunk().getZ();
 
