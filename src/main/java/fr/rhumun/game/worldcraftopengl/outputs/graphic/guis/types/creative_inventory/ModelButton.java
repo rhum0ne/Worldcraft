@@ -7,10 +7,14 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers.CreativeItems;
 
-public class SlabButton extends Button {
+public class ModelButton extends Button {
 
-    public SlabButton(int x, int y, Gui container) {
-        super(x, y, 48, 46, Texture.SQUARE_BUTTON, container);
+    private final Model model;
+
+    public ModelButton(int x, int y, Model model, Gui container) {
+        super(x, y, 39, 39, null, container);
+        this.model = model;
+        this.setAlignCenter(true);
     }
 
     @Override
@@ -23,8 +27,8 @@ public class SlabButton extends Button {
         CreativeGui gui = (CreativeGui) this.getContainer();
         CreativeItems items = (CreativeItems) gui.getItemContainer();
 
-        if(items.getShowedModel() != Model.SLAB)
-            items.setModel(Model.SLAB);
+        if(items.getShowedModel() != model)
+            items.setModel(model);
         else items.reset();
     }
 }

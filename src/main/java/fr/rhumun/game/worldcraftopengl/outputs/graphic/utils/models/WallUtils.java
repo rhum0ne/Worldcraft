@@ -87,9 +87,9 @@ public class WallUtils {
         Renderer renderer = chunkRenderer.getRenderers().get(block.getMaterial().getOpacity().getPriority());
         int orientation = block.getState() & 3;
 
-        float bx = block.getLocation().getX();
-        float by = block.getLocation().getY();
-        float bz = block.getLocation().getZ();
+        float bx = (float) block.getLocation().getX();
+        float by = (float) block.getLocation().getY();
+        float bz = (float) block.getLocation().getZ();
 
         float x1 = bx - 0.5f;
         float x2 = bx + 0.5f;

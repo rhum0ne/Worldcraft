@@ -91,9 +91,9 @@ public class StairsUtils {
         boolean top = (state & 4) != 0;
         int orientation = state & 3;
 
-        float bx = block.getLocation().getX();
-        float by = block.getLocation().getY();
-        float bz = block.getLocation().getZ();
+        float bx = (float) block.getLocation().getX();
+        float by = (float) block.getLocation().getY();
+        float bz = (float) block.getLocation().getZ();
 
         // base slab
         float bx1 = bx - 0.5f;

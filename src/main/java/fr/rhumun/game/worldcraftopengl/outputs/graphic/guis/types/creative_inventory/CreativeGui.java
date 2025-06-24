@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory;
 
 import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
+import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
@@ -34,7 +35,11 @@ public class CreativeGui extends Gui {
             this.addButton(new GuiTypeButton(3 , 10 + 52 * i, type, this));
             i++;
         }
-        this.addButton(new SlabButton(getCreativeX(99), getCreativeY(99), this));
+        this.addButton(new ModelButton(74, 472, Model.BLOCK, this));
+        this.addButton(new ModelButton(123, 472, Model.SLAB, this));
+        this.addButton(new ModelButton(172, 472, Model.STAIRS, this));
+        this.addButton(new ModelButton(221, 472, Model.WALL, this));
+        this.addButton(new ModelButton(270, 472, Model.CYLINDER, this));
     }
 
     public void setType(GuiTypes type){

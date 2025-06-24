@@ -139,6 +139,7 @@ public class Game {
                 world.spawnPlayer(player);
                 player.addItem(new ItemStack(Materials.WOODEN_PICKAXE));
                 player.addItem(new ItemStack(Materials.SAWMILL));
+                player.addItem(new ItemStack(Materials.PLANKS, Model.STAIRS));
                 player.addItem(new ItemStack(Materials.BREAD, 5));
             }
 

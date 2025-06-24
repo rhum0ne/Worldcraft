@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
@@ -18,7 +19,7 @@ public class DoorUtils {
     }
 
     private static float[] getTextureIDs(Block block) {
-        if(block.getMaterial() instanceof fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.RotableMaterial){
+        if(block.getMaterial() instanceof RotableMaterial){
             int state = block.getState() & 3;
             return new float[]{
                     block.getMaterial().getTextures()[(2 + state)%4].getId(),
@@ -92,9 +93,9 @@ public class DoorUtils {
             orientation = (orientation + 1) % 4;
         }
 
-        float bx = block.getLocation().getX();
-        float by = block.getLocation().getY();
-        float bz = block.getLocation().getZ();
+        float bx = (float) block.getLocation().getX();
+        float by = (float) block.getLocation().getY();
+        float bz = (float) block.getLocation().getZ();
 
         float x1 = bx - 0.5f;
         float x2 = bx + 0.5f;
@@ -103,10 +104,10 @@ public class DoorUtils {
         float thick = 0.125f;
 
         switch (orientation) {
-            case 0 -> x2 = x1 + thick;
-            case 1 -> z2 = z1 + thick;
-            case 2 -> x1 = x2 - thick;
-            case 3 -> z1 = z2 - thick;
+            case 1 -> x2 = x1 + thick;
+            case 0 -> z2 = z1 + thick;
+            case 3 -> x1 = x2 - thick;
+            case 2 -> z1 = z2 - thick;
         }
 
         rasterBox(x1, by +1f, z1, x2, by, z2, tex, renderer);

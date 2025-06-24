@@ -5,10 +5,12 @@ import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
+import static fr.rhumun.game.worldcraftopengl.content.Model.load;
+
 public class StairsModel extends AbstractModel implements ModelMultiHitbox {
 
     public StairsModel() {
-        super(null, true);
+        super(load("slab.obj"), false);
     }
 
     @Override
@@ -18,9 +20,9 @@ public class StairsModel extends AbstractModel implements ModelMultiHitbox {
 
         int orientation;
         if (absX > absZ) {
-            orientation = direction.x > 0 ? 1 : 3;
+            orientation = direction.x > 0 ? 3 : 1;
         } else {
-            orientation = direction.z > 0 ? 0 : 2;
+            orientation = direction.z > 0 ? 2 : 0;
         }
 
         boolean top = (hitPosition.y - Math.floor(hitPosition.y)) > 0.5f;

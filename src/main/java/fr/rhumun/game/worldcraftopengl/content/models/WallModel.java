@@ -5,10 +5,12 @@ import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import org.joml.Vector3f;
 
+import static fr.rhumun.game.worldcraftopengl.content.Model.load;
+
 public class WallModel extends AbstractModel implements ModelHitbox {
 
     public WallModel() {
-        super(null, true);
+        super(load("block.obj"), false);
     }
 
     @Override

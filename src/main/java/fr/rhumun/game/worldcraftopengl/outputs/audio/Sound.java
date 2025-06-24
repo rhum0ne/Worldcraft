@@ -66,6 +66,17 @@ public enum Sound {
     WOOD3(loadSound("wood3.ogg"), SoundPack.WOOD),
     WOOD4(loadSound("wood4.ogg"), SoundPack.WOOD),
 
+    DOOR_OPEN(loadSound("wooden_door\\open.ogg"), SoundPack.DOOR_OPEN),
+    DOOR_OPEN_2(loadSound("wooden_door\\open2.ogg"), SoundPack.DOOR_OPEN),
+    DOOR_OPEN_3(loadSound("wooden_door\\open3.ogg"), SoundPack.DOOR_OPEN),
+    DOOR_OPEN_4(loadSound("wooden_door\\open4.ogg"), SoundPack.DOOR_OPEN),
+    DOOR_CLOSE(loadSound("wooden_door\\close.ogg"), SoundPack.DOOR_CLOSE),
+    DOOR_CLOSE_2(loadSound("wooden_door\\close2.ogg"), SoundPack.DOOR_CLOSE),
+    DOOR_CLOSE_3(loadSound("wooden_door\\close3.ogg"), SoundPack.DOOR_CLOSE),
+    DOOR_CLOSE_4(loadSound("wooden_door\\close4.ogg"), SoundPack.DOOR_CLOSE),
+    DOOR_CLOSE_5(loadSound("wooden_door\\close5.ogg"), SoundPack.DOOR_CLOSE),
+    DOOR_CLOSE_6(loadSound("wooden_door\\close6.ogg"), SoundPack.DOOR_CLOSE),
+
     HURT(loadSound("classic_hurt.ogg")),
     EAT(loadSound("eat.ogg")),
     DRINK(loadSound("drink.ogg")),
