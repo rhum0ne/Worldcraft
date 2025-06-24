@@ -12,6 +12,8 @@ import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 
 import java.util.HashMap;
 
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.workbench.tool_box.ToolBoxCraft;
+
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 import static fr.rhumun.game.worldcraftopengl.Game.GUI_ZOOM;
 import static fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.IntegrablePlayerInventory.*;
@@ -23,7 +25,7 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
 
     private final ItemStack[] inputs = new ItemStack[2];
     protected final ClickableSlot[] inputSlots = new ClickableSlot[2];
-    private final HashMap<String, ItemStack[]> crafts = new HashMap<>();
+    private final HashMap<ToolBoxCraft, ItemStack[]> crafts = new HashMap<>();
     private final ToolBoxResultSlot[] resultSlots = new ToolBoxResultSlot[9];
 
     public ToolBox() {
@@ -54,9 +56,9 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
         this.addComponent(inventory);
     }
 
-    private String key(ItemStack a, ItemStack b) {
+    private ToolBoxCraft key(ItemStack a, ItemStack b) {
         if (a == null || b == null) return null;
-        return a.getMaterial().name() + "+" + b.getMaterial().name();
+        return new ToolBoxCraft(a, b);
     }
 
     protected void clearInputs() {
@@ -66,8 +68,8 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
     }
 
     public ItemStack[] getOutputs() {
-        String key = key(inputs[0], inputs[1]);
-        return key != null ? crafts.get(key) : null;
+        ToolBoxCraft k = key(inputs[0], inputs[1]);
+        return k != null ? crafts.get(k) : null;
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
 
     public void updateResults() {
         clearResults();
-        String k = key(inputs[0], inputs[1]);
+        ToolBoxCraft k = key(inputs[0], inputs[1]);
         if (k == null || !crafts.containsKey(k)) return;
         for (int i = 0; i < resultSlots.length; i++) {
             ItemStack result = i < crafts.get(k).length ? crafts.get(k)[i] : null;
