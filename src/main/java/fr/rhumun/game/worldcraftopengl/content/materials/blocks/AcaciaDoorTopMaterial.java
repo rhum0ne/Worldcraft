@@ -11,7 +11,7 @@ import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.SoundPack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 
-public class AcaciaDoorTopMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock {
+public class AcaciaDoorTopMaterial extends Material implements PlaceableMaterial, ForcedModelMaterial, InteractableMaterial, Multiblock, RotableMaterial {
 
     public AcaciaDoorTopMaterial() {
         super(Texture.ACACIA_DOOR_TOP);
@@ -33,19 +33,30 @@ public class AcaciaDoorTopMaterial extends Material implements PlaceableMaterial
 
     @Override
     public Model getModel() {
-        return Model.BLOCK;
+        return Model.DOOR;
     }
 
     @Override
     public void interact(Player player, Block block) {
-        block.setState(block.getState() == 0 ? 1 : 0);
+        int newState = block.getState() ^ 4;
+
+        boolean open = (newState & 4) != 0;
+        if(open) player.playSound(SoundPack.DOOR_OPEN.getRandom());
+        else player.playSound(SoundPack.DOOR_CLOSE.getRandom());
+
+        block.setState(newState);
+        Block down = block.getBlockAtDown();
+        if (down != null && down.getMaterial() != null) {
+            down.setState(newState);
+        }
+        block.getChunk().setToUpdate(true);
     }
 
     @Override
     public void onPlace(Block block) {
         Block up = block.getBlockAtDown();
         if (up != null && up.getMaterial() == null) {
-            up.setModel(block.getModel()).setMaterial(Materials.ACACIA_DOOR);
+            up.setModel(block.getModel()).setMaterial(Materials.ACACIA_DOOR).setState(block.getState());
         }
     }
 

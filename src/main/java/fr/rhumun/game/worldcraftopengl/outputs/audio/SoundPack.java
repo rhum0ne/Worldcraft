@@ -17,7 +17,9 @@ public enum SoundPack {
     SNOW(new ArrayList<>()),
     GLASS(new ArrayList<>()),
     GLASS_BREAK(new ArrayList<>()),
-    WET_GRASS(new ArrayList<>());
+    WET_GRASS(new ArrayList<>()),
+    DOOR_OPEN(new ArrayList<>()),
+    DOOR_CLOSE(new ArrayList<>());
 
 
     final ArrayList<Sound> sounds;

@@ -9,6 +9,9 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.DoorUtils;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
@@ -175,6 +178,9 @@ public class ChunkRenderer extends AbstractChunkRenderer{
                     if(block.getMaterial().isLiquid()) LiquidsUtil.loadDataFor(block, this, X, Y,Z,blocks);
                     else if(model==Model.BLOCK) BlockUtil.loadDataFor(block, this, X, Y, Z, blocks);
                     else if(model==Model.SLAB) SlabUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.STAIRS) StairsUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.WALL) WallUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.DOOR) DoorUtils.loadDataFor(block, this, X, Y, Z, blocks);
                     else raster(block, model);
 
                 }

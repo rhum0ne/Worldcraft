@@ -28,6 +28,7 @@ public class CreativeItems implements ItemContainer {
         int id=0;
         for(Material material : Materials.Registry){
             if(material instanceof ForcedModelMaterial f && f.getModel() != model && material.showInCreativeInventory()) continue;
+            if(!material.showInCreativeInventory()) continue;
             this.items[id] = new ItemStack(material, model);
             id++;
         }
