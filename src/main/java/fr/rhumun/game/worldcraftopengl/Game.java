@@ -24,16 +24,18 @@ import lombok.Setter;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Getter @Setter
 public class Game {
 
     public static Game GAME;
 
-    //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
-    public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
+    public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
+    //public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 5;
-    public static int SHOW_DISTANCE = 14;
+    public static int SHOW_DISTANCE = 24;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -43,7 +45,7 @@ public class Game {
     public static boolean GENERATION = true;
     public static boolean UPDATE_FRUSTRUM = true;
     public static boolean UPDATE_WORLD_RENDER = true;
-    public static boolean ENABLE_VSYNC = true;
+    public static boolean ENABLE_VSYNC = false;
     public static boolean GREEDY_MESHING = true;
     public static boolean GL_DEBUG = false;
     public static boolean DEBUG = false;
@@ -58,14 +60,14 @@ public class Game {
     final AudioManager audioManager;
     final Data data;
     GameLoop gameLoop;
-    private final java.util.concurrent.ConcurrentLinkedQueue<Runnable> mainThreadTasks = new java.util.concurrent.ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Runnable> mainThreadTasks = new ConcurrentLinkedQueue<>();
 
     GameState gameState = GameState.TITLE;
     boolean isShowingTriangles = false;
     World world;
     Player player;
 
-    java.util.concurrent.CopyOnWriteArrayList<Controls> pressedKeys = new java.util.concurrent.CopyOnWriteArrayList<>();
+    CopyOnWriteArrayList<Controls> pressedKeys = new CopyOnWriteArrayList<>();
 
     public void queueTask(Runnable task) { mainThreadTasks.offer(task); }
     public void runMainThreadTasks() { Runnable r; while ((r = mainThreadTasks.poll()) != null) r.run(); }

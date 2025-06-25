@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.content.materials.items.types;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 
 public class FoodMaterial extends ConsumableItem {
 
@@ -20,6 +21,7 @@ public class FoodMaterial extends ConsumableItem {
     @Override
     public void applyEffect(Player player) {
         player.addFood(amout);
+        player.playSound(Sound.EAT);
     }
 
 }

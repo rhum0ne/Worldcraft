@@ -29,4 +29,6 @@ public interface PlaceableMaterial {
      * @return opacity type
      */
     OpacityType getOpacity();
+
+    default boolean isLootable(){ return true; }
 }
