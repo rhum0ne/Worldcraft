@@ -9,7 +9,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class CreateWorldButton extends Button {
 
     public CreateWorldButton(int x, int y, Gui container) {
-        super(x, y, container, "Nouveau Monde");
+        super(x, y, 190, 40, container, "Nouveau Monde");
     }
 
     @Override

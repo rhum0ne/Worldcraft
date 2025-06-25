@@ -39,6 +39,9 @@ public abstract class Component{
 
     private boolean alignCenter = false;
 
+    /** Flag indicating whether this component should be rendered */
+    private boolean visible = true;
+
     // Indices pour dessiner un quad avec deux triangles
     private int[] indices;
 
@@ -152,6 +155,7 @@ public abstract class Component{
     }
 
     public void render() {
+        if(!isVisible()) return;
         if(!isInitialized) this.init();
 
         update();
