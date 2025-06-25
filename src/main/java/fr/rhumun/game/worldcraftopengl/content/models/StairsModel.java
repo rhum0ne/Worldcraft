@@ -10,7 +10,7 @@ import static fr.rhumun.game.worldcraftopengl.content.Model.load;
 public class StairsModel extends AbstractModel implements ModelMultiHitbox {
 
     public StairsModel() {
-        super(load("slab.obj"), false);
+        super(load("stairs.obj"), false);
     }
 
     @Override

@@ -8,6 +8,10 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
+
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +132,29 @@ public class StairsUtils {
 
     // Items rendering
     public static void rasterBlockItem(ItemStack block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList){
-        BlockUtil.rasterBlockItem(block, slot, verticesList, indicesList);
+        Mesh mesh = block.getModel().get();
+        if(mesh == null) {
+            BlockUtil.rasterBlockItem(block, slot, verticesList, indicesList);
+            return;
+        }
+
+        FloatBuffer verticesBuffer = mesh.getVerticesBuffer().duplicate();
+        FloatBuffer texCoordsBuffer = mesh.getTexCoordsBuffer().duplicate();
+        IntBuffer indicesBuffer = mesh.getIndicesBuffer().duplicate();
+
+        while(indicesBuffer.hasRemaining()) {
+            int vertexIndex = indicesBuffer.get();
+
+            float vx = (verticesBuffer.get(vertexIndex * 3) + 0.5f) * slot.getWidth() + slot.getX();
+            float vy = verticesBuffer.get(vertexIndex * 3 + 1) * slot.getHeight() + slot.getY();
+            float vz = verticesBuffer.get(vertexIndex * 3 + 2);
+
+            float u = texCoordsBuffer.get(vertexIndex * 2);
+            float v = 1 - texCoordsBuffer.get(vertexIndex * 2 + 1);
+
+            verticesList.add(new float[]{vx, vy, vz, u, v, block.getMaterial().getTexture().getId()});
+            indicesList.add(indicesList.isEmpty() ? 0 : indicesList.getLast() + 1);
+        }
     }
 
     public static void rasterDroppedStairsItem(Location loc, Material mat, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList){
