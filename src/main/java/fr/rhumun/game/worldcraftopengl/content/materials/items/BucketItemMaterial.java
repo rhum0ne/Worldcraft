@@ -1,7 +1,9 @@
-package fr.rhumun.game.worldcraftopengl.content.materials.items.types;
+package fr.rhumun.game.worldcraftopengl.content.materials.items;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.UsableItem;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
@@ -16,29 +18,17 @@ public class BucketItemMaterial extends ItemMaterial implements UsableItem {
 
     @Override
     public void onClick(Player player) {
-        final float STEP = 0.02f;
-        Vector3f direction = player.getRayDirection();
-        Vector3f pos = new Vector3f(
-                (float) player.getLocation().getX(),
-                (float) player.getLocation().getY(),
-                (float) player.getLocation().getZ());
 
-        Block target = null;
-        for (float dist = 0; dist < player.getReach(); dist += STEP) {
-            target = player.getWorld().getBlockAt(pos, true);
-            if (target != null && target.getMaterial() != null) {
-                break;
-            }
-            pos.add(direction.x * STEP,
-                    direction.y * STEP,
-                    direction.z * STEP);
-        }
+        Block target = player.getSelectedBlock(false);
 
         if (target != null &&
                 target.getMaterial() == Materials.WATER &&
                 target.getState() == 8) {
             target.setMaterial(null);
+            target.setState(0);
             FluidSimulator.onBlockUpdate(target);
+
+            if(player.isInCreativeMode()) return;
             player.getInventory().setItem(player.getSelectedSlot(),
                     new ItemStack(Materials.WATER_BUCKET));
             player.updateInventory();

@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content.materials;
 
 import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.FluidMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
@@ -110,7 +111,7 @@ public abstract class Material {
 
     public Texture getTexture() {return textures[0];}
     public OpacityType getOpacity(){ return this instanceof PlaceableMaterial pM ? pM.getOpacity() : OpacityType.OPAQUE; }
-    public boolean isLiquid() { return this instanceof PlaceableMaterial pM && pM.getOpacity() == OpacityType.LIQUID; }
+    public boolean isLiquid() { return this instanceof FluidMaterial; }
 
     protected void addToType(GuiTypes type){
         type.add(this);

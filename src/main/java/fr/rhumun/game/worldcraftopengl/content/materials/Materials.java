@@ -5,7 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMa
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.FoodMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ToolItemMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BucketItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.BucketItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 
