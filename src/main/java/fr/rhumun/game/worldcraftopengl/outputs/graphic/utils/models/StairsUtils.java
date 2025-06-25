@@ -188,18 +188,18 @@ public class StairsUtils {
         BlockUtil.addAllVertices(vertices, verticesList);
         BlockUtil.addAllIndices(BlockUtil.createIndices(offset), indicesList);
 
-        // ----- step on the front half -----
-        x1 = slot.getX();
+        // ----- step on the side half -----
+        x1 = slot.getX() + (float) slot.getWidth() / 2f;
         y1 = slot.getY();
         z1 = 0f;
 
         x2 = slot.getWidth() + slot.getX();
         y2 = slot.getY() + (float) slot.getHeight() / 2f;
-        z2 = 0.5f;
+        z2 = 1f;
 
-        texScaleX = 1f;
+        texScaleX = 0.5f;
         texScaleY = 0.5f;
-        texScaleZ = 0.5f;
+        texScaleZ = 1f;
 
         float[][] stepVertices = {
                 {x1, y2, z1, 0.0f, 0.0f, texIDFront},
