@@ -4,7 +4,9 @@ import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.*;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.Flat;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldType;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
 import fr.rhumun.game.worldcraftopengl.worlds.utils.DayNightCycle;
@@ -30,7 +32,9 @@ public class World {
     public static final int DAY_NIGHT_TICKS = 24000;
 
     private final Seed seed;
-    private final WorldGenerator generator;
+    private WorldGenerator generator;
+    @Setter
+    private WorldType worldType = WorldType.NORMAL;
 
     @Setter
     private String name;
@@ -91,18 +95,23 @@ public class World {
     }
 
     public World(){
-        this(Seed.random());
+        this(Seed.random(), null, WorldType.NORMAL);
     }
 
     public World(Seed seed){
-        this(seed, null);
+        this(seed, null, WorldType.NORMAL);
     }
 
     public World(Seed seed, String name){
+        this(seed, name, WorldType.NORMAL);
+    }
+
+    public World(Seed seed, String name, WorldType type){
         this.seed = seed;
         this.name = name;
+        this.worldType = type;
         this.chunks = new ChunksContainer(this);
-        this.generator = new NormalWorldGenerator(this);
+        setGeneratorFromType();
 
         GAME.log("Creating a new World... \nSeed: " + seed.getLong());
 
@@ -110,9 +119,15 @@ public class World {
         zSpawn = seed.getCombinaisonOf(5, 4, 9) * seed.get(1);
     }
 
+    private void setGeneratorFromType() {
+        if (worldType == WorldType.FLAT) this.generator = new Flat(this);
+        else this.generator = new NormalWorldGenerator(this);
+    }
+
     public void load(){
         if(SaveManager.worldExists(this.seed)) {
             SaveManager.loadWorldMeta(this);
+            setGeneratorFromType();
         } else {
             SaveManager.saveWorldMeta(this);
         }

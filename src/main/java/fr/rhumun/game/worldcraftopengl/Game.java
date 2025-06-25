@@ -14,7 +14,9 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.LoadingGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.title_menu.TitleMenuGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldType;
 import fr.rhumun.game.worldcraftopengl.worlds.SaveManager;
+import fr.rhumun.game.worldcraftopengl.entities.player.Gamemode;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import lombok.Getter;
 import lombok.Setter;
@@ -114,29 +116,35 @@ public class Game {
     }
 
     public void startGame(){
-        startGame("My World", Seed.random());
+        startGame("My World", Seed.random(), WorldType.NORMAL, Gamemode.SURVIVAL);
     }
 
     public void startGame(Seed seed){
-        startGame("My World", seed);
+        startGame("My World", seed, WorldType.NORMAL, Gamemode.SURVIVAL);
     }
 
     public void startGame(String name, Seed seed){
+        startGame(name, seed, WorldType.NORMAL, Gamemode.SURVIVAL);
+    }
+
+    public void startGame(String name, Seed seed, WorldType type, Gamemode gamemode){
         var guiModule = this.getGraphicModule().getGuiModule();
         LoadingGui loadingGui = new LoadingGui("Chargement...");
         guiModule.openGUI(loadingGui);
 
         player.reset();
+        player.setGamemode(gamemode);
 
         new Thread(() -> {
-            if(name == null) world = new World(seed);
-            else world = new World(seed, name);
+            if(name == null) world = new World(seed, null, type);
+            else world = new World(seed, name, type);
             world.load();
             while(!world.isLoaded()) Thread.onSpinWait();
 
             boolean first = !SaveManager.loadPlayer(world, player);
             if(first) {
                 world.spawnPlayer(player);
+                player.setGamemode(gamemode);
                 player.addItem(new ItemStack(Materials.WOODEN_PICKAXE));
                 player.addItem(new ItemStack(Materials.SAWMILL));
                 player.addItem(new ItemStack(Materials.PLANKS, Model.STAIRS));
