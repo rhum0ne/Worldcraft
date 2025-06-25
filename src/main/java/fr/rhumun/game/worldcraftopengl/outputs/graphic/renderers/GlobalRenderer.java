@@ -69,5 +69,6 @@ public class GlobalRenderer extends Renderer {
         glDeleteBuffers(this.getVBO());
         glDeleteVertexArrays(this.getVAO());
         glDeleteBuffers(this.getEBO());
+        freeBuffers();
     }
 }

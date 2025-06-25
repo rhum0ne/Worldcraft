@@ -34,9 +34,10 @@ public class BreakingBlockRenderer extends GlobalRenderer {
 
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray().clone(), GL_STATIC_DRAW);
+        fillBuffers();
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesBuffer(), GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesBuffer(), GL_DYNAMIC_DRAW);
 
         glEnable(GL_POLYGON_OFFSET_FILL);
         glPolygonOffset(-1f, -1f);
@@ -114,5 +115,10 @@ public class BreakingBlockRenderer extends GlobalRenderer {
     private void addVertex(float[] vertexData) {
         getVertices().add(vertexData);
         addIndice();
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
     }
 }
