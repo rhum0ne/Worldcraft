@@ -18,6 +18,10 @@ public class Texture {
     public static Texture GRASS_BLOCK;
     public static Texture OAK_LOG;
     public static Texture OAK_LOG_TOP;
+    public static Texture DOOR;
+    public static Texture DOOR_TOP;
+    public static Texture BIRCH_DOOR;
+    public static Texture BIRCH_DOOR_TOP;
     public static Texture LEAVES;
     public static Texture STONE_BRICKS;
     public static Texture STONE;
@@ -179,6 +183,10 @@ public class Texture {
     public static Texture WOODEN_SHOVEL;
     public static Texture WOODEN_SWORD;
     public static Texture ACACIA_DOOR_ITEM;
+    public static Texture SPRUCE_DOOR_ITEM;
+    public static Texture BIRCH_DOOR_ITEM;
+    public static Texture CHERRY_DOOR_ITEM;
+    public static Texture DOOR_ITEM;
 
     public static Texture OTTER;
     public static Texture ROCKY;
@@ -190,6 +198,8 @@ public class Texture {
         GRASS_BLOCK = new Texture("grass.png");
         OAK_LOG = new Texture("oak_log.png");
         OAK_LOG_TOP = new Texture("oak_log_top.png");
+        DOOR = new Texture("door_bottom.png");
+        DOOR_TOP = new Texture("door_top.png");
         LEAVES = new Texture("oak_leaves.png");
         STONE_BRICKS = new Texture("stone_brick.png");
         STONE = new Texture("stone.png");
@@ -209,6 +219,8 @@ public class Texture {
         BIRCH_PLANKS = new Texture("birch_planks.png");
         BIRCH_LEAVES = new Texture("birch_leaves.png");
         BIRCH_SAPLING = new Texture("birch_sapling.png");
+        BIRCH_DOOR_TOP = new Texture("birch_door_top.png");
+        BIRCH_DOOR = new Texture("birch_door_bottom.png");
         BLACK_WOOL = new Texture("black_wool.png");
         BLUE_WOOL = new Texture("blue_wool.png");
         BOOKSHELF = new Texture("bookshelf.png");
@@ -326,6 +338,10 @@ public class Texture {
         WOODEN_SHOVEL = new Texture("items\\wooden_shovel.png");
         WOODEN_SWORD = new Texture("items\\wooden_sword.png");
         ACACIA_DOOR_ITEM = new Texture("items\\acacia_door.png");
+        SPRUCE_DOOR_ITEM = new Texture("items\\spruce_door.png");
+        BIRCH_DOOR_ITEM = new Texture("items\\birch_door.png");
+        CHERRY_DOOR_ITEM = new Texture("items\\cherry_door.png");
+        DOOR_ITEM = new Texture("items\\door.png");
         DESTROY_STAGES = new Texture[10];
         for (int i = 0; i < 10; i++) {
             DESTROY_STAGES[i] = new Texture("hud\\destroy\\destroy_stage_" + i + ".png");

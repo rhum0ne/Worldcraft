@@ -20,6 +20,10 @@ public class CreativeSlot extends Slot {
             return;
         }
 
+        if(this.getItem() == null) {
+            getGuiModule().setSelectedItem(null);
+            return;
+        }
         getGuiModule().setSelectedItem(this.getItem().copy());
         getGuiModule().getSelectedItem().setQuantity(1);
     }
