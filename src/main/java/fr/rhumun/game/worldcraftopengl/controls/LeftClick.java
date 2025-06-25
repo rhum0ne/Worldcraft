@@ -14,6 +14,11 @@ public class LeftClick extends Control {
             return;
         }
 
+        var target = player.getEntityInSight();
+        if (target != null) {
+            player.attack(target);
+            return;
+        }
         if(player.isInCreativeMode()){
             player.breakBlock();
         }else{
