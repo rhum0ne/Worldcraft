@@ -14,8 +14,13 @@ import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.PlainBiome;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.HillBiome;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.ForestBiome;
+import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.BirchForestBiome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.HeightCalculation;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import lombok.Getter;
 
 import javax.imageio.ImageIO;
@@ -253,8 +258,80 @@ public class NormalWorldGenerator extends WorldGenerator {
 
     }
 
+    private void spawnVegetation(LightChunk chunk, Biome biome, int x, int z, int groundY) {
+        Seed seed = getWorld().getSeed();
+        int chunkX = chunk.getX();
+        int chunkZ = chunk.getZ();
+        int y = groundY + 1;
+
+        if (biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.PlainBiome ||
+            biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.HillBiome) {
+            if ((1 + x * z + chunkZ + seed.get(5)) % (seed.get(7) + 3) == 0 &&
+                    (chunkX + x + seed.getCombinaisonOf(1, 7, 2) * z + seed.get(6)) % 11 == 0) {
+                chunk.setMaterial(x, y, z, Materials.GRASS);
+            } else if ((1 + x + z + chunkZ + seed.get(3)) % (seed.get((x * x + z) % 9) + 4) == 0 &&
+                    (chunkX * seed.get(2) + x + 3 * z) % (biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.PlainBiome ? 17 : 13) == 0) {
+                chunk.setMaterial(x, y, z, Materials.BLUE_FLOWER);
+            } else if (biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.HillBiome &&
+                    (1 + x + z + chunkZ + seed.get(8)) % 7 == 0 &&
+                    (chunkX + x + 2 * z + seed.get(2) * seed.getCombinaisonOf(4, 3, 1)) % (seed.get((z + x * seed.get(1)) % 9) + 3) == 0) {
+                chunk.setMaterial(x, y, z, Materials.RED_FLOWER);
+            }
+        } else if (biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.ForestBiome ||
+                   biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.BirchForestBiome) {
+            if ((1 + x * z + chunkZ + seed.get(5)) % (seed.get(7) + 3) == 0 &&
+                    (chunkX + x + seed.getCombinaisonOf(1, 7, 2) * z + seed.get(6)) % 11 == 0) {
+                chunk.setMaterial(x, y, z, Materials.GRASS);
+            } else if ((1 + x + z + chunkZ + seed.get(3)) % (seed.get((x * x + z) % 9) + 4) == 0 &&
+                    (chunkX * seed.get(2) + x + 3 * z) % 13 == 0) {
+                chunk.setMaterial(x, y, z, Materials.BLUE_FLOWER);
+            } else if ((1 + x + z + chunkZ + seed.get(8)) % 7 == 0 &&
+                    (chunkX + x + 2 * z + seed.get(2) * seed.getCombinaisonOf(4, 3, 1)) % (seed.get((z + x * seed.get(1)) % 9) + 3) == 0) {
+                chunk.setMaterial(x, y, z, Materials.RED_FLOWER);
+            } else if ((seed.get((x * chunkX + (z * chunkZ)) % 9) + x * z + seed.get(3)) % 11 == 0) {
+                if ((x * x + z * z + chunkX * chunkZ + seed.get(1)) % 23 == 0 ||
+                        (seed.getCombinaisonOf(x % 5, z % 3, chunkX % 7) + chunkX + z) % 19 == 0) {
+                    if (biome instanceof fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.BirchForestBiome) {
+                        buildTree(chunk, x, y, z, Materials.BIRCH_LOG, Materials.BIRCH_LEAVES);
+                    } else {
+                        buildTree(chunk, x, y, z, Materials.LOG, Materials.LEAVES);
+                    }
+                }
+            }
+        }
+    }
+
+    private void buildTree(LightChunk chunk, int x, int y, int z, Material log, Material leaves) {
+        int trunkHeight = 5;
+        int radius = 2;
+        int worldHeight = getWorld().getHeigth();
+
+        for (int dy = 0; dy < trunkHeight && y + dy < worldHeight; dy++) {
+            chunk.setMaterial(x, y + dy, z, log);
+        }
+
+        int leavesStartY = y + trunkHeight - 2;
+        int leavesEndY = y + trunkHeight;
+
+        for (int ly = leavesStartY; ly < leavesEndY && ly < worldHeight; ly++) {
+            for (int lx = -radius; lx <= radius; lx++) {
+                for (int lz = -radius; lz <= radius; lz++) {
+                    if (ly < y + trunkHeight && lx == 0 && lz == 0) continue;
+                    int ax = x + lx;
+                    int az = z + lz;
+                    if (ax < 0 || ax >= CHUNK_SIZE || az < 0 || az >= CHUNK_SIZE) continue;
+                    if (Math.abs(lx) < 2 && Math.abs(lz) < 2 && ly + 2 < worldHeight) {
+                        chunk.setMaterial(ax, ly + 2, az, leaves);
+                    }
+                    chunk.setMaterial(ax, ly, az, leaves);
+                }
+            }
+        }
+    }
+
     @Override
     public void generate(LightChunk chunk) {
+        int worldHeight = getWorld().getHeigth();
         for (int x = 0; x < CHUNK_SIZE; x++) {
             int worldX = chunk.getX() * CHUNK_SIZE + x;
             for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -266,20 +343,29 @@ public class NormalWorldGenerator extends WorldGenerator {
                 double pavSmallScale = pav.evaluateNoise(worldX / 40.0, worldZ / 40.0);
 
                 int height = heightCalculator.calcHeight(worldX, worldZ, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
+                Biome biome = getBiome(height, worldX, worldZ, continentalValue, erosionValue, pavLargeScale, pavSmallScale);
 
-                for (int y = 0; y < Math.min(height, this.getWorld().getHeigth()); y++) {
+                for (int y = 0; y < Math.min(height, worldHeight); y++) {
                     chunk.getMaterials()[x][y][z] = STONE;
                 }
 
                 if (height <= getWaterHigh()) {
-                    for (int y = height; y < getWaterHigh(); y++) {
+                    for (int y = height; y < Math.min(getWaterHigh(), worldHeight); y++) {
                         chunk.getMaterials()[x][y][z] = Materials.WATER;
                     }
                 }
 
-                // Petite coloration simple
-                if (height > getWaterHigh() && height < this.getWorld().getHeigth()) {
-                    chunk.getMaterials()[x][height-1][z] = Materials.GRASS_BLOCK;
+                if (height > 0) {
+                    int top = Math.min(height - 1, worldHeight - 1);
+                    chunk.getMaterials()[x][top][z] = biome.getTop();
+                    for (int i = 1; i <= 3 && top - i >= 0; i++) {
+                        chunk.getMaterials()[x][top - i][z] = biome.getSecondary();
+                    }
+                    chunk.getMaterials()[x][0][z] = Materials.DARK_COBBLE;
+
+                    if (height > getWaterHigh()) {
+                        spawnVegetation(chunk, biome, x, z, top);
+                    }
                 }
             }
         }
