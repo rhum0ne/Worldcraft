@@ -103,6 +103,13 @@ public class EntitiesRenderer extends GlobalRenderer {
         FloatBuffer normalsBuffer = obj.getNormalsBuffer().duplicate();
         FloatBuffer texCoordsBuffer = obj.getTexCoordsBuffer().duplicate();
         IntBuffer indicesBuffer = obj.getIndicesBuffer().duplicate();
+        IntBuffer boneBuffer = obj.getBoneIDsBuffer() != null ? obj.getBoneIDsBuffer().duplicate() : null;
+        FloatBuffer weightBuffer = obj.getBoneWeightsBuffer() != null ? obj.getBoneWeightsBuffer().duplicate() : null;
+
+        MobEntity animated = null;
+        if (entity instanceof MobEntity m && m.isAnimated() && m.getAnimator() != null && boneBuffer != null && weightBuffer != null) {
+            animated = m;
+        }
 
         float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
         float cosYaw = (float) Math.cos(yawRad + Math.PI/2);
@@ -119,9 +126,49 @@ public class EntitiesRenderer extends GlobalRenderer {
             float ny = normalsBuffer.get(vertexIndex * 3 + 1);
             float nz = normalsBuffer.get(vertexIndex * 3 + 2);
 
+            if (animated != null) {
+                org.joml.Vector3f nvec = new org.joml.Vector3f();
+                int base = vertexIndex * 4;
+                for (int slot = 0; slot < 4; slot++) {
+                    float weight = weightBuffer.get(base + slot);
+                    if (weight == 0f) continue;
+                    int boneId = boneBuffer.get(base + slot);
+                    var mat = animated.getAnimator().getBoneMatrix(boneId);
+                    if (mat != null) {
+                        org.joml.Vector3f tmp = new org.joml.Vector3f(nx, ny, nz);
+                        mat.transformDirection(tmp);
+                        tmp.mul(weight);
+                        nvec.add(tmp);
+                    }
+                }
+                nx = nvec.x;
+                ny = nvec.y;
+                nz = nvec.z;
+            }
+
             float relX = verticesBuffer.get(vertexIndex * 3);
             float relY = verticesBuffer.get(vertexIndex * 3 + 1);
             float relZ = verticesBuffer.get(vertexIndex * 3 + 2);
+
+            if (animated != null) {
+                org.joml.Vector3f pos = new org.joml.Vector3f();
+                int base = vertexIndex * 4;
+                for (int slot = 0; slot < 4; slot++) {
+                    float weight = weightBuffer.get(base + slot);
+                    if (weight == 0f) continue;
+                    int boneId = boneBuffer.get(base + slot);
+                    var mat = animated.getAnimator().getBoneMatrix(boneId);
+                    if (mat != null) {
+                        org.joml.Vector3f vec = new org.joml.Vector3f(relX, relY, relZ);
+                        mat.transformPosition(vec);
+                        vec.mul(weight);
+                        pos.add(vec);
+                    }
+                }
+                relX = pos.x;
+                relY = pos.y;
+                relZ = pos.z;
+            }
 
             float rotX = cosYaw * relX - sinYaw * relZ;
             float rotZ = sinYaw * relX + cosYaw * relZ;

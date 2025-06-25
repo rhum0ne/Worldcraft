@@ -25,6 +25,8 @@ public class Mesh {
 
     @Setter
     private IntBuffer boneIDsBuffer;
+    @Setter
+    private FloatBuffer boneWeightsBuffer;
 
     public Mesh(final Obj obj){
         this.verticesBuffer = ObjData.getVertices(obj);
@@ -50,11 +52,15 @@ public class Mesh {
         FloatBuffer nBuf = memAllocFloat(vertexCount * 3);
         FloatBuffer tBuf = memAllocFloat(vertexCount * 2);
         IntBuffer iBuf = memAllocInt(aiMesh.mNumFaces() * 3);
-        IntBuffer bBuf = memAllocInt(vertexCount);
+        IntBuffer bBuf = memAllocInt(vertexCount * 4);
+        FloatBuffer wBuf = memAllocFloat(vertexCount * 4);
 
-        // Initialiser tous les boneIDs à 0
-        for (int i = 0; i < vertexCount; i++) bBuf.put(0);
+        for (int i = 0; i < vertexCount * 4; i++) {
+            bBuf.put(0);
+            wBuf.put(0);
+        }
         bBuf.rewind();
+        wBuf.rewind();
 
         // Pos, Normals, TexCoords
         AIVector3D.Buffer vertices = aiMesh.mVertices();
@@ -92,19 +98,28 @@ public class Mesh {
             AIBone bone = AIBone.create(aiBones.get(i));
             int boneIndex = i;
             AIVertexWeight.Buffer weights = bone.mWeights();
-            //System.out.println("Bone: " + bone.mName().dataString());
             for (int j = 0; j < bone.mNumWeights(); j++) {
                 AIVertexWeight vw = weights.get(j);
                 int vertexId = vw.mVertexId();
-                bBuf.put(vertexId, boneIndex);
-                //System.out.println("  Influences vertex: " + vw.mVertexId() + " weight: " + vw.mWeight());
+                float weight = vw.mWeight();
+                int base = vertexId * 4;
+                for (int slot = 0; slot < 4; slot++) {
+                    float existing = wBuf.get(base + slot);
+                    if (existing == 0f) {
+                        bBuf.put(base + slot, boneIndex);
+                        wBuf.put(base + slot, weight);
+                        break;
+                    }
+                }
             }
         }
 
         bBuf.rewind();
+        wBuf.rewind();
 
         Mesh mesh = new Mesh(vBuf, nBuf, tBuf, iBuf);
         mesh.setBoneIDsBuffer(bBuf);
+        mesh.setBoneWeightsBuffer(wBuf);
         aiReleaseImport(scene);
 
         return mesh;
@@ -115,5 +130,12 @@ public class Mesh {
         this.normalsBuffer = normalsBuffer;
         this.texCoordsBuffer = texCoordsBuffer;
         this.indicesBuffer = indicesBuffer;
+    }
+
+    public Mesh(FloatBuffer verticesBuffer, FloatBuffer normalsBuffer, FloatBuffer texCoordsBuffer, IntBuffer indicesBuffer,
+                IntBuffer boneIDsBuffer, FloatBuffer boneWeightsBuffer) {
+        this(verticesBuffer, normalsBuffer, texCoordsBuffer, indicesBuffer);
+        this.boneIDsBuffer = boneIDsBuffer;
+        this.boneWeightsBuffer = boneWeightsBuffer;
     }
 }
