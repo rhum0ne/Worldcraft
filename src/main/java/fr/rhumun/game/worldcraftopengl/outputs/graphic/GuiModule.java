@@ -206,7 +206,7 @@ public class GuiModule {
 
         for(Component component : this.gui.getComponents()){
             if(component instanceof ClickableSlot slot) {
-                if(component.isCursorIn()){
+                if(component.isCursorIn() && component.isVisible()){
                     ItemStack selected = getSelectedItem();
                     if(selected == null) break;
 
@@ -231,7 +231,7 @@ public class GuiModule {
 
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {
-                if(component.isCursorIn()){
+                if(component.isCursorIn() && component.isVisible()){
                     button.click(player);
                     break;
                 }
