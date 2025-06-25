@@ -5,8 +5,6 @@ import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.worlds.utils.fluids.FluidSimulator;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 
 public class GameLoop extends Thread {
 
@@ -48,15 +46,9 @@ public class GameLoop extends Thread {
             }
 
             if (game.getGraphicModule() != null) {
-                try {
-                    ArrayList<Controls> keys = new ArrayList<>(game.getPressedKeys());
-                    for (Controls control : keys) {
-                        control.press(player);
-                        if (!control.isRepeatable()) game.pressedKeys.remove(control);
-                    }
-                } catch (ConcurrentModificationException e) {
-                    game.debug("Controls Concurrent Modif");
-                    continue;
+                for (Controls control : game.getPressedKeys()) {
+                    control.press(player);
+                    if (!control.isRepeatable()) game.pressedKeys.remove(control);
                 }
 
                 if(game.getGameState() == GameState.RUNNING) {
