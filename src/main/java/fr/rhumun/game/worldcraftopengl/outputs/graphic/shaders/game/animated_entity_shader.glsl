@@ -20,6 +20,7 @@ void main() {
     int boneIndex = int(inBoneID);
     mat4 boneTransform = boneMatrices[boneIndex];
     vec4 worldPos = boneTransform * vec4(inPosition, 1.0);
+    worldPos.xyz *= 0.05; // scale down huge models
     FragPos = worldPos.xyz;
     TexCoord = inTexCoord;
     TexCoord.y = 1 - TexCoord.y;
