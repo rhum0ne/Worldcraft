@@ -296,15 +296,16 @@ public class Entity {
             this.getVelocity().add(0, (float)jumpForce/9, 0);
     }
 
+    public Block getSelectedBlock(){ return getSelectedBlock(true); }
 
-    public Block getSelectedBlock() {
+    public Block getSelectedBlock(boolean ignoreLiquids) {
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
 
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
             Block block = GAME.getWorld().getBlockAt(pos, true);
 
-            if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
+            if (block != null && block.getMaterial() != null && (!ignoreLiquids || !block.getMaterial().isLiquid())) {
                 return block;
             }
 

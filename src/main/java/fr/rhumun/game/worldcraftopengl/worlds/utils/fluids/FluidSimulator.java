@@ -59,13 +59,15 @@ public class FluidSimulator {
 
         byte newState = computeState(source, mat);
         if(newState < level){
-            source.setState(newState);
+            source.setState(Math.max(newState, 0));
         }
 
         Block down = source.getBlockAtDown();
-        if (down != null && (down.getMaterial() == null || (down.getMaterial().isLiquid() && down.getState() < 8))) {
+        if (down != null && (down.getMaterial() == null || down.getMaterial().isLiquid())) {
+            if(down.getMaterial() != null && down.getMaterial().isLiquid() && down.getState() >= 7) return;
+
             down.setMaterial(mat);
-            down.setState((byte)8);
+            down.setState((byte)7);
             queue.offer(new FluidEntry(down, ((FluidMaterial) mat).getViscosity()));
             return; // Downward flow has priority
         }
@@ -77,12 +79,17 @@ public class FluidSimulator {
     }
 
     private static void attemptSpread(Block target, Material material) {
-        if (target == null) return;
+        if (target == null || (target.getMaterial() != null && !target.getMaterial().isLiquid())) return;
         byte newState = computeState(target, material);
+        System.out.println("New state : " + newState);
         if (newState < 0) {
             target.setMaterial(null);
+            queue.offer(new FluidEntry(target, ((FluidMaterial) material).getViscosity()));
+            return;
         }
         Material targetMat = target.getMaterial();
+        if((targetMat == null || !targetMat.isLiquid()) && newState == 0) return;
+
         if (targetMat == null || (targetMat.isLiquid() && target.getState() != newState)) {
             target.setMaterial(material);
             target.setState(newState);
