@@ -4,9 +4,7 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.*;
-import org.lwjgl.system.MemoryUtil;
+            AINode node = aiBone.mNode();
 
 import java.util.*;
 
