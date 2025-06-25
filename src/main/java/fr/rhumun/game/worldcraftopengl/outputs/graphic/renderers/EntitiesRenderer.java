@@ -133,7 +133,7 @@ public class EntitiesRenderer extends GlobalRenderer {
                 int boneId = boneBuffer.get(vertexIndex);
                 var mat = animated.getAnimator().getBoneMatrix(boneId);
                 if (mat != null) {
-                    org.joml.Vector4f vec = new org.joml.Vector4f(relX, relY, relZ, 1f);
+                    org.joml.Vector3f vec = new org.joml.Vector3f(relX, relY, relZ);
                     mat.transformPosition(vec);
                     relX = vec.x;
                     relY = vec.y;
