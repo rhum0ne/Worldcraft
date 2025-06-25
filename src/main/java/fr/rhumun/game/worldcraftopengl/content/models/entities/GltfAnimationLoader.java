@@ -42,7 +42,8 @@ public class GltfAnimationLoader {
                 off.c1(), off.c2(), off.c3(), off.c4(),
                 off.d1(), off.d2(), off.d3(), off.d4());
 
-            AINode node = AIBone.nmNode(aiBone.address());
+            long nodePtr = AIBone.nmNode(aiBone.address());
+            AINode node = AINode.createSafe(nodePtr);
             nodeMap.put(name, node);
             if (node != null) {
                 AIMatrix4x4 nTrans = node.mTransformation();
