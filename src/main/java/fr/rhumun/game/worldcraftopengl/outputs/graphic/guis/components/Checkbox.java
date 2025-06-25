@@ -28,10 +28,6 @@ public class Checkbox extends Button {
         this.uncheckedHover = Texture.CHECKBOX_HIGHLIGHTED;
         this.checkedTex = Texture.CHECKBOX_SELECTED;
         this.checkedHover = Texture.CHECKBOX_SELECTED_HIGHLIGHTED;
-
-        this.getText().setText(label);
-        this.getText().set2DCoordinates(-40, 0);
-        this.setAlignCenter(true);
     }
 
     @Override

@@ -19,22 +19,26 @@ public class SettingsGui extends CenteredGUI {
 
         this.addText(0, -160, "Parametres");
 
-        Checkbox vsync = new Checkbox(-200, -80, "V-Sync", this);
+        Checkbox vsync = new Checkbox(-100, -80, "V-Sync", this);
+        this.addText(50, -80, "V-Sync");
         vsync.setChecked(Game.ENABLE_VSYNC);
         vsync.setOnChange(() -> Game.ENABLE_VSYNC = vsync.isChecked());
         this.addButton(vsync);
 
-        Checkbox greedy = new Checkbox(-200, -30, "Greedy Meshing", this);
+        Checkbox greedy = new Checkbox(-100, -30, "Greedy Meshing", this);
+        this.addText(50, -30, "Greedy meshing");
         greedy.setChecked(Game.GREEDY_MESHING);
         greedy.setOnChange(() -> Game.GREEDY_MESHING = greedy.isChecked());
         this.addButton(greedy);
 
-        Checkbox debug = new Checkbox(-200, 20, "Debug", this);
+        Checkbox debug = new Checkbox(-100, 20, "Debug", this);
+        this.addText(50, 20, "Debug");
         debug.setChecked(Game.DEBUG);
         debug.setOnChange(() -> Game.DEBUG = debug.isChecked());
         this.addButton(debug);
 
-        Checkbox creative = new Checkbox(-200, 70, "Mode Creatif", this);
+        Checkbox creative = new Checkbox(-100, 70, "Mode Creatif", this);
+        this.addText(50, 70, "Mode Creatif");
         creative.setChecked(GAME.getPlayer().getGamemode() == Gamemode.CREATIVE);
         creative.setOnChange(() -> GAME.getPlayer().setGamemode(
                 creative.isChecked() ? Gamemode.CREATIVE : Gamemode.SURVIVAL));
