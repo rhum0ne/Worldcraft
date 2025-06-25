@@ -5,6 +5,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.assimp.*;
+import org.lwjgl.system.MemoryUtil;
 
 import java.util.*;
 
@@ -42,7 +43,8 @@ public class GltfAnimationLoader {
                 off.c1(), off.c2(), off.c3(), off.c4(),
                 off.d1(), off.d2(), off.d3(), off.d4());
 
-            AINode node = aiBone.mNode();
+            long nodePtr = AIBone.nmNode(aiBone.address());
+            AINode node = nodePtr != MemoryUtil.NULL ? AINode.create(nodePtr) : null;
             nodeMap.put(name, node);
             if (node != null) {
                 AIMatrix4x4 nTrans = node.mTransformation();
