@@ -30,13 +30,15 @@ public class WorldsGui extends FullscreenTiledGui implements ScrollableGui {
             y += 50;
         }
 
-        createButton = new CreateWorldButton(0, y, this);
+        createButton = new CreateWorldButton(0, 150, this);
         this.addButton(createButton);
-        y += 60;
-        backButton = new BackButton(0, y, this);
+
+        backButton = new BackButton(0, 210, this);
         this.addButton(backButton);
 
         this.setAlignCenter(true);
+
+        updatePositions();
     }
 
     @Override
@@ -51,8 +53,5 @@ public class WorldsGui extends FullscreenTiledGui implements ScrollableGui {
             setCoordinates(btn, 0, y);
             y += 50;
         }
-        setCoordinates(createButton, 0, y);
-        y += 60;
-        setCoordinates(backButton, 0, y);
     }
 }
