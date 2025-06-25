@@ -8,6 +8,10 @@ import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import fr.rhumun.game.worldcraftopengl.content.Mesh;
+
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +132,110 @@ public class StairsUtils {
 
     // Items rendering
     public static void rasterBlockItem(ItemStack block, Slot slot, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList){
-        BlockUtil.rasterBlockItem(block, slot, verticesList, indicesList);
+        // ----- base slab (bottom half of the block) -----
+        float x1 = slot.getX();
+        float y1 = slot.getY() + (float) slot.getHeight() / 2f;
+        float z1 = 0f;
+
+        float x2 = slot.getWidth() + slot.getX();
+        float y2 = slot.getY() + slot.getHeight();
+        float z2 = 1f;
+
+        float texScaleX = 1f;
+        float texScaleY = 0.5f;
+        float texScaleZ = 1f;
+
+        float texIDFront = block.getMaterial().getFrontTexture().getId();
+        float texIDBack = block.getMaterial().getBackTexture().getId();
+        float texIDTop = block.getMaterial().getTopTexture().getId();
+        float texIDBottom = block.getMaterial().getBottomTexture().getId();
+        float texIDLeft = block.getMaterial().getLeftTexture().getId();
+        float texIDRight = block.getMaterial().getRightTexture().getId();
+
+        float[][] vertices = {
+                {x1, y2, z1, 0.0f, 0.0f, texIDFront},
+                {x2, y2, z1, texScaleX, 0.0f, texIDFront},
+                {x2, y1, z1, texScaleX, texScaleY, texIDFront},
+                {x1, y1, z1, 0.0f, texScaleY, texIDFront},
+
+                {x1, y2, z2, 0.0f, 0.0f, texIDBack},
+                {x2, y2, z2, texScaleX, 0.0f, texIDBack},
+                {x2, y1, z2, texScaleX, texScaleY, texIDBack},
+                {x1, y1, z2, 0.0f, texScaleY, texIDBack},
+
+                {x1, y2, z1, 0.0f, 0.0f, texIDLeft},
+                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft},
+                {x1, y1, z1, 0.0f, texScaleY, texIDLeft},
+                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft},
+
+                {x2, y2, z1, 0.0f, 0.0f, texIDRight},
+                {x2, y2, z2, texScaleZ, 0.0f, texIDRight},
+                {x2, y1, z1, 0.0f, texScaleY, texIDRight},
+                {x2, y1, z2, texScaleZ, texScaleY, texIDRight},
+
+                {x1, y1, z1, 0.0f, 0.0f, texIDTop},
+                {x2, y1, z1, texScaleX, 0.0f, texIDTop},
+                {x1, y1, z2, 0.0f, texScaleZ, texIDTop},
+                {x2, y1, z2, texScaleX, texScaleZ, texIDTop},
+
+                {x1, y2, z1, 0.0f, 0.0f, texIDBottom},
+                {x2, y2, z1, texScaleX, 0.0f, texIDBottom},
+                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom},
+                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom},
+        };
+
+        int offset = (indicesList.isEmpty()) ? 0 : indicesList.getLast() + 1;
+        BlockUtil.addAllVertices(vertices, verticesList);
+        BlockUtil.addAllIndices(BlockUtil.createIndices(offset), indicesList);
+
+        // ----- step on the side half -----
+        x1 = slot.getX() + (float) slot.getWidth() / 2f;
+        y1 = slot.getY();
+        z1 = 0f;
+
+        x2 = slot.getWidth() + slot.getX();
+        y2 = slot.getY() + (float) slot.getHeight() / 2f;
+        z2 = 1f;
+
+        texScaleX = 0.5f;
+        texScaleY = 0.5f;
+        texScaleZ = 1f;
+
+        float[][] stepVertices = {
+                {x1, y2, z1, 0.0f, 0.0f, texIDFront},
+                {x2, y2, z1, texScaleX, 0.0f, texIDFront},
+                {x2, y1, z1, texScaleX, texScaleY, texIDFront},
+                {x1, y1, z1, 0.0f, texScaleY, texIDFront},
+
+                {x1, y2, z2, 0.0f, 0.0f, texIDBack},
+                {x2, y2, z2, texScaleX, 0.0f, texIDBack},
+                {x2, y1, z2, texScaleX, texScaleY, texIDBack},
+                {x1, y1, z2, 0.0f, texScaleY, texIDBack},
+
+                {x1, y2, z1, 0.0f, 0.0f, texIDLeft},
+                {x1, y2, z2, texScaleZ, 0.0f, texIDLeft},
+                {x1, y1, z1, 0.0f, texScaleY, texIDLeft},
+                {x1, y1, z2, texScaleZ, texScaleY, texIDLeft},
+
+                {x2, y2, z1, 0.0f, 0.0f, texIDRight},
+                {x2, y2, z2, texScaleZ, 0.0f, texIDRight},
+                {x2, y1, z1, 0.0f, texScaleY, texIDRight},
+                {x2, y1, z2, texScaleZ, texScaleY, texIDRight},
+
+                {x1, y1, z1, 0.0f, 0.0f, texIDTop},
+                {x2, y1, z1, texScaleX, 0.0f, texIDTop},
+                {x1, y1, z2, 0.0f, texScaleZ, texIDTop},
+                {x2, y1, z2, texScaleX, texScaleZ, texIDTop},
+
+                {x1, y2, z1, 0.0f, 0.0f, texIDBottom},
+                {x2, y2, z1, texScaleX, 0.0f, texIDBottom},
+                {x1, y2, z2, 0.0f, texScaleZ, texIDBottom},
+                {x2, y2, z2, texScaleX, texScaleZ, texIDBottom},
+        };
+
+        offset = indicesList.getLast() + 1;
+        BlockUtil.addAllVertices(stepVertices, verticesList);
+        BlockUtil.addAllIndices(BlockUtil.createIndices(offset), indicesList);
     }
 
     public static void rasterDroppedStairsItem(Location loc, Material mat, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList){
