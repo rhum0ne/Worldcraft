@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.entities.MobEntity;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;

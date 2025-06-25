@@ -55,6 +55,7 @@ public class TextureUtils {
         int baseTextures = TextureTypes.BLOCKS.get().size() + TextureTypes.GUIS.get().size();
         System.out.println("baseTextures: " + baseTextures);
         ShaderManager.ENTITY_SHADER.setUniform("texturesNumber", baseTextures);
+        ShaderManager.ANIMATED_ENTITY_SHADER.setUniform("texturesNumber", baseTextures);
 
         GAME.debug("Done!");
         return guiTexturesUnits.length;
@@ -112,6 +113,7 @@ public class TextureUtils {
 
         // Remplir le shader avec l'unité de texture et le sampler
         ShaderManager.ENTITY_SHADER.setUniform("entitiesTextures", textureID);
+        ShaderManager.ANIMATED_ENTITY_SHADER.setUniform("entitiesTextures", textureID);
 
         GAME.debug("Done!");
     }

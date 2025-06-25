@@ -11,15 +11,18 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 boneMatrices[64];
 
-out vec2 fragTexCoord;
-out float fragTextureIndex;
-out vec3 fragNormal;
+out vec2 TexCoord;
+flat out float TextureID;
+flat out vec3 FragNormal;
+out vec3 FragPos;
 
 void main() {
     mat4 boneTransform = boneMatrices[inBoneID];
-    vec4 skinned = boneTransform * vec4(inPosition, 1.0);
-    fragTexCoord = inTexCoord;
-    fragTextureIndex = inTextureIndex;
-    fragNormal = mat3(transpose(inverse(boneTransform))) * inNormal;
-    gl_Position = projection * view * skinned;
+    vec4 worldPos = boneTransform * vec4(inPosition, 1.0);
+    FragPos = worldPos.xyz;
+    TexCoord = inTexCoord;
+    TexCoord.y = 1 - TexCoord.y;
+    TextureID = inTextureIndex;
+    FragNormal = mat3(transpose(inverse(boneTransform))) * inNormal;
+    gl_Position = projection * view * worldPos;
 }
