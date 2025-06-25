@@ -81,7 +81,6 @@ public class FluidSimulator {
     private static void attemptSpread(Block target, Material material) {
         if (target == null || (target.getMaterial() != null && !target.getMaterial().isLiquid())) return;
         byte newState = computeState(target, material);
-        System.out.println("New state : " + newState);
         if (newState < 0) {
             target.setMaterial(null);
             queue.offer(new FluidEntry(target, ((FluidMaterial) material).getViscosity()));
