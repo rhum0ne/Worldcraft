@@ -101,26 +101,20 @@ public class Entity {
     }
 
     public void addX(double a){
-        if(a == 0) return;
-        double step = a/10.0;
-        for(int i=0;i<10;i++){
-            AxisAlignedBB currentBB = getBoundingBox();
-            AxisAlignedBB nextBB = currentBB.offset(new Vector3f((float) step, 0, 0));
-            if(!this.isNoClipping && !collides(currentBB) && collides(nextBB)) break;
-            this.getLocation().addX(step);
+        if(a==0) return;
+        if(!this.isNoClipping && !isInsideBlock() && hasBlockInDirection(new Vector3f((a>0 ? 1 : -1), 0, 0))) {
+            return;
         }
+        this.getLocation().addX(a);
         this.onMove();
     }
 
     public void addZ(double a){
-        if(a == 0) return;
-        double step = a/10.0;
-        for(int i=0;i<10;i++){
-            AxisAlignedBB currentBB = getBoundingBox();
-            AxisAlignedBB nextBB = currentBB.offset(new Vector3f(0, 0, (float) step));
-            if(!this.isNoClipping && !collides(currentBB) && collides(nextBB)) break;
-            this.getLocation().addZ(step);
+        if(a==0) return;
+        if(!this.isNoClipping && !isInsideBlock() && hasBlockInDirection(new Vector3f(0, 0, (a>0 ? 1 : -1)))) {
+            return;
         }
+        this.getLocation().addZ(a);
         this.onMove();
     }
     public void addY(double a){
@@ -242,15 +236,28 @@ public class Entity {
                     Model model = block.getModel();
                     if(model == null) continue;
                     if(model.getModel() instanceof ModelHitbox mh){
-                        if(mh.getHitbox(block).intersects(box, block)) return true;
+                        AxisAlignedBB bb = mh.getHitbox(block).getWorldBoundingBox(block);
+                        if(intersectsExclusive(box, bb)) return true;
                     } else if(model.getModel() instanceof ModelMultiHitbox mmh){
-                        for(Hitbox hitbox : mmh.getHitboxes(block))
-                            if(hitbox.intersects(box, block)) return true;
+                        for(Hitbox hitbox : mmh.getHitboxes(block)){
+                            AxisAlignedBB bb = hitbox.getWorldBoundingBox(block);
+                            if(intersectsExclusive(box, bb)) return true;
+                        }
                     }
                 }
             }
         }
         return false;
+    }
+
+    private boolean intersectsExclusive(AxisAlignedBB a, AxisAlignedBB b){
+        return a.maxX > b.minX && a.minX < b.maxX &&
+               a.maxY > b.minY && a.minY < b.maxY &&
+               a.maxZ > b.minZ && a.minZ < b.maxZ;
+    }
+
+    private boolean isInsideBlock(){
+        return collides(getBoundingBox());
     }
 
 
