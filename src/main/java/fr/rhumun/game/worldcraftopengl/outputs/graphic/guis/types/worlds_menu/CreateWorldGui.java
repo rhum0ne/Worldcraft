@@ -4,8 +4,11 @@ import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.FullscreenTiledGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Checkbox;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.InputField;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.TypingGui;
+import fr.rhumun.game.worldcraftopengl.entities.player.Gamemode;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldType;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
@@ -13,6 +16,10 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class CreateWorldGui extends FullscreenTiledGui implements TypingGui {
     private final InputField nameField;
     private final InputField seedField;
+    private final Checkbox normalType;
+    private final Checkbox flatType;
+    private final Checkbox survival;
+    private final Checkbox creative;
     private InputField activeField;
 
     public CreateWorldGui() {
@@ -31,17 +38,49 @@ public class CreateWorldGui extends FullscreenTiledGui implements TypingGui {
         this.addButton(seedField);
         activeField = nameField;
 
-        this.addButton(new Button(0, 60, this, "Creer le monde") {
+        this.addText(-200, 40, "Type:");
+        normalType = new Checkbox(100, 40, "Normal", this);
+        flatType = new Checkbox(260, 40, "Flat", this);
+        normalType.setChecked(true);
+        normalType.setOnChange(() -> {
+            normalType.setChecked(true);
+            flatType.setChecked(false);
+        });
+        flatType.setOnChange(() -> {
+            flatType.setChecked(true);
+            normalType.setChecked(false);
+        });
+        this.addButton(normalType);
+        this.addButton(flatType);
+
+        this.addText(-200, 90, "Gamemode:");
+        survival = new Checkbox(100, 90, "Survie", this);
+        creative = new Checkbox(260, 90, "Créatif", this);
+        survival.setChecked(true);
+        survival.setOnChange(() -> {
+            survival.setChecked(true);
+            creative.setChecked(false);
+        });
+        creative.setOnChange(() -> {
+            creative.setChecked(true);
+            survival.setChecked(false);
+        });
+        this.addButton(survival);
+        this.addButton(creative);
+
+        this.addButton(new Button(0, 140, this, "Creer le monde") {
             @Override
             public void onClick(Player player) {
                 String seedText = seedField.getValue();
                 Seed seed = seedText == null || seedText.isEmpty() ? Seed.random() : Seed.create(seedText);
                 String name = nameField.getValue();
                 if (name == null || name.isEmpty()) name = "Mon monde";
-                GAME.startGame(name, seed);
+                WorldType type = flatType.isChecked() ? WorldType.FLAT : WorldType.NORMAL;
+                Gamemode gm = creative.isChecked() ? Gamemode.CREATIVE : Gamemode.SURVIVAL;
+                GAME.startGame(name, seed, type, gm);
             }
         });
-        this.addButton(new Button(0, 110, this, "Retour") {
+        this.addButton(new Button(0, 190, this, "Retour") {
             @Override
             public void onClick(Player player) {
                 GAME.getGraphicModule().getGuiModule().openGUI(new WorldsGui());

@@ -13,6 +13,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
+import fr.rhumun.game.worldcraftopengl.worlds.WorldType;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -164,6 +165,7 @@ public class SaveManager {
             out.writeInt(world.getXSpawn());
             out.writeInt(world.getZSpawn());
             out.writeUTF(world.getName() == null ? "" : world.getName());
+            out.writeByte(world.getWorldType().ordinal());
         } catch (IOException e) {
             Game.GAME.errorLog(e);
         }
@@ -182,6 +184,14 @@ public class SaveManager {
                 world.setName(in.readUTF());
             } catch (IOException ignored) {
                 world.setName("World " + world.getSeed().getLong());
+            }
+            try {
+                byte type = in.readByte();
+                if (type >= 0 && type < WorldType.values().length) {
+                    world.setWorldType(WorldType.values()[type]);
+                }
+            } catch (IOException ignored) {
+                world.setWorldType(WorldType.NORMAL);
             }
         } catch (IOException e) {
             Game.GAME.errorLog(e);

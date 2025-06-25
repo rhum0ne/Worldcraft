@@ -148,6 +148,10 @@ public class Texture {
     public static Texture PLAYER_INVENTORY;
     public static Texture WORKBENCH;
     public static Texture WORKBENCH_2;
+    public static Texture CHECKBOX;
+    public static Texture CHECKBOX_HIGHLIGHTED;
+    public static Texture CHECKBOX_SELECTED;
+    public static Texture CHECKBOX_SELECTED_HIGHLIGHTED;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;
     public static Texture DEFAULT_BUTTON_HOVERED;
@@ -355,6 +359,10 @@ public class Texture {
         PLAYER_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\player_inventory.png");
         WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
         WORKBENCH_2 = new Texture(TextureTypes.GUIS,"hud\\workbench_2.png");
+        CHECKBOX = new Texture(TextureTypes.GUIS, "hud\\widgets\\checkbox.png");
+        CHECKBOX_HIGHLIGHTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\checkbox_highlighted.png");
+        CHECKBOX_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\checkbox_selected.png");
+        CHECKBOX_SELECTED_HIGHLIGHTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\checkbox_selected_highlighted.png");
         SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
         DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\widgets\\button.png");
         DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");
