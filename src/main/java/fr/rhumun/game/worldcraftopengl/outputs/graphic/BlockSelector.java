@@ -71,7 +71,7 @@ public class BlockSelector extends Renderer {
         this.getIndices().clear();
         this.selectedBlock = actualSelectedBlock;
 
-        if(this.selectedBlock != null && this.selectedBlock.getMaterial() != null)
+        if(this.selectedBlock != null && !this.selectedBlock.isAir())
             raster(this.selectedBlock, this.selectedBlock.getModel().get());
 
         this.toArrays();

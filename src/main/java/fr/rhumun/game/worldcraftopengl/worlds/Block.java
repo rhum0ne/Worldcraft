@@ -62,7 +62,7 @@ public class Block {
     }
 
     public World getWorld() {
-        return this.getChunk().getWorld();
+        return GAME.getWorld();
     }
 
 
@@ -123,24 +123,24 @@ public class Block {
             return;
         }
 
-        this.updateIsSurrounded(this.getSideBlocks());
-    }
-    public void updateIsSurrounded(Block[] sideBlocks) {
-        if(!getChunk().isGenerated()) return;
+        Chunk chunk = getChunk();
 
-        // Vérifie les 6 directions pour voir si un bloc est présent
-        for(Block block : sideBlocks) {
-            if(block == null || !block.isOpaque()) {
-                this.setSurrounded(false);
-                return;
-            }
-        }
-        this.setSurrounded(true);
+        if(!this.canBeSurroundedBy(this.getBlockAtDown(chunk))) this.setSurrounded(false);
+        else if(!this.canBeSurroundedBy(this.getBlockAtUp(chunk))) this.setSurrounded(false);
+        else if(!this.canBeSurroundedBy(this.getBlockAtNorth(chunk))) this.setSurrounded(false);
+        else if(!this.canBeSurroundedBy(this.getBlockAtSouth(chunk))) this.setSurrounded(false);
+        else if(!this.canBeSurroundedBy(this.getBlockAtWest(chunk))) this.setSurrounded(false);
+        else if(!this.canBeSurroundedBy(this.getBlockAtEast(chunk))) this.setSurrounded(false);
+    }
+
+    private boolean canBeSurroundedBy(Block block){
+        if(block == null) return false;
+        if(block.isOpaque()) return false;
+        return true;
     }
 
     public boolean isOpaque(){
-        Material material = this.getMaterial();
-        return material != null && ( this.getModel().isOpaque() && material.getOpacity() == OpacityType.OPAQUE);
+        return !isAir() && ( this.getModel().isOpaque() && this.getMaterial().getOpacity() == OpacityType.OPAQUE);
     }
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
@@ -157,7 +157,7 @@ public class Block {
     public synchronized Block setMaterial(Material material){
         Chunk chunk = getChunk();
         //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
-        if(this.getMaterial() != null && this.getMaterial() instanceof PointLight){
+        if(!this.isAir() && this.getMaterial() instanceof PointLight){
             chunk.getLightningBlocks().remove(this);
         }
 
@@ -181,7 +181,8 @@ public class Block {
             if(material instanceof PointLight){
                 chunk.getLightningBlocks().add(this);
             }
-            chunk.getVisibleBlock().add(this);
+            if( !chunk.getVisibleBlock().contains(this))
+                chunk.getVisibleBlock().add(this);
 
             if(material instanceof ForcedModelMaterial fMat){
                 this.setModel(fMat.getModel());
@@ -218,12 +219,14 @@ public class Block {
     public Block[] getSideBlocks() {
         Block[] sideBlocks = new Block[6];
 
-        sideBlocks[0] = this.getBlockAtDown(false);
-        sideBlocks[1] = this.getBlockAtUp(false);
-        sideBlocks[2] = this.getBlockAtNorth(false);
-        sideBlocks[3] = this.getBlockAtSouth(false);
-        sideBlocks[4] = this.getBlockAtWest(false);
-        sideBlocks[5] = this.getBlockAtEast(false);
+        Chunk chunk = getChunk();
+
+        sideBlocks[0] = this.getBlockAtDown(chunk);
+        sideBlocks[1] = this.getBlockAtUp(chunk);
+        sideBlocks[2] = this.getBlockAtNorth(chunk);
+        sideBlocks[3] = this.getBlockAtSouth(chunk);
+        sideBlocks[4] = this.getBlockAtWest(chunk);
+        sideBlocks[5] = this.getBlockAtEast(chunk);
         return sideBlocks;
     }
 
@@ -257,14 +260,12 @@ public class Block {
     public Block getBlockAtEast(){ return getBlockAtEast(true); }
 
     public Block getBlockAtUp(boolean generateIfNull) {
-        Chunk chunk = getChunk();
-        if(this.getY() == chunk.getWorld().getHeigth()-1) return null;
-        return chunk.getAt(this.getX(), this.getY() + 1, this.getZ());
+        if(this.getY() == GAME.getWorld().getHeigth()-1) return null;
+        return getChunk().getAt(this.getX(), this.getY() + 1, this.getZ());
     }
     public Block getBlockAtDown(boolean generateIfNull) {
-        Chunk chunk = getChunk();
         if(this.getY() == 0) return null;
-        return chunk.getAt(this.getX(), this.getY() - 1,this.getZ());
+        return getChunk().getAt(this.getX(), this.getY() - 1,this.getZ());
     }
     public Block getBlockAtNorth(boolean generateIfNull) {
         return getChunk().getAt(this.getX()+1, this.getY(), this.getZ());
@@ -279,6 +280,33 @@ public class Block {
         return getChunk().getAt(this.getX(), this.getY(), this.getZ() + 1);
     }
 
+    public Block getBlockAtUp(Chunk chunk) {
+        if (this.getY() >= GAME.getWorld().getHeigth() - 1) return null;
+        return chunk.getAt(this.getX(), this.getY() + 1, this.getZ());
+    }
+
+    public Block getBlockAtDown(Chunk chunk) {
+        if (this.getY() <= 0) return null;
+        return chunk.getAt(this.getX(), this.getY() - 1, this.getZ());
+    }
+
+    public Block getBlockAtNorth(Chunk chunk) {
+        return chunk.getAt(this.getX() + 1, this.getY(), this.getZ());
+    }
+
+    public Block getBlockAtSouth(Chunk chunk) {
+        return chunk.getAt(this.getX() - 1, this.getY(), this.getZ());
+    }
+
+    public Block getBlockAtEast(Chunk chunk) {
+        return chunk.getAt(this.getX(), this.getY(), this.getZ() - 1);
+    }
+
+    public Block getBlockAtWest(Chunk chunk) {
+        return chunk.getAt(this.getX(), this.getY(), this.getZ() + 1);
+    }
+
+
     public boolean isOnTheFloor(){
         if(this.getModel() == Model.SLAB){
             return this.getState() == 0;
@@ -287,7 +315,7 @@ public class Block {
     }
 
     public boolean isCliquable() {
-        return this.getMaterial() != null && this.getMaterial().getOpacity() != OpacityType.LIQUID;
+        return !this.isAir() && this.getMaterial().getOpacity() != OpacityType.LIQUID;
     }
 
     public void setState(int state) {
@@ -298,4 +326,25 @@ public class Block {
         return this.material;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Block other)) return false;
+        return this.chunkID == other.chunkID &&
+                this.chunkXZ == other.chunkXZ &&
+                this.chunkY == other.chunkY;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Byte.toUnsignedInt(chunkXZ);
+        result = 31 * result + Byte.toUnsignedInt(chunkY);
+        result = 31 * result + Short.toUnsignedInt(chunkID);
+        return result;
+    }
+
+
+    public boolean isAir() {
+        return this.material == -1;
+    }
 }

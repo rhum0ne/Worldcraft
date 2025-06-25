@@ -72,4 +72,17 @@ public abstract class AbstractChunk {
                 z >= 0 && z < CHUNK_SIZE;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof AbstractChunk chunk)) return false;
+        return chunk.getX() == this.getX() && chunk.getZ() == this.getZ();
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.getX() << 16) ^ this.getZ();
+    }
+
 }

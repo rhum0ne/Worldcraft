@@ -65,6 +65,7 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
         for (int y = height-1; y >= 0; y -= lod) {
             for (int x = 0; x < size; x += lod) {
                 for (int z = 0; z < size; z += lod) {
+                    if(chunk == null) return;
 
                     if (used[x][y][z] || !chunk.getIsVisible()[x][y][z]) continue;
 

@@ -207,7 +207,7 @@ public class Entity {
 
     private boolean checkBlockCollision(double x, double y, double z) {
         Block block = getWorld().getBlockAt(x,y,z, false);
-        if(block == null || block.getMaterial() == null || block.getMaterial().isLiquid()) return false;
+        if(block == null || block.isAir() || block.getMaterial().isLiquid()) return false;
         Model model = block.getModel();
 
         if(model == null) return false;
@@ -242,21 +242,21 @@ public class Entity {
         Block head = this.getLocation().getWorld().getBlockAt(
                 this.getLocation().getX(), this.getLocation().getY() + 0.2f,
                 this.getLocation().getZ(), false);
-        return (body != null && body.getMaterial() != null && body.getMaterial().isLiquid()) ||
-               (head != null && head.getMaterial() != null && head.getMaterial().isLiquid());
+        return (body != null && !body.isAir() && body.getMaterial().isLiquid()) ||
+               (head != null && !head.isAir() && head.getMaterial().isLiquid());
     }
 
     public float getLiquidDensity(){
         Block body = this.getLocation().getWorld().getBlockAt(
                 this.getLocation().getX(), this.getLocation().getY() - 0.5f,
                 this.getLocation().getZ(), false);
-        if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
+        if(body != null && !body.isAir() && body.getMaterial().isLiquid())
             return body.getMaterial().getDensity();
 
         Block head = this.getLocation().getWorld().getBlockAt(
                 this.getLocation().getX(), this.getLocation().getY() + 0.2f,
                 this.getLocation().getZ(), false);
-        if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
+        if(head != null && !head.isAir() && head.getMaterial().isLiquid())
             return head.getMaterial().getDensity();
 
         return 0f;
@@ -305,7 +305,7 @@ public class Entity {
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
             Block block = GAME.getWorld().getBlockAt(pos, true);
 
-            if (block != null && block.getMaterial() != null && (!ignoreLiquids || !block.getMaterial().isLiquid())) {
+            if (block != null && !block.isAir() && (!ignoreLiquids || !block.getMaterial().isLiquid())) {
                 return block;
             }
 
@@ -363,7 +363,7 @@ public class Entity {
 
     public Material breakBlock(){
         Block block = this.getSelectedBlock();
-        if(block == null || block.getMaterial() == null) return null;
+        if(block == null || block.isAir()) return null;
         Material mat = block.getMaterial();
         block.setMaterial(null);
         FluidSimulator.onBlockUpdate(block);

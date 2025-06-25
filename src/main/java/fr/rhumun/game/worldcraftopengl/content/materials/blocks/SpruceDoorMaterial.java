@@ -45,7 +45,7 @@ public class SpruceDoorMaterial extends Material implements PlaceableMaterial, F
 
         block.setState(newState);
         Block up = block.getBlockAtUp();
-        if (up != null && up.getMaterial() != null) {
+        if (up != null && !up.isAir()) {
             up.setState(newState);
         }
         block.getChunk().setToUpdate(true);
@@ -54,7 +54,7 @@ public class SpruceDoorMaterial extends Material implements PlaceableMaterial, F
     @Override
     public void onPlace(Block block) {
         Block up = block.getBlockAtUp();
-        if (up != null && up.getMaterial() == null) {
+        if (up != null && up.isAir()) {
             up.setModel(block.getModel()).setMaterial(Materials.SPRUCE_DOOR_TOP).setState(block.getState());
         }
     }

@@ -46,7 +46,7 @@ public class BirchDoorTopMaterial extends Material implements PlaceableMaterial,
 
         block.setState(newState);
         Block down = block.getBlockAtDown();
-        if (down != null && down.getMaterial() != null) {
+        if (down != null && !down.isAir()) {
             down.setState(newState);
         }
         block.getChunk().setToUpdate(true);
@@ -55,7 +55,7 @@ public class BirchDoorTopMaterial extends Material implements PlaceableMaterial,
     @Override
     public void onPlace(Block block) {
         Block up = block.getBlockAtDown();
-        if (up != null && up.getMaterial() == null) {
+        if (up != null && up.isAir()) {
             up.setModel(block.getModel()).setMaterial(Materials.BIRCH_DOOR).setState(block.getState());
         }
     }

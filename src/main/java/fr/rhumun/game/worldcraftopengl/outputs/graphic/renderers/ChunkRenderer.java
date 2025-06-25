@@ -83,22 +83,18 @@ public class ChunkRenderer extends AbstractChunkRenderer{
     }
 
     public synchronized void renderOpaque(){
-        if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.OPAQUE.getPriority()).render();
     }
 
     public synchronized void renderLiquids(){
-        if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
     }
 
     public synchronized void renderTransparent(){
-        if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
     }
 
     public synchronized void renderCloseTransparent(){
-        if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
     }
     public void update() {
@@ -162,7 +158,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
                 for(int Z=0; Z<chunk.getBlocks()[X][Y].length; Z++) {
 
                     Block block = chunk.getBlocks()[X][Y][Z];
-                    if (block == null || block.getMaterial() == null) continue;
+                    if (block == null || block.isAir()) continue;
 
                     // Skip blocks whose parent chunk was already unloaded
                     if (block.getChunk() == null) continue;

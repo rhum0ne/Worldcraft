@@ -122,7 +122,7 @@ public class NormalWorldGenerator extends WorldGenerator {
                 for (int y = 0; y < columnHeight; y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
 
-                    if (block == null || block.getMaterial() == null || block.getMaterial() == Materials.DARK_COBBLE)
+                    if (block == null || block.isAir() || block.getMaterial() == Materials.DARK_COBBLE)
                         continue;
                     if ((block.getMaterial() != STONE && block.getMaterial() != DIRT && block.getMaterial() != Materials.GRASS_BLOCK))
                         continue;
@@ -130,8 +130,6 @@ public class NormalWorldGenerator extends WorldGenerator {
 
                     float noise = (float) caves.evaluateNoise(xH, y / 64f, zH);
 
-//                    float w = (block.getMaterial() == Material.STONE) ? 0.1f : 0.02f;
-//                    float t = (block.getMaterial() == Material.STONE) ? 0 : 0.01f;
                     float w = 0.15f + y/70f;
                     float t = -0.2f + y/70f;
                     if (y < 5) w += (float) 1 / y + 1;
@@ -171,7 +169,7 @@ public class NormalWorldGenerator extends WorldGenerator {
             for (int z = 0; z < CHUNK_SIZE; z++)
                 for (int y = heights[x][z]; y < getWaterHigh(); y++) {
                     Block block = chunk.getBlockNoVerif(x, y, z);
-                    if (block.getMaterial() != null) continue;
+                    if (!block.isAir()) continue;
                     block.setMaterial(Materials.WATER);
                     block.setState(8);
                 }

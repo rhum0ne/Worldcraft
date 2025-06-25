@@ -5,7 +5,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 public class Liquid implements AbstractOpacity {
     @Override
     public boolean isVisibleWith(Block block) {
-        if(block.getMaterial() == null) return true;
+        if(block.isAir()) return true;
         return !block.isOpaque() && block.getMaterial().getOpacity() != OpacityType.LIQUID;
     }
 

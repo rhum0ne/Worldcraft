@@ -63,8 +63,8 @@ public class FluidSimulator {
         }
 
         Block down = source.getBlockAtDown();
-        if (down != null && (down.getMaterial() == null || down.getMaterial().isLiquid())) {
-            if(down.getMaterial() != null && down.getMaterial().isLiquid() && down.getState() >= 7) return;
+        if (down != null && (down.isAir() || down.getMaterial().isLiquid())) {
+            if(!down.isAir() && down.getMaterial().isLiquid() && down.getState() >= 7) return;
 
             down.setMaterial(mat);
             down.setState((byte)7);
@@ -79,7 +79,7 @@ public class FluidSimulator {
     }
 
     private static void attemptSpread(Block target, Material material) {
-        if (target == null || (target.getMaterial() != null && !target.getMaterial().isLiquid())) return;
+        if (target == null || (!target.isAir() && !target.getMaterial().isLiquid())) return;
         byte newState = computeState(target, material);
         if (newState < 0) {
             target.setMaterial(null);

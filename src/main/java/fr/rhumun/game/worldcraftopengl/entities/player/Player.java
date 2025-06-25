@@ -112,7 +112,7 @@ public class Player extends LivingEntity implements MovingEntity {
             Block block1 = GAME.getWorld().getBlockAt(pos, true);
             if(block1 == null) return null;
 
-            if (block1.getMaterial() != null) {
+            if (!block1.isAir()) {
                 return block;
             }
             block = block1;
@@ -214,7 +214,7 @@ public class Player extends LivingEntity implements MovingEntity {
 
     public void startBreaking() {
         Block target = getSelectedBlock();
-        if (target == null || target.getMaterial() == null) {
+        if (target == null || target.isAir()) {
             return;
         }
         if (target != breakingBlock) {
@@ -232,7 +232,7 @@ public class Player extends LivingEntity implements MovingEntity {
 
     private void updateBreaking() {
         if (!isBreaking) return;
-        if (breakingBlock == null || breakingBlock.getMaterial() == null) {
+        if (breakingBlock == null || breakingBlock.isAir()) {
             stopBreaking();
             return;
         }
@@ -257,7 +257,7 @@ public class Player extends LivingEntity implements MovingEntity {
     }
 
     public int getBreakingStage() {
-        if( breakingBlock == null || breakingBlock.getMaterial() == null) return 0;
+        if( breakingBlock == null || breakingBlock.isAir()) return 0;
         return (int) (breakingProgress * 10);
     }
 
@@ -313,7 +313,7 @@ public class Player extends LivingEntity implements MovingEntity {
                 this.getLocation().getZ(),
                 false
         );
-        return block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()
+        return block != null && !block.isAir() && !block.getMaterial().isLiquid()
                 ? block : null;
     }
 

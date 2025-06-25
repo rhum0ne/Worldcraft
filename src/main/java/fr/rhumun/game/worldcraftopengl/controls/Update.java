@@ -18,10 +18,6 @@ public class Update  extends Control{
 
         System.out.println(player.getLocation().getChunk().toString());
 
-
-        player.getLocation().getChunk().updateBordersChunks();
-
-        player.getLoadedChunksManager().printChunksMap();
         player.getLocation().getChunk().debugChunk();
 
         player.updateInventory();

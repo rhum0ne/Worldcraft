@@ -21,7 +21,7 @@ public class LightChunk extends AbstractChunk{
         materials = new Material[Game.CHUNK_SIZE][world.getHeigth()][Game.CHUNK_SIZE];
         isVisible = new boolean[Game.CHUNK_SIZE][world.getHeigth()][Game.CHUNK_SIZE];
 
-        updateAllBlock();
+        this.generate();
 
         this.setToUpdate(true);
     }
@@ -36,7 +36,7 @@ public class LightChunk extends AbstractChunk{
 
 
     public void updateAllBlock() {
-        if(!isGenerated()) generate();
+        if (!isGenerated()) generate();
 
         int sizeX = materials.length;
         int sizeY = materials[0].length;
@@ -57,19 +57,21 @@ public class LightChunk extends AbstractChunk{
             for (int y = 0; y < sizeY; y++) {
                 for (int z = 0; z < sizeZ; z++) {
                     Material mat = materials[x][y][z];
-                    if (mat == null) continue; // rien à afficher
+                    if (mat == null) continue;
 
+                    // Par défaut on suppose le bloc non visible
                     boolean visible = false;
 
-                    // Check les 6 directions autour
-                    if (x == 0 || isMaterialTransparent(x - 1, y, z)) visible = true;
-                    else if (x == sizeX - 1 || isMaterialTransparent(x + 1, y, z)) visible = true;
+                    // Lecture directe (aucun appel de méthode)
+                    // Bords => visible automatiquement
+                    if (x == 0 || materials[x - 1][y][z] == null) visible = true;
+                    else if (x == sizeX - 1 || materials[x + 1][y][z] == null) visible = true;
 
-                    else if (y == 0 || isMaterialTransparent(x, y - 1, z)) visible = true;
-                    else if (y == sizeY - 1 || isMaterialTransparent(x, y + 1, z)) visible = true;
+                    else if (y == 0 || materials[x][y - 1][z] == null) visible = true;
+                    else if (y == sizeY - 1 || materials[x][y + 1][z] == null) visible = true;
 
-                    else if (z == 0 || isMaterialTransparent(x, y, z - 1)) visible = true;
-                    else if (z == sizeZ - 1 || isMaterialTransparent(x, y, z + 1)) visible = true;
+                    else if (z == 0 || materials[x][y][z - 1] == null) visible = true;
+                    else if (z == sizeZ - 1 || materials[x][y][z + 1] == null) visible = true;
 
                     isVisible[x][y][z] = visible;
                 }
@@ -77,13 +79,20 @@ public class LightChunk extends AbstractChunk{
         }
     }
 
+
     private Material getMaterialAt(int x, int y, int z) {
         if (y < 0 || y >= getWorld().getHeigth()) return null;
+        if (x >= 0 && x < Game.CHUNK_SIZE && z >= 0 && z < Game.CHUNK_SIZE) {
+            return materials[x][y][z];
+        }
 
-        int cX = this.getX() + Math.floorDiv(x, Game.CHUNK_SIZE);
-        int cZ = this.getZ() + Math.floorDiv(z, Game.CHUNK_SIZE);
-        int localX = Math.floorMod(x, Game.CHUNK_SIZE);
-        int localZ = Math.floorMod(z, Game.CHUNK_SIZE);
+        int chunkShift = 4; // car 2^4 = 16
+        int chunkMask = 0b1111;
+
+        int cX = this.getX() + (x >> chunkShift);
+        int cZ = this.getZ() + (z >> chunkShift);
+        int localX = x & chunkMask;
+        int localZ = z & chunkMask;
 
         if (cX == this.getX() && cZ == this.getZ()) {
             return materials[localX][y][localZ];

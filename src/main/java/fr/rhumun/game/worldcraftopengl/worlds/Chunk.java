@@ -1,5 +1,6 @@
 package fr.rhumun.game.worldcraftopengl.worlds;
 
+import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
 import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.Renderer;
@@ -116,17 +117,20 @@ public class Chunk extends AbstractChunk {
     }
 
     public Block getAt(int x, int y, int z) {
-        if (y < 0 || y >= this.getWorld().getHeigth()) {
-            return null;
+        if (y < 0 || y >= getWorld().getHeigth()) return null;
+        if (x >= 0 && x < Game.CHUNK_SIZE && z >= 0 && z < Game.CHUNK_SIZE) {
+            return blocks[x][y][z];
         }
+
+        int chunkMask = 0b1111;
 
         int relX = x - this.getX() * CHUNK_SIZE;
         int relZ = z - this.getZ() * CHUNK_SIZE;
 
         int offsetX = Math.floorDiv(relX, CHUNK_SIZE);
         int offsetZ = Math.floorDiv(relZ, CHUNK_SIZE);
-        int localX = Math.floorMod(relX, CHUNK_SIZE);
-        int localZ = Math.floorMod(relZ, CHUNK_SIZE);
+        int localX = x & chunkMask;
+        int localZ = z & chunkMask;
 
         Chunk target = this;
         if (offsetX != 0 || offsetZ != 0) {
@@ -148,7 +152,7 @@ public class Chunk extends AbstractChunk {
     public Block getHighestBlock(int x, int z, boolean countLiquids){
         for(int y=this.getWorld().getHeigth()-1; y>=0; y--){
             Block block = blocks[x][y][z];
-            if(block.getMaterial() != null && (countLiquids || !block.getMaterial().isLiquid())) return block;
+            if(!block.isAir() && (countLiquids || !block.getMaterial().isLiquid())) return block;
         }
         return blocks[x][0][z];
     }

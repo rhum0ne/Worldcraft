@@ -45,7 +45,7 @@ public class DoorMaterial  extends Material implements PlaceableMaterial, Forced
 
         block.setState(newState);
         Block up = block.getBlockAtUp();
-        if (up != null && up.getMaterial() != null) {
+        if (up != null && !up.isAir()) {
             up.setState(newState);
         }
         block.getChunk().setToUpdate(true);
@@ -54,7 +54,7 @@ public class DoorMaterial  extends Material implements PlaceableMaterial, Forced
     @Override
     public void onPlace(Block block) {
         Block up = block.getBlockAtUp();
-        if (up != null && up.getMaterial() == null) {
+        if (up != null && up.isAir()) {
             up.setModel(block.getModel()).setMaterial(Materials.DOOR_TOP).setState(block.getState());
         }
     }

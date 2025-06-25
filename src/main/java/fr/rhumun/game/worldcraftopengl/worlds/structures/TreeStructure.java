@@ -28,20 +28,20 @@ public class TreeStructure extends AbstractStructure{
             for(int a=x-2; a<=x+2; a++)
                 for(int b=z-2; b<=z+2; b++){
                     Block block = world.getBlockAt(a, c ,b, true);
-                    if(block.getMaterial() == null) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
+                    if(block.isAir()) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
                 }
         }
 
         for(int a=x-1; a<=x+1; a++)
             for(int b=z-1; b<=z+1; b++){
                 Block block = world.getBlockAt(a, h ,b, true);
-                if(block.getMaterial() == null) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
+                if(block.isAir()) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
             }
         h++;
         for(int a=x-1; a<=x+1; a++)
             for(int b=z-1; b<=z+1; b++){
                 Block block = world.getBlockAt(a, h ,b, true);
-                if(block.getMaterial() == null) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
+                if(block.isAir()) block.setMaterial(Materials.LEAVES).setModel(Model.BLOCK);
             }
 
     }

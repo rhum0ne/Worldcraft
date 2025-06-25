@@ -35,7 +35,7 @@ public class Movements {
         // Appliquer le frottement de l'air
 
         Block block = entity.getBlockDown();
-        if (block != null && block.getMaterial() != null) {
+        if (block != null && !block.isAir()) {
             // Appliquer le frottement du matériau au sol
             float groundFriction = block.getMaterial().getFriction();
             entity.getVelocity().mul(groundFriction, 1, groundFriction);
@@ -150,7 +150,7 @@ public class Movements {
 
         if(entity instanceof Player player && tick++ % stepSoundFrequency == 0) {
             Block block = entity.getBlockDown();
-            if (block != null && block.getMaterial() != null && block.getMaterial() instanceof PlaceableMaterial pM) player.playSound(pM.getBreakSound(), 0.2f);
+            if (block != null && !block.isAir() && block.getMaterial() instanceof PlaceableMaterial pM) player.playSound(pM.getBreakSound(), 0.2f);
         }
     }
 }

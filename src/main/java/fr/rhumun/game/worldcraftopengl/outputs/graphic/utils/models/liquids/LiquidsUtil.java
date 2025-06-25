@@ -40,7 +40,7 @@ public class LiquidsUtil {
     }
 
     protected static boolean isToRender(Block block, Block counterBlock){
-        return (counterBlock == null || counterBlock.getMaterial() == null || (!counterBlock.isOpaque() && !counterBlock.getMaterial().isLiquid()));
+        return (counterBlock == null || counterBlock.isAir() || (!counterBlock.isOpaque() && !counterBlock.getMaterial().isLiquid()));
     }
 
     protected static boolean hasFluidAbove(Block block){
