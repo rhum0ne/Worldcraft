@@ -79,6 +79,14 @@ public class Materials {
     public static Material ACACIA_DOOR = new AcaciaDoorMaterial();
     public static Material ACACIA_DOOR_TOP = new AcaciaDoorTopMaterial();
     public static Material ACACIA_TRAPDOOR = new AcaciaTrapdoorMaterial();
+    public static Material CHERRY_LOG = new CherryLogMaterial();
+    public static Material CHERRY_PLANKS = new CherryPlanksMaterial();
+    public static Material CHERRY_DOOR = new CherryDoorMaterial();
+    public static Material CHERRY_DOOR_TOP = new CherryDoorTopMaterial();
+    public static Material SPRUCE_LOG = new SpruceLogMaterial();
+    public static Material SPRUCE_PLANKS = new SprucePlanksMaterial();
+    public static Material SPRUCE_DOOR = new SpruceDoorMaterial();
+    public static Material SPRUCE_DOOR_TOP = new SpruceDoorTopMaterial();
     public static Material BRICKS = new BricksMaterial();
     public static Material GLASS = new GlassMaterial();
     public static Material CALCITE = new CalciteMaterial();

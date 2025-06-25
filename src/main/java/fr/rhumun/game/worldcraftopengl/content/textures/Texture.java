@@ -45,6 +45,22 @@ public class Texture {
     public static Texture ACACIA_DOOR;
     public static Texture ACACIA_DOOR_TOP;
     public static Texture ACACIA_TRAPDOOR;
+    public static Texture CHERRY_LOG;
+    public static Texture CHERRY_LOG_TOP;
+    public static Texture CHERRY_PLANKS;
+    public static Texture CHERRY_LEAVES;
+    public static Texture CHERRY_SAPLING;
+    public static Texture CHERRY_DOOR;
+    public static Texture CHERRY_DOOR_TOP;
+    public static Texture CHERRY_TRAPDOOR;
+    public static Texture SPRUCE_LOG;
+    public static Texture SPRUCE_LOG_TOP;
+    public static Texture SPRUCE_PLANKS;
+    public static Texture SPRUCE_LEAVES;
+    public static Texture SPRUCE_SAPLING;
+    public static Texture SPRUCE_DOOR;
+    public static Texture SPRUCE_DOOR_TOP;
+    public static Texture SPRUCE_TRAPDOOR;
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
     public static Texture BOOKSHELF;
@@ -275,6 +291,22 @@ public class Texture {
         ACACIA_DOOR_TOP = new Texture("acacia_door_top.png");
         ACACIA_DOOR = new Texture("acacia_door_bottom.png");
         ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
+        CHERRY_LOG = new Texture("cherry_log.png");
+        CHERRY_LOG_TOP = new Texture("cherry_log_top.png");
+        CHERRY_PLANKS = new Texture("cherry_planks.png");
+        CHERRY_LEAVES = new Texture("cherry_leaves.png");
+        CHERRY_SAPLING = new Texture("cherry_sapling.png");
+        CHERRY_DOOR_TOP = new Texture("cherry_door_top.png");
+        CHERRY_DOOR = new Texture("cherry_door_bottom.png");
+        CHERRY_TRAPDOOR = new Texture("cherry_trapdoor.png");
+        SPRUCE_LOG = new Texture("spruce_log.png");
+        SPRUCE_LOG_TOP = new Texture("spruce_log_top.png");
+        SPRUCE_PLANKS = new Texture("spruce_planks.png");
+        SPRUCE_LEAVES = new Texture("spruce_leaves.png");
+        SPRUCE_SAPLING = new Texture("spruce_sapling.png");
+        SPRUCE_DOOR_TOP = new Texture("spruce_door_top.png");
+        SPRUCE_DOOR = new Texture("spruce_door_bottom.png");
+        SPRUCE_TRAPDOOR = new Texture("spruce_trapdoor.png");
 
         // Item textures initialization
         APPLE = new Texture("items\\apple.png");
