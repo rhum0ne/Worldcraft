@@ -52,7 +52,11 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
     public void render() {
 
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
+        update();
 
         GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
         GLStateManager.enable(GL_DEPTH_TEST);
@@ -83,29 +87,45 @@ public class ChunkRenderer extends AbstractChunkRenderer{
     }
 
     public synchronized void renderOpaque(){
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
+        update();
         this.getRenderers().get(OpacityType.OPAQUE.getPriority()).render();
     }
 
     public synchronized void renderLiquids(){
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
+        update();
         this.getRenderers().get(OpacityType.LIQUID.getPriority()).render();
     }
 
     public synchronized void renderTransparent(){
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
+        update();
         this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).render();
     }
 
     public synchronized void renderCloseTransparent(){
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
+        update();
         this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
     }
     public void update() {
-        if (!chunk.isGenerated()) return;
-        chunk.setToUpdate(false);
-        updateData();
-        updateVAO();
+        if (needsVaoUpdate()) {
+            updateVAO();
+            markVaoClean();
+        }
     }
 
 
@@ -201,6 +221,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
 
         long end = System.currentTimeMillis();
         GAME.debug("Finished updating data for " + chunk + " in " + (end - start) + " ms");
+        markVaoDirty();
     }
 
 

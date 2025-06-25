@@ -424,10 +424,7 @@ public class GraphicModule {
             }
         }
 
-        for (Chunk chunk : visibleChunks) {
-            if (chunk.isToUpdate())
-                ((ChunkRenderer) chunk.getRenderer()).update();
-        }
+
 
         GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
         for (Chunk chunk : visibleChunks) {
@@ -470,9 +467,14 @@ public class GraphicModule {
 
         float h = world.getHeigth();
         for (LightChunk chunk : loadedFarChunks) {
+            if (chunk.isToUpdate()) {
+                chunk.setToUpdate(false);
+                chunkLoader.updateDataFor(chunk.getRenderer());
+            }
             float x = chunk.getX() * CHUNK_SIZE;
             float z = chunk.getZ() * CHUNK_SIZE;
             if (frustumIntersection.testAab(x, 0f, z, x + CHUNK_SIZE, h, z + CHUNK_SIZE)) {
+                chunk.getRenderer().update();
                 chunk.getRenderer().render();
             }
         }

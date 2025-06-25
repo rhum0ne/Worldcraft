@@ -21,11 +21,10 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
     }
 
     public synchronized void update() {
-        if (!chunk.isGenerated()) return; // Vérifie que le chunk est prêt
-        chunk.setToUpdate(false);
-
-        updateData();
-        updateVAO();
+        if (needsVaoUpdate()) {
+            updateVAO();
+            markVaoClean();
+        }
     }
 
 
@@ -141,6 +140,7 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
             if (SHOWING_RENDERER_DATA)
                 this.setVerticesNumber(this.getVerticesNumber() + renderer.getVertices().size());
         }
+        markVaoDirty();
     }
 
 
@@ -149,8 +149,12 @@ public class LightChunkRenderer extends AbstractChunkRenderer{
 
     @Override
     public void render() {
-        if(chunk.isToUpdate()) update();
+        if(chunk.isToUpdate()) {
+            chunk.setToUpdate(false);
+            GAME.getGraphicModule().getChunkLoader().updateDataFor(this);
+        }
 
+        update();
         this.getRenderers().getFirst().render();
     }
 

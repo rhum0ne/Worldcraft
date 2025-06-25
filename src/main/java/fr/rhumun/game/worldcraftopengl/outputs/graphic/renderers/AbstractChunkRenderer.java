@@ -16,6 +16,9 @@ public abstract class AbstractChunkRenderer {
 
     private int verticesNumber;
 
+    private volatile boolean vaoDirty = false;
+    private volatile boolean updating = false;
+
     public AbstractChunkRenderer(){
 
     }
@@ -27,5 +30,12 @@ public abstract class AbstractChunkRenderer {
 
 
     public abstract void cleanup();
+
+    public boolean needsVaoUpdate() { return vaoDirty; }
+    public void markVaoDirty() { vaoDirty = true; }
+    public void markVaoClean() { vaoDirty = false; }
+
+    public boolean isUpdating() { return updating; }
+    public void setUpdating(boolean updating) { this.updating = updating; }
 
 }
