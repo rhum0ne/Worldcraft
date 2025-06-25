@@ -31,6 +31,11 @@ public class ChunkLoader extends TimerTask {
     }
 
     public void updateDataFor(AbstractChunkRenderer chunk){
-        this.executor.submit(chunk::updateData);
+        if(chunk.isUpdating()) return;
+        chunk.setUpdating(true);
+        this.executor.submit(() -> {
+            chunk.updateData();
+            chunk.setUpdating(false);
+        });
     }
 }

@@ -158,9 +158,11 @@ public class Game {
                 // Load initial chunk renderers before closing the loading screen
                 player.getLoadedChunksManager().updateChunksGradually();
                 for (var chunk : player.getLoadedChunksManager().getChunksToRender()) {
+                    ((ChunkRenderer) chunk.getRenderer()).updateData();
                     ((ChunkRenderer) chunk.getRenderer()).update();
                 }
                 for (var light : player.getLoadedChunksManager().getChunksToRenderLight()) {
+                    light.getRenderer().updateData();
                     light.getRenderer().update();
                 }
 
