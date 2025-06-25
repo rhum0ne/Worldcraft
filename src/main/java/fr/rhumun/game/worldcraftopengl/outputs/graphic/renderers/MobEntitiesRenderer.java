@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class MobEntitiesRenderer extends GlobalRenderer {
@@ -33,10 +33,10 @@ public class MobEntitiesRenderer extends GlobalRenderer {
 
         glBindVertexArray(this.getVAO());
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray().clone(), GL_STATIC_DRAW);
-//
+        fillBuffers();
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesBuffer(), GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesBuffer(), GL_DYNAMIC_DRAW);
 //
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
 //
@@ -124,5 +124,10 @@ public class MobEntitiesRenderer extends GlobalRenderer {
     private void addVertex(float[] vertexData) {
         this.getVertices().add(vertexData);
         this.addIndice();
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
     }
 }

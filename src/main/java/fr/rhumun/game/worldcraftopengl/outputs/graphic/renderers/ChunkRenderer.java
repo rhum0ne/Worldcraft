@@ -25,7 +25,7 @@ import java.util.LinkedHashSet;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
@@ -118,13 +118,14 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         this.getRenderers().getFirst().getGraphicModule().getLightningsUtils().updateLights();
 
         for(Renderer renderer : this.getRenderers()) {
-            glBindVertexArray(renderer.getVAO());
+           glBindVertexArray(renderer.getVAO());
 
-            glBindBuffer(GL_ARRAY_BUFFER, renderer.getVBO());
-            glBufferData(GL_ARRAY_BUFFER, renderer.getVerticesArray().clone(), GL_STATIC_DRAW);
+           glBindBuffer(GL_ARRAY_BUFFER, renderer.getVBO());
+            renderer.fillBuffers();
+            glBufferData(GL_ARRAY_BUFFER, renderer.getVerticesBuffer(), GL_DYNAMIC_DRAW);
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer.getEBO());
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, renderer.getIndicesArray().clone(), GL_STATIC_DRAW);
+           glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer.getEBO());
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, renderer.getIndicesBuffer(), GL_DYNAMIC_DRAW);
 
             glBindVertexArray(0);
         }

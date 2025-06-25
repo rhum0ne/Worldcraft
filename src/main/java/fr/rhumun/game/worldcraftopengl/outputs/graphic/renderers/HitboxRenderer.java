@@ -129,10 +129,11 @@ public class HitboxRenderer extends Renderer {
         glBindVertexArray(this.getVAO());
 
         glBindBuffer(GL_ARRAY_BUFFER, this.getVBO());
-        glBufferData(GL_ARRAY_BUFFER, this.getVerticesArray().clone(), GL_STATIC_DRAW);
+        fillBuffers();
+        glBufferData(GL_ARRAY_BUFFER, this.getVerticesBuffer(), GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesArray().clone(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesBuffer(), GL_DYNAMIC_DRAW);
 
         glBindVertexArray(0);
     }
@@ -142,5 +143,6 @@ public class HitboxRenderer extends Renderer {
         glDeleteBuffers(this.getVBO());
         glDeleteVertexArrays(this.getVAO());
         glDeleteBuffers(this.getEBO());
+        freeBuffers();
     }
 }
