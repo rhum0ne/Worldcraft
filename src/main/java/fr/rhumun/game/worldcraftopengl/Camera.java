@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl;
 
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.joml.Vector3f;
 
@@ -13,14 +14,25 @@ public class Camera {
     Vector3f worldUp = new Vector3f(0.0f, 1.0f, 0.0f); // Vecteur "up" pour la caméra
 
     private final Player player;
+    @Getter(AccessLevel.NONE)
+    private final Vector3f tmpPos = new Vector3f();
 
     public Camera(Player player){
         this.player = player;
         updateCameraVectors();
     }
 
+    /**
+     * Retrieves the current camera position. Callers must not mutate
+     * the returned vector as it is reused for performance.
+     *
+     * @return immutable view of the camera position
+     */
     public Vector3f getPos() {
-        return new Vector3f((float) player.getLocation().getX(), (float) player.getLocation().getY(), (float) player.getLocation().getZ());
+        tmpPos.x = (float) player.getLocation().getX();
+        tmpPos.y = (float) player.getLocation().getY();
+        tmpPos.z = (float) player.getLocation().getZ();
+        return tmpPos;
     }
 
     public void setYaw(float yaw) {
