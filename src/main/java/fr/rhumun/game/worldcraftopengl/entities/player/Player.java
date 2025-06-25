@@ -16,6 +16,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.player_inventory.PlayerInventoryGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.creative_inventory.CreativePlayerInventoryGui;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.death_menu.DeathGui;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
@@ -424,7 +425,20 @@ public class Player extends LivingEntity implements MovingEntity {
 
     @Override
     public void kill() {
-        //TO DO
+        this.openGui(new fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.death_menu.DeathGui());
+    }
+
+    /**
+     * Respawn the player at the world's spawn location with full health and hunger.
+     * Closes the death screen when done.
+     */
+    public void respawn() {
+        setHealth(getMaxHealth());
+        setFood(getMaxFood());
+        setSaturation(getMaxSaturation());
+        getWorld().spawnPlayer(this);
+        this.getVelocity().set(0, 0, 0);
+        this.closeInventory();
     }
 
     public boolean isHungry() {
