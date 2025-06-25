@@ -65,7 +65,7 @@ public class Game {
     World world;
     Player player;
 
-    List<Controls> pressedKeys = new ArrayList<>();
+    java.util.concurrent.CopyOnWriteArrayList<Controls> pressedKeys = new java.util.concurrent.CopyOnWriteArrayList<>();
 
     public void queueTask(Runnable task) { mainThreadTasks.offer(task); }
     public void runMainThreadTasks() { Runnable r; while ((r = mainThreadTasks.poll()) != null) r.run(); }
