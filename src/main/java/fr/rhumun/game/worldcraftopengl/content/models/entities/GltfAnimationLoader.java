@@ -1,6 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.content.models.entities;
 
 import fr.rhumun.game.worldcraftopengl.Game;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.assimp.*;
@@ -23,18 +24,71 @@ public class GltfAnimationLoader {
         }
 
         Map<String, Bone> bones = new HashMap<>();
+        Map<String, AINode> nodeMap = new HashMap<>();
         List<AnimationChannel<?>> channels = new ArrayList<>();
 
-        AIAnimation animation = AIAnimation.create(scene.mAnimations().get(0)); // on ne traite que la première
+        // Bones and inverse bind matrices
+        AIMesh aiMesh = AIMesh.create(scene.mMeshes().get(0));
+        PointerBuffer aiBones = aiMesh.mBones();
+        for (int i = 0; i < aiMesh.mNumBones(); i++) {
+            AIBone aiBone = AIBone.create(aiBones.get(i));
+            String name = aiBone.mName().dataString();
+            Bone bone = bones.computeIfAbsent(name, n -> new Bone(n, bones.size()));
+            // Inverse bind matrix
+            AIMatrix4x4 off = aiBone.mOffsetMatrix();
+            bone.inverseBindMatrix.set(
+                off.a1(), off.a2(), off.a3(), off.a4(),
+                off.b1(), off.b2(), off.b3(), off.b4(),
+                off.c1(), off.c2(), off.c3(), off.c4(),
+                off.d1(), off.d2(), off.d3(), off.d4());
+
+            AINode node = aiBone.mNode();
+            nodeMap.put(name, node);
+            if (node != null) {
+                AIMatrix4x4 nTrans = node.mTransformation();
+                Matrix4f mat = new Matrix4f(
+                        nTrans.a1(), nTrans.a2(), nTrans.a3(), nTrans.a4(),
+                        nTrans.b1(), nTrans.b2(), nTrans.b3(), nTrans.b4(),
+                        nTrans.c1(), nTrans.c2(), nTrans.c3(), nTrans.c4(),
+                        nTrans.d1(), nTrans.d2(), nTrans.d3(), nTrans.d4());
+                Vector3f t = new Vector3f();
+                Quaternionf r = new Quaternionf();
+                Vector3f s = new Vector3f();
+                mat.getTranslation(t);
+                mat.getUnnormalizedRotation(r);
+                mat.getScale(s);
+                bone.setTranslation(t);
+                bone.setRotation(r);
+                bone.setScale(s);
+            }
+        }
+
+        // Establish hierarchy
+        for (Map.Entry<String, AINode> entry : nodeMap.entrySet()) {
+            String name = entry.getKey();
+            AINode node = entry.getValue();
+            if (node == null) continue;
+            AINode parent = node.mParent();
+            if (parent != null) {
+                String parentName = parent.mName().dataString();
+                Bone child = bones.get(name);
+                Bone par = bones.get(parentName);
+                if (child != null && par != null) {
+                    child.parent = par;
+                    par.children.add(child);
+                }
+            }
+        }
+
+        // Animation channels (only first animation)
+        AIAnimation animation = AIAnimation.create(scene.mAnimations().get(0));
 
         for (int i = 0; i < animation.mNumChannels(); i++) {
             AINodeAnim channel = AINodeAnim.create(animation.mChannels().get(i));
             String boneName = channel.mNodeName().dataString();
 
-            // Créer le bone si pas encore présent
             bones.computeIfAbsent(boneName, name -> new Bone(name, bones.size()));
 
-            // Position
             AIVectorKey.Buffer positions = channel.mPositionKeys();
             List<Keyframe<Vector3f>> posKeys = new ArrayList<>();
             for (int k = 0; k < channel.mNumPositionKeys(); k++) {
@@ -45,7 +99,6 @@ public class GltfAnimationLoader {
             if (!posKeys.isEmpty())
                 channels.add(new AnimationChannel<>(boneName, "translation", posKeys));
 
-            // Rotation
             AIQuatKey.Buffer rotations = channel.mRotationKeys();
             List<Keyframe<Quaternionf>> rotKeys = new ArrayList<>();
             for (int k = 0; k < channel.mNumRotationKeys(); k++) {
@@ -56,7 +109,6 @@ public class GltfAnimationLoader {
             if (!rotKeys.isEmpty())
                 channels.add(new AnimationChannel<>(boneName, "rotation", rotKeys));
 
-            // Scale
             AIVectorKey.Buffer scales = channel.mScalingKeys();
             List<Keyframe<Vector3f>> scaleKeys = new ArrayList<>();
             for (int k = 0; k < channel.mNumScalingKeys(); k++) {

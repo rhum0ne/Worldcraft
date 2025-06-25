@@ -57,13 +57,16 @@ public class Animator {
 
     public void sendToShader(Shader shader) {
         for (Bone bone : bones.values()) {
-            shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
+            Matrix4f mat = new Matrix4f(bone.globalTransform).mul(bone.inverseBindMatrix);
+            shader.setUniform("boneMatrices[" + bone.index + "]", mat);
         }
     }
 
     public Matrix4f getBoneMatrix(int index) {
         for (Bone b : bones.values()) {
-            if (b.index == index) return b.globalTransform;
+            if (b.index == index) {
+                return new Matrix4f(b.globalTransform).mul(b.inverseBindMatrix);
+            }
         }
         return null;
     }
