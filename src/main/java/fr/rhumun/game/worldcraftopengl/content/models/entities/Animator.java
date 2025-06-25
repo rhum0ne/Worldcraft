@@ -60,4 +60,11 @@ public class Animator {
             shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
         }
     }
+
+    public Matrix4f getBoneMatrix(int index) {
+        for (Bone b : bones.values()) {
+            if (b.index == index) return b.globalTransform;
+        }
+        return null;
+    }
 }

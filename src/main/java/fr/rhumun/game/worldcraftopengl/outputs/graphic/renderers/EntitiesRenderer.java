@@ -103,6 +103,12 @@ public class EntitiesRenderer extends GlobalRenderer {
         FloatBuffer normalsBuffer = obj.getNormalsBuffer().duplicate();
         FloatBuffer texCoordsBuffer = obj.getTexCoordsBuffer().duplicate();
         IntBuffer indicesBuffer = obj.getIndicesBuffer().duplicate();
+        IntBuffer boneBuffer = obj.getBoneIDsBuffer() != null ? obj.getBoneIDsBuffer().duplicate() : null;
+
+        MobEntity animated = null;
+        if (entity instanceof MobEntity m && m.isAnimated() && m.getAnimator() != null && boneBuffer != null) {
+            animated = m;
+        }
 
         float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
         float cosYaw = (float) Math.cos(yawRad + Math.PI/2);
@@ -122,6 +128,18 @@ public class EntitiesRenderer extends GlobalRenderer {
             float relX = verticesBuffer.get(vertexIndex * 3);
             float relY = verticesBuffer.get(vertexIndex * 3 + 1);
             float relZ = verticesBuffer.get(vertexIndex * 3 + 2);
+
+            if (animated != null) {
+                int boneId = boneBuffer.get(vertexIndex);
+                var mat = animated.getAnimator().getBoneMatrix(boneId);
+                if (mat != null) {
+                    org.joml.Vector4f vec = new org.joml.Vector4f(relX, relY, relZ, 1f);
+                    mat.transformPosition(vec);
+                    relX = vec.x;
+                    relY = vec.y;
+                    relZ = vec.z;
+                }
+            }
 
             float rotX = cosYaw * relX - sinYaw * relZ;
             float rotZ = sinYaw * relX + cosYaw * relZ;

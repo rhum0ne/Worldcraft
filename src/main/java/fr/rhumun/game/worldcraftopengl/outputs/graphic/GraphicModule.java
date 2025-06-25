@@ -380,9 +380,7 @@ public class GraphicModule {
         entitiesRenderer.render();
         GLStateManager.useProgram(0);
 
-        GLStateManager.useProgram(ShaderManager.ANIMATED_ENTITY_SHADER.id);
-        animatedEntitiesRenderer.render();
-        GLStateManager.useProgram(0);
+        // Animated entities are now handled in EntitiesRenderer
 
         GLStateManager.enable(GL_BLEND);
         GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
