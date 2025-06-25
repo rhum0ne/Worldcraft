@@ -56,8 +56,14 @@ public class Animator {
     }
 
     public void sendToShader(Shader shader) {
+        sendToShader(shader, new Matrix4f().identity());
+    }
+
+    public void sendToShader(Shader shader, Matrix4f entityTransform) {
+        Matrix4f tmp = new Matrix4f();
         for (Bone bone : bones.values()) {
-            shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
+            shader.setUniform("boneMatrices[" + bone.index + "]",
+                    tmp.set(entityTransform).mul(bone.globalTransform));
         }
     }
 }
