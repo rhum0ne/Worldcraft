@@ -41,6 +41,21 @@ public class ToolBox extends CenteredGUI implements ItemContainer {
         this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.PLANKS, 2),
                 new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
 
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.ACACIA_PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.BIRCH_PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.CHERRY_PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.SPRUCE_PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
+        this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.DARK_PLANKS, 2),
+                new ItemStack[]{ new ItemStack(Materials.WOODEN_AXE), new ItemStack(Materials.WOODEN_HOE), new ItemStack(Materials.WOODEN_PICKAXE), new ItemStack(Materials.WOODEN_SHOVEL), new ItemStack(Materials.WOODEN_SWORD) });
+
         this.addResults(new ItemStack(Materials.STICK), new ItemStack(Materials.IRON_INGOT, 3),
                 new ItemStack[]{ new ItemStack(Materials.IRON_AXE), new ItemStack(Materials.IRON_PICKAXE), new ItemStack(Materials.IRON_SHOVEL), new ItemStack(Materials.IRON_SWORD), new ItemStack(Materials.BUCKET) });
 
