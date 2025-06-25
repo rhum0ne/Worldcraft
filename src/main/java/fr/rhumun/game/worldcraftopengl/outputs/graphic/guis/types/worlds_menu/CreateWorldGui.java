@@ -16,16 +16,14 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class CreateWorldGui extends FullscreenTiledGui implements TypingGui {
     private final InputField nameField;
     private final InputField seedField;
-    private final Checkbox normalType;
     private final Checkbox flatType;
-    private final Checkbox survival;
     private final Checkbox creative;
     private InputField activeField;
 
     public CreateWorldGui() {
         super(Texture.DARK_COBBLE);
 
-        this.addText(0, -120, "Créer un Monde");
+        this.addText(0, -150, "Creer un Monde");
         this.addText(-200, -60, "Nom:");
         nameField = new InputField(100, -60, 300, this);
         nameField.setValue("Mon monde");
@@ -38,37 +36,15 @@ public class CreateWorldGui extends FullscreenTiledGui implements TypingGui {
         this.addButton(seedField);
         activeField = nameField;
 
-        this.addText(-200, 40, "Type:");
-        normalType = new Checkbox(100, 40, "Normal", this);
-        flatType = new Checkbox(260, 40, "Flat", this);
-        normalType.setChecked(true);
-        normalType.setOnChange(() -> {
-            normalType.setChecked(true);
-            flatType.setChecked(false);
-        });
-        flatType.setOnChange(() -> {
-            flatType.setChecked(true);
-            normalType.setChecked(false);
-        });
-        this.addButton(normalType);
+        this.addText(-200, 40, "Monde plat:");
+        flatType = new Checkbox(100, 40, "Flat", this);
         this.addButton(flatType);
 
-        this.addText(-200, 90, "Gamemode:");
-        survival = new Checkbox(100, 90, "Survie", this);
-        creative = new Checkbox(260, 90, "Créatif", this);
-        survival.setChecked(true);
-        survival.setOnChange(() -> {
-            survival.setChecked(true);
-            creative.setChecked(false);
-        });
-        creative.setOnChange(() -> {
-            creative.setChecked(true);
-            survival.setChecked(false);
-        });
-        this.addButton(survival);
+        this.addText(-200, 90, "Gamemode Creatif:");
+        creative = new Checkbox(100, 90, "Creatif", this);
         this.addButton(creative);
 
-        this.addButton(new Button(0, 140, this, "Creer le monde") {
+        this.addButton(new Button(110, 180, this, "Creer le monde") {
             @Override
             public void onClick(Player player) {
                 String seedText = seedField.getValue();
@@ -80,7 +56,8 @@ public class CreateWorldGui extends FullscreenTiledGui implements TypingGui {
                 GAME.startGame(name, seed, type, gm);
             }
         });
-        this.addButton(new Button(0, 190, this, "Retour") {
+
+        this.addButton(new Button(-110, 180, this, "Retour") {
             @Override
             public void onClick(Player player) {
                 GAME.getGraphicModule().getGuiModule().openGUI(new WorldsGui());

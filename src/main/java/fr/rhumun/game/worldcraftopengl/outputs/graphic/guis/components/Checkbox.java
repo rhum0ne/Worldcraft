@@ -2,22 +2,27 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Simple checkbox component with a label.
  */
 public class Checkbox extends Button {
 
+    @Getter
+    @Setter
     private boolean checked;
     private final Texture unchecked;
     private final Texture uncheckedHover;
     private final Texture checkedTex;
     private final Texture checkedHover;
 
+    @Setter
     private Runnable onChange;
 
     public Checkbox(int x, int y, String label, Gui container) {
-        super(x, y, 150, 32, Texture.CHECKBOX, Texture.CHECKBOX_HIGHLIGHTED,
+        super(x, y, 32, 32, Texture.CHECKBOX, Texture.CHECKBOX_HIGHLIGHTED,
                 Texture.CHECKBOX, container);
         this.unchecked = Texture.CHECKBOX;
         this.uncheckedHover = Texture.CHECKBOX_HIGHLIGHTED;
@@ -25,20 +30,8 @@ public class Checkbox extends Button {
         this.checkedHover = Texture.CHECKBOX_SELECTED_HIGHLIGHTED;
 
         this.getText().setText(label);
-        this.getText().set2DCoordinates(40, 8);
-        this.setAlignCenter(false);
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setOnChange(Runnable onChange) {
-        this.onChange = onChange;
+        this.getText().set2DCoordinates(-40, 0);
+        this.setAlignCenter(true);
     }
 
     @Override
