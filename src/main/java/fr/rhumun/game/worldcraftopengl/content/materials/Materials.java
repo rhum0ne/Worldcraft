@@ -5,6 +5,7 @@ import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMa
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.FoodMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ToolItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BucketItemMaterial;
 import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ToolType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 
@@ -126,7 +127,7 @@ public class Materials {
     public static Material IRON_SWORD = new ItemMaterial(Texture.IRON_SWORD);
     public static Material STICK = new ItemMaterial(Texture.STICK);
     public static Material WATER_BUCKET = new BlockItemMaterial(Texture.WATER_BUCKET, WATER);
-    public static Material BUCKET = new ItemMaterial(Texture.BUCKET);
+    public static Material BUCKET = new BucketItemMaterial(Texture.BUCKET);
     public static Material ACADIA_DOOR_ITEM = new BlockItemMaterial(Texture.ACACIA_DOOR_ITEM, ACACIA_DOOR);
     public static Material SPRUCE_DOOR_ITEM = new BlockItemMaterial(Texture.SPRUCE_DOOR_ITEM, SPRUCE_DOOR);
     public static Material BIRCH_DOOR_ITEM = new BlockItemMaterial(Texture.BIRCH_DOOR_ITEM, BIRCH_DOOR);
