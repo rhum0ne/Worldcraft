@@ -50,7 +50,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         return null;
     }
 
-    public synchronized void render() {
+    public void render() {
 
         if(chunk.isToUpdate()) update();
 
@@ -101,7 +101,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
     }
-    public synchronized void update() {
+    public void update() {
         if (!chunk.isGenerated()) return;
         chunk.setToUpdate(false);
         updateData();
