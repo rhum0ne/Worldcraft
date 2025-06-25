@@ -5,7 +5,7 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inTexCoord;
 layout(location = 2) in float inTextureIndex;
 layout(location = 3) in vec3 inNormal;
-layout(location = 4) in int inBoneID;
+layout(location = 4) in float inBoneID;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -17,7 +17,8 @@ flat out vec3 FragNormal;
 out vec3 FragPos;
 
 void main() {
-    mat4 boneTransform = boneMatrices[inBoneID];
+    int boneIndex = int(inBoneID);
+    mat4 boneTransform = boneMatrices[boneIndex];
     vec4 worldPos = boneTransform * vec4(inPosition, 1.0);
     FragPos = worldPos.xyz;
     TexCoord = inTexCoord;
