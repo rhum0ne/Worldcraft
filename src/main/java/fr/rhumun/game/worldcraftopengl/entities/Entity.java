@@ -101,19 +101,26 @@ public class Entity {
     }
 
     public void addX(double a){
-        if(a==0) return;
-        if (!this.isNoClipping && hasBlockInDirection(new Vector3f((a>0 ? 1 : -1), 0, 0))) {
-            return;
+        if(a == 0) return;
+        double step = a/10.0;
+        for(int i=0;i<10;i++){
+            AxisAlignedBB currentBB = getBoundingBox();
+            AxisAlignedBB nextBB = currentBB.offset(new Vector3f((float) step, 0, 0));
+            if(!this.isNoClipping && !collides(currentBB) && collides(nextBB)) break;
+            this.getLocation().addX(step);
         }
-        this.getLocation().addX(a);
         this.onMove();
     }
+
     public void addZ(double a){
-        if(a==0) return;
-        if (!this.isNoClipping && hasBlockInDirection(new Vector3f(0, 0, (a>0 ? 1 : -1)))) {
-            return;
+        if(a == 0) return;
+        double step = a/10.0;
+        for(int i=0;i<10;i++){
+            AxisAlignedBB currentBB = getBoundingBox();
+            AxisAlignedBB nextBB = currentBB.offset(new Vector3f(0, 0, (float) step));
+            if(!this.isNoClipping && !collides(currentBB) && collides(nextBB)) break;
+            this.getLocation().addZ(step);
         }
-        this.getLocation().addZ(a);
         this.onMove();
     }
     public void addY(double a){
@@ -216,6 +223,33 @@ public class Entity {
             for(Hitbox hitbox : modelMultiHitbox.getHitboxes(block))
                 if(hitbox.intersects(this, block)) return true;
 
+        return false;
+    }
+
+    private boolean collides(AxisAlignedBB box){
+        int minX = (int) Math.floor(box.minX + 0.5f);
+        int maxX = (int) Math.floor(box.maxX + 0.5f);
+        int minY = (int) Math.floor(box.minY);
+        int maxY = (int) Math.floor(box.maxY);
+        int minZ = (int) Math.floor(box.minZ + 0.5f);
+        int maxZ = (int) Math.floor(box.maxZ + 0.5f);
+
+        for(int x=minX; x<=maxX; x++){
+            for(int y=minY; y<=maxY; y++){
+                for(int z=minZ; z<=maxZ; z++){
+                    Block block = getWorld().getBlockAt(x, y, z, false);
+                    if(block == null || block.getMaterial() == null || block.getMaterial().isLiquid()) continue;
+                    Model model = block.getModel();
+                    if(model == null) continue;
+                    if(model.getModel() instanceof ModelHitbox mh){
+                        if(mh.getHitbox(block).intersects(box, block)) return true;
+                    } else if(model.getModel() instanceof ModelMultiHitbox mmh){
+                        for(Hitbox hitbox : mmh.getHitboxes(block))
+                            if(hitbox.intersects(box, block)) return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 
