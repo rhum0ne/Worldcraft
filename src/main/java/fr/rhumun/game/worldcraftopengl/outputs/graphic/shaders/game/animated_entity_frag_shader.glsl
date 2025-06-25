@@ -114,6 +114,6 @@ void main(){
     {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }
-    FragColor = textureColor;
+    FragColor = vec4(textureColor.rgb * result, textureColor.a);
 }
 
