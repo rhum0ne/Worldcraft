@@ -18,6 +18,10 @@ public class Texture {
     public static Texture GRASS_BLOCK;
     public static Texture OAK_LOG;
     public static Texture OAK_LOG_TOP;
+    public static Texture DOOR;
+    public static Texture DOOR_TOP;
+    public static Texture BIRCH_DOOR;
+    public static Texture BIRCH_DOOR_TOP;
     public static Texture LEAVES;
     public static Texture STONE_BRICKS;
     public static Texture STONE;
@@ -45,6 +49,22 @@ public class Texture {
     public static Texture ACACIA_DOOR;
     public static Texture ACACIA_DOOR_TOP;
     public static Texture ACACIA_TRAPDOOR;
+    public static Texture CHERRY_LOG;
+    public static Texture CHERRY_LOG_TOP;
+    public static Texture CHERRY_PLANKS;
+    public static Texture CHERRY_LEAVES;
+    public static Texture CHERRY_SAPLING;
+    public static Texture CHERRY_DOOR;
+    public static Texture CHERRY_DOOR_TOP;
+    public static Texture CHERRY_TRAPDOOR;
+    public static Texture SPRUCE_LOG;
+    public static Texture SPRUCE_LOG_TOP;
+    public static Texture SPRUCE_PLANKS;
+    public static Texture SPRUCE_LEAVES;
+    public static Texture SPRUCE_SAPLING;
+    public static Texture SPRUCE_DOOR;
+    public static Texture SPRUCE_DOOR_TOP;
+    public static Texture SPRUCE_TRAPDOOR;
     public static Texture BLACK_WOOL;
     public static Texture BLUE_WOOL;
     public static Texture BOOKSHELF;
@@ -104,7 +124,12 @@ public class Texture {
     public static Texture STONE_CUTTER_BOTTOM;
     public static Texture STONE_CUTTER_SIDE_2;
     public static Texture STONE_CUTTER_FRONT;
-
+    public static Texture CRAFTING_TABLE_TOP;
+    public static Texture CRAFTING_TABLE_BOTTOM;
+    public static Texture CRAFTING_TABLE_SIDE;
+    public static Texture CRAFTING_TABLE_SIDE_1;
+    public static Texture CRAFTING_TABLE_SIDE_2;
+    public static Texture CRAFTING_TABLE_FRONT;
     public static Texture BLACKSTONE;
     public static Texture CRACKED_STONE_BRICK;
     public static Texture DARK_PLANKS;
@@ -117,15 +142,20 @@ public class Texture {
     public static Texture CROSSHAIR;
     public static Texture HOTBAR;
     public static Texture SELECTED_SLOT;
+    public static Texture[] DESTROY_STAGES;
     public static Texture CREATIVE_INVENTORY;
     public static Texture INVENTORY;
+    public static Texture PLAYER_INVENTORY;
     public static Texture WORKBENCH;
+    public static Texture WORKBENCH_2;
     public static Texture SQUARE_BUTTON;
     public static Texture DEFAULT_BUTTON;
     public static Texture DEFAULT_BUTTON_HOVERED;
     public static Texture DEFAULT_BUTTON_UNACTIVE;
     public static Texture DEFAULT_BUTTON_UNACTIVE_SELECTED;
     public static Texture WALLPAPER;
+    public static Texture WORLDCRAFT_TITLE;
+    public static Texture BUCKET;
 
     public static Texture HEART_CONTAINER;
     public static Texture HEART_FULL;
@@ -135,6 +165,28 @@ public class Texture {
     public static Texture HUNGER_FULL;
     public static Texture HUNGER_HALF;
 
+
+    // Item textures
+    public static Texture APPLE;
+    public static Texture BREAD;
+    public static Texture DIAMOND;
+    public static Texture IRON_INGOT;
+    public static Texture IRON_AXE;
+    public static Texture IRON_PICKAXE;
+    public static Texture IRON_SHOVEL;
+    public static Texture IRON_SWORD;
+    public static Texture STICK;
+    public static Texture WATER_BUCKET;
+    public static Texture WOODEN_AXE;
+    public static Texture WOODEN_HOE;
+    public static Texture WOODEN_PICKAXE;
+    public static Texture WOODEN_SHOVEL;
+    public static Texture WOODEN_SWORD;
+    public static Texture ACACIA_DOOR_ITEM;
+    public static Texture SPRUCE_DOOR_ITEM;
+    public static Texture BIRCH_DOOR_ITEM;
+    public static Texture CHERRY_DOOR_ITEM;
+    public static Texture DOOR_ITEM;
 
     public static Texture OTTER;
     public static Texture ROCKY;
@@ -146,6 +198,8 @@ public class Texture {
         GRASS_BLOCK = new Texture("grass.png");
         OAK_LOG = new Texture("oak_log.png");
         OAK_LOG_TOP = new Texture("oak_log_top.png");
+        DOOR = new Texture("door_bottom.png");
+        DOOR_TOP = new Texture("door_top.png");
         LEAVES = new Texture("oak_leaves.png");
         STONE_BRICKS = new Texture("stone_brick.png");
         STONE = new Texture("stone.png");
@@ -165,6 +219,8 @@ public class Texture {
         BIRCH_PLANKS = new Texture("birch_planks.png");
         BIRCH_LEAVES = new Texture("birch_leaves.png");
         BIRCH_SAPLING = new Texture("birch_sapling.png");
+        BIRCH_DOOR_TOP = new Texture("birch_door_top.png");
+        BIRCH_DOOR = new Texture("birch_door_bottom.png");
         BLACK_WOOL = new Texture("black_wool.png");
         BLUE_WOOL = new Texture("blue_wool.png");
         BOOKSHELF = new Texture("bookshelf.png");
@@ -233,6 +289,12 @@ public class Texture {
         STONE_CUTTER_BOTTOM = new Texture("stone_cutter_bottom.png");
         STONE_CUTTER_SIDE_2 = new Texture("stone_cutter_side_2.png");
         STONE_CUTTER_FRONT = new Texture("stone_cutter_front.png");
+        CRAFTING_TABLE_TOP = new Texture("stone_cutter_top.png");
+        CRAFTING_TABLE_BOTTOM = new Texture("stone_cutter_bottom.png");
+        CRAFTING_TABLE_SIDE = new Texture("stone_cutter_side.png");
+        CRAFTING_TABLE_SIDE_1 = new Texture("stone_cutter_side.png");
+        CRAFTING_TABLE_SIDE_2 = new Texture("stone_cutter_side_2.png");
+        CRAFTING_TABLE_FRONT = new Texture("stone_cutter_front.png");
         ACACIA_LOG = new Texture("acacia_log.png");
         ACACIA_LOG_TOP = new Texture("acacia_log_top.png");
         ACACIA_PLANKS = new Texture("acacia_planks.png");
@@ -241,19 +303,65 @@ public class Texture {
         ACACIA_DOOR_TOP = new Texture("acacia_door_top.png");
         ACACIA_DOOR = new Texture("acacia_door_bottom.png");
         ACACIA_TRAPDOOR = new Texture("acacia_trapdoor.png");
+        CHERRY_LOG = new Texture("cherry_log.png");
+        CHERRY_LOG_TOP = new Texture("cherry_log_top.png");
+        CHERRY_PLANKS = new Texture("cherry_planks.png");
+        CHERRY_LEAVES = new Texture("cherry_leaves.png");
+        CHERRY_SAPLING = new Texture("cherry_sapling.png");
+        CHERRY_DOOR_TOP = new Texture("cherry_door_top.png");
+        CHERRY_DOOR = new Texture("cherry_door_bottom.png");
+        CHERRY_TRAPDOOR = new Texture("cherry_trapdoor.png");
+        SPRUCE_LOG = new Texture("spruce_log.png");
+        SPRUCE_LOG_TOP = new Texture("spruce_log_top.png");
+        SPRUCE_PLANKS = new Texture("spruce_planks.png");
+        SPRUCE_LEAVES = new Texture("spruce_leaves.png");
+        SPRUCE_SAPLING = new Texture("spruce_sapling.png");
+        SPRUCE_DOOR_TOP = new Texture("spruce_door_top.png");
+        SPRUCE_DOOR = new Texture("spruce_door_bottom.png");
+        SPRUCE_TRAPDOOR = new Texture("spruce_trapdoor.png");
+
+        // Item textures initialization
+        APPLE = new Texture("items\\apple.png");
+        BREAD = new Texture("items\\bread.png");
+        DIAMOND = new Texture("items\\diamond.png");
+        IRON_INGOT = new Texture("items\\iron_ingot.png");
+        IRON_AXE = new Texture("items\\iron_axe.png");
+        IRON_PICKAXE = new Texture("items\\iron_pickaxe.png");
+        IRON_SHOVEL = new Texture("items\\iron_shovel.png");
+        IRON_SWORD = new Texture("items\\iron_sword.png");
+        STICK = new Texture("items\\stick.png");
+        WATER_BUCKET = new Texture("items\\water_bucket.png");
+        BUCKET = new Texture("items\\bucket.png");
+        WOODEN_AXE = new Texture("items\\wooden_axe.png");
+        WOODEN_HOE = new Texture("items\\wooden_hoe.png");
+        WOODEN_PICKAXE = new Texture("items\\wooden_pickaxe.png");
+        WOODEN_SHOVEL = new Texture("items\\wooden_shovel.png");
+        WOODEN_SWORD = new Texture("items\\wooden_sword.png");
+        ACACIA_DOOR_ITEM = new Texture("items\\acacia_door.png");
+        SPRUCE_DOOR_ITEM = new Texture("items\\spruce_door.png");
+        BIRCH_DOOR_ITEM = new Texture("items\\birch_door.png");
+        CHERRY_DOOR_ITEM = new Texture("items\\cherry_door.png");
+        DOOR_ITEM = new Texture("items\\door.png");
+        DESTROY_STAGES = new Texture[10];
+        for (int i = 0; i < 10; i++) {
+            DESTROY_STAGES[i] = new Texture("hud\\destroy\\destroy_stage_" + i + ".png");
+        }
 
         CROSSHAIR = new Texture(TextureTypes.GUIS,"hud\\crosshair.png");
         HOTBAR = new Texture(TextureTypes.GUIS,"hud\\hotbar.png");
         SELECTED_SLOT = new Texture(TextureTypes.GUIS,"hud\\hotbar_selection.png");
         CREATIVE_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\creative-inventory.png");
         INVENTORY = new Texture(TextureTypes.GUIS,"hud\\inventory.png");
+        PLAYER_INVENTORY = new Texture(TextureTypes.GUIS,"hud\\player_inventory.png");
         WORKBENCH = new Texture(TextureTypes.GUIS,"hud\\workbench.png");
+        WORKBENCH_2 = new Texture(TextureTypes.GUIS,"hud\\workbench_2.png");
         SQUARE_BUTTON = new Texture(TextureTypes.GUIS,"hud\\widgets\\checkbox.png");
         DEFAULT_BUTTON = new Texture(TextureTypes.GUIS, "hud\\widgets\\button.png");
         DEFAULT_BUTTON_HOVERED = new Texture(TextureTypes.GUIS, "hud\\widgets\\hovered.png");
         DEFAULT_BUTTON_UNACTIVE = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive.png");
         DEFAULT_BUTTON_UNACTIVE_SELECTED = new Texture(TextureTypes.GUIS, "hud\\widgets\\unactive_selected.png");
-        WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper.png");
+        WALLPAPER = new Texture(TextureTypes.GUIS, "hud\\wallpaper_2.png");
+        WORLDCRAFT_TITLE = new Texture(TextureTypes.GUIS, "hud\\worldcraft_title.png");
 
         HEART_CONTAINER = new Texture(TextureTypes.GUIS, "hud\\heart\\container.png");
         HEART_FULL = new Texture(TextureTypes.GUIS, "hud\\heart\\full.png");
@@ -272,6 +380,12 @@ public class Texture {
     public static HashMap<String, Texture> textureByName = new HashMap<>();
     public static Texture getByName(String s) {
         return textureByName.get(s);
+    }
+
+    public static Texture getDestroyStage(int stage){
+        if(stage < 0) stage = 0;
+        if(stage > 9) stage = 9;
+        return DESTROY_STAGES[stage];
     }
 
 
@@ -306,6 +420,8 @@ public class Texture {
         }
         this.name = name.substring(0, name.length()-4);
         textureByName.put(this.name, this);
+
+        this.width = this.height = 32;
 
     }
 

@@ -7,6 +7,10 @@ import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.DoorUtils;
 import org.lwjgl.opengl.GL30C;
 
 import java.nio.FloatBuffer;
@@ -16,7 +20,6 @@ import java.util.Iterator;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class EntitiesRenderer extends GlobalRenderer {
@@ -65,6 +68,22 @@ public class EntitiesRenderer extends GlobalRenderer {
             if (e instanceof ItemEntity i) {
                 if (model == Model.BLOCK) {
                     BlockUtil.rasterDroppedBlockItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.SLAB) {
+                    SlabUtils.rasterDroppedSlabItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.STAIRS) {
+                    StairsUtils.rasterDroppedStairsItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.WALL) {
+                    WallUtils.rasterDroppedWallItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
+                    continue;
+                }
+                else if(model == Model.DOOR) {
+                    DoorUtils.rasterDroppedDoorItem(e.getLocation(), i.getMaterial(), this.getVertices(), this.getIndices());
                     continue;
                 }
             }

@@ -15,6 +15,7 @@ public class SelectedItemDisplay extends Slot {
 
     private ItemStack item;
     private ItemStack displayedItem;
+    private int lastQuantity = -1;
     private int lastX;
     private int lastY;
 
@@ -38,18 +39,21 @@ public class SelectedItemDisplay extends Slot {
         int x = (guiModule.getCursorX() - getWidth() / 2) / GUI_ZOOM;
         int y = (guiModule.getCursorY() - getHeight() / 2) / GUI_ZOOM;
         set2DCoordinates(x, y);
+        this.getText().set2DCoordinates(6,6);
 
-        if (item != displayedItem || x != lastX || y != lastY) {
+        int quantity = (item == null) ? 0 : item.getQuantity();
+        if (item != displayedItem || quantity != lastQuantity || x != lastX || y != lastY) {
             if (item == null) {
                 setTexture(null);
                 getText().setText("");
             } else {
-                setTexture(item.getMaterial().getMaterial().getTexture());
+                setTexture(item.getMaterial().getTexture());
                 if (item.getQuantity() == 1) getText().setText("");
                 else getText().setText(String.valueOf(item.getQuantity()));
             }
             updateVertices(item);
             displayedItem = item;
+            lastQuantity = quantity;
             lastX = x;
             lastY = y;
         }

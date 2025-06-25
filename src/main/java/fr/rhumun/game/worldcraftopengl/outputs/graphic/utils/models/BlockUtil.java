@@ -2,10 +2,10 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.RotableMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.RotableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Slot;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.renderers.ChunkRenderer;
@@ -112,62 +112,11 @@ public class BlockUtil {
         return false;
     }
 
-    private static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
+    public static void rasterBlockGroup(Block corner1, Block corner2, ChunkRenderer chunkRenderer) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
-        float x1 = (float) corner1.getLocation().getX() - 0.5f; // Déplacer pour utiliser le coin avant-gauche
-        float y1 = (float) corner1.getLocation().getY() + 1f; // Déplacer pour utiliser le coin bas
-        float z1 = (float) corner1.getLocation().getZ() - 0.5f; // Déplacer pour utiliser le coin avant
-
-        float x2 = (float) corner2.getLocation().getX() + 0.5f; // Déplacer pour utiliser le coin arrière-droit
-        float y2 = (float) corner2.getLocation().getY(); // Déplacer pour utiliser le coin haut
-        float z2 = (float) corner2.getLocation().getZ() + 0.5f; // Déplacer pour utiliser le coin arrière
-
-        //Tailles du regroupement de blocks:
-        float texScaleX = x2-x1;
-        float texScaleY = y1-y2;
-        float texScaleZ = z2-z1;
-
         float[] textureIDs = getTextureIDs(corner1);
 
-
-        // Sommets du rectangle englobant (2 triangles par face)
-        float[][] vertices = {
-                // Face avant (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Bas droite
-                {x2, y1, z1, texScaleX, texScaleY, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Haut droite
-                {x1, y1, z1, 0.0f, texScaleY, textureIDs[0], 0.0f, 0.0f, 1.0f}, // Haut gauche
-
-                // Face arrière (2 triangles)
-                {x1, y2, z2, 0.0f, 0.0f, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Bas gauche
-                {x2, y2, z2, texScaleX, 0.0f, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Bas droite
-                {x2, y1, z2, texScaleX, texScaleY, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Haut droite
-                {x1, y1, z2, 0.0f, texScaleY, textureIDs[1], 0.0f, 0.0f, -1.0f}, // Haut gauche
-
-                // Face gauche (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x1, y2, z2, texScaleZ, 0.0f, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Bas droite
-                {x1, y1, z1, 0.0f, texScaleY, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x1, y1, z2, texScaleZ, texScaleY, textureIDs[2], -1.0f, 0.0f, 0.0f}, // Haut droite
-
-                // Face droite (2 triangles)
-                {x2, y2, z1, 0.0f, 0.0f, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Bas gauche
-                {x2, y2, z2, texScaleZ, 0.0f, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Bas droite
-                {x2, y1, z1, 0.0f, texScaleY, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Haut gauche
-                {x2, y1, z2, texScaleZ, texScaleY, textureIDs[3], 1.0f, 0.0f, 0.0f}, // Haut droite
-
-                // Face supérieure (2 triangles)
-                {x1, y1, z1, 0.0f, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas gauche
-                {x2, y1, z1, texScaleX, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas droite
-                {x1, y1, z2, 0.0f, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut gauche
-                {x2, y1, z2, texScaleX, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut droite
-
-                // Face inférieure (2 triangles)
-                {x1, y2, z1, 0.0f, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas gauche
-                {x2, y2, z1, texScaleX, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas droite
-                {x1, y2, z2, 0.0f, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut gauche
-                {x2, y2, z2, texScaleX, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut droite
-        };
+        float[][] vertices = createVertices(corner1, corner2, textureIDs);
 
         // Indices pour dessiner le rectangle
         Renderer renderer = chunkRenderer.getRenderers().get((corner1.getMaterial().getOpacity().getPriority()));
@@ -205,26 +154,26 @@ public class BlockUtil {
     }
 
     private static float[] getTextureIDs(Block corner1) {
-        if(corner1.getMaterial().getMaterial() instanceof RotableMaterial){
+        if(corner1.getMaterial() instanceof RotableMaterial){
             int blockState = corner1.getState();
 
             return new float[]{
-                    corner1.getMaterial().getMaterial().getTextures()[(2 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(1 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTextures()[(3 + blockState)%4].getId(),
-                    corner1.getMaterial().getMaterial().getTopTexture().getId(),
-                    corner1.getMaterial().getMaterial().getBottomTexture().getId()
+                    corner1.getMaterial().getTextures()[(2 + blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(1 + blockState)%4].getId(),
+                    corner1.getMaterial().getTextures()[(3 + blockState)%4].getId(),
+                    corner1.getMaterial().getTopTexture().getId(),
+                    corner1.getMaterial().getBottomTexture().getId()
             };
         }
 
         return new float[]{
-                corner1.getMaterial().getMaterial().getFrontTexture().getId(),
-                corner1.getMaterial().getMaterial().getBackTexture().getId(),
-                corner1.getMaterial().getMaterial().getLeftTexture().getId(),
-                corner1.getMaterial().getMaterial().getRightTexture().getId(),
-                corner1.getMaterial().getMaterial().getTopTexture().getId(),
-                corner1.getMaterial().getMaterial().getBottomTexture().getId()
+                corner1.getMaterial().getFrontTexture().getId(),
+                corner1.getMaterial().getBackTexture().getId(),
+                corner1.getMaterial().getLeftTexture().getId(),
+                corner1.getMaterial().getRightTexture().getId(),
+                corner1.getMaterial().getTopTexture().getId(),
+                corner1.getMaterial().getBottomTexture().getId()
         };
     }
 
@@ -244,12 +193,12 @@ public class BlockUtil {
         float texScaleZ = 1f;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = block.getMaterial().getMaterial().getFrontTexture().getId();
-        float texIDBack = block.getMaterial().getMaterial().getBackTexture().getId();
-        float texIDTop = block.getMaterial().getMaterial().getTopTexture().getId();
-        float texIDBottom = block.getMaterial().getMaterial().getBottomTexture().getId();
-        float texIDLeft = block.getMaterial().getMaterial().getLeftTexture().getId();
-        float texIDRight = block.getMaterial().getMaterial().getRightTexture().getId();
+        float texIDFront = block.getMaterial().getFrontTexture().getId();
+        float texIDBack = block.getMaterial().getBackTexture().getId();
+        float texIDTop = block.getMaterial().getTopTexture().getId();
+        float texIDBottom = block.getMaterial().getBottomTexture().getId();
+        float texIDLeft = block.getMaterial().getLeftTexture().getId();
+        float texIDRight = block.getMaterial().getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)
@@ -293,50 +242,26 @@ public class BlockUtil {
 
         // Indices pour dessiner le rectangle
         int offset = (indicesList.isEmpty()) ? 0 : indicesList.getLast() + 1;
-        int[] indices = {
-                // Face avant
-                offset + 2, offset + 1, offset + 0,  // Triangle 1
-                offset + 3, offset + 2, offset + 0,  // Triangle 2
 
-                // Face arrière
-                offset + 4, offset + 5, offset + 6,  // Triangle 1
-                offset + 4, offset + 6, offset + 7,  // Triangle 2
-
-                // Face gauche
-                offset + 8, offset + 9, offset + 10,  // Triangle 1
-                offset + 10, offset + 9, offset + 11, // Triangle 2 //FACE AVANT QUAND ON REJOINT LE JEU
-
-                // Face droite
-                offset + 12, offset + 14, offset + 13,  // Triangle 1
-                offset + 14, offset + 15, offset + 13,  // Triangle 2 //FACE ARRIERE C4EST GOOD
-
-                // Face haut
-                offset + 18, offset + 17, offset + 16,  // Triangle 1
-                offset + 19, offset + 17, offset + 18,  // Triangle 2
-
-                // Face bas
-                offset + 20, offset + 21, offset + 22,  // Triangle 1
-                offset + 22, offset + 21, offset + 23   // Triangle 2
-        };
 
 
         // Ajouter les données au renderer correspondant
         addAllVertices(vertices, verticesList);
-        addAllIndices(indices, indicesList);
+        addAllIndices(createIndices(offset), indicesList);
     }
 
-    private static void addAllIndices(int[] indices, ArrayList<Integer> indicesList){
+    static void addAllIndices(int[] indices, ArrayList<Integer> indicesList){
         for(int i : indices) indicesList.add(i);
     }
-    private static void addAllVertices(float[][] vertices, ArrayList<float[]> verticesList) {
+    static void addAllVertices(float[][] vertices, ArrayList<float[]> verticesList) {
         verticesList.addAll(Arrays.asList(vertices));
     }
 
     public static void rasterDroppedBlockItem(Location loc, Material mat, ArrayList<float[]> verticesList, ArrayList<Integer> indicesList) {
         // Coordonnées des coins (corner1 est en bas à gauche, corner2 est en haut à droite)
-        float x1 = (float) loc.getX(); // Déplacer pour utiliser le coin avant-gauche
-        float y1 = (float) loc.getY(); // Déplacer pour utiliser le coin bas
-        float z1 = (float) loc.getZ(); // Déplacer pour utiliser le coin avant
+        float x1 = (float) loc.getX()-0.2f; // Déplacer pour utiliser le coin avant-gauche
+        float y1 = (float) loc.getY()+0.4f; // Déplacer pour utiliser le coin bas
+        float z1 = (float) loc.getZ()-0.2f; // Déplacer pour utiliser le coin avant
 
         float x2 = x1+0.4f; // Déplacer pour utiliser le coin arrière-droit
         float y2 = y1-0.4f; // Déplacer pour utiliser le coin haut
@@ -348,12 +273,12 @@ public class BlockUtil {
         float texScaleZ = 1f;
 
         // Texture ID (supposé identique pour tous les blocs du groupe)
-        float texIDFront = mat.getMaterial().getFrontTexture().getId();
-        float texIDBack = mat.getMaterial().getBackTexture().getId();
-        float texIDTop = mat.getMaterial().getTopTexture().getId();
-        float texIDBottom = mat.getMaterial().getBottomTexture().getId();
-        float texIDLeft = mat.getMaterial().getLeftTexture().getId();
-        float texIDRight = mat.getMaterial().getRightTexture().getId();
+        float texIDFront = mat.getFrontTexture().getId();
+        float texIDBack = mat.getBackTexture().getId();
+        float texIDTop = mat.getTopTexture().getId();
+        float texIDBottom = mat.getBottomTexture().getId();
+        float texIDLeft = mat.getLeftTexture().getId();
+        float texIDRight = mat.getRightTexture().getId();
 
 
         // Sommets du rectangle englobant (2 triangles par face)
@@ -427,5 +352,87 @@ public class BlockUtil {
         // Ajouter les données au renderer correspondant
         addAllVertices(vertices, verticesList);
         addAllIndices(indices, indicesList);
+    }
+
+    public static float[][] createVertices(Block corner1, Block corner2, float[] textureIDs) {
+        float x1 = (float) corner1.getLocation().getX() - 0.5f; // Déplacer pour utiliser le coin avant-gauche
+        float y1 = (float) corner1.getLocation().getY() + 1f; // Déplacer pour utiliser le coin bas
+        float z1 = (float) corner1.getLocation().getZ() - 0.5f; // Déplacer pour utiliser le coin avant
+
+        float x2 = (float) corner2.getLocation().getX() + 0.5f; // Déplacer pour utiliser le coin arrière-droit
+        float y2 = (float) corner2.getLocation().getY(); // Déplacer pour utiliser le coin haut
+        float z2 = (float) corner2.getLocation().getZ() + 0.5f; // Déplacer pour utiliser le coin arrière
+
+        //Tailles du regroupement de blocks:
+        float texScaleX = x2-x1;
+        float texScaleY = y1-y2;
+        float texScaleZ = z2-z1;
+
+        // Sommets du rectangle englobant (2 triangles par face)
+        return new float[][] {
+                // Face avant (2 triangles)
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[0], 0.0f, 0.0f, -1.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, textureIDs[0], 0.0f, 0.0f, -1.0f}, // Bas droite
+                {x2, y1, z1, texScaleX, texScaleY, textureIDs[0], 0.0f, 0.0f, -1.0f}, // Haut droite
+                {x1, y1, z1, 0.0f, texScaleY, textureIDs[0], 0.0f, 0.0f, -1.0f}, // Haut gauche
+
+                // Face arrière (2 triangles)
+                {x1, y2, z2, 0.0f, 0.0f, textureIDs[1], 0.0f, 0.0f, 1.0f}, // Bas gauche
+                {x2, y2, z2, texScaleX, 0.0f, textureIDs[1], 0.0f, 0.0f, 1.0f}, // Bas droite
+                {x2, y1, z2, texScaleX, texScaleY, textureIDs[1], 0.0f, 0.0f, 1.0f}, // Haut droite
+                {x1, y1, z2, 0.0f, texScaleY, textureIDs[1], 0.0f, 0.0f, 1.0f}, // Haut gauche
+
+                // Face gauche (2 triangles)
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[2], 1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x1, y2, z2, texScaleZ, 0.0f, textureIDs[2], 1.0f, 0.0f, 0.0f}, // Bas droite
+                {x1, y1, z1, 0.0f, texScaleY, textureIDs[2], 1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x1, y1, z2, texScaleZ, texScaleY, textureIDs[2], 1.0f, 0.0f, 0.0f}, // Haut droite
+
+                // Face droite (2 triangles)
+                {x2, y2, z1, 0.0f, 0.0f, textureIDs[3], -1.0f, 0.0f, 0.0f}, // Bas gauche
+                {x2, y2, z2, texScaleZ, 0.0f, textureIDs[3], -1.0f, 0.0f, 0.0f}, // Bas droite
+                {x2, y1, z1, 0.0f, texScaleY, textureIDs[3], -1.0f, 0.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleZ, texScaleY, textureIDs[3], -1.0f, 0.0f, 0.0f}, // Haut droite
+
+                // Face supérieure (2 triangles)
+                {x1, y1, z1, 0.0f, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas gauche
+                {x2, y1, z1, texScaleX, 0.0f, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Bas droite
+                {x1, y1, z2, 0.0f, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut gauche
+                {x2, y1, z2, texScaleX, texScaleZ, textureIDs[4], 0.0f, 1.0f, 0.0f}, // Haut droite
+
+                // Face inférieure (2 triangles)
+                {x1, y2, z1, 0.0f, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas gauche
+                {x2, y2, z1, texScaleX, 0.0f, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Bas droite
+                {x1, y2, z2, 0.0f, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut gauche
+                {x2, y2, z2, texScaleX, texScaleZ, textureIDs[5], 0.0f, -1.0f, 0.0f}, // Haut droite
+        };
+    }
+
+    public static int[] createIndices(int offset) {
+        return new int[] {
+                // Face avant
+                offset + 2, offset + 1, offset + 0,  // Triangle 1
+                offset + 3, offset + 2, offset + 0,  // Triangle 2
+
+                // Face arrière
+                offset + 4, offset + 5, offset + 6,  // Triangle 1
+                offset + 4, offset + 6, offset + 7,  // Triangle 2
+
+                // Face gauche
+                offset + 8, offset + 9, offset + 10,  // Triangle 1
+                offset + 10, offset + 9, offset + 11, // Triangle 2 //FACE AVANT QUAND ON REJOINT LE JEU
+
+                // Face droite
+                offset + 12, offset + 14, offset + 13,  // Triangle 1
+                offset + 14, offset + 15, offset + 13,  // Triangle 2 //FACE ARRIERE C4EST GOOD
+
+                // Face haut
+                offset + 18, offset + 17, offset + 16,  // Triangle 1
+                offset + 19, offset + 17, offset + 18,  // Triangle 2
+
+                // Face bas
+                offset + 20, offset + 21, offset + 22,  // Triangle 1
+                offset + 22, offset + 21, offset + 23   // Triangle 2
+        };
     }
 }

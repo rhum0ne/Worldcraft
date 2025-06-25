@@ -2,15 +2,16 @@ package fr.rhumun.game.worldcraftopengl.worlds;
 
 import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.content.Model;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.Location;
 import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ForcedModelMaterial;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import lombok.Getter;
 import lombok.Setter;
@@ -73,8 +74,8 @@ public class Block {
         return this.getChunk().getBiome(this);
     }
 
-    public Material getMaterial(){
-        return (this.material == -1) ? null : Material.getById(material);
+    public synchronized Material getMaterial(){
+        return (this.material == -1) ? null : Materials.getById(material);
     }
 
     public Model getModel(){
@@ -138,7 +139,8 @@ public class Block {
     }
 
     public boolean isOpaque(){
-        return this.getMaterial() != null && ( this.getModel().isOpaque() && this.getMaterial().getOpacity() == OpacityType.OPAQUE);
+        Material material = this.getMaterial();
+        return material != null && ( this.getModel().isOpaque() && material.getOpacity() == OpacityType.OPAQUE);
     }
 
     public boolean hasBlockAtFace(float nx, float ny, float nz) {
@@ -152,10 +154,10 @@ public class Block {
         return face != null && !this.getMaterial().getOpacity().isVisibleWith(face) ;
     }
 
-    public Block setMaterial(Material material){
+    public synchronized Block setMaterial(Material material){
         Chunk chunk = getChunk();
         //FAIRE METHODE SET MODEL AND MATERIAL QUI VA EVITER LES REPETITIONS DE GETSIDEBLOCKS QUAND ON VEUT FAIRE LES 2
-        if(this.getMaterial() != null && this.getMaterial().getMaterial() instanceof PointLight){
+        if(this.getMaterial() != null && this.getMaterial() instanceof PointLight){
             chunk.getLightningBlocks().remove(this);
         }
 
@@ -176,12 +178,12 @@ public class Block {
         else {
             this.material = (short) material.getId();
 
-            if(material.getMaterial() instanceof PointLight){
+            if(material instanceof PointLight){
                 chunk.getLightningBlocks().add(this);
             }
             chunk.getVisibleBlock().add(this);
 
-            if(material.getMaterial() instanceof ForcedModelMaterial fMat){
+            if(material instanceof ForcedModelMaterial fMat){
                 this.setModel(fMat.getModel());
             }
 
@@ -225,7 +227,7 @@ public class Block {
         return sideBlocks;
     }
 
-    public Block setModel(Model model){
+    public synchronized Block setModel(Model model){
         Chunk chunk = getChunk();
         this.model = model.getId();
         Block[] sideBlocks = this.getSideBlocks();

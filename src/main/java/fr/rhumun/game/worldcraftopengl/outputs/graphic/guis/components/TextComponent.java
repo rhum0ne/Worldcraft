@@ -59,6 +59,7 @@ public class TextComponent extends Component {
 
     @Override
     public void render(){
+        if(!this.getContainer().isVisible()) return;
         ShaderManager.TEXT_SHADER.setUniform("textColor", this.rgba);
         super.render();
     }

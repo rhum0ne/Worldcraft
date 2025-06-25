@@ -2,11 +2,15 @@ package fr.rhumun.game.worldcraftopengl.entities.player;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.LoadedChunksManager;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
-import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.ToolItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PlaceableMaterial;
 import fr.rhumun.game.worldcraftopengl.entities.Inventory;
 import fr.rhumun.game.worldcraftopengl.entities.LivingEntity;
 import fr.rhumun.game.worldcraftopengl.entities.MovingEntity;
+import fr.rhumun.game.worldcraftopengl.entities.Entity;
+import fr.rhumun.game.worldcraftopengl.entities.ItemEntity;
 import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
@@ -16,6 +20,7 @@ import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3f;
+import java.util.Iterator;
 
 import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 
@@ -41,6 +46,10 @@ public class Player extends LivingEntity implements MovingEntity {
 
     private int starvationCounter = 0;
 
+    /** Delay in ticks between each item pickup check. */
+    private static final int ITEM_PICKUP_DELAY = 120;
+    private int itemPickupCounter = 0;
+
     public static int MOVE_SATURATION_COST = 1;
     public static int BREAK_SATURATION_COST = 4;
     public static int REGEN_SATURATION_COST = 10;
@@ -50,6 +59,10 @@ public class Player extends LivingEntity implements MovingEntity {
     private double lastZ;
 
     private final int[] movements = new int[3];
+
+    private Block breakingBlock;
+    private float breakingProgress;
+    private boolean isBreaking;
 
     public Player(){
         this(0, 0, 0, 0, 0);
@@ -109,16 +122,40 @@ public class Player extends LivingEntity implements MovingEntity {
 
     @Override
     public void placeBlockAt(ItemStack item, Block block, Vector3f hitPosition, Vector3f direction){
-        super.placeBlockAt(item, block, hitPosition, direction);
-        this.playSound(item.getMaterial().getPlaceSound());
+        if(item.getMaterial() instanceof PlaceableMaterial pM){
+            super.placeBlockAt(item, block, hitPosition, direction);
+            this.playSound(pM.getPlaceSound());
+        }
+        else if(item.getMaterial() instanceof BlockItemMaterial bM){
+            super.placeBlockAt(item, block, hitPosition, direction);
+            this.playSound(bM.getPlaceSound());
+        }
+        else {
+            GAME.warn("Trying to place a non-placeable material : " + item.getMaterial() + " at " + hitPosition + " for player " + this.getLocation());
+        }
+
+        if(!this.isInCreativeMode()) {
+            item.remove(1);
+            if(item.isEmpty()) {
+                this.inventory.setItem(this.selectedSlot, null);
+            }
+            updateInventory();
+        }
     }
 
     @Override
     public Material breakBlock() {
+        Block target = getSelectedBlock();
         Material mat = super.breakBlock();
         if (mat == null) return null;
-        this.playSound(mat.getMaterial().getBreakSound());
+        if(mat instanceof PlaceableMaterial pM)
+            this.playSound(pM.getBreakSound());
         consumeSaturation(BREAK_SATURATION_COST);
+
+        if(!this.isInCreativeMode() && target != null) {
+            this.getWorld().spawnItem(new ItemStack(mat), target.getLocation());
+        }
+
         return mat;
     }
 
@@ -152,6 +189,14 @@ public class Player extends LivingEntity implements MovingEntity {
         GAME.getGraphicModule().getGuiModule().setSelectedSlot(slot);
     }
 
+    /**
+     * Sets the selected slot without updating any GUI.
+     * Used during asynchronous loading before the render thread is ready.
+     */
+    public void setSelectedSlotRaw(int slot) {
+        this.selectedSlot = slot;
+    }
+
     public ItemStack getSelectedItem(){
         return this.inventory.getItem(this.selectedSlot);
     }
@@ -164,6 +209,75 @@ public class Player extends LivingEntity implements MovingEntity {
     public void updateInventory(){
         if(GAME.getGraphicModule() != null)
             GAME.getGraphicModule().getGuiModule().updateInventory(this);
+    }
+
+    public void startBreaking() {
+        Block target = getSelectedBlock();
+        if (target == null || target.getMaterial() == null) {
+            return;
+        }
+        if (target != breakingBlock) {
+            breakingBlock = target;
+            breakingProgress = 0f;
+        }
+        isBreaking = true;
+    }
+
+    public void stopBreaking() {
+        isBreaking = false;
+        breakingProgress = 0f;
+        breakingBlock = null;
+    }
+
+    private void updateBreaking() {
+        if (!isBreaking) return;
+        if (breakingBlock == null || breakingBlock.getMaterial() == null) {
+            stopBreaking();
+            return;
+        }
+        if (getSelectedBlock() != breakingBlock) {
+            stopBreaking();
+            return;
+        }
+
+        float increment = 1f;
+        ItemStack held = getSelectedItem();
+        if (held != null && held.getMaterial() instanceof ToolItemMaterial tool) {
+            if (tool.getType() == breakingBlock.getMaterial().getToolType()) {
+                increment = tool.getLevel();
+            }
+        }
+        breakingProgress += increment / (breakingBlock.getMaterial().getDurability()*60f);
+        if (breakingProgress >= 1f) {
+            breakBlock();
+            stopBreaking();
+            if(getSelectedBlock() != null) startBreaking();
+        }
+    }
+
+    public int getBreakingStage() {
+        if( breakingBlock == null || breakingBlock.getMaterial() == null) return 0;
+        return (int) (breakingProgress * 10);
+    }
+
+    private void updateItemPickup() {
+        itemPickupCounter++;
+        if (itemPickupCounter < ITEM_PICKUP_DELAY) return;
+        itemPickupCounter = 0;
+
+        Iterator<Entity> it = this.getWorld().getEntities().iterator();
+        while (it.hasNext()) {
+            Entity e = it.next();
+            if (e instanceof ItemEntity item) {
+                double dx = e.getLocation().getX() - this.getLocation().getX();
+                double dy = e.getLocation().getY() - this.getLocation().getY();
+                double dz = e.getLocation().getZ() - this.getLocation().getZ();
+                if (dx * dx + dy * dy + dz * dz <= 4) { // within 2 blocks
+                    this.addItem(new ItemStack(item.getMaterial(), item.getModel()));
+                    it.remove();
+                }
+            }
+        }
     }
 
     /**
@@ -224,6 +338,8 @@ public class Player extends LivingEntity implements MovingEntity {
         updateHealth();
         updateFood();
         updateSaturation();
+        updateBreaking();
+        updateItemPickup();
     }
 
 
@@ -309,5 +425,20 @@ public class Player extends LivingEntity implements MovingEntity {
     @Override
     public void kill() {
         //TO DO
+    }
+
+    public boolean isHungry() {
+        return !this.isInCreativeMode() && this.food < this.maxFood;
+    }
+
+    public void reset() {
+        this.getInventory().clear();
+        this.setHealth(this.getMaxHealth());
+        this.setFood(this.getMaxFood());
+        this.setSaturation(this.getMaxSaturation());
+        this.setGamemode(Gamemode.SURVIVAL);
+        this.setSelectedSlot(0);
+        this.setFlying(false);
+        this.setSwimming(false);
     }
 }

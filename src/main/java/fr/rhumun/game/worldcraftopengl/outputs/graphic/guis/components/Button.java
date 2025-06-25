@@ -2,6 +2,7 @@ package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import lombok.Setter;
 public abstract class Button extends Component {
     private boolean hovered = false;
     private boolean clicked = false;
+    private boolean active = true;
 
     private Texture normal, hoverTexture, unactiveTexture;
     private final TextComponent text = new TextComponent(0, 0, "", this);
@@ -41,10 +43,24 @@ public abstract class Button extends Component {
         this.addComponent(text);
     }
 
+    public void click(Player player){
+        player.playSound(this.getClickSound());
+        this.onClick(player);
+    }
+
+    protected Sound getClickSound() {
+        return Sound.CLICK;
+    }
+
     public abstract void onClick(Player player) ;
 
     @Override
     public void update() {
+        if(!isActive()){
+            this.set2DTexture(unactiveTexture);
+            return;
+        }
+
         boolean isCursorIn = this.isCursorIn();
 
         if(isCursorIn && !hovered) {

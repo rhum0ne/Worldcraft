@@ -7,6 +7,7 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.NormalWorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.WorldGenerator;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.structures.Structure;
+import fr.rhumun.game.worldcraftopengl.worlds.utils.DayNightCycle;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,9 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 @Getter
 public class World {
 
+    /** Duration of a full day/night cycle in ticks. */
+    public static final int DAY_NIGHT_TICKS = 24000;
+
     private final Seed seed;
     private final WorldGenerator generator;
 
@@ -37,6 +41,7 @@ public class World {
 
     private Color skyColor = Color.rgb(77, 150, 230);
     private Color lightColor = Color.rgb(180, 170, 170);
+    private Vector3f lightDirection = DayNightCycle.getLightDirection(0);
 
     private final int heigth = 256;
 
@@ -46,6 +51,39 @@ public class World {
     private int zSpawn;
 
     private boolean isLoaded = false;
+
+    private int worldTime = 4000;
+    /** Whether the day/night cycle is active. */
+    private boolean dayNightCycle = true;
+
+    public int getWorldTime() {
+        return worldTime;
+    }
+
+    public boolean isDayNightCycle() {
+        return dayNightCycle;
+    }
+
+    public void setDayNightCycle(boolean dayNightCycle) {
+        this.dayNightCycle = dayNightCycle;
+    }
+
+    public void setWorldTime(int worldTime) {
+        this.worldTime = worldTime;
+        this.skyColor = DayNightCycle.getSkyColor(worldTime);
+        this.lightColor = DayNightCycle.getLightColor(worldTime);
+        this.lightDirection = DayNightCycle.getLightDirection(worldTime);
+    }
+
+    public float getCelestialAngle() {
+        return DayNightCycle.getAngle(worldTime);
+    }
+
+    public void updateTime() {
+        if (dayNightCycle) {
+            setWorldTime(worldTime + 1);
+        }
+    }
 
     public void setSpawnPosition(int x, int z) {
         this.xSpawn = x;
@@ -94,6 +132,7 @@ public class World {
         }
 
         this.spawn = new Location(this, xSpawn, spawnChunk.getHighestBlock(xSpawn-CHUNK_SIZE*spawnChunk.getX(), zSpawn-CHUNK_SIZE*spawnChunk.getZ(), true).getLocation().getY()+10, zSpawn);
+        SaveManager.loadEntities(this);
         this.isLoaded = true;
     }
 
@@ -180,13 +219,17 @@ public class World {
         return this.chunks.getLightChunkAt(x, z);
     }
 
+
     public void save() {
         for(Chunk chunk : GAME.getGraphicModule().getLoadedChunks())
             SaveManager.saveChunk(chunk);
+        SaveManager.savePlayer(this, GAME.getPlayer());
+        SaveManager.saveEntities(this);
         SaveManager.saveWorldMeta(this);
     }
 
     public void spawnItem(ItemStack selectedItem, Location location) {
         EntityFactory.createItemEntity(location, selectedItem);
     }
+
 }

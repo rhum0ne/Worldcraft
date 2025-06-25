@@ -1,10 +1,12 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.items_containers;
 
+import fr.rhumun.game.worldcraftopengl.content.GuiTypes;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemContainer;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.ForcedModelMaterial;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.ForcedModelMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.Materials;
 import lombok.Getter;
 
 @Getter
@@ -24,8 +26,9 @@ public class CreativeItems implements ItemContainer {
         }
 
         int id=0;
-        for(Material material : Material.values()){
-            if(material.getMaterial() instanceof ForcedModelMaterial f && f.getModel() != model) continue;
+        for(Material material : Materials.Registry){
+            if(material instanceof ForcedModelMaterial f && f.getModel() != model && material.showInCreativeInventory()) continue;
+            if(!material.showInCreativeInventory()) continue;
             this.items[id] = new ItemStack(material, model);
             id++;
         }
@@ -35,7 +38,9 @@ public class CreativeItems implements ItemContainer {
 
     public void reset(){
         int id=0;
-        for(Material material : Material.values()){
+        for(Material material : Materials.Registry){
+            if(!material.showInCreativeInventory()) continue;
+            if(id>=11*9) break;
             this.items[id] = new ItemStack(material);
             id++;
         }
@@ -58,5 +63,16 @@ public class CreativeItems implements ItemContainer {
         for(; start< items.length; start++){
             items[start] = null;
         }
+    }
+
+    public void setType(GuiTypes type){
+        int id=0;
+        Model model = showedModel != null ? showedModel : Model.BLOCK;
+        for(Material material : type.getMaterials()){
+            if(id>=11*9) break;
+            this.items[id] = new ItemStack( material, model );
+            id++;
+        }
+        setEmpty(id);
     }
 }

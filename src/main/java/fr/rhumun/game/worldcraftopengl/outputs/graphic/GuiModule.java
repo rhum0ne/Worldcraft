@@ -4,21 +4,20 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import fr.rhumun.game.worldcraftopengl.GameState;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Button;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Component;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.*;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.ChatGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.DebugMenu;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HealthGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HungerGui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.FontLoader;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.Gui;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.Crossair;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.types.HotBarGui;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components.SelectedItemDisplay;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL20;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,7 @@ public class GuiModule {
 
 
     private Matrix4f uiProjectionMatrix;
+    private final float[] matrixBuffer = new float[16];
     private final float virtualWidth = 1920.0f;
     private final float virtualHeight = 1080.0f;
 
@@ -101,14 +101,18 @@ public class GuiModule {
                 .translate(offsetX, 0, 0)         // Applique le décalage pour centrer
                 .scale(scaleY);                           // Applique l'échelle uniformément
 
-
-        glUseProgram(ShaderManager.PLAN_SHADERS.id);
+        uiProjectionMatrix.get(matrixBuffer);
+        GLStateManager.useProgram(ShaderManager.PLAN_SHADERS.id);
         int projection = glGetUniformLocation(ShaderManager.PLAN_SHADERS.id, "projection");
-        glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
+        glUniformMatrix4fv(projection, false, matrixBuffer);
 
-        glUseProgram(ShaderManager.TEXT_SHADER.id);
+        GLStateManager.useProgram(ShaderManager.TEXT_SHADER.id);
         projection = glGetUniformLocation(ShaderManager.TEXT_SHADER.id, "projection");
-        glUniformMatrix4fv(projection, false, uiProjectionMatrix.get(new float[16]));
+        glUniformMatrix4fv(projection, false, matrixBuffer);
+
+        if(gui instanceof Resizable guiEvent){
+            guiEvent.resize();
+        }
     }
 
 
@@ -200,12 +204,26 @@ public class GuiModule {
     public void rightClick(Player player) {
         if(!hasGUIOpened()) return;
 
-//        for(Component component : this.gui.getComponents()){
-//            if(component instanceof Button button) {
-//                if(component.isCursorIn())
-//                    button.onClick(player);
-//            }
-//        }
+        for(Component component : this.gui.getComponents()){
+            if(component instanceof ClickableSlot slot) {
+                if(component.isCursorIn()){
+                    ItemStack selected = getSelectedItem();
+                    if(selected == null) break;
+
+                    ItemStack current = slot.getItem();
+                    if(current == null) {
+                        slot.setItem(new ItemStack(selected.getMaterial(), selected.getModel(), 1));
+                        selected.remove(1);
+                        if(selected.isEmpty()) setSelectedItem(null);
+                    } else if(current.isSame(selected) && !current.isFull()) {
+                        current.add(1);
+                        selected.remove(1);
+                        if(selected.isEmpty()) setSelectedItem(null);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     public void leftClick(Player player) {
@@ -214,7 +232,7 @@ public class GuiModule {
         for(Component component : this.gui.getComponents()){
             if(component instanceof Button button) {
                 if(component.isCursorIn()){
-                    button.onClick(player);
+                    button.click(player);
                     break;
                 }
             }

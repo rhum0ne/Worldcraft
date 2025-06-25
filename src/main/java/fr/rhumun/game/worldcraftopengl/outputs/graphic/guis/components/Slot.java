@@ -1,12 +1,16 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.guis.components;
 
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.content.Mesh;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
+import fr.rhumun.game.worldcraftopengl.outputs.audio.Sound;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.DoorUtils;
 import lombok.Getter;
 
 import java.nio.FloatBuffer;
@@ -24,10 +28,12 @@ public class Slot extends Button {
     private final int id;
 
     private ItemStack showedItem;
+    private int lastQuantity = -1;
 
     public Slot(int x, int y, int size, int id, Gui gui) {
         super(x, y, size, size, null, gui);
         this.id = id;
+        this.getText().set2DCoordinates(6,6);
     }
 
     public Slot(int x, int y, int id, Gui gui){
@@ -45,13 +51,15 @@ public class Slot extends Button {
     @Override
     public void update(){
         ItemStack item = getItem();
-        if(showedItem==item) return;
+        int quantity = (item == null) ? 0 : item.getQuantity();
+
+        if(showedItem == item && quantity == lastQuantity) return;
 
         if(item==null){
             this.setTexture(null);
             this.getText().setText("");
         }else{
-            this.setTexture(item.getMaterial().getMaterial().getTexture());
+            this.setTexture(item.getMaterial().getTexture());
 
             if(item.getQuantity() == 1) this.getText().setText("");
             else this.getText().setText(String.valueOf(item.getQuantity()));
@@ -59,6 +67,7 @@ public class Slot extends Button {
         this.updateVertices(item);
 
         this.showedItem = item;
+        this.lastQuantity = quantity;
     }
 
     protected void updateVertices(ItemStack item) {
@@ -84,6 +93,24 @@ public class Slot extends Button {
             updateVAO();
             return;
         }
+        else if(item.getModel() == Model.STAIRS){
+            StairsUtils.rasterBlockItem(item, this, this.getVerticesList(), this.getIndicesList());
+            toArrays();
+            updateVAO();
+            return;
+        }
+        else if(item.getModel() == Model.WALL){
+            WallUtils.rasterBlockItem(item, this, this.getVerticesList(), this.getIndicesList());
+            toArrays();
+            updateVAO();
+            return;
+        }
+        else if(item.getModel() == Model.DOOR){
+            DoorUtils.rasterBlockItem(item, this, this.getVerticesList(), this.getIndicesList());
+            toArrays();
+            updateVAO();
+            return;
+        }
 
         Mesh mesh = item.getModel().get();
 
@@ -103,7 +130,7 @@ public class Slot extends Button {
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = 1-texCoordsBuffer.get(vertexIndex * 2 + 1);
 
-            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTextureID()});
+            addVertex(new float[]{vx, vy, vz, u, v, item.getMaterial().getTexture().getId()});
         }
         toArrays();
         updateVAO();
@@ -135,6 +162,9 @@ public class Slot extends Button {
             this.getIndices()[i] = indicesList.get(i);
         }
     }
+
+    @Override
+    protected Sound getClickSound() { return null; }
 
     @Override
     public void onClick(Player player) {}

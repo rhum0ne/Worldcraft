@@ -10,7 +10,7 @@ import static fr.rhumun.game.worldcraftopengl.Game.GAME;
 public class BackButton extends Button {
 
     public BackButton(int x, int y, Gui container) {
-        super(x, y, container, "Retour");
+        super(x, y, 190, 40, container, "Retour");
     }
 
     @Override

@@ -1,17 +1,17 @@
 package fr.rhumun.game.worldcraftopengl.entities;
 
-import fr.rhumun.game.worldcraftopengl.Game;
-import fr.rhumun.game.worldcraftopengl.content.models.AbstractModel;
+import fr.rhumun.game.worldcraftopengl.content.materials.items.types.BlockItemMaterial;
+import fr.rhumun.game.worldcraftopengl.content.materials.Material;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.Multiblock;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelHitbox;
 import fr.rhumun.game.worldcraftopengl.content.models.ModelMultiHitbox;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.Hitbox;
 import fr.rhumun.game.worldcraftopengl.content.items.ItemStack;
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
+import fr.rhumun.game.worldcraftopengl.worlds.utils.fluids.FluidSimulator;
 import fr.rhumun.game.worldcraftopengl.content.Model;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.Material;
 import fr.rhumun.game.worldcraftopengl.entities.physics.Movements;
 import fr.rhumun.game.worldcraftopengl.entities.physics.hitbox.AxisAlignedBB;
-import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
 import lombok.Getter;
 import lombok.Setter;
@@ -251,13 +251,13 @@ public class Entity {
                 this.getLocation().getX(), this.getLocation().getY() - 0.5f,
                 this.getLocation().getZ(), false);
         if(body != null && body.getMaterial() != null && body.getMaterial().isLiquid())
-            return body.getMaterial().getMaterial().getDensity();
+            return body.getMaterial().getDensity();
 
         Block head = this.getLocation().getWorld().getBlockAt(
                 this.getLocation().getX(), this.getLocation().getY() + 0.2f,
                 this.getLocation().getZ(), false);
         if(head != null && head.getMaterial() != null && head.getMaterial().isLiquid())
-            return head.getMaterial().getMaterial().getDensity();
+            return head.getMaterial().getDensity();
 
         return 0f;
     }
@@ -296,15 +296,16 @@ public class Entity {
             this.getVelocity().add(0, (float)jumpForce/9, 0);
     }
 
+    public Block getSelectedBlock(){ return getSelectedBlock(true); }
 
-    public Block getSelectedBlock() {
+    public Block getSelectedBlock(boolean ignoreLiquids) {
         Vector3f direction = getRayDirection();
         Vector3f pos = new Vector3f((float) this.getLocation().getX(), (float) this.getLocation().getY(), (float) this.getLocation().getZ());
 
         for (float distance = 0; distance < this.getReach(); distance += RAY_STEP) {
             Block block = GAME.getWorld().getBlockAt(pos, true);
 
-            if (block != null && block.getMaterial() != null && !block.getMaterial().isLiquid()) {
+            if (block != null && block.getMaterial() != null && (!ignoreLiquids || !block.getMaterial().isLiquid())) {
                 return block;
             }
 
@@ -342,14 +343,20 @@ public class Entity {
             return;
         }
 
-        Material material = item.getMaterial();
+        Material material = item.getMaterial() instanceof BlockItemMaterial bM ? bM.getMaterialToPlace() : item.getMaterial();
 
         Model model = item.getModel();
         block.setModel(model).setMaterial(material);
 
         model.setBlockDataOnPlace(block, hitPosition, direction);
 
-        if (material.getMaterial() instanceof fr.rhumun.game.worldcraftopengl.content.materials.types.Multiblock multi) {
+        if(material.isLiquid())
+            block.setState(8);
+
+        // Propagate fluids once the block is placed
+        FluidSimulator.onBlockUpdate(block);
+
+        if (material instanceof Multiblock multi) {
             multi.onPlace(block);
         }
     }
@@ -359,6 +366,7 @@ public class Entity {
         if(block == null || block.getMaterial() == null) return null;
         Material mat = block.getMaterial();
         block.setMaterial(null);
+        FluidSimulator.onBlockUpdate(block);
         return mat;
     }
 

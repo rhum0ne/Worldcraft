@@ -7,8 +7,12 @@ import fr.rhumun.game.worldcraftopengl.content.materials.opacity.OpacityType;
 import fr.rhumun.game.worldcraftopengl.content.textures.Texture;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.BlockUtil;
-import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.LiquidsUtil;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.liquids.LiquidsUtil;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.SlabUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.StairsUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.WallUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.models.DoorUtils;
+import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.GLStateManager;
 import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
@@ -22,7 +26,6 @@ import java.util.LinkedHashSet;
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL20C.glUseProgram;
 import static org.lwjgl.opengl.GL30C.glBindVertexArray;
 
 @Getter
@@ -47,35 +50,35 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         return null;
     }
 
-    public synchronized void render() {
+    public void render() {
 
         if(chunk.isToUpdate()) update();
 
-        glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
-        glEnable(GL_DEPTH_TEST);
+        GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
+        GLStateManager.enable(GL_DEPTH_TEST);
 
         renderOpaque();
 
         if(this.getRenderers().get(OpacityType.LIQUID.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.LIQUID_SHADER.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.LIQUID_SHADER.id);
             renderLiquids();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
 
         if(this.getRenderers().get(OpacityType.TRANSPARENT.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
             renderTransparent();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
 
         if(OpacityType.CLOSE_TRANSPARENT.getMaxChunkDistance() > this.getDistanceFromPlayer()
                 && this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).getIndicesArray().length != 0){
-            glEnable(GL_BLEND);
-            glUseProgram(ShaderManager.GLOBAL_SHADERS.id);
+            GLStateManager.enable(GL_BLEND);
+            GLStateManager.useProgram(ShaderManager.GLOBAL_SHADERS.id);
             renderCloseTransparent();
-            glDisable(GL_BLEND);
+            GLStateManager.disable(GL_BLEND);
         }
     }
 
@@ -98,7 +101,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
         if(chunk.isToUpdate()) update();
         this.getRenderers().get(OpacityType.CLOSE_TRANSPARENT.getPriority()).render();
     }
-    public synchronized void update() {
+    public void update() {
         if (!chunk.isGenerated()) return;
         chunk.setToUpdate(false);
         updateData();
@@ -160,6 +163,9 @@ public class ChunkRenderer extends AbstractChunkRenderer{
                     Block block = chunk.getBlocks()[X][Y][Z];
                     if (block == null || block.getMaterial() == null) continue;
 
+                    // Skip blocks whose parent chunk was already unloaded
+                    if (block.getChunk() == null) continue;
+
                     Model model = block.getModel();
                     if (model == null) continue;
 
@@ -172,6 +178,9 @@ public class ChunkRenderer extends AbstractChunkRenderer{
                     if(block.getMaterial().isLiquid()) LiquidsUtil.loadDataFor(block, this, X, Y,Z,blocks);
                     else if(model==Model.BLOCK) BlockUtil.loadDataFor(block, this, X, Y, Z, blocks);
                     else if(model==Model.SLAB) SlabUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.STAIRS) StairsUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.WALL) WallUtils.loadDataFor(block, this, X, Y, Z, blocks);
+                    else if(model==Model.DOOR) DoorUtils.loadDataFor(block, this, X, Y, Z, blocks);
                     else raster(block, model);
 
                 }
@@ -225,7 +234,7 @@ public class ChunkRenderer extends AbstractChunkRenderer{
             float vy = (float) (y + verticesBuffer.get(vertexIndex * 3 + 1));
             float vz = (float) (z + verticesBuffer.get(vertexIndex * 3 + 2));
 
-            Texture texture = block.getMaterial().getMaterial().getTextureFromFaceWithNormal(nx, ny, nz);
+            Texture texture = block.getMaterial().getTextureFromFaceWithNormal(nx, ny, nz);
             // Coordonnées de texture
             float u = texCoordsBuffer.get(vertexIndex * 2);
             float v = texCoordsBuffer.get(vertexIndex * 2 + 1);

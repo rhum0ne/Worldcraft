@@ -6,14 +6,12 @@ import fr.rhumun.game.worldcraftopengl.worlds.AbstractChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
 import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
 import fr.rhumun.game.worldcraftopengl.worlds.World;
-import lombok.Getter;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static fr.rhumun.game.worldcraftopengl.Game.*;
 
-@Getter
 public class LoadedChunksManager {
 
     private static final int MAX_CHUNKS = 65536; // Nombre maximum de chunks (short = 2^16)
@@ -24,8 +22,8 @@ public class LoadedChunksManager {
     private int lastChunkX = Integer.MIN_VALUE;
     private int lastChunkZ = Integer.MIN_VALUE;
 
-    private LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
-    private LinkedHashSet<LightChunk> chunksToRenderLight = new LinkedHashSet<>();
+    private final LinkedHashSet<Chunk> chunksToRender = new LinkedHashSet<>();
+    private final LinkedHashSet<LightChunk> chunksToRenderLight = new LinkedHashSet<>();
 
 
     public LoadedChunksManager(Player player) {
@@ -33,10 +31,20 @@ public class LoadedChunksManager {
         this.game = GAME;
     }
 
-    public void updateChunksGradually() {
+    public synchronized Set<Chunk> getChunksToRender() {
+        return new LinkedHashSet<>(chunksToRender);
+    }
+
+    public synchronized Set<LightChunk> getChunksToRenderLight() {
+        return new LinkedHashSet<>(chunksToRenderLight);
+    }
+
+    public synchronized void updateChunksGradually() {
         if(!game.isPlaying() || game.isPaused() || !UPDATE_WORLD_RENDER) return;
 
         World world = player.getLocation().getWorld();
+
+        if(player.getLocation().getChunk() == null) return;
         int centerX = player.getLocation().getChunk().getX();
         int centerZ = player.getLocation().getChunk().getZ();
 
@@ -96,7 +104,8 @@ public class LoadedChunksManager {
         }
 
         // Mise à jour des listes internes
-        chunksToRender = keepChunks.stream()
+        chunksToRender.clear();
+        chunksToRender.addAll(keepChunks.stream()
                 .filter(c -> c instanceof Chunk)
                 .map(c -> (Chunk) c)
                 .sorted(Comparator.comparingInt(chunk -> {
@@ -104,12 +113,13 @@ public class LoadedChunksManager {
                     int dz = chunk.getZ() * CHUNK_SIZE - player.getLocation().getZInt();
                     return -(dx * dx + dz * dz); // tri du plus loin au plus proche
                 }))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new)));
 
-        chunksToRenderLight = keepChunks.stream()
+        chunksToRenderLight.clear();
+        chunksToRenderLight.addAll(keepChunks.stream()
                 .filter(c -> c instanceof LightChunk)
                 .map(c -> (LightChunk) c)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new)));
 
         GAME.getGraphicModule().changeLoadedBlocks();
     }

@@ -1,7 +1,7 @@
 package fr.rhumun.game.worldcraftopengl.outputs.graphic.utils;
 
 import fr.rhumun.game.worldcraftopengl.worlds.Block;
-import fr.rhumun.game.worldcraftopengl.content.materials.types.PointLight;
+import fr.rhumun.game.worldcraftopengl.content.materials.blocks.types.PointLight;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.shaders.Shader;
 import fr.rhumun.game.worldcraftopengl.worlds.Chunk;
@@ -9,8 +9,6 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.lwjgl.opengl.GL20.glUseProgram;
 
 @Getter
 public class LightningsUtils {
@@ -40,7 +38,7 @@ public class LightningsUtils {
     private void sendLight(){
         // Dessiner les éléments existants
         for(Shader shader : graphicModule.getRenderingShaders()){
-            glUseProgram(shader.id);
+            GLStateManager.useProgram(shader.id);
 
             // Envoie la position de la caméra
             shader.setUniform("viewPos", graphicModule.getCamera().getPos());
@@ -53,7 +51,7 @@ public class LightningsUtils {
             for (int i = 0; i < this.pointLights.size(); i++) {
 
                 Block block = this.pointLights.get(i);
-                PointLight pointLight = (PointLight) block.getMaterial().getMaterial();
+                PointLight pointLight = (PointLight) block.getMaterial();
 
                 String uniformName = "pointLights[" + i + "]";
                 shader.setUniform(uniformName + ".position", block.getLocation().getPositions());

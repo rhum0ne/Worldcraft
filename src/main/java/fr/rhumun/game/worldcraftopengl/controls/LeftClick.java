@@ -17,13 +17,18 @@ public class LeftClick extends Control {
         var target = player.getEntityInSight();
         if (target != null) {
             player.attack(target);
-        } else {
+            return;
+        }
+        if(player.isInCreativeMode()){
             player.breakBlock();
+        }else{
+            player.startBreaking();
         }
     }
 
     @Override
     public void onKeyReleased(Player player) {
-
+        if(!player.isInCreativeMode())
+            player.stopBreaking();
     }
 }
