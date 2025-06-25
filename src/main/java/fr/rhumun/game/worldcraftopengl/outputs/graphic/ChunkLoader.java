@@ -26,6 +26,7 @@ public class ChunkLoader extends TimerTask {
         if(!graphicModule.isInitialized() || player.getWorld() == null) return;
 
         player.getWorld().getGenerator().processChunkQueue();
+        fr.rhumun.game.worldcraftopengl.worlds.SaveManager.processQueuedLightLoads();
         player.getLoadedChunksManager().updateChunksGradually();
     }
 

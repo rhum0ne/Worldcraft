@@ -33,7 +33,7 @@ public class Game {
     //public static String GAME_PATH = "C:\\Users\\eletu\\IdeaProjects\\Worldcraft\\";
     public static String GAME_PATH = "E:\\Devellopement\\Games\\Worldcraft\\";
     public static int SIMULATION_DISTANCE = 5;
-    public static int SHOW_DISTANCE = 16;
+    public static int SHOW_DISTANCE = 32;
     public static int CHUNK_SIZE = 16;
     public static boolean ANTIALIASING = false;
     public static boolean SHOWING_GUIS = true;
@@ -48,7 +48,7 @@ public class Game {
     public static boolean GL_DEBUG = false;
     public static boolean DEBUG = false;
     public static boolean SHOWING_HITBOXES = false;
-    public static int LOD = 4;
+    public static int LOD = 6;
     public static final long LAG_SPIKE_LIMIT = 100;
 
     public static String SHADERS_PATH = GAME_PATH + "src\\main\\java\\fr\\rhumun\\game\\worldcraftopengl\\outputs\\graphic\\shaders\\";
