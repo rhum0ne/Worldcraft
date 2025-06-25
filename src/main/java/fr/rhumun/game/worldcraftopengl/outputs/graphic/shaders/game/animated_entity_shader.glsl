@@ -19,7 +19,7 @@ out vec3 FragPos;
 void main() {
     int boneIndex = int(inBoneID);
     mat4 boneTransform = boneMatrices[boneIndex];
-    vec4 localPos = vec4(inPosition * 0.05, 1.0);
+    vec4 localPos = vec4(inPosition, 1.0);
     vec4 worldPos = boneTransform * localPos;
     FragPos = worldPos.xyz;
     TexCoord = inTexCoord;
