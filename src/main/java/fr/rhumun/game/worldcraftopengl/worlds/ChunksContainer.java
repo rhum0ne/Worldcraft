@@ -133,7 +133,7 @@ public class ChunksContainer {
         registerChunk(toLongKey(x, z), chunk);
 
         if (SaveManager.chunkExists(world, x, z)) {
-            SaveManager.loadLightChunkAsync(chunk, () -> {
+            SaveManager.queueLightChunkLoad(chunk, () -> {
                 if (!chunk.isGenerated()) {
                     world.getGenerator().addToGenerate(chunk);
                 }

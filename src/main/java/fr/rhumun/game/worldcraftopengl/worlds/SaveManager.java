@@ -14,6 +14,9 @@ import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biome;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.biomes.Biomes;
 import fr.rhumun.game.worldcraftopengl.worlds.generators.utils.Seed;
 import fr.rhumun.game.worldcraftopengl.worlds.WorldType;
+import fr.rhumun.game.worldcraftopengl.worlds.LightChunk;
+
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -44,6 +47,12 @@ public class SaveManager {
             t.setPriority(10);
             return t;
     });
+
+    /** Queue for deferred light chunk loads to avoid loading them all at once */
+    private static final java.util.concurrent.ConcurrentLinkedDeque<QueuedLightLoad> LIGHT_LOAD_QUEUE = new java.util.concurrent.ConcurrentLinkedDeque<>();
+    private static final int MAX_LIGHT_LOADS_PER_TICK = 2;
+
+    private record QueuedLightLoad(LightChunk chunk, Runnable onComplete) {}
 
 
     static {
@@ -364,6 +373,27 @@ public class SaveManager {
                 if (onComplete != null) onComplete.run();
             }
         });
+    }
+
+    /**
+     * Queues a light chunk to be loaded later. This avoids launching too many
+     * I/O tasks simultaneously when a large area is discovered.
+     */
+    public static void queueLightChunkLoad(LightChunk chunk, Runnable onComplete) {
+        LIGHT_LOAD_QUEUE.add(new QueuedLightLoad(chunk, onComplete));
+    }
+
+    /**
+     * Processes a few queued light chunk loads. Should be called regularly from
+     * the game loop to gradually load far chunks.
+     */
+    public static void processQueuedLightLoads() {
+        int processed = 0;
+        QueuedLightLoad q;
+        while (processed < MAX_LIGHT_LOADS_PER_TICK && (q = LIGHT_LOAD_QUEUE.poll()) != null) {
+            loadLightChunkAsync(q.chunk, q.onComplete);
+            processed++;
+        }
     }
 
     /* ***************************** Player & Entities ****************************** */
