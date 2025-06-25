@@ -61,7 +61,7 @@ public class EntitiesRenderer extends GlobalRenderer {
         while (it.hasNext()) {
             Entity e = it.next();
 
-            //if (e instanceof MobEntity mE && mE.isAnimated() && mE.getAnimator() != null) continue;
+            if (e instanceof MobEntity mE && mE.isAnimated() && mE.getAnimator() != null) continue;
             if (e == player) continue;
             Model model = e.getModel();
             if (model == null) continue;

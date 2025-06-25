@@ -56,8 +56,21 @@ public class Animator {
     }
 
     public void sendToShader(Shader shader) {
+        sendToShader(shader, new Matrix4f().identity());
+    }
+
+    public void sendToShader(Shader shader, Matrix4f entityTransform) {
+        Matrix4f tmp = new Matrix4f();
+
+        // Clear all bones to identity to avoid leaking transforms between entities
+        for (int i = 0; i < 64; i++) {
+            shader.setUniform("boneMatrices[" + i + "]", tmp.identity());
+        }
+
         for (Bone bone : bones.values()) {
-            shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
+            if (bone.index >= 64) continue; // safeguard
+            shader.setUniform("boneMatrices[" + bone.index + "]",
+                    tmp.set(entityTransform).mul(bone.globalTransform));
         }
     }
 }
