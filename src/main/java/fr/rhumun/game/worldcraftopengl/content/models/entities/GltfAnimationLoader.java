@@ -4,7 +4,8 @@ import fr.rhumun.game.worldcraftopengl.Game;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-            AINode node = aiBone.mNode();
+import org.lwjgl.system.MemoryUtil;
+            long nodePtr = MemoryUtil.memGetAddress(aiBone.address() + AIBone.MNODE);
 
 import java.util.*;
 
