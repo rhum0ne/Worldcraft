@@ -33,6 +33,8 @@ public class Materials {
     public static Material DANDELION = new DandelionMaterial();
     public static Material SAND = new SandMaterial();
     public static Material SAPLING = new SaplingMaterial();
+    public static Material DOOR = new DoorMaterial();
+    public static Material DOOR_TOP = new DoorTopMaterial();
     public static Material LANTERN = new LanternMaterial();
     public static Material WHITE_WOOL = new WoolMaterial("white");
     public static Material BLACK_WOOL = new WoolMaterial("black");
@@ -71,6 +73,8 @@ public class Materials {
     public static Material BIRCH_LOG = new BirchLogMaterial();
     public static Material BIRCH_PLANKS = new BirchPlanksMaterial();
     public static Material BIRCH_LEAVES = new BirchLeavesMaterial();
+    public static Material BIRCH_DOOR = new BirchDoorMaterial();
+    public static Material BIRCH_DOOR_TOP = new BirchDoorTopMaterial();
     public static Material BIRCH_SAPLING = new BirchSaplingMaterial();
     public static Material ACACIA_LOG = new AcaciaLogMaterial();
     public static Material ACACIA_PLANKS = new AcaciaPlanksMaterial();
@@ -79,6 +83,14 @@ public class Materials {
     public static Material ACACIA_DOOR = new AcaciaDoorMaterial();
     public static Material ACACIA_DOOR_TOP = new AcaciaDoorTopMaterial();
     public static Material ACACIA_TRAPDOOR = new AcaciaTrapdoorMaterial();
+    public static Material CHERRY_LOG = new CherryLogMaterial();
+    public static Material CHERRY_PLANKS = new CherryPlanksMaterial();
+    public static Material CHERRY_DOOR = new CherryDoorMaterial();
+    public static Material CHERRY_DOOR_TOP = new CherryDoorTopMaterial();
+    public static Material SPRUCE_LOG = new SpruceLogMaterial();
+    public static Material SPRUCE_PLANKS = new SprucePlanksMaterial();
+    public static Material SPRUCE_DOOR = new SpruceDoorMaterial();
+    public static Material SPRUCE_DOOR_TOP = new SpruceDoorTopMaterial();
     public static Material BRICKS = new BricksMaterial();
     public static Material GLASS = new GlassMaterial();
     public static Material CALCITE = new CalciteMaterial();
@@ -116,6 +128,10 @@ public class Materials {
     public static Material WATER_BUCKET = new BlockItemMaterial(Texture.WATER_BUCKET, WATER);
     public static Material BUCKET = new ItemMaterial(Texture.BUCKET);
     public static Material ACADIA_DOOR_ITEM = new BlockItemMaterial(Texture.ACACIA_DOOR_ITEM, ACACIA_DOOR);
+    public static Material SPRUCE_DOOR_ITEM = new BlockItemMaterial(Texture.SPRUCE_DOOR_ITEM, SPRUCE_DOOR);
+    public static Material BIRCH_DOOR_ITEM = new BlockItemMaterial(Texture.BIRCH_DOOR_ITEM, BIRCH_DOOR);
+    public static Material CHERRY_DOOR_ITEM = new BlockItemMaterial(Texture.CHERRY_DOOR_ITEM, CHERRY_DOOR);
+    public static Material DOOR_ITEM = new BlockItemMaterial(Texture.DOOR_ITEM, DOOR);
     public static Material WOODEN_AXE = new ToolItemMaterial(Texture.WOODEN_AXE, 2, ToolType.WOOD);
     public static Material WOODEN_HOE = new ItemMaterial(Texture.WOODEN_HOE);
     public static Material WOODEN_PICKAXE = new ToolItemMaterial(Texture.WOODEN_PICKAXE, 2, ToolType.ROCK);
