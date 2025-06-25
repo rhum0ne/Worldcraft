@@ -14,8 +14,6 @@ public class Camera {
     Vector3f worldUp = new Vector3f(0.0f, 1.0f, 0.0f); // Vecteur "up" pour la caméra
 
     private final Player player;
-    @Getter(AccessLevel.NONE)
-    private final Vector3f tmpPos = new Vector3f();
 
     public Camera(Player player){
         this.player = player;
@@ -29,10 +27,7 @@ public class Camera {
      * @return immutable view of the camera position
      */
     public Vector3f getPos() {
-        tmpPos.x = (float) player.getLocation().getX();
-        tmpPos.y = (float) player.getLocation().getY();
-        tmpPos.z = (float) player.getLocation().getZ();
-        return tmpPos;
+        return new Vector3f((float) player.getLocation().getX(), (float) player.getLocation().getY(), (float) player.getLocation().getZ());
     }
 
     public void setYaw(float yaw) {
