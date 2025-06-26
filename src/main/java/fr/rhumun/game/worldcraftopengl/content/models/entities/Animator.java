@@ -13,6 +13,7 @@ import static fr.rhumun.game.worldcraftopengl.content.models.entities.Keyframe.i
 
 public class Animator {
     private final Map<String, Bone> bones;
+    private final Bone[] boneArray;
     private final List<AnimationChannel<?>> channels;
     private float animationTime = 0f;
     private float animationSpeed = 1f;
@@ -20,6 +21,14 @@ public class Animator {
     public Animator(Map<String, Bone> bones, List<AnimationChannel<?>> channels) {
         this.bones = bones;
         this.channels = channels;
+        this.boneArray = new Bone[bones.size()];
+        for (Bone b : bones.values()) {
+            this.boneArray[b.index] = b;
+        }
+    }
+
+    public Bone[] getBones() {
+        return boneArray;
     }
 
     public void update(float deltaTime) {
@@ -56,8 +65,13 @@ public class Animator {
     }
 
     public void sendToShader(Shader shader) {
-        for (Bone bone : bones.values()) {
-            shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
+        sendToShader(shader, new Matrix4f().identity());
+    }
+
+    public void sendToShader(Shader shader, Matrix4f transform) {
+        for (Bone bone : boneArray) {
+            Matrix4f mat = new Matrix4f(transform).mul(bone.globalTransform);
+            shader.setUniform("boneMatrices[" + bone.index + "]", mat);
         }
     }
 }
