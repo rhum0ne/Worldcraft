@@ -14,7 +14,8 @@ public class NinjaSkeletonEntity extends MobEntity {
 
         var result = GltfAnimationLoader.load("models\\ninja_skeleton.gltf");
         if (result != null) {
-            this.setAnimator(new Animator(result.bones(), result.channels()));
+            this.setAnimator(new Animator(result.bones(), result.animations()));
+            getAnimator().play("idle");
         }
     }
 
@@ -26,7 +27,9 @@ public class NinjaSkeletonEntity extends MobEntity {
 
     @Override
     public void move() {
-        if (getAnimator() != null) getAnimator().update(1f / 60f);
+        if (getAnimator() != null) {
+            getAnimator().update(1f / 60f);
+        }
 
         Player player = Game.GAME.getPlayer();
         if (player != null) {
@@ -48,5 +51,10 @@ public class NinjaSkeletonEntity extends MobEntity {
         if(this.hasBlockInViewDirection()) { this. jump();}
 
         Movements.applyMovements(this);
+
+        if (getAnimator() != null) {
+            boolean movingNow = getMovements()[0] != 0 || getMovements()[2] != 0;
+            getAnimator().play(movingNow ? "walk" : "idle");
+        }
     }
 }

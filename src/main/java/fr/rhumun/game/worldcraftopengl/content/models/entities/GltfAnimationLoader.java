@@ -10,7 +10,7 @@ import java.util.*;
 
 public class GltfAnimationLoader {
 
-    public static record Result(Map<String, Bone> bones, List<AnimationChannel<?>> channels) {}
+    public static record Result(Map<String, Bone> bones, Map<String, Animation> animations) {}
 
     public static Result load(String path) {
         path = Game.TEXTURES_PATH + path;
@@ -24,7 +24,7 @@ public class GltfAnimationLoader {
         }
 
         Map<String, Bone> bones = new LinkedHashMap<>();
-        List<AnimationChannel<?>> channels = new ArrayList<>();
+        Map<String, Animation> animations = new LinkedHashMap<>();
 
         processNodes(scene.mRootNode(), null, bones);
 
@@ -46,51 +46,54 @@ public class GltfAnimationLoader {
             }
         }
 
-        AIAnimation animation = AIAnimation.create(scene.mAnimations().get(0)); // on ne traite que la première
+        for (int a = 0; a < scene.mNumAnimations(); a++) {
+            AIAnimation animation = AIAnimation.create(scene.mAnimations().get(a));
+            String animName = animation.mName().dataString();
+            if (animName == null || animName.isEmpty()) animName = "anim" + a;
+            List<AnimationChannel<?>> animChannels = new ArrayList<>();
 
-        for (int i = 0; i < animation.mNumChannels(); i++) {
-            AINodeAnim channel = AINodeAnim.create(animation.mChannels().get(i));
-            String boneName = channel.mNodeName().dataString();
+            for (int i = 0; i < animation.mNumChannels(); i++) {
+                AINodeAnim channel = AINodeAnim.create(animation.mChannels().get(i));
+                String boneName = channel.mNodeName().dataString();
 
-            // Créer le bone si pas encore présent
-            bones.computeIfAbsent(boneName, name -> new Bone(name, bones.size()));
+                bones.computeIfAbsent(boneName, name -> new Bone(name, bones.size()));
 
-            // Position
-            AIVectorKey.Buffer positions = channel.mPositionKeys();
-            List<Keyframe<Vector3f>> posKeys = new ArrayList<>();
-            for (int k = 0; k < channel.mNumPositionKeys(); k++) {
-                AIVectorKey key = positions.get(k);
-                posKeys.add(new Keyframe<>((float) key.mTime(),
-                        new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z())));
+                AIVectorKey.Buffer positions = channel.mPositionKeys();
+                List<Keyframe<Vector3f>> posKeys = new ArrayList<>();
+                for (int k = 0; k < channel.mNumPositionKeys(); k++) {
+                    AIVectorKey key = positions.get(k);
+                    posKeys.add(new Keyframe<>((float) key.mTime(),
+                            new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z())));
+                }
+                if (!posKeys.isEmpty())
+                    animChannels.add(new AnimationChannel<>(boneName, "translation", posKeys));
+
+                AIQuatKey.Buffer rotations = channel.mRotationKeys();
+                List<Keyframe<Quaternionf>> rotKeys = new ArrayList<>();
+                for (int k = 0; k < channel.mNumRotationKeys(); k++) {
+                    AIQuatKey key = rotations.get(k);
+                    rotKeys.add(new Keyframe<>((float) key.mTime(),
+                            new Quaternionf(key.mValue().x(), key.mValue().y(), key.mValue().z(), key.mValue().w())));
+                }
+                if (!rotKeys.isEmpty())
+                    animChannels.add(new AnimationChannel<>(boneName, "rotation", rotKeys));
+
+                AIVectorKey.Buffer scales = channel.mScalingKeys();
+                List<Keyframe<Vector3f>> scaleKeys = new ArrayList<>();
+                for (int k = 0; k < channel.mNumScalingKeys(); k++) {
+                    AIVectorKey key = scales.get(k);
+                    scaleKeys.add(new Keyframe<>((float) key.mTime(),
+                            new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z())));
+                }
+                if (!scaleKeys.isEmpty())
+                    animChannels.add(new AnimationChannel<>(boneName, "scale", scaleKeys));
             }
-            if (!posKeys.isEmpty())
-                channels.add(new AnimationChannel<>(boneName, "translation", posKeys));
 
-            // Rotation
-            AIQuatKey.Buffer rotations = channel.mRotationKeys();
-            List<Keyframe<Quaternionf>> rotKeys = new ArrayList<>();
-            for (int k = 0; k < channel.mNumRotationKeys(); k++) {
-                AIQuatKey key = rotations.get(k);
-                rotKeys.add(new Keyframe<>((float) key.mTime(),
-                        new Quaternionf(key.mValue().x(), key.mValue().y(), key.mValue().z(), key.mValue().w())));
-            }
-            if (!rotKeys.isEmpty())
-                channels.add(new AnimationChannel<>(boneName, "rotation", rotKeys));
-
-            // Scale
-            AIVectorKey.Buffer scales = channel.mScalingKeys();
-            List<Keyframe<Vector3f>> scaleKeys = new ArrayList<>();
-            for (int k = 0; k < channel.mNumScalingKeys(); k++) {
-                AIVectorKey key = scales.get(k);
-                scaleKeys.add(new Keyframe<>((float) key.mTime(),
-                        new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z())));
-            }
-            if (!scaleKeys.isEmpty())
-                channels.add(new AnimationChannel<>(boneName, "scale", scaleKeys));
+            animations.put(animName, new Animation(animName, (float) animation.mDuration(), (float) animation.mTicksPerSecond(), animChannels));
         }
 
         Assimp.aiReleaseImport(scene);
-        return new Result(bones, channels);
+        return new Result(bones, animations);
     }
 
     private static void processNodes(AINode node, Bone parent, Map<String, Bone> bones) {
