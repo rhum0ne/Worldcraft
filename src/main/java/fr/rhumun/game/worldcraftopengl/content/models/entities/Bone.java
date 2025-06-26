@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Bone {
     public final String name;
-    public final int index;
+    public int index;
     public Bone parent;
     public final List<Bone> children = new ArrayList<>();
 
@@ -17,8 +17,14 @@ public class Bone {
     private final Quaternionf rotation = new Quaternionf();
     private final Vector3f scale = new Vector3f(1, 1, 1);
 
+    private final Vector3f bindTranslation = new Vector3f();
+    private final Quaternionf bindRotation = new Quaternionf();
+    private final Vector3f bindScale = new Vector3f(1, 1, 1);
+
     public final Matrix4f localTransform = new Matrix4f();
+    public final Matrix4f bindTransform = new Matrix4f();
     public final Matrix4f globalTransform = new Matrix4f();
+    public final Matrix4f offsetMatrix = new Matrix4f();
 
     public Bone(String name, int index) {
         this.name = name;
@@ -40,6 +46,24 @@ public class Bone {
         recomputeMatrix();
     }
 
+    public void setBindMatrix(Matrix4f mat) {
+        this.bindTransform.set(mat);
+        mat.getTranslation(bindTranslation);
+        mat.getUnnormalizedRotation(bindRotation);
+        mat.getScale(bindScale);
+        translation.set(bindTranslation);
+        rotation.set(bindRotation);
+        scale.set(bindScale);
+        recomputeMatrix();
+    }
+
+    public void resetToBindPose() {
+        translation.set(bindTranslation);
+        rotation.set(bindRotation);
+        scale.set(bindScale);
+        recomputeMatrix();
+    }
+
     public void recomputeMatrix() {
         localTransform.identity()
                 .translate(translation)
@@ -47,10 +71,13 @@ public class Bone {
                 .scale(scale);
     }
 
-    public void computeGlobalTransform() {
+    public void computeGlobalTransformRecursive() {
         if (parent != null)
             globalTransform.set(parent.globalTransform).mul(localTransform);
         else
             globalTransform.set(localTransform);
+        for (Bone child : children) {
+            child.computeGlobalTransformRecursive();
+        }
     }
 }

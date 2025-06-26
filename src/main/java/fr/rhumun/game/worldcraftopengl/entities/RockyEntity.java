@@ -14,7 +14,8 @@ public class RockyEntity extends MobEntity {
 
         var result = GltfAnimationLoader.load("models\\Rocky.gltf");
         if (result != null) {
-            this.setAnimator(new Animator(result.bones(), result.channels()));
+            this.setAnimator(new Animator(result.bones(), result.animations()));
+            getAnimator().play("idle");
         }
     }
 
@@ -25,7 +26,9 @@ public class RockyEntity extends MobEntity {
 
     @Override
     public void move() {
-        if (getAnimator() != null) getAnimator().update(1f / 60f);
+        if (getAnimator() != null) {
+            getAnimator().update(1f / 60f);
+        }
 
         var world = Game.GAME.getWorld();
         NinjaSkeletonEntity target = null;
@@ -57,5 +60,10 @@ public class RockyEntity extends MobEntity {
         }
 
         Movements.applyMovements(this);
+
+        if (getAnimator() != null) {
+            boolean moving = getMovements()[0] != 0 || getMovements()[2] != 0;
+            getAnimator().play(moving ? "walk" : "idle");
+        }
     }
 }
