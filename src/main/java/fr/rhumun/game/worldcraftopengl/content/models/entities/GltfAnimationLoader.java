@@ -35,7 +35,8 @@ public class GltfAnimationLoader {
             for (int i = 0; i < mesh.mNumBones(); i++) {
                 AIBone aiBone = AIBone.create(aiBones.get(i));
                 String name = aiBone.mName().dataString();
-                Bone b = bones.computeIfAbsent(name, n -> new Bone(n, bones.size()));
+                Bone b = bones.computeIfAbsent(name, n -> new Bone(n, i));
+                if (b.index < 0) b.index = i;
                 AIMatrix4x4 mat = aiBone.mOffsetMatrix();
                 b.offsetMatrix.set(
                         mat.a1(), mat.b1(), mat.c1(), mat.d1(),
@@ -98,7 +99,7 @@ public class GltfAnimationLoader {
 
     private static void processNodes(AINode node, Bone parent, Map<String, Bone> bones) {
         String name = node.mName().dataString();
-        Bone bone = bones.computeIfAbsent(name, n -> new Bone(n, bones.size()));
+        Bone bone = bones.computeIfAbsent(name, n -> new Bone(n, -1));
         bone.parent = parent;
         if (parent != null) parent.children.add(bone);
 
