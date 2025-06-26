@@ -19,6 +19,7 @@ public class Bone {
 
     public final Matrix4f localTransform = new Matrix4f();
     public final Matrix4f globalTransform = new Matrix4f();
+    public final Matrix4f offsetMatrix = new Matrix4f();
 
     public Bone(String name, int index) {
         this.name = name;
@@ -38,6 +39,10 @@ public class Bone {
     public void setScale(Vector3f s) {
         this.scale.set(s);
         recomputeMatrix();
+    }
+
+    public void setBindMatrix(Matrix4f mat) {
+        this.localTransform.set(mat);
     }
 
     public void recomputeMatrix() {
