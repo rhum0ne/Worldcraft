@@ -10,6 +10,7 @@ layout(location = 5) in vec4 inWeights;
 
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 model;
 uniform mat4 boneMatrices[64];
 
 out vec2 fragTexCoord;
@@ -17,15 +18,14 @@ out float fragTextureIndex;
 out vec3 fragNormal;
 
 void main() {
-    mat4 skinMatrix = 
+    mat4 skinMatrix =
         inWeights.x * boneMatrices[int(inBoneIDs.x)] +
         inWeights.y * boneMatrices[int(inBoneIDs.y)] +
         inWeights.z * boneMatrices[int(inBoneIDs.z)] +
         inWeights.w * boneMatrices[int(inBoneIDs.w)];
-    vec4 worldPos = skinMatrix * vec4(inPosition, 1.0);
+    vec4 worldPos = model * skinMatrix * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
     fragTextureIndex = inTextureIndex;
-    fragNormal = mat3(transpose(inverse(skinMatrix))) * inNormal;
-    worldPos.xyz *= 0.05;
+    fragNormal = mat3(transpose(inverse(model * skinMatrix))) * inNormal;
     gl_Position = projection * view * worldPos;
 }

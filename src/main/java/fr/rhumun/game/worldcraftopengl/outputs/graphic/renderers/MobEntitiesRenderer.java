@@ -6,6 +6,7 @@ import fr.rhumun.game.worldcraftopengl.entities.MobEntity;
 import fr.rhumun.game.worldcraftopengl.entities.player.Player;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.GraphicModule;
 import fr.rhumun.game.worldcraftopengl.outputs.graphic.utils.ShaderManager;
+import org.joml.Matrix4f;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Iterator;
@@ -50,6 +51,12 @@ public class MobEntitiesRenderer extends GlobalRenderer {
             ShaderManager.ANIMATED_ENTITY_SHADER.use();
             mob.getAnimator().sendToShader(ShaderManager.ANIMATED_ENTITY_SHADER);
 
+            Matrix4f modelMat = new Matrix4f()
+                    .translate((float) mob.getLocation().getX(), (float) mob.getLocation().getY(), (float) mob.getLocation().getZ())
+                    .rotateY((float) Math.toRadians(mob.getLocation().getYaw()))
+                    .scale(0.05f);
+            ShaderManager.ANIMATED_ENTITY_SHADER.setUniform("model", modelMat);
+
             glBufferData(GL_ARRAY_BUFFER, this.getVerticesBuffer(), GL_DYNAMIC_DRAW);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesBuffer(), GL_DYNAMIC_DRAW);
             glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
@@ -74,34 +81,21 @@ public class MobEntitiesRenderer extends GlobalRenderer {
         FloatBuffer boneBuf = obj.getBoneIDsBuffer().duplicate();
         FloatBuffer weightBuf = obj.getBoneWeightsBuffer().duplicate();
 
-        float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
-        float cosYaw = (float) Math.cos(yawRad);
-        float sinYaw = (float) Math.sin(yawRad);
-
-        double x = entity.getLocation().getX();
-        double y = entity.getLocation().getY();
-        double z = entity.getLocation().getZ();
-
         while (iBuf.hasRemaining()) {
             int idx = iBuf.get();
 
             float relX = vBuf.get(idx * 3);
             float relY = vBuf.get(idx * 3 + 1);
             float relZ = vBuf.get(idx * 3 + 2);
-
-            float rotX = cosYaw * relX - sinYaw * relZ;
-            float rotZ = sinYaw * relX + cosYaw * relZ;
-
-            float vx = (float) (x + rotX);
-            float vy = (float) (y + relY);
-            float vz = (float) (z + rotZ);
+            float vx = relX;
+            float vy = relY;
+            float vz = relZ;
 
             float nx = nBuf.get(idx * 3);
             float ny = nBuf.get(idx * 3 + 1);
             float nz = nBuf.get(idx * 3 + 2);
-
-            float rnx = cosYaw * nx - sinYaw * nz;
-            float rnz = sinYaw * nx + cosYaw * nz;
+            float rnx = nx;
+            float rnz = nz;
 
             float u = tBuf.get(idx * 2);
             float v = tBuf.get(idx * 2 + 1);
