@@ -37,13 +37,12 @@ public class MobEntitiesRenderer extends GlobalRenderer {
         glBufferData(GL_ARRAY_BUFFER, this.getVerticesBuffer(), GL_DYNAMIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.getIndicesBuffer(), GL_DYNAMIC_DRAW);
-//
+
         glDrawElements(GL_TRIANGLES, this.getIndicesArray().length, GL_UNSIGNED_INT, 0);
-//
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-//
         this.getIndices().clear();
         this.getVertices().clear();
     }
@@ -79,7 +78,8 @@ public class MobEntitiesRenderer extends GlobalRenderer {
         FloatBuffer nBuf = obj.getNormalsBuffer().duplicate();
         FloatBuffer tBuf = obj.getTexCoordsBuffer().duplicate();
         IntBuffer iBuf = obj.getIndicesBuffer().duplicate();
-        IntBuffer boneBuf = obj.getBoneIDsBuffer().duplicate();
+        FloatBuffer boneBuf = obj.getBoneIDsBuffer().duplicate();
+        FloatBuffer weightBuf = obj.getBoneWeightsBuffer().duplicate();
 
         float yawRad = (float) Math.toRadians(entity.getLocation().getYaw());
         float cosYaw = (float) Math.cos(yawRad);
@@ -113,10 +113,26 @@ public class MobEntitiesRenderer extends GlobalRenderer {
             float u = tBuf.get(idx * 2);
             float v = tBuf.get(idx * 2 + 1);
 
-            int boneID = boneBuf.get(idx);
             int texture = entity.getTextureID();
 
-            float[] vertex = new float[]{vx, vy, vz, u, v, texture, rnx, ny, rnz, boneID};
+            float id0 = boneBuf.get(idx * 4);
+            float id1 = boneBuf.get(idx * 4 + 1);
+            float id2 = boneBuf.get(idx * 4 + 2);
+            float id3 = boneBuf.get(idx * 4 + 3);
+
+            float w0 = weightBuf.get(idx * 4);
+            float w1 = weightBuf.get(idx * 4 + 1);
+            float w2 = weightBuf.get(idx * 4 + 2);
+            float w3 = weightBuf.get(idx * 4 + 3);
+
+            float[] vertex = new float[]{
+                    vx, vy, vz,
+                    u, v,
+                    texture,
+                    rnx, ny, rnz,
+                    id0, id1, id2, id3,
+                    w0, w1, w2, w3
+            };
             this.addVertex(vertex);
         }
     }

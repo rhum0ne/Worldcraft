@@ -57,7 +57,8 @@ public class Animator {
 
     public void sendToShader(Shader shader) {
         for (Bone bone : bones.values()) {
-            shader.setUniform("boneMatrices[" + bone.index + "]", bone.globalTransform);
+            Matrix4f mat = new Matrix4f(bone.globalTransform).mul(bone.offsetMatrix);
+            shader.setUniform("boneMatrices[" + bone.index + "]", mat);
         }
     }
 }
