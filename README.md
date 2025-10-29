@@ -1,39 +1,8 @@
-# Worldcraft
-
-## Save format
-
-World and chunk data are stored under `%APPDATA%/Worldcraft/worlds`.
-Each world uses a directory named after its seed value.
-
-```
-%APPDATA%/Worldcraft/worlds/<seed>/
-  world.dat         # metadata (seed, spawn position)
-  chunks/
-    <x>_<z>.bin     # serialized chunk data
-```
-
-Chunk files contain a sequence of material ids for all blocks of the chunk
-followed by the biome name for every column. World metadata stores the seed
-(long) and the spawn coordinates as integers.
-
-When a chunk unloads, its data is written on a background thread using a
-temporary file which is atomically moved into place when the write finishes.
-
-Multiple IO threads are used so several chunks can be saved or loaded
-concurrently. The chunk is removed only once the save succeeds,
-preventing partial files while keeping the main loop responsive.
-
-When loading, chunk data is read on a background thread. The game waits for any
-pending write on the requested file before reading so data is always complete,
-but loading itself no longer stalls the main loop.
-
-Chunks are loaded and unloaded in short intervals (every 100&nbsp;ms) so the
-world updates smoothly as the player moves.
-
-The chunk is removed only once the save succeeds, preventing partial files while
-keeping the main loop responsive.
-
-When loading, the game waits for any pending write on the requested chunk file
-to finish so data is always read completely.
-
-
+<img width="1715" height="771" alt="Capture d'écran 2025-06-25 105707" src="https://github.com/user-attachments/assets/ee5494d9-9c09-47c5-a5a0-4970022d8986" />
+<img width="774" height="473" alt="Capture d'écran 2025-06-25 000434" src="https://github.com/user-attachments/assets/315e67ff-ffde-42c5-926d-110c5fad3170" />
+<img width="1878" height="900" alt="Capture d'écran 2025-06-24 144428" src="https://github.com/user-attachments/assets/278987db-28b9-42e4-b865-867ab17032b2" />
+<img width="1099" height="470" alt="Capture d'écran 2025-06-24 142354" src="https://github.com/user-attachments/assets/d268a4c0-be74-40f9-9931-629ac686685a" />
+<img width="1888" height="997" alt="Capture d'écran 2025-06-24 132638" src="https://github.com/user-attachments/assets/6019f4eb-fc19-446e-b7f2-a50edd03a5b8" />
+<img width="1799" height="980" alt="Capture d'écran 2025-06-24 132227" src="https://github.com/user-attachments/assets/2c7f74f7-defd-43ae-96b3-5c5a6e1ac373" />
+<img width="909" height="602" alt="Capture d'écran 2025-06-18 184836" src="https://github.com/user-attachments/assets/3a6e05a2-5a2f-4619-8a15-6ee009ad3099" />
+<img width="818" height="776" alt="Capture d'écran 2025-06-17 135023" src="https://github.com/user-attachments/assets/c9467c99-7e31-4f82-8698-1c5d6ecb0b99" />
