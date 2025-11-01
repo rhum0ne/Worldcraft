@@ -37,21 +37,26 @@ public class GlobalRenderer extends Renderer {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.getEBO());
 
         // Attributs communs
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, (useSkinning ? 10 : 9) * Float.BYTES, 0);
+        int stride = (useSkinning ? 17 : 9) * Float.BYTES;
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 2, GL_FLOAT, false, (useSkinning ? 10 : 9) * Float.BYTES, 3 * Float.BYTES);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, stride, 3 * Float.BYTES);
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, 1, GL_FLOAT, false, (useSkinning ? 10 : 9) * Float.BYTES, 5 * Float.BYTES);
+        glVertexAttribPointer(2, 1, GL_FLOAT, false, stride, 5 * Float.BYTES);
         glEnableVertexAttribArray(2);
 
-        glVertexAttribPointer(3, 3, GL_FLOAT, false, (useSkinning ? 10 : 9) * Float.BYTES, 6 * Float.BYTES);
+        glVertexAttribPointer(3, 3, GL_FLOAT, false, stride, 6 * Float.BYTES);
         glEnableVertexAttribArray(3);
 
         if (useSkinning) {
-            glVertexAttribIPointer(4, 1, GL_INT, 10 * Float.BYTES, 9 * Float.BYTES);
+            glVertexAttribPointer(4, 4, GL_FLOAT, false, stride, 9 * Float.BYTES);
             glEnableVertexAttribArray(4);
+
+            glVertexAttribPointer(5, 4, GL_FLOAT, false, stride, 9 * Float.BYTES + 4 * Float.BYTES);
+            glEnableVertexAttribArray(5);
         }
 
         glBindVertexArray(0);
