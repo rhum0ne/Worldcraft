@@ -19,6 +19,7 @@ public class Bone {
 
     public final Matrix4f localTransform = new Matrix4f();
     public final Matrix4f globalTransform = new Matrix4f();
+    public final Matrix4f inverseBindMatrix = new Matrix4f();
 
     public Bone(String name, int index) {
         this.name = name;

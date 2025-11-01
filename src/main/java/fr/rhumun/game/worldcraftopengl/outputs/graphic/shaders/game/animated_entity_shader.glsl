@@ -1,4 +1,3 @@
-// Vertex Shader
 #version 330 core
 
 layout(location = 0) in vec3 inPosition;
@@ -17,11 +16,9 @@ out vec3 fragNormal;
 
 void main() {
     mat4 boneTransform = boneMatrices[inBoneID];
-    vec4 worldPos = boneTransform * vec4(inPosition, 1.0);
+    vec4 skinned = boneTransform * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
     fragTextureIndex = inTextureIndex;
     fragNormal = mat3(transpose(inverse(boneTransform))) * inNormal;
-    vec4 skinnedPos = boneMatrices[inBoneID] * vec4(inPosition, 1.0);
-    skinnedPos.xyz *= 0.05; // Réduit l’échelle
-    gl_Position = projection * view * worldPos * skinnedPos;
+    gl_Position = projection * view * skinned;
 }
