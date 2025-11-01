@@ -50,7 +50,7 @@ public class GlobalRenderer extends Renderer {
         glEnableVertexAttribArray(3);
 
         if (useSkinning) {
-            glVertexAttribIPointer(4, 1, GL_INT, 10 * Float.BYTES, 9 * Float.BYTES);
+            glVertexAttribPointer(4, 1, GL_FLOAT, false, 10 * Float.BYTES, 9 * Float.BYTES);
             glEnableVertexAttribArray(4);
         }
 
